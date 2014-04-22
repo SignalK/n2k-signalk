@@ -1,0 +1,29 @@
+{
+  "name": "n2k-signalk",
+  "version": "0.0.0",
+  "description": "NMEA 2000 to SignalK conversion library",
+  "main": "n2kMapper.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "nmea",
+    "2000",
+    "n2k",
+    "signalk",
+    "navigation",
+    "sailing",
+    "boating"
+  ],
+  "author": "teppo.kurki@iki.fi",
+  "license": "Apache 2.0",
+  "dependencies" : {
+    "JSONStream" : "0.7",
+    "through": ">=2.2.7 <3",
+    "nomnom": "~1.6.2"
+  },
+  "devDependencies": {
+    "chai": "1.9",
+    "chai-things": "0.2"
+  }
+}

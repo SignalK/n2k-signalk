@@ -1,0 +1,22 @@
+#!/usr/bin/env node
+
+var n2kMapper = require('../n2kMapper.js');
+var JSONStream = require('JSONStream');
+
+var opts = require("nomnom")
+  .option('debug', {
+    abbr: 'd',
+    flag: true,
+    help: 'Print debugging info'
+  })
+  .option('flat', {
+    flag: true,
+    help: 'Produce flat (non-nested) output'
+  }).parse();
+
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+
+var transformer = opts.flat ? n2kMapper.toFlatTransformer(opts) : n2kMapper.toNestedTransformer(opts);
+
+process.stdin.pipe(JSONStream.parse()).pipe(transformer).pipe(JSONStream.stringify(false)).pipe(process.stdout);
