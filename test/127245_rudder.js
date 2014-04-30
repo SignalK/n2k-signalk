@@ -9,7 +9,7 @@ describe('127245_rudder ', function () {
     msg.length.should.equal(1);
   });
 
-  it('complete sentence converts', function () {
+  it('direction order is not handled', function () {
     var msg = require("../n2kMapper.js").toNested(
       JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"204","dst":"255","pgn":"127245","description":"Rudder","fields":{"Instance":"252","Direction Order":"0"}}'));
     msg.length.should.equal(0);
