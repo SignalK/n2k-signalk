@@ -39,17 +39,10 @@ exports.mappings =
   //Vessel heading
   '127250': [
     {
-      source: 'Vessel Heading',
+      source: 'Heading',
       node: 'navigation.headingMagnetic',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'Magnetic' && typeof n2k.fields['Heading'] != 'undefined'
-      }
-    },
-    {
-      source: 'Vessel Heading',
-      node: 'navigation.headingTrue',
-      filter: function (n2k) {
-        return n2k.fields['Reference'] === 'True' && typeof n2k.fields['Heading'] != 'undefined'
       }
     },
     {
