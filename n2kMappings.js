@@ -89,9 +89,16 @@ exports.mappings =
     },
     {
       source: 'Wind Speed',
-      node: 'environmental.windSpeedTrue',
+      node: 'environmental.windSpeedTrueBoat',
       filter: function (n2k) {
-        return n2k.fields['Reference'] === 'True';
+        return n2k.fields['Reference'] === 'True (boat referenced)';
+      }
+    },
+    {
+      source: 'Wind Speed',
+      node: 'environmental.windSpeedTrueGround',
+      filter: function (n2k) {
+        return n2k.fields['Reference'] === 'True (ground referenced to North)';
       }
     },
     {
@@ -103,9 +110,16 @@ exports.mappings =
     },
     {
       source: 'Wind Angle',
-      node: 'environmental.windAngleTrue',
+      node: 'environmental.windAngleTrueBoat',
       filter: function (n2k) {
-        return n2k.fields['Reference'] === 'True';
+        return n2k.fields['Reference'] === 'True (boat referenced)';
+      }
+    },
+    {
+      source: 'Wind Angle',
+      node: 'environmental.windAngleTrueGround',
+      filter: function (n2k) {
+        return n2k.fields['Reference'] === 'True (ground referenced to North)';
       }
     }
   ],
