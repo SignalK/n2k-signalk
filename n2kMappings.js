@@ -7,6 +7,17 @@ exports.mappings =
       node: 'environment.depth'
     }
   ],
+  //Log
+  '128275': [
+    {
+      source: 'Trip Log',
+      node: 'navigation.logTrip'
+    },
+    {
+      source: 'Log',
+      node: 'navigation.log'
+    }
+  ],
   //COGSOG,
   '129026': [
     {
