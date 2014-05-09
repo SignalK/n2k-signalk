@@ -1,5 +1,20 @@
 exports.mappings =
 {
+  //System time
+  '126992': [
+    {
+      value: function (n2k) {
+        return n2k.fields.Date;
+      },
+      node: 'environment.date'
+    },
+    {
+      value: function (n2k) {
+        return n2k.fields.Time;
+      },
+      node: 'environment.time'
+    },
+  ],
   //Water Depth
   '128267': [
     {
