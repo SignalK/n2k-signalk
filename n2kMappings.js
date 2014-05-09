@@ -4,7 +4,7 @@ exports.mappings =
   '128267': [
     {
       source: 'Depth',
-      node: 'environmental.depth'
+      node: 'environment.depth'
     }
   ],
   //COGSOG,
@@ -82,42 +82,42 @@ exports.mappings =
   '130306': [
     {
       source: 'Wind Speed',
-      node: 'environmental.windSpeedApparent',
+      node: 'environment.windSpeedApparent',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'Apparent';
       }
     },
     {
       source: 'Wind Speed',
-      node: 'environmental.windSpeedTrueBoat',
+      node: 'environment.windSpeedTrueBoat',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (boat referenced)';
       }
     },
     {
       source: 'Wind Speed',
-      node: 'environmental.windSpeedTrueGround',
+      node: 'environment.windSpeedTrueGround',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (ground referenced to North)';
       }
     },
     {
       source: 'Wind Angle',
-      node: 'environmental.windAngleApparent',
+      node: 'environment.windAngleApparent',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'Apparent';
       }
     },
     {
       source: 'Wind Angle',
-      node: 'environmental.windAngleTrueBoat',
+      node: 'environment.windAngleTrueBoat',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (boat referenced)';
       }
     },
     {
       source: 'Wind Angle',
-      node: 'environmental.windAngleTrueGround',
+      node: 'environment.windAngleTrueGround',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (ground referenced to North)';
       }
