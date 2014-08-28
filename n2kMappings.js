@@ -162,6 +162,13 @@ exports.mappings =
       node: 'navigation.position.variation'
     }
   ],
+  //Speed
+  '128259': [
+    {
+      source: 'Speed Water Referenced',
+      node: 'navigation.speedThroughWater'
+    }
+  ],
   //Direction data
   '130577': [
     {
