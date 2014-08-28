@@ -180,9 +180,10 @@ exports.mappings =
     },
     {
       source: 'Set',
-      node: 'navigation.set',
+      node: 'navigation.setTrue',
       filter: function (n2k) {
-        return n2k.fields['Set'];
+        //assume that Set is same reference as COG
+        return n2k.fields['Set'] && n2k.fields['COG Reference'];
       }
     },
     {

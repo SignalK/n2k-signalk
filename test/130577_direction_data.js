@@ -21,8 +21,8 @@ describe('130577 direction_data', function () {
     msgs.should.contain.an.item.with.deep.property('navigation.speedOverGround.value', 3.51);
     msgs.should.contain.an.item.with.deep.property('navigation.courseOverGroundTrue');
     msgs.should.contain.an.item.with.deep.property('navigation.courseOverGroundTrue.value', 206.9);
-    msgs.should.contain.an.item.with.deep.property('navigation.set');
-    msgs.should.contain.an.item.with.deep.property('navigation.set.value', 58.9);
+    msgs.should.contain.an.item.with.deep.property('navigation.setTrue');
+    msgs.should.contain.an.item.with.deep.property('navigation.setTrue.value', 58.9);
     msgs.should.contain.an.item.with.deep.property('navigation.drift');
     msgs.should.contain.an.item.with.deep.property('navigation.drift.value', 0.28);
   });
