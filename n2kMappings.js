@@ -165,12 +165,32 @@ exports.mappings =
   //Direction data
   '130577': [
     {
+      source: 'COG',
+      node: 'navigation.courseOverGroundTrue',
+      filter: function (n2k) {
+        return n2k.fields['COG Reference'] === 'True';
+      }
+    },
+    {
+      source: 'SOG',
+      node: 'navigation.speedOverGround',
+      filter: function (n2k) {
+        return n2k.fields['SOG'];
+      }
+    },
+    {
       source: 'Set',
-      node: 'navigation.set'
+      node: 'navigation.set',
+      filter: function (n2k) {
+        return n2k.fields['Set'];
+      }
     },
     {
       source: 'Drift',
-      node: 'navigation.drift'
+      node: 'navigation.drift',
+      filter: function (n2k) {
+        return n2k.fields['Drift'];
+      }
     }
   ]
 }
