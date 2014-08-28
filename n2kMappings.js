@@ -193,6 +193,23 @@ exports.mappings =
         return n2k.fields['Drift'];
       }
     }
-  ]
+  ],
+  //Set & Drift rapid update
+  '129291': [
+  {
+    source: 'Set',
+    node: 'navigation.setTrue',
+    filter: function (n2k) {
+      return n2k.fields['Set'] && n2k.fields['Set Reference'] === 'True';
+    }
+  },
+  {
+    source: 'Drift',
+    node: 'navigation.drift',
+    filter: function (n2k) {
+      return n2k.fields['Drift'];
+    }
+  }
+]
 }
 
