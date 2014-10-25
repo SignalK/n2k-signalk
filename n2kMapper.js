@@ -3,6 +3,21 @@ var through = require('through');
 
 
 var toFlat = function (n2k) {
+    return {
+      updates: [
+        {
+          source: {
+            pgn: n2k.pgn,
+            timestamp: n2k.timestamp,
+            src: n2k.src
+          },
+          values : toValuesArray(n2k)
+        }
+      ]
+    }
+}
+
+var toValuesArray = function (n2k) {
   var theMappings = n2kMappings[n2k.pgn];
   if (typeof theMappings != 'undefined') {
     return theMappings
@@ -61,7 +76,7 @@ exports.toFlatTransformer = function (options) {
     if (options.debug) {
       console.log(data);
     }
-    exports.toFlat(data).forEach(stream.queue);
+    stream.queue(exports.toFlat(data));
   });
   return stream;
 }
