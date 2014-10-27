@@ -2,7 +2,7 @@ var n2kMappings = require("./n2kMappings.js").mappings;
 var through = require('through');
 
 
-var toFlat = function (n2k) {
+var toDelta = function (n2k) {
     return {
       updates: [
         {
@@ -89,17 +89,17 @@ function deltaToNested(delta) {
   return result;
 }
 
-exports.toFlat = toFlat;
+exports.toDelta = toDelta;
 exports.toNested = function (n2k) {
-  return deltaToNested(toFlat(n2k));
+  return deltaToNested(toDelta(n2k));
 }
 
-exports.toFlatTransformer = function (options) {
+exports.toDeltaTransformer = function (options) {
   var stream = through(function (data) {
     if (options.debug) {
       console.log(data);
     }
-    stream.queue(exports.toFlat(data));
+    stream.queue(exports.toDelta(data));
   });
   return stream;
 }
