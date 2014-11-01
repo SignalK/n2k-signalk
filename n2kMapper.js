@@ -2,7 +2,22 @@ var n2kMappings = require("./n2kMappings.js").mappings;
 var through = require('through');
 
 
-var toFlat = function (n2k) {
+var toDelta = function (n2k) {
+    return {
+      updates: [
+        {
+          source: {
+            pgn: n2k.pgn,
+            timestamp: n2k.timestamp,
+            src: n2k.src
+          },
+          values : toValuesArray(n2k)
+        }
+      ]
+    }
+}
+
+var toValuesArray = function (n2k) {
   var theMappings = n2kMappings[n2k.pgn];
   if (typeof theMappings != 'undefined') {
     return theMappings
@@ -38,30 +53,53 @@ var toFlat = function (n2k) {
   return [];
 }
 
-var flatToNested = function (msg) {
+var addToTree = function (pathValue, source, tree) {
   var result = {};
-  var temp = result;
+  var temp = tree;
   var parts = msg.path.split('.');
   for (var i = 0; i < parts.length - 1; i++) {
     temp[parts[i]] = {};
     temp = temp[parts[i]];
   }
   temp[parts[parts.length - 1]] = msg;
-  msg.path = undefined;
   return result;
 }
 
-exports.toFlat = toFlat;
-exports.toNested = function (n2k) {
-  return toFlat(n2k).map(flatToNested);
+
+function addAsNested(pathValue, source, result) {
+  var temp = result;
+  var parts = pathValue.path.split('.');
+  for (var i = 0; i < parts.length - 1; i++) {
+    if (typeof temp[parts[i]] === 'undefined') {
+      temp[parts[i]] = {};
+    }
+    temp = temp[parts[i]];
+  }
+  temp[parts[parts.length - 1]] = {
+    value: pathValue.value,
+    source: source
+  }
 }
 
-exports.toFlatTransformer = function (options) {
+function deltaToNested(delta) {
+  var result = {};
+  delta.updates[0].values.forEach(function(pathValue) {
+    addAsNested(pathValue, delta.updates[0].source, result);
+  });
+  return result;
+}
+
+exports.toDelta = toDelta;
+exports.toNested = function (n2k) {
+  return deltaToNested(toDelta(n2k));
+}
+
+exports.toDeltaTransformer = function (options) {
   var stream = through(function (data) {
     if (options.debug) {
       console.log(data);
     }
-    exports.toFlat(data).forEach(stream.queue);
+    stream.queue(exports.toDelta(data));
   });
   return stream;
 }
@@ -71,7 +109,10 @@ exports.toNestedTransformer = function (options) {
     if (options.debug) {
       console.log(data);
     }
-    exports.toNested(data).forEach(stream.queue);
+    var nested = exports.toNested(data);
+    if (Object.getOwnPropertyNames(nested).length > 0) {
+      stream.queue(nested);
+    }
   });
   return stream;
 }
