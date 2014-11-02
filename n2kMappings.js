@@ -205,14 +205,14 @@ exports.mappings =
   '129291': [
   {
     source: 'Set',
-    node: 'navigation.setTrue',
+    node: 'navigation.current.setTrue',
     filter: function (n2k) {
       return n2k.fields['Set'] && n2k.fields['Set Reference'] === 'True';
     }
   },
   {
     source: 'Drift',
-    node: 'navigation.drift',
+    node: 'navigation.current.drift',
     filter: function (n2k) {
       return n2k.fields['Drift'];
     }
