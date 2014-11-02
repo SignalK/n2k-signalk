@@ -37,12 +37,7 @@ var toValuesArray = function (n2k) {
             path: theMapping.node,
             value: typeof theMapping.source != 'undefined' ?
               Number(n2k.fields[theMapping.source]) :
-              theMapping.value(n2k),
-            source: {
-              pgn: n2k.pgn,
-              timestamp: n2k.timestamp,
-              src: n2k.src
-            }
+              theMapping.value(n2k)
           }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k);
