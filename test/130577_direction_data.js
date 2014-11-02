@@ -21,10 +21,11 @@ describe('130577 direction_data', function () {
     tree.should.have.deep.property('navigation.speedOverGround.value', 3.51);
     tree.should.have.deep.property('navigation.courseOverGroundTrue');
     tree.should.have.deep.property('navigation.courseOverGroundTrue.value', 206.9);
-    tree.should.have.deep.property('navigation.setTrue');
-    tree.should.have.deep.property('navigation.setTrue.value', 58.9);
-    tree.should.have.deep.property('navigation.drift');
-    tree.should.have.deep.property('navigation.drift.value', 0.28);
+    tree.should.have.deep.property('navigation.current.setTrue');
+    tree.should.have.deep.property('navigation.current.setTrue.value', 58.9);
+    tree.should.have.deep.property('navigation.current.drift');
+    tree.should.have.deep.property('navigation.current.drift.value', 0.28);
+    tree.should.be.validSignalK;
   });
 });
 

@@ -187,7 +187,7 @@ exports.mappings =
     },
     {
       source: 'Set',
-      node: 'navigation.setTrue',
+      node: 'navigation.current.setTrue',
       filter: function (n2k) {
         //assume that Set is same reference as COG
         return n2k.fields['Set'] && n2k.fields['COG Reference'];
@@ -195,7 +195,7 @@ exports.mappings =
     },
     {
       source: 'Drift',
-      node: 'navigation.drift',
+      node: 'navigation.current.drift',
       filter: function (n2k) {
         return n2k.fields['Drift'];
       }
