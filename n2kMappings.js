@@ -57,7 +57,10 @@ exports.mappings =
   '129025': [
     {
       value: function (n2k) {
-        return [Number(n2k.fields.Longitude), Number(n2k.fields.Latitude)];
+        return {
+          longitude: Number(n2k.fields.Longitude),
+          latitude: Number(n2k.fields.Latitude)
+        }
       },
       node: 'navigation.position'
     }

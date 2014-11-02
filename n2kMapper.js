@@ -72,11 +72,19 @@ function addAsNested(pathValue, source, timestamp, result) {
     }
     temp = temp[parts[i]];
   };
-  temp[parts[parts.length - 1]] = {
-    value: pathValue.value,
-    source: source,
-    timestamp: timestamp + ''
-  };
+
+  //mapping produced an object like {latitude:...,longitude:...}
+  if (typeof pathValue.value === 'object') {
+    temp[parts[parts.length - 1]] = pathValue.value;
+    temp[parts[parts.length - 1]].source = source;
+    temp[parts[parts.length - 1]].timestamp = timestamp + '';
+  } else {
+    temp[parts[parts.length - 1]] = {
+      value:  pathValue.value,
+      source: source,
+      timestamp: timestamp + ''
+    };
+  }
 }
 
 function deltaToNested(delta) {
