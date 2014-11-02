@@ -1,6 +1,8 @@
 var chai = require("chai");
 chai.Should();
 chai.use(require('chai-things'));
+chai.use(require('signalk-schema').chaiModule);
+
 
 
 describe('128275 log', function () {
@@ -11,6 +13,7 @@ describe('128275 log', function () {
     tree.should.have.deep.property('navigation.logTrip.value', 4074);
     tree.should.have.deep.property('navigation.log');
     tree.should.have.deep.property('navigation.log.value', 2229808);
+    tree.should.be.validSignalK;
   });
 });
 

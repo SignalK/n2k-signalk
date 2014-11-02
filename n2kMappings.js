@@ -19,7 +19,7 @@ exports.mappings =
   '128267': [
     {
       source: 'Depth',
-      node: 'environment.depth'
+      node: 'environment.depth.belowTransducer'
     }
   ],
   //Log
