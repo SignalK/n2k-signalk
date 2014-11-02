@@ -86,7 +86,7 @@ exports.mappings =
   '127245': [
     {
       source: 'Position',
-      node: 'vessel.rudder',
+      node: 'steering.rudderAngle',
       filter: function (n2k) {
         return typeof n2k.fields['Position'] != 'undefined'
       }
