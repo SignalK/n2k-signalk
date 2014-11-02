@@ -1,6 +1,7 @@
 var chai = require("chai");
 chai.Should();
 chai.use(require('chai-things'));
+chai.use(require('signalk-schema').chaiModule);
 
 
 describe('127257_attitude', function () {
@@ -13,6 +14,7 @@ describe('127257_attitude', function () {
     tree.should.have.deep.property('navigation.pitch.value', 0.464);
     tree.should.have.deep.property('navigation.roll');
     tree.should.have.deep.property('navigation.roll.value', -2.496);
+    tree.should.be.validSignalK;
   });
 });
 
