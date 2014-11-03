@@ -16,7 +16,7 @@ describe('130306 Wind Data', function () {
   it('True Boat sentence converts', function () {
     var tree = require("../n2kMapper.js").toNested(
       JSON.parse('{"timestamp":"2013-10-08-15:47:28.264","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"68","Wind Speed":"4.89","Wind Angle":"86.0","Reference":"True (boat referenced)"}}'));
-    tree.should.have.deep.property('environment.wind.speedOverWater.value', 4.89);
+    tree.should.have.deep.property('environment.wind.speedTrue.value', 4.89);
     tree.should.have.deep.property('environment.wind.angleTrue.value', 86);
     tree.should.be.validSignalK;
   });

@@ -118,7 +118,7 @@ exports.mappings =
     },
     {
       source: 'Wind Speed',
-      node: 'environment.wind.speedOverWater',
+      node: 'environment.wind.speedTrue',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (boat referenced)';
       }
