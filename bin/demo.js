@@ -2,7 +2,7 @@
 
 var n2kMapper = require('../n2kMapper.js');
 var msg = {
-  "timestamp": "2013-10-08-15:47:28.263",
+  "timestamp": "2013-10-08T15:47:28.263Z",
   "prio": "2",
   "src": "204",
   "dst": "255",
@@ -13,5 +13,7 @@ var msg = {
   }
 };
 
-console.log(JSON.stringify(n2kMapper.toFlat(msg)));
-console.log(JSON.stringify(n2kMapper.toNested(msg)));
+console.log(".toDelta()\n----------");
+console.log(JSON.stringify(n2kMapper.toDelta(msg), null, 2));
+console.log("\n.toNested()\n-----------");
+console.log(JSON.stringify(n2kMapper.toNested(msg), null, 2));
