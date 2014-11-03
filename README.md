@@ -31,28 +31,9 @@ $ actisense-serial /dev/actisense | analyzer -json 2>/dev/null | n2k-signalk --f
 
 **Usage as stream transformer**
 
-```javascript
-process.stdin.pipe(JSONStream.parse()).pipe(n2kMappings.toFlatSignalKStream(opts)).pipe(JSONStream.stringify(false)).pipe(process.stdout);
-```
-
+See [bin/n2k-signalk](https://github.com/SignalK/n2k-signalk/blob/master/bin/n2k-signalk).
 
 **Usage for a single transformation**
 
-```javascript
-var n2kMapper = require('../n2kMapper.js');
-var msg = {
-  "timestamp": "2013-10-08-15:47:28.263",
-  "prio": "2",
-  "src": "204",
-  "dst": "255",
-  "pgn": "127251",
-  "description": "Rate of Turn",
-  "fields": {
-    "Rate": "0.0066071"
-  }
-};
-
-console.log(JSON.stringify(n2kMapper.toFlat(msg)));
-console.log(JSON.stringify(n2kMapper.toNested(msg)));
-```
+See [bin/demo.js](https://github.com/SignalK/n2k-signalk/blob/master/bin/demo.js).
 
