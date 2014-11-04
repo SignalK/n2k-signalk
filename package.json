@@ -21,7 +21,7 @@
     "JSONStream" : "0.7",
     "through": ">=2.2.7 <3",
     "nomnom": "~1.6.2",
-    "signalk-schema": "SignalK/specification#validation"
+    "signalk-schema": "SignalK/specification"
   },
   "devDependencies": {
     "chai": "1.9",
