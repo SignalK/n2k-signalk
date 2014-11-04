@@ -20,10 +20,12 @@
   "dependencies" : {
     "JSONStream" : "0.7",
     "through": ">=2.2.7 <3",
-    "nomnom": "~1.6.2"
+    "nomnom": "~1.6.2",
+    "signalk-schema": "SignalK/specification"
   },
   "devDependencies": {
     "chai": "1.9",
-    "chai-things": "0.2"
+    "chai-things": "0.2",
+    "tv4": "latest"
   }
 }

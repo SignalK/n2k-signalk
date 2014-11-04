@@ -7,6 +7,8 @@ var toDelta = function (n2k) {
       updates: [
         {
           source: {
+            label: '',
+            type: 'NMEA2000',
             pgn: n2k.pgn,
             timestamp: n2k.timestamp,
             src: n2k.src
@@ -35,12 +37,7 @@ var toValuesArray = function (n2k) {
             path: theMapping.node,
             value: typeof theMapping.source != 'undefined' ?
               Number(n2k.fields[theMapping.source]) :
-              theMapping.value(n2k),
-            source: {
-              pgn: n2k.pgn,
-              timestamp: n2k.timestamp,
-              src: n2k.src
-            }
+              theMapping.value(n2k)
           }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k);
@@ -66,7 +63,7 @@ var addToTree = function (pathValue, source, tree) {
 }
 
 
-function addAsNested(pathValue, source, result) {
+function addAsNested(pathValue, source, timestamp, result) {
   var temp = result;
   var parts = pathValue.path.split('.');
   for (var i = 0; i < parts.length - 1; i++) {
@@ -74,17 +71,28 @@ function addAsNested(pathValue, source, result) {
       temp[parts[i]] = {};
     }
     temp = temp[parts[i]];
-  }
-  temp[parts[parts.length - 1]] = {
-    value: pathValue.value,
-    source: source
+  };
+
+  //mapping produced an object like {latitude:...,longitude:...}
+  if (typeof pathValue.value === 'object') {
+    temp[parts[parts.length - 1]] = pathValue.value;
+    temp[parts[parts.length - 1]].source = source;
+    temp[parts[parts.length - 1]].timestamp = timestamp + '';
+  } else {
+    temp[parts[parts.length - 1]] = {
+      value:  pathValue.value,
+      source: source,
+      timestamp: timestamp + ''
+    };
   }
 }
 
 function deltaToNested(delta) {
   var result = {};
+  var timestamp = delta.updates[0].source.timestamp;
+  delete delta.updates[0].source.timestamp;
   delta.updates[0].values.forEach(function(pathValue) {
-    addAsNested(pathValue, delta.updates[0].source, result);
+    addAsNested(pathValue, delta.updates[0].source, timestamp, result);
   });
   return result;
 }

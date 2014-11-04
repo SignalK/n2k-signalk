@@ -19,7 +19,7 @@ exports.mappings =
   '128267': [
     {
       source: 'Depth',
-      node: 'environment.depth'
+      node: 'environment.depth.belowTransducer'
     }
   ],
   //Log
@@ -57,7 +57,10 @@ exports.mappings =
   '129025': [
     {
       value: function (n2k) {
-        return [Number(n2k.fields.Longitude), Number(n2k.fields.Latitude)];
+        return {
+          longitude: Number(n2k.fields.Longitude),
+          latitude: Number(n2k.fields.Latitude)
+        }
       },
       node: 'navigation.position'
     }
@@ -83,7 +86,7 @@ exports.mappings =
   '127245': [
     {
       source: 'Position',
-      node: 'vessel.rudder',
+      node: 'steering.rudderAngle',
       filter: function (n2k) {
         return typeof n2k.fields['Position'] != 'undefined'
       }
@@ -108,42 +111,42 @@ exports.mappings =
   '130306': [
     {
       source: 'Wind Speed',
-      node: 'environment.windSpeedApparent',
+      node: 'environment.wind.speedApparent',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'Apparent';
       }
     },
     {
       source: 'Wind Speed',
-      node: 'environment.windSpeedTrueBoat',
+      node: 'environment.wind.speedTrue',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (boat referenced)';
       }
     },
     {
       source: 'Wind Speed',
-      node: 'environment.windSpeedTrueGround',
+      node: 'environment.wind.speedOverGround',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (ground referenced to North)';
       }
     },
     {
       source: 'Wind Angle',
-      node: 'environment.windAngleApparent',
+      node: 'environment.wind.angleApparent',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'Apparent';
       }
     },
     {
       source: 'Wind Angle',
-      node: 'environment.windAngleTrueBoat',
+      node: 'environment.wind.angleTrue',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (boat referenced)';
       }
     },
     {
       source: 'Wind Angle',
-      node: 'environment.windAngleTrueGround',
+      node: 'environment.wind.directionTrue',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (ground referenced to North)';
       }
@@ -187,7 +190,7 @@ exports.mappings =
     },
     {
       source: 'Set',
-      node: 'navigation.setTrue',
+      node: 'navigation.current.setTrue',
       filter: function (n2k) {
         //assume that Set is same reference as COG
         return n2k.fields['Set'] && n2k.fields['COG Reference'];
@@ -195,7 +198,7 @@ exports.mappings =
     },
     {
       source: 'Drift',
-      node: 'navigation.drift',
+      node: 'navigation.current.drift',
       filter: function (n2k) {
         return n2k.fields['Drift'];
       }
@@ -205,14 +208,14 @@ exports.mappings =
   '129291': [
   {
     source: 'Set',
-    node: 'navigation.setTrue',
+    node: 'navigation.current.setTrue',
     filter: function (n2k) {
       return n2k.fields['Set'] && n2k.fields['Set Reference'] === 'True';
     }
   },
   {
     source: 'Drift',
-    node: 'navigation.drift',
+    node: 'navigation.current.drift',
     filter: function (n2k) {
       return n2k.fields['Drift'];
     }
