@@ -3,7 +3,9 @@ var through = require('through');
 
 
 var toDelta = function (n2k) {
-    return {
+  var theMappings = n2kMappings[n2k.pgn];
+  var result = 
+    {
       updates: [
         {
           source: {
@@ -13,14 +15,19 @@ var toDelta = function (n2k) {
             timestamp: n2k.timestamp,
             src: n2k.src
           },
-          values : toValuesArray(n2k)
+          values : toValuesArray(theMappings, n2k)
         }
       ]
+    };
+  theMappings.forEach(function(mapping) {
+    if (typeof mapping.context === 'function') {
+      result.updates[0].context = mapping.context(n2k);
     }
+  });
+  return result;
 }
 
-var toValuesArray = function (n2k) {
-  var theMappings = n2kMappings[n2k.pgn];
+var toValuesArray = function (theMappings, n2k) {
   if (typeof theMappings != 'undefined') {
     return theMappings
       .filter(function (theMapping) {
