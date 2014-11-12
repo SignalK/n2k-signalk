@@ -220,6 +220,28 @@ exports.mappings =
       return n2k.fields['Drift'];
     }
   }
-]
+  ],
+  '129039': [
+    {
+      source: 'SOG',
+      node: 'navigation.speedOverGround'
+    },
+    {
+      source: 'COG',
+      node: 'navigation.courseOverGroundTrue'
+    },
+    {
+      value: function (n2k) {
+        return {
+          longitude: Number(n2k.fields.Longitude),
+          latitude: Number(n2k.fields.Latitude)
+        }
+      },
+      node: 'navigation.position'
+    },    
+    {
+      context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
+    }
+  ]
 }
 
