@@ -21,11 +21,14 @@ var toDelta = function (n2k) {
         }
       ]
     };
-  theMappings.forEach(function(mapping) {
-    if (typeof mapping.context === 'function') {
-      result.updates[0].context = mapping.context(n2k);
-    }
-  });
+  if (typeof theMappings != 'undefined') {
+    theMappings.forEach(function(mapping) {
+      if (typeof mapping.context === 'function') {
+        result.updates[0].context = mapping.context(n2k);
+      }
+    });
+  }
+  debug(JSON.stringify(result));
   return result;
 }
 
@@ -42,11 +45,13 @@ var toValuesArray = function (theMappings, n2k) {
       })
       .map(function (theMapping) {
         try {
-          return  {
-            path: theMapping.node,
-            value: typeof theMapping.source != 'undefined' ?
-              Number(n2k.fields[theMapping.source]) :
-              theMapping.value(n2k)
+          if (typeof theMapping.node != 'undefined') {
+            return  {
+              path: theMapping.node,
+              value: typeof theMapping.source != 'undefined' ?
+                Number(n2k.fields[theMapping.source]) :
+                theMapping.value(n2k)
+            }
           }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k);
