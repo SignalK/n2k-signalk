@@ -6,7 +6,7 @@ var debug = require('debug')('signalk:n2k-signalk')
 var toDelta = function (n2k) {
   debug(JSON.stringify(n2k));
   var theMappings = n2kMappings[n2k.pgn];
-  var result = 
+  var result =
     {
       updates: [
         {
@@ -21,11 +21,14 @@ var toDelta = function (n2k) {
         }
       ]
     };
-  theMappings.forEach(function(mapping) {
-    if (typeof mapping.context === 'function') {
-      result.updates[0].context = mapping.context(n2k);
-    }
-  });
+  if (typeof theMappings != 'undefined') {
+    theMappings.forEach(function(mapping) {
+      if (typeof mapping.context === 'function') {
+        result.updates[0].context = mapping.context(n2k);
+      }
+    });
+  }
+  debug(JSON.stringify(result));
   return result;
 }
 
@@ -55,6 +58,7 @@ var toValuesArray = function (theMappings, n2k) {
                 Number(n2k.fields[theMapping.source]) :
                 theMapping.value(n2k)
             }
+          }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k);
         }
