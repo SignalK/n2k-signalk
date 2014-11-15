@@ -1,8 +1,10 @@
 var n2kMappings = require("./n2kMappings.js").mappings;
 var through = require('through');
+var debug = require('debug')('signalk:n2k-signalk')
 
 
 var toDelta = function (n2k) {
+  debug(JSON.stringify(n2k));
   var theMappings = n2kMappings[n2k.pgn];
   var result = 
     {
