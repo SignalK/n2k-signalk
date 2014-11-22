@@ -251,6 +251,16 @@ exports.mappings =
     {
       context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
     }
+  ],
+  '129794': [
+    {
+      source: 'Name',
+      node: 'name'
+    },
+    {
+      context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
+    }
   ]
+
 }
 
