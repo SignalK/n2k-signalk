@@ -32,6 +32,16 @@ var toDelta = function (n2k) {
   return result;
 }
 
+function getValue(n2k, theMapping) {
+  if (typeof theMapping.source != 'undefined') {
+    var stringValue = n2k.fields[theMapping.source];
+    var numberValue = Number(stringValue);
+    return isNaN(numberValue) ? stringValue : numberValue;
+  } else {
+    return theMapping.value(n2k);
+  }
+}
+
 var toValuesArray = function (theMappings, n2k) {
   if (typeof theMappings != 'undefined') {
     return theMappings
@@ -48,9 +58,7 @@ var toValuesArray = function (theMappings, n2k) {
           if (typeof theMapping.node != 'undefined') {
             return  {
               path: theMapping.node,
-              value: typeof theMapping.source != 'undefined' ?
-                Number(n2k.fields[theMapping.source]) :
-                theMapping.value(n2k)
+              value: getValue(n2k, theMapping)
             }
           }
         } catch (ex) {
