@@ -6,7 +6,7 @@ chai.use(require('signalk-schema').chaiModule);
 var mapper = require("../n2kMapper.js");
 
 
-describe('129039 Class B Update', function () {
+describe('129809 Class B static data', function () {
   it('complete sentence converts', function () {
     var msg = JSON.parse('{"timestamp":"2014-08-15-15:00:04.655","prio":"6","src":"43","dst":"255","pgn":"129809","description":"AIS Class B static data (msg 24 Part A)","fields":{"Message ID":"24","Repeat indicator":"Initial","User ID":"230044160","Name":"LAGUNA"}}');
     var delta = mapper.toDelta(msg);
