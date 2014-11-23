@@ -221,6 +221,28 @@ exports.mappings =
     }
   }
   ],
+  '129038': [
+    {
+      source: 'SOG',
+      node: 'navigation.speedOverGround'
+    },
+    {
+      source: 'COG',
+      node: 'navigation.courseOverGroundTrue'
+    },
+    {
+      value: function (n2k) {
+        return {
+          longitude: Number(n2k.fields.Longitude),
+          latitude: Number(n2k.fields.Latitude)
+        }
+      },
+      node: 'navigation.position'
+    },
+    {
+      context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
+    }
+  ],
   '129039': [
     {
       source: 'SOG',
@@ -238,7 +260,7 @@ exports.mappings =
         }
       },
       node: 'navigation.position'
-    },    
+    },
     {
       context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
     }
