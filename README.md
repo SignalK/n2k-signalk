@@ -1,5 +1,9 @@
+
+
 n2k-signalk
 ================
+[![Build Status](https://travis-ci.org/SignalK/n2k-signalk.svg?branch=master)](https://travis-ci.org/SignalK/n2k-signalk)
+
 
 NMEA 2000 to Signal K (signalk.github.io) converter. Converts [Canboat analyzer](https://github.com/canboat/canboat/wiki/analyzer) JSON output to [SignalK](http://signalk.github.io/) JSON.
 
