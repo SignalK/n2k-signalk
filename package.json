@@ -17,13 +17,14 @@
   ],
   "author": "teppo.kurki@iki.fi",
   "license": "Apache 2.0",
-  "dependencies" : {
-    "JSONStream" : "0.7",
-    "through": ">=2.2.7 <3",
+  "dependencies": {
+    "JSONStream": "0.7",
     "nomnom": "~1.6.2",
-    "signalk-schema": "SignalK/specification"
+    "signalk-schema": "SignalK/specification",
+    "through": ">=2.2.7 <3"
   },
   "devDependencies": {
+    "mocha": "^2.0.1",
     "chai": "1.9",
     "chai-things": "0.2",
     "tv4": "latest"
