@@ -25,6 +25,7 @@
     "through": ">=2.2.7 <3"
   },
   "devDependencies": {
+    "mocha": "^2.0.1",
     "chai": "1.9",
     "chai-things": "0.2",
     "tv4": "latest"
