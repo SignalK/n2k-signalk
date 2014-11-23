@@ -47,7 +47,7 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     var delta = mapper.toDelta(msg);
     console.log(JSON.stringify(delta));
     delta.updates.length.should.equal(1);
-    delta.updates[0].context.should.equal('vessels.230939100');
+    delta.context.should.equal('vessels.230939100');
     delta.updates[0].values[0].path.should.equal('name');
     delta.updates[0].values[0].value.should.equal('RESCUE RAUTAUOMA');
   });

@@ -24,7 +24,7 @@ var toDelta = function (n2k) {
   if (typeof theMappings != 'undefined') {
     theMappings.forEach(function(mapping) {
       if (typeof mapping.context === 'function') {
-        result.updates[0].context = mapping.context(n2k);
+        result.context = mapping.context(n2k);
       }
     });
   }
