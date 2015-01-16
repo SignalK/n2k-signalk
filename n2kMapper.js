@@ -4,7 +4,6 @@ var debug = require('debug')('signalk:n2k-signalk')
 
 
 var toDelta = function (n2k) {
-  debug(JSON.stringify(n2k));
   var theMappings = n2kMappings[n2k.pgn];
   var result =
     {
@@ -28,7 +27,6 @@ var toDelta = function (n2k) {
       }
     });
   }
-  debug(JSON.stringify(result));
   return result;
 }
 
