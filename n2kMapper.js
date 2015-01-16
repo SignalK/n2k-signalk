@@ -3,23 +3,20 @@ var through = require('through');
 var debug = require('debug')('signalk:n2k-signalk')
 
 
-var toDelta = function (n2k) {
+var toDelta = function(n2k) {
   var theMappings = n2kMappings[n2k.pgn];
-  var result =
-    {
-      updates: [
-        {
-          source: {
-            label: '',
-            type: 'NMEA2000',
-            pgn: n2k.pgn,
-            timestamp: n2k.timestamp,
-            src: n2k.src
-          },
-          values : toValuesArray(theMappings, n2k)
-        }
-      ]
-    };
+  var result = {
+    updates: [{
+      source: {
+        label: '',
+        type: 'NMEA2000',
+        pgn: n2k.pgn,
+        timestamp: n2k.timestamp,
+        src: n2k.src
+      },
+      values: toValuesArray(theMappings, n2k)
+    }]
+  };
   if (typeof theMappings != 'undefined') {
     theMappings.forEach(function(mapping) {
       if (typeof mapping.context === 'function') {
@@ -40,10 +37,10 @@ function getValue(n2k, theMapping) {
   }
 }
 
-var toValuesArray = function (theMappings, n2k) {
+var toValuesArray = function(theMappings, n2k) {
   if (typeof theMappings != 'undefined') {
     return theMappings
-      .filter(function (theMapping) {
+      .filter(function(theMapping) {
         try {
           return typeof theMapping.filter === 'undefined' || theMapping.filter(n2k);
         } catch (ex) {
@@ -51,7 +48,7 @@ var toValuesArray = function (theMappings, n2k) {
           return false;
         }
       })
-      .map(function (theMapping) {
+      .map(function(theMapping) {
         try {
           return typeof theMapping.node === 'function' ?
             {
@@ -69,14 +66,14 @@ var toValuesArray = function (theMappings, n2k) {
           process.stderr.write(ex + ' ' + n2k);
         }
       })
-      .filter(function (x) {
+      .filter(function(x) {
         return x != undefined;
       });
   }
   return [];
 }
 
-var addToTree = function (pathValue, source, tree) {
+var addToTree = function(pathValue, source, tree) {
   var result = {};
   var temp = tree;
   var parts = msg.path.split('.');
@@ -106,7 +103,7 @@ function addAsNested(pathValue, source, timestamp, result) {
     temp[parts[parts.length - 1]].timestamp = timestamp + '';
   } else {
     temp[parts[parts.length - 1]] = {
-      value:  pathValue.value,
+      value: pathValue.value,
       source: source,
       timestamp: timestamp + ''
     };
@@ -124,12 +121,12 @@ function deltaToNested(delta) {
 }
 
 exports.toDelta = toDelta;
-exports.toNested = function (n2k) {
+exports.toNested = function(n2k) {
   return deltaToNested(toDelta(n2k));
 }
 
-exports.toDeltaTransformer = function (options) {
-  var stream = through(function (data) {
+exports.toDeltaTransformer = function(options) {
+  var stream = through(function(data) {
     if (options.debug) {
       console.log(data);
     }
@@ -138,8 +135,8 @@ exports.toDeltaTransformer = function (options) {
   return stream;
 }
 
-exports.toNestedTransformer = function (options) {
-  var stream = through(function (data) {
+exports.toNestedTransformer = function(options) {
+  var stream = through(function(data) {
     if (options.debug) {
       console.log(data);
     }
