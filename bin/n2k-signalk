@@ -9,14 +9,14 @@ var opts = require("nomnom")
     flag: true,
     help: 'Print debugging info'
   })
-  .option('flat', {
+  .option('delta', {
     flag: true,
-    help: 'Produce flat (non-nested) output'
+    help: 'Produce delta (non-nested) output'
   }).parse();
 
 process.stdin.resume();
 process.stdin.setEncoding('utf8');
 
-var transformer = opts.flat ? n2kMapper.toFlatTransformer(opts) : n2kMapper.toNestedTransformer(opts);
+var transformer = opts.delta ? n2kMapper.toDeltaTransformer(opts) : n2kMapper.toNestedTransformer(opts);
 
 process.stdin.pipe(JSONStream.parse()).pipe(transformer).pipe(JSONStream.stringify(false)).pipe(process.stdout);
