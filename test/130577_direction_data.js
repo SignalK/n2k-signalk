@@ -14,7 +14,6 @@ describe('130577 direction_data sentence without drift', function() {
     tree.should.have.deep.property('navigation.courseOverGroundTrue.value', 70.1);
   });
   it('is valid SignalK', function() {
-    console.log(JSON.stringify(tree,null, 2));
     tree.should.be.validSignalK;
   });
 });
