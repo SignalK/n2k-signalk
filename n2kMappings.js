@@ -189,37 +189,45 @@ exports.mappings =
       }
     },
     {
-      source: 'Set',
-      node: 'navigation.current.setTrue',
-      filter: function (n2k) {
-        //assume that Set is same reference as COG
-        return n2k.fields['Set'] && n2k.fields['COG Reference'];
-      }
-    },
-    {
-      source: 'Drift',
-      node: 'navigation.current.drift',
-      filter: function (n2k) {
-        return n2k.fields['Drift'];
+      node: 'navigation.current',
+      filter: function(n2k) {
+        return n2k.fields['Drift'] && n2k.fields['Set'];
+      },
+      value: function(n2k) {
+        if (n2k.fields['COG Reference'] === 'True') {
+          return {
+            setTrue: Number(n2k.fields.Set),
+            drift: Number(n2k.fields['Drift'])
+          };
+        }  else if (n2k.fields['Set Reference'] === 'Magnetic') {
+          //speculative, I don't have a real world sample showing 'Magnetic'
+          return {
+            setTrue: Number(n2k.fields.Set),
+            drift: Number(n2k.fields['Drift'])
+          };
+        }
       }
     }
   ],
   //Set & Drift rapid update
   '129291': [
-  {
-    source: 'Set',
-    node: 'navigation.current.setTrue',
-    filter: function (n2k) {
-      return n2k.fields['Set'] && n2k.fields['Set Reference'] === 'True';
+    {
+      node: 'navigation.current',
+      value: function(n2k) {
+        if (n2k.fields['Set Reference'] === 'True') {
+          return {
+            setTrue: Number(n2k.fields.Set),
+            drift: Number(n2k.fields['Drift'])
+          };
+        } else if (n2k.fields['Set Reference'] === 'Magnetic') {
+          //speculative, I don't have a real world sample showing 'Magnetic'
+          return {
+            setTrue: Number(n2k.fields.Set),
+            drift: Number(n2k.fields['Drift'])
+          };
+        }
+      }
     }
-  },
-  {
-    source: 'Drift',
-    node: 'navigation.current.drift',
-    filter: function (n2k) {
-      return n2k.fields['Drift'];
-    }
-  }
-]
+  ]
 }
 
