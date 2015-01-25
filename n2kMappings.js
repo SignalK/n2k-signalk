@@ -209,6 +209,7 @@ exports.mappings =
       }
     }
   ],
+
   //Set & Drift rapid update
   '129291': [
     {
@@ -228,6 +229,20 @@ exports.mappings =
         }
       }
     }
+  ],
+
+  //Temperature
+  '130312': [
+    {
+      node: function(n2k) {
+        switch (n2k.fields["Temperature Source"]) {
+          case "Inside Temperature":
+            return 'living.insideTemperature';
+        }
+      },
+      source: 'Actual Temperature'
+    }
   ]
+
 }
 

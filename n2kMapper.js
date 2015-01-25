@@ -33,12 +33,19 @@ var toValuesArray = function (n2k) {
       })
       .map(function (theMapping) {
         try {
-          return  {
-            path: theMapping.node,
-            value: typeof theMapping.source != 'undefined' ?
-              Number(n2k.fields[theMapping.source]) :
-              theMapping.value(n2k)
-          }
+          return typeof theMapping.node === 'function' ?
+            {
+              path: theMapping.node(n2k),
+              value: typeof theMapping.source != 'undefined' ?
+                Number(n2k.fields[theMapping.source]) :
+                theMapping.value(n2k)
+            } :
+            {
+              path: theMapping.node,
+              value: typeof theMapping.source != 'undefined' ?
+                Number(n2k.fields[theMapping.source]) :
+                theMapping.value(n2k)
+            }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k);
         }
