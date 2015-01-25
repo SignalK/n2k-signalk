@@ -60,9 +60,10 @@ var toValuesArray = function(theMappings, n2k) {
             } :
             {
               path: theMapping.node,
-              value: getValue(n2k, theMapping)
+              value: typeof theMapping.source != 'undefined' ?
+                Number(n2k.fields[theMapping.source]) :
+                getValue(n2k, theMapping)
             }
-          }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k);
         }

@@ -380,5 +380,20 @@ exports.mappings =
     {
       context: getMmsiContext
     }
+  ],
+
+
+  //Temperature
+  '130312': [
+    {
+      node: function(n2k) {
+        switch (n2k.fields["Temperature Source"]) {
+          case "Inside Temperature":
+            return 'enviroment.temperature.inside';
+        }
+      },
+      source: 'Actual Temperature'
+    }
   ]
+
 }
