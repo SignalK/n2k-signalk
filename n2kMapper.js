@@ -11,9 +11,9 @@ var toDelta = function(n2k) {
         label: '',
         type: 'NMEA2000',
         pgn: n2k.pgn,
-        timestamp: n2k.timestamp,
         src: n2k.src
       },
+      timestamp: n2k.timestamp,
       values: toValuesArray(theMappings, n2k)
     }]
   };
