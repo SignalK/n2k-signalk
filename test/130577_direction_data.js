@@ -12,7 +12,7 @@ describe('130577 direction_data', function () {
     tree.should.have.deep.property('navigation.speedOverGround.value', 0.01);
     tree.should.have.deep.property('navigation.courseOverGroundTrue.value', 70.1);
     tree.should.have.deep.property('navigation.courseOverGroundTrue.value', 70.1);
-    tree.should.be.validSignalK;
+    tree.should.be.validSignalKVessel;
   });
   it('sentence with drift converts', function () {
     var tree = require("../n2kMapper.js").toNested(
@@ -25,7 +25,7 @@ describe('130577 direction_data', function () {
     tree.should.have.deep.property('navigation.current.setTrue.value', 58.9);
     tree.should.have.deep.property('navigation.current.drift');
     tree.should.have.deep.property('navigation.current.drift.value', 0.28);
-    tree.should.be.validSignalK;
+    tree.should.be.validSignalKVessel;
   });
 });
 

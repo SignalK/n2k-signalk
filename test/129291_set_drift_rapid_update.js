@@ -12,7 +12,7 @@ describe('129291 set & drift rapid update', function () {
     tree.should.have.deep.property('navigation.current.setTrue.value', 212.6);
     tree.should.have.deep.property('navigation.current.drift');
     tree.should.have.deep.property('navigation.current.drift.value', 0.24);
-    tree.should.be.validSignalK;
+    tree.should.be.validSignalKVessel;
   });
 });
 

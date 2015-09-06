@@ -14,7 +14,7 @@ describe('127257_attitude', function () {
     tree.should.have.deep.property('navigation.pitch.value', 0.464);
     tree.should.have.deep.property('navigation.roll');
     tree.should.have.deep.property('navigation.roll.value', -2.496);
-    tree.should.be.validSignalK;
+    tree.should.be.validSignalKVessel;
   });
 });
 
