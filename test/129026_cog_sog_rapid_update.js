@@ -13,7 +13,7 @@ describe('129026 COG & SOG, Rapid Update', function () {
     tree.should.have.deep.property('navigation.courseOverGroundTrue.value', 206.1);
     tree.should.have.deep.property('navigation.speedOverGround');
     tree.should.have.deep.property('navigation.speedOverGround.value', 3.65);
-    tree.should.be.validSignalK;
+    tree.should.be.validSignalKVessel;
   });
 });
 

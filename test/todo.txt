@@ -1,0 +1,100 @@
+127488: Engine Parameters
+{"timestamp":"2015-01-15-16:16:56.749","prio":"2","src":"17","dst":"255","pgn":"127488","description":"Engine Parameters, Rapid Update","fields":{"Engine Instance":"Single Engine or Dual Engine Port","Engine Speed":"3190"}}
+
+127489: Engine Parameters
+{"timestamp":"2015-01-15-16:25:14.952","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Engine Instance":"Single Engine or Dual Engine Port","Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"-0.1","Total Engine hours":"309960","Discrete Status 1":"0","Discrete Status 2":"0","Percent Engine Load":"-1","Percent Engine Torque":"-1"}}
+
+
+127505: Fluid Level
+{"timestamp":"2015-01-15-16:15:30.984","prio":"6","src":"17","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Fuel","Level":"131.068"}}
+{"timestamp":"2015-01-15-16:15:33.341","prio":"6","src":"112","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Fuel","Level":"64.284","Capacity":"41.6"}}
+{"timestamp":"2015-01-15-16:15:33.366","prio":"6","src":"114","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Water","Level":"88.596","Capacity":"71.9"}}
+{"timestamp":"2015-01-15-16:15:33.369","prio":"6","src":"113","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Gray water","Level":"90.240","Capacity":"37.9"}}
+
+127501: Binary Switch Bank Status"
+{"timestamp":"2015-01-15-16:25:06.017","prio":"3","src":"209","dst":"255","pgn":"127501","description":"Binary Switch Bank Status","fields":{"Indicator Bank Instance":"0","Indicator":"Off","Indicator 2":"Off","Indicator 3":"Off","Indicator 4":"Off","Indicator 5":"Off","Indicator 6":"Off"}}
+
+127506: DC Detailed Status
+{"timestamp":"2015-01-15-16:25:15.899","prio":"6","src":"177","dst":"255","pgn":"127506","description":"DC Detailed Status","fields":{"SID":"89","DC Instance":"1","DC Type":"0","State of Charge":"72","Time Remaining":"40350","Ripple Voltage":"0.10"}}
+
+127508: Battery Status
+{"timestamp":"2015-01-15-16:25:15.901","prio":"6","src":"177","dst":"255","pgn":"127508","description":"Battery Status","fields":{"Battery Instance":"1","Voltage":"12.83","Current":"-0.8","Temperature":"8.65","SID":"89"}}
+
+129283: Cross Track Error
+{"timestamp":"2015-01-15-16:25:14.978","prio":"3","src":"4","dst":"255","pgn":"129283","description":"Cross Track Error","fields":{"SID":"250","Navigation Terminated":"No"}}
+
+129284: Navigation Data
+{"timestamp":"2015-01-15-16:25:15.186","prio":"3","src":"4","dst":"255","pgn":"129284","description":"Navigation Data","fields":{"SID":"250"}}
+
+129285: Navigation - Route/WP Information
+{"timestamp":"2015-01-15-16:25:12.644","prio":"7","src":"4","dst":"255","pgn":"129285","description":"Navigation - Route/WP Information","fields":{"nItems":"2","Navigation direction in route":"1","Supplementary Route/WP data available":"0","Reserved":"0","Reserved":"0","WP ID":"0","WP ID 2":"1"}}
+
+129539: GNSS DOP
+{"timestamp":"2015-01-15-16:17:30.684","prio":"6","src":"2","dst":"255","pgn":"129539","description":"GNSS DOPs","fields":{"SID":"38","Actual Mode":"3D","HDOP":"0.80","VDOP":"1.30","TDOP":"327.67"}}
+{"timestamp":"2015-01-15-16:17:31.421","prio":"6","src":"245","dst":"255","pgn":"129539","description":"GNSS DOPs","fields":{"SID":"151","Desired Mode":"Auto","Actual Mode":"3D","HDOP":"0.79","VDOP":"1.59","TDOP":"1.00"}}
+
+129540: GNSS Sats in View
+{"timestamp":"2015-01-15-16:15:17.962","prio":"6","src":"2","dst":"255","pgn":"129540","description":"GNSS Sats in View","fields":{"SID":"156","Mode":"2","Sats in View":"12","PRN":"13","Elevation":"26.0","Azimuth":"51.0","SNR":"33.00","Range residuals":"0","Status":"Used","PRN 2":"15","Elevation 2":"43.0","Azimuth 2":"96.0","SNR 2":"36.00","Range residuals 2":"0","Status 2":"Used","PRN 3":"16","Elevation 3":"29.0","Azimuth 3":"280.0","SNR 3":"32.00","Range residuals 3":"0","Status 3":"Used","PRN 4":"18","Elevation 4":"66.0","Azimuth 4":"219.0","SNR 4":"33.00","Range residuals 4":"0","Status 4":"Used","PRN 5":"21","Elevation 5":"83.0","Azimuth 5":"17.0","SNR 5":"38.00","Range residuals 5":"0","Status 5":"Used","PRN 6":"22","Elevation 6":"27.0","Azimuth 6":"229.0","SNR 6":"39.00","Range residuals 6":"0","Status 6":"Used","PRN 7":"27","Elevation 7":"27.0","Azimuth 7":"312.0","SNR 7":"44.00","Range residuals 7":"0","Status 7":"Used","PRN 8":"29","Elevation 8":"25.0","Azimuth 8":"150.0","SNR 8":"40.00","Range residuals 8":"0","Status 8":"Used","PRN 9":"82","Elevation 9":"48.0","Azimuth 9":"322.0","SNR 9":"28.00","Range residuals 9":"0","Status 9":"Used","PRN 10":"65","Elevation 10":"24.0","Azimuth 10":"37.0","SNR 10":"33.00","Range residuals 10":"0","Status 10":"Used","PRN 11":"81","Elevation 11":"73.0","Azimuth 11":"116.0","SNR 11":"26.00","Range residuals 11":"0","Status 11":"Used","PRN 12":"67","Elevation 12":"41.0","Azimuth 12":"207.0","SNR 12":"31.00","Range residuals 12":"0","Status 12":"Used"}}
+
+130310: Environmental Parameters
+{"timestamp":"2015-01-15-16:15:21.650","prio":"5","src":"36","dst":"255","pgn":"130310","description":"Environmental Parameters","fields":{"SID":"145"}}
+{"timestamp":"2015-01-15-16:15:21.848","prio":"5","src":"17","dst":"255","pgn":"130310","description":"Environmental Parameters"}
+{"timestamp":"2015-01-15-16:15:21.862","prio":"5","src":"130","dst":"255","pgn":"130310","description":"Environmental Parameters","fields":{"SID":"154","Outside Ambient Air Temperature":"7.76","Atmospheric Pressure":"1018"}}
+
+130311: Environmental Parameters
+{"timestamp":"2015-01-15-16:15:17.942","prio":"5","src":"130","dst":"255","pgn":"130311","description":"Environmental Parameters","fields":{"SID":"205","Temperature Instance":"Outside","Humidity Instance":"Outside","Temperature":"7.85","Humidity":"75.668","Atmospheric Pressure":"1018"}}
+{"timestamp":"2015-01-15-16:15:17.946","prio":"5","src":"41","dst":"255","pgn":"130311","description":"Environmental Parameters","fields":{"SID":"177","Temperature Instance":"Inside","Temperature":"13.18"}}
+{"timestamp":"2015-01-15-16:15:17.946","prio":"5","src":"41","dst":"255","pgn":"130311","description":"Environmental Parameters","fields":{"SID":"177","Temperature Instance":"Engine room","Temperature":"7.76"}}
+{"timestamp":"2015-01-15-16:15:17.946","prio":"5","src":"41","dst":"255","pgn":"130311","description":"Environmental Parameters","fields":{"SID":"177","Temperature Instance":"Main Cabin","Temperature":"16.93"}}
+
+
+
+130312: Temperature
+{"timestamp":"2015-01-15-16:15:18.124","prio":"5","src":"41","dst":"255","pgn":"130312","description":"Temperature","fields":{"SID":"179","Temperature Instance":"0","Temperature Source":"Heating System Temperature"}}
+{"timestamp":"2015-01-15-16:15:18.127","prio":"5","src":"41","dst":"255","pgn":"130312","description":"Temperature","fields":{"SID":"179","Temperature Instance":"2","Temperature Source":"Engine Room Temperature","Actual Temperature":"7.76"}}
+{"timestamp":"2015-01-15-16:15:18.129","prio":"5","src":"41","dst":"255","pgn":"130312","description":"Temperature","fields":{"SID":"179","Temperature Instance":"3","Temperature Source":"Inside Temperature","Actual Temperature":"13.18"}}
+{"timestamp":"2015-01-15-16:15:18.131","prio":"5","src":"41","dst":"255","pgn":"130312","description":"Temperature","fields":{"SID":"179","Temperature Instance":"4","Temperature Source":"Main Cabin Temperature","Actual Temperature":"16.93"}}
+{"timestamp":"2015-01-15-16:15:18.136","prio":"5","src":"41","dst":"255","pgn":"130312","description":"Temperature","fields":{"SID":"179","Temperature Instance":"5","Temperature Source":"Engine Room Temperature"}}
+{"timestamp":"2015-01-15-16:15:18.371","prio":"5","src":"130","dst":"255","pgn":"130312","description":"Temperature","fields":{"SID":"14","Temperature Instance":"0","Temperature Source":"Outside Temperature","Actual Temperature":"7.84"}}
+{"timestamp":"2015-01-15-16:15:19.628","prio":"5","src":"36","dst":"255","pgn":"130312","description":"Temperature","fields":{"Temperature Instance":"0","Temperature Source":"Sea Temperature"}}
+
+130313: Humidity
+{"timestamp":"2015-01-15-16:15:46.366","prio":"5","src":"130","dst":"255","pgn":"130313","description":"Humidity","fields":{"SID":"130","Humidity Instance":"0","Humidity Source":"1","Actual Humidity":"75.592"}}
+
+130314: Actual Pressure
+{"timestamp":"2015-01-15-16:15:36.372","prio":"5","src":"130","dst":"255","pgn":"130314","description":"Actual Pressure","fields":{"SID":"232","Pressure Instance":"0","Pressure Source":"0","Pressure":"36864"}}
+
+130816: SonicHub: Zone info
+{"timestamp":"2015-01-15-16:15:23.776","prio":"7","src":"5","dst":"255","pgn":"130816","description":"SonicHub: Zone info","fields":{"Manufacturer Code":"Navico","Industry Code":"Marine","Proprietary ID":"Zone info","Control":"Ack","Zone":"1"}}
+
+130842: Simnet: AIS Class B static data (msg 24 Part A)
+130842: Simnet: AIS Class B static data (msg 24 Part B)
+{"timestamp":"2015-01-15-16:17:15.843","prio":"6","src":"43","dst":"255","pgn":"130842","description":"Simnet: AIS Class B static data (msg 24 Part A)","fields":{"Manufacturer Code":"Simrad","Industry Code":"Marine","Message ID":"Msg 24 Part A","Repeat indicator":"Second retransmission","E":"24","User ID":"367479480","Name":"SUMMER WIND"}}
+{"timestamp":"2015-01-15-16:17:17.962","prio":"6","src":"43","dst":"255","pgn":"130842","description":"Simnet: AIS Class B static data (msg 24 Part B)","fields":{"Manufacturer Code":"Simrad","Industry Code":"Marine","Message ID":"Msg 24 Part B","Repeat indicator":"Second retransmission","E":"24","User ID":"367479480","Type of ship":"Sailing","Vendor ID":"COMNAV","Callsign":"WDF6945","Length":"13.0","Beam":"4.0","Position reference from Starboard":"2.0","Position reference from Bow":"6.0","Mothership User ID":"0","":"0","Spare":"48"}}
+{"timestamp":"2015-01-15-16:17:16.283","prio":"6","src":"3","dst":"255","pgn":"130842","description":"Unknown PGN","fields":{ "Manufacturer Code": "Simrad","Industry Code":"Marine"}}
+http://yachtelectronics.blogspot.fi/2012_11_01_archive.html
+
+
+127501: Binary Switch Bank Status
+{"timestamp":"2015-01-15-16:25:06.017","prio":"3","src":"209","dst":"255","pgn":"127501","description":"Binary Switch Bank Status","fields":{"Indicator Bank Instance":"0","Indicator":"Off","Indicator 2":"Off","Indicator 3":"Off","Indicator 4":"Off","Indicator 5":"Off","Indicator 6":"Off"}}
+
+65005: Utility Total AC Energy
+{"timestamp":"2015-01-15-16:25:15.858","prio":"3","src":"192","dst":"255","pgn":"65005","description":"Utility Total AC Energy","fields":{"Total Energy Export":"5425","Total Energy Import":"0"}}
+
+65012: Utility Phase A AC Reactive Power
+{"timestamp":"2015-01-15-16:25:15.852","prio":"3","src":"192","dst":"255","pgn":"65012","description":"Utility Phase A AC Reactive Power","fields":{"Reactive Power":"191","Power Factor Lagging":"Lagging"}}
+
+65013: Utility Phase A AC Power
+{"timestamp":"2015-01-15-16:25:12.753","prio":"3","src":"192","dst":"255","pgn":"65013","description":"Utility Phase A AC Power","fields":{"Real Power":"1433","Apparent Power":"1439"}}
+
+65014: Utility Phase A Basic AC Quantities
+{"timestamp":"2015-01-15-16:25:15.870","prio":"3","src":"192","dst":"255","pgn":"65014","description":"Utility Phase A Basic AC Quantities","fields":{"Line-Line AC RMS Voltage":"117","Line-Neutral AC RMS Voltage":"117","AC RMS Current":"12"}}
+
+65015: Utility Total AC Reactive Power
+{"timestamp":"2015-01-15-16:25:15.892","prio":"3","src":"192","dst":"255","pgn":"65015","description":"Utility Total AC Reactive Power","fields":{"Reactive Power":"191","Power Factor Lagging":"Lagging"}}
+
+65016: Utility Total AC Power
+{"timestamp":"2015-01-15-16:15:20.210","prio":"3","src":"192","dst":"255","pgn":"65016","description":"Utility Total AC Power","fields":{"Real Power":"1239","Apparent Power":"1239"}}
+
+65017: Utility Average Basic AC Quantities
+{"timestamp":"2015-01-15-16:25:15.657","prio":"3","src":"192","dst":"255","pgn":"65017","description":"Utility Average Basic AC Quantities","fields":{"Line-Line AC RMS Voltage":"117","Line-Neutral AC RMS Voltage":"117","AC RMS Current":"12"}}

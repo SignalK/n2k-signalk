@@ -16,7 +16,7 @@ describe('129039 Class B Update', function () {
     tree.should.have.deep.property('navigation.speedOverGround.value', 3.75);
     tree.navigation.position.longitude.should.equal(24.9024733);
     tree.navigation.position.latitude.should.equal(60.03951);
-    tree.should.be.validSignalK;
+    tree.should.be.validSignalKVessel;
     var delta = mapper.toDelta(msg);
     delta.updates.length.should.equal(1);
     delta.context.should.equal('vessels.230035780');
