@@ -10,7 +10,7 @@ var toDelta = function(n2k) {
       source: {
         label: '',
         type: 'NMEA2000',
-        pgn: n2k.pgn,
+        pgn: Number(n2k.pgn),
         src: n2k.src
       },
       timestamp: n2k.timestamp,
