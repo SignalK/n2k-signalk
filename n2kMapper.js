@@ -112,7 +112,7 @@ function addAsNested(pathValue, source, timestamp, result) {
 
 function deltaToNested(delta) {
   var result = {};
-  var timestamp = delta.updates[0].source.timestamp;
+  var timestamp = delta.updates[0].timestamp;
   delete delta.updates[0].source.timestamp;
   delta.updates[0].values.forEach(function(pathValue) {
     addAsNested(pathValue, delta.updates[0].source, timestamp, result);
