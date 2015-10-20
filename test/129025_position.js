@@ -9,7 +9,7 @@ describe('129025 Position, rapid update ', function () {
     var tree = require("../n2kMapper.js").toNested(msg);
     tree.navigation.position.longitude.should.equal(24.7921348);
     tree.navigation.position.latitude.should.equal(60.144554);
-    tree.should.be.validSignalK;
+    tree.should.be.validSignalKVessel;
   });
 
   it('complete sentence produces valid delta', function () {
