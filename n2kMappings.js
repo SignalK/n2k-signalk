@@ -137,7 +137,7 @@ exports.mappings =
     },
     {
       source: 'Wind Angle',
-      node: 'environment.wind.angleTrue',
+      node: 'environment.wind.angleTrueWater',
       filter: function (n2k) {
         return n2k.fields['Reference'] === 'True (boat referenced)';
       }
