@@ -167,7 +167,17 @@ exports.mappings =
   '128259': [
     {
       source: 'Speed Water Referenced',
-      node: 'navigation.speedThroughWater'
+      node: 'navigation.speedThroughWater',
+      filter: function(n2k) {
+        return n2k.fields['Speed Water Referenced']
+      }
+    },
+    {
+      source: 'Speed Ground Referenced',
+      node: 'navigation.speedOverGround',
+      filter: function(n2k) {
+        return n2k.fields['Speed Ground Referenced']
+      }
     }
   ],
   //Direction data
@@ -187,7 +197,7 @@ exports.mappings =
       }
     },
     {
-      node: 'navigation.current',
+      node: 'environment.current',
       filter: function(n2k) {
         return n2k.fields['Drift'] && n2k.fields['Set'];
       },
@@ -210,7 +220,7 @@ exports.mappings =
   //Set & Drift rapid update
   '129291': [
     {
-      node: 'navigation.current',
+      node: 'environment.current',
       value: function(n2k) {
         if (n2k.fields['Set Reference'] === 'True') {
           return {

@@ -26,8 +26,8 @@ describe('130577 direction_data sentence with drift', function() {
     tree.should.have.deep.property('navigation.speedOverGround.value', 3.51);
     tree.should.have.deep.property('navigation.courseOverGroundTrue');
     tree.should.have.deep.property('navigation.courseOverGroundTrue.value', 206.9);
-    tree.should.have.deep.property('navigation.current.setTrue', 58.9);
-    tree.should.have.deep.property('navigation.current.drift', 0.28);
+    tree.should.have.deep.property('environment.current.setTrue', 58.9);
+    tree.should.have.deep.property('environment.current.drift', 0.28);
   });
   it('is valid SignalK', function() {
     tree.should.be.validSignalKVessel;
