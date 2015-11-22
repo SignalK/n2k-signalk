@@ -13,7 +13,7 @@ describe('128275 log', function () {
     tree.should.have.deep.property('navigation.logTrip.value', 4074);
     tree.should.have.deep.property('navigation.log');
     tree.should.have.deep.property('navigation.log.value', 2229808);
-    tree.should.be.validSignalKVessel;
+    tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
 

@@ -14,7 +14,7 @@ describe('129291 set & drift rapid update complete sentence', function() {
     tree.should.have.deep.property('environment.current.drift', 0.24);
   });
   it('result is valid SignalK', function() {
-    tree.should.be.validSignalKVessel;
+    tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
 
