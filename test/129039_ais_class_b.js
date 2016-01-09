@@ -19,7 +19,7 @@ describe('129039 Class B Update', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity;
     var delta = mapper.toDelta(msg);
     delta.updates.length.should.equal(1);
-    delta.context.should.equal('vessels.230035780');
+    delta.context.should.equal('vessels[urn:mrn:imo:mmsi:230035780]');
   });
 });
 
