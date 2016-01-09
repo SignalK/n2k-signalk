@@ -49,6 +49,3 @@ describe('129038 Class A Update', function () {
  "Nav Status": "Under way using engine"
  }
  */
-
-
-
