@@ -270,7 +270,7 @@ exports.mappings =
       node: 'navigation.position'
     },
     {
-      context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
+      context: function(n2k) { return 'vessels[urn:mrn:imo:mmsi:' + n2k.fields['User ID'] + ']';}
     }
   ],
   '129039': [
@@ -292,7 +292,7 @@ exports.mappings =
       node: 'navigation.position'
     },
     {
-      context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
+      context: function(n2k) { return 'vessels[urn:mrn:imo:mmsi:' + n2k.fields['User ID'] + ']';}
     }
   ],
   '129809': [
