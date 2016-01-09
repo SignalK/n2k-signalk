@@ -1,3 +1,7 @@
+function getMmsiContext(n2k) {
+  return 'vessels[urn:mrn:imo:mmsi:' + n2k.fields['User ID'] + ']';
+}
+
 exports.mappings =
 {
   //System time
@@ -270,7 +274,7 @@ exports.mappings =
       node: 'navigation.position'
     },
     {
-      context: function(n2k) { return 'vessels[urn:mrn:imo:mmsi:' + n2k.fields['User ID'] + ']';}
+      context: getMmsiContext
     }
   ],
   '129039': [
@@ -292,7 +296,7 @@ exports.mappings =
       node: 'navigation.position'
     },
     {
-      context: function(n2k) { return 'vessels[urn:mrn:imo:mmsi:' + n2k.fields['User ID'] + ']';}
+      context: getMmsiContext
     }
   ],
   '129809': [
@@ -301,7 +305,7 @@ exports.mappings =
       node: 'name'
     },
     {
-      context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
+      context: getMmsiContext
     }
   ],
   '129794': [
@@ -310,7 +314,7 @@ exports.mappings =
       node: 'name'
     },
     {
-      context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
+      context: getMmsiContext
     }
   ]
 }
