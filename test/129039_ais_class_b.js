@@ -22,6 +22,3 @@ describe('129039 Class B Update', function () {
     delta.context.should.equal('vessels[urn:mrn:imo:mmsi:230035780]');
   });
 });
-
-
-

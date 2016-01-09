@@ -313,5 +313,4 @@ exports.mappings =
       context: function(n2k) { return 'vessels.' + n2k.fields['User ID'];}
     }
   ]
-
 }
