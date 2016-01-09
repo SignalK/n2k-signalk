@@ -11,11 +11,8 @@ describe('129809 Class B static data', function () {
     var msg = JSON.parse('{"timestamp":"2014-08-15-15:00:04.655","prio":"6","src":"43","dst":"255","pgn":"129809","description":"AIS Class B static data (msg 24 Part A)","fields":{"Message ID":"24","Repeat indicator":"Initial","User ID":"230044160","Name":"LAGUNA"}}');
     var delta = mapper.toDelta(msg);
     delta.updates.length.should.equal(1);
-    delta.context.should.equal('vessels.230044160');
+    delta.context.should.equal('vessels[urn:mrn:imo:mmsi:230044160]');
     delta.updates[0].values[0].path.should.equal('name');
     delta.updates[0].values[0].value.should.equal('LAGUNA');
   });
 });
-
-
-
