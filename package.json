@@ -16,7 +16,8 @@
     "boating"
   ],
   "author": "teppo.kurki@iki.fi",
-  "license": "Apache 2.0",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/SignalK/n2k-signalk",
   "dependencies": {
     "JSONStream": "0.7",
     "debug": "^2.1.1",
