@@ -1,6 +1,7 @@
 var n2kMappings = require("./n2kMappings.js").mappings;
 var through = require('through');
-var debug = require('debug')('signalk:n2k-signalk')
+var debug = require('debug')('signalk:n2k-signalk');
+var signalkSchema = require('signalk-schema');
 
 
 var toDelta = function(n2k) {
@@ -140,4 +141,8 @@ exports.toNestedTransformer = function(options) {
     }
   });
   return stream;
+}
+
+exports.toFullVessel = function(n2k) {
+  return signalkSchema.deltaToFullVessel(toDelta(n2k));
 }

@@ -6,7 +6,7 @@ var msg = JSON.parse('{"timestamp":"2013-10-08-15:47:28.264","prio":"2","src":"2
 
 describe('129025 Position, rapid update ', function () {
   it('complete sentence converts to tree', function () {
-    var tree = require("../n2kMapper.js").toNested(msg);
+    var tree = require("../n2kMapper.js").toFullVessel(msg);
     tree.navigation.position.longitude.should.equal(24.7921348);
     tree.navigation.position.latitude.should.equal(60.144554);
     tree.should.be.validSignalKVesselIgnoringIdentity;
