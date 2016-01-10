@@ -21,7 +21,7 @@
     "JSONStream": "0.7",
     "debug": "^2.1.0",
     "nomnom": "~1.6.2",
-    "signalk-schema": "SignalK/specification",
+    "signalk-schema": "SignalK/specification#multiple-values-take-2",
     "through": ">=2.2.7 <3"
   },
   "devDependencies": {
