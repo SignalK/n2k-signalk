@@ -11,7 +11,7 @@ var toDelta = function(n2k) {
         label: '',
         type: 'NMEA2000',
         pgn: Number(n2k.pgn),
-        src: n2k.src
+        src: n2k.src.toString()
       },
       timestamp: n2k.timestamp,
       values: toValuesArray(theMappings, n2k)
