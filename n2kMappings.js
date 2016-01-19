@@ -109,6 +109,68 @@ exports.mappings =
       node: 'navigation.attitude'
     }
   ],
+	// Engine speed data
+	'127488': [
+    {
+      source: 'Engine Speed',
+      node: 'propulsion.port.revolutions',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+      }
+    },
+    {
+      source: 'Engine Speed',
+      node: 'propulsion.starboard.revolutions',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
+      }
+    }
+	],	
+	// Engine operating parameters
+	'127489': [
+    {
+      source: 'Temperature',
+      node: 'propulsion.port.temperature',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+      }
+    },
+    {
+      source: 'Temperature',
+      node: 'propulsion.starboard.temperature',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
+      }
+    },
+    {
+      source: 'Alternator Potential',
+      node: 'propulsion.port.alternatorPotential',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+      }
+    },
+    {
+      source: 'Alternator Potential',
+      node: 'propulsion.starboard.alternatorPotential',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
+      }
+    },
+    {
+      source: 'Fuel Rate',
+      node: 'propulsion.port.fuelRate',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+      }
+    },
+    {
+      source: 'Fuel Rate',
+      node: 'propulsion.starboard.fuelRate',
+      filter: function (n2k) {
+        return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
+      }
+    }
+	],
   //Wind data
   '130306': [
     {
