@@ -144,14 +144,14 @@ exports.mappings =
     },
     {
       source: 'Alternator Potential',
-      node: 'propulsion.port.alternatorPotential',
+      node: 'propulsion.port.alternatorVoltage',
       filter: function (n2k) {
         return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
       }
     },
     {
       source: 'Alternator Potential',
-      node: 'propulsion.starboard.alternatorPotential',
+      node: 'propulsion.starboard.alternatorVoltage',
       filter: function (n2k) {
         return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
       }
