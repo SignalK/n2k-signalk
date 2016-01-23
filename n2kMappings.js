@@ -125,7 +125,7 @@ exports.mappings =
         return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
       }
     }
-	],	
+	],
 	// Engine operating parameters
 	'127489': [
     {
