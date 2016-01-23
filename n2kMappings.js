@@ -8,16 +8,10 @@ exports.mappings =
   '126992': [
     {
       value: function (n2k) {
-        return n2k.fields.Date;
+        return n2k.fields.Date.replace(/\./g,'-') + "T" + n2k.fields.Time + "Z";
       },
-      node: 'environment.date'
-    },
-    {
-      value: function (n2k) {
-        return n2k.fields.Time;
-      },
-      node: 'environment.time'
-    },
+      node: 'navigation.datetime'
+    }
   ],
   //Water Depth
   '128267': [
