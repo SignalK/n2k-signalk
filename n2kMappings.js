@@ -343,8 +343,12 @@ exports.mappings =
   ],
   '129809': [
     {
-      source: 'Name',
-      node: 'name'
+      node: '',
+      value: function(n2k) {
+        return {
+          name: n2k.fields.Name
+        }
+      }
     },
     {
       context: getMmsiContext
@@ -352,8 +356,12 @@ exports.mappings =
   ],
   '129794': [
     {
-      source: 'Name',
-      node: 'name'
+      node: '',
+      value: function(n2k) {
+        return {
+          name: n2k.fields.Name
+        }
+      }
     },
     {
       context: getMmsiContext
