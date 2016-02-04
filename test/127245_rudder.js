@@ -15,7 +15,7 @@ describe('127245_rudder ', function () {
   it('direction order is not handled', function () {
     var tree = require("../n2kMapper.js").toNested(
       JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"204","dst":"255","pgn":"127245","description":"Rudder","fields":{"Instance":"252","Direction Order":"0"}}'));
-    Object.getOwnPropertyNames(tree).length.should.equal(0);
+    tree.should.not.have.property('steering');
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
