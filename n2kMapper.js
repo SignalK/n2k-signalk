@@ -1,4 +1,5 @@
 var n2kMappings = require("./n2kMappings.js").mappings;
+var signalkSchema = require("signalk-schema");
 var through = require('through');
 var debug = require('debug')('signalk:n2k-signalk')
 
@@ -110,19 +111,14 @@ function addAsNested(pathValue, source, timestamp, result) {
   }
 }
 
-function deltaToNested(delta) {
-  var result = {};
-  var timestamp = delta.updates[0].timestamp;
-  delete delta.updates[0].source.timestamp;
-  delta.updates[0].values.forEach(function(pathValue) {
-    addAsNested(pathValue, delta.updates[0].source, timestamp, result);
-  });
-  return result;
-}
 
 exports.toDelta = toDelta;
 exports.toNested = function(n2k) {
-  return deltaToNested(toDelta(n2k));
+  var delta = toDelta(n2k);
+  if (!delta.context) {
+    delta.context = "vessels." + signalkSchema.fakeMmsiId;
+  }
+  return signalkSchema.deltaToFull(delta).vessels[delta.context.split('.')[1]];
 }
 
 exports.toDeltaTransformer = function(options) {
