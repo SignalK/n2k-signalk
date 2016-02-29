@@ -389,7 +389,7 @@ exports.mappings =
       node: function(n2k) {
         switch (n2k.fields["Temperature Source"]) {
           case "Inside Temperature":
-            return 'enviroment.temperature.inside';
+            return 'environment.temperature.inside';
         }
       },
       source: 'Actual Temperature'
