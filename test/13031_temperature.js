@@ -30,7 +30,10 @@ describe('temps', function() {
     var n2kMapper = require("../n2kMapper.js");
     _.forOwn(msgs, function(msg, key) {
       console.log(key);
-      console.log(n2kMapper.toDelta(msg).updates[0].values);
+      var delta = n2kMapper.toDelta(msg);
+      delta.updates[0].values.forEach(function(pathValue){
+        console.log(" " + pathValue.path + ":" + pathValue.value)
+      })
     })
   })
 });
