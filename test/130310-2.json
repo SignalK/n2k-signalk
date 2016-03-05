@@ -153,6 +153,20 @@
     "fields": {
       "SID": "179",
       "Temperature Instance": "5",
+      "Temperature Source": "Engine Room Temperature",
+      "Actual Temperature": "70"
+    }
+  },
+  "130312-engineroomtemp-novalue": {
+    "timestamp": "2015-01-15-16:15:18.136",
+    "prio": "5",
+    "src": "41",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "SID": "179",
+      "Temperature Instance": "5",
       "Temperature Source": "Engine Room Temperature"
     }
   },
@@ -179,7 +193,8 @@
     "description": "Temperature",
     "fields": {
       "Temperature Instance": "0",
-      "Temperature Source": "Sea Temperature"
+      "Temperature Source": "Sea Temperature",
+      "Actual Temperature": "15.2"
     }
   }
 }
