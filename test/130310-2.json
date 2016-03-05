@@ -10,14 +10,6 @@
       "SID": "145"
     }
   },
-  "130310-nofields": {
-    "timestamp": "2015-01-15-16:15:21.848",
-    "prio": "5",
-    "src": "17",
-    "dst": "255",
-    "pgn": "130310",
-    "description": "Environmental Parameters"
-  },
   "130310-outtemp_pressure": {
     "timestamp": "2015-01-15-16:15:21.862",
     "prio": "5",
@@ -32,72 +24,71 @@
     }
   },
   "130311-outside-temp-humidity-pressure": {
-    "timestamp": "2015-01-15-16:15:17.942",
-    "prio": "5",
-    "src": "130",
-    "dst": "255",
-    "pgn": "130311",
+    "timestamp": "2015-01-15-16:25:13.828",
+    "prio": 5,
+    "src": 130,
+    "dst": 255,
+    "pgn": 130311,
     "description": "Environmental Parameters",
     "fields": {
-      "SID": "205",
-      "Temperature Instance": "Outside",
-      "Humidity Instance": "Outside",
-      "Temperature": "7.85",
-      "Humidity": "75.668",
-      "Atmospheric Pressure": "1018"
+      "SID": 145,
+      "Temperature Source": "Outside Temperature",
+      "Humidity Source": "Outside",
+      "Temperature": 8.05,
+      "Humidity": 72.772,
+      "Atmospheric Pressure": 101800
     }
   },
   "130311-insidetemp": {
-    "timestamp": "2015-01-15-16:15:17.946",
-    "prio": "5",
-    "src": "41",
-    "dst": "255",
-    "pgn": "130311",
+    "timestamp": "2015-01-15-16:25:14.118",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130311,
     "description": "Environmental Parameters",
     "fields": {
-      "SID": "177",
-      "Temperature Instance": "Inside",
-      "Temperature": "13.18"
+      "SID": 116,
+      "Temperature Source": "Inside Temperature",
+      "Temperature": 13.51
     }
   },
   "130311-engineroom": {
-    "timestamp": "2015-01-15-16:15:17.946",
-    "prio": "5",
-    "src": "41",
-    "dst": "255",
-    "pgn": "130311",
+    "timestamp": "2015-01-15-16:25:14.120",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130311,
     "description": "Environmental Parameters",
     "fields": {
-      "SID": "177",
-      "Temperature Instance": "Engine room",
-      "Temperature": "7.76"
+      "SID": 116,
+      "Temperature Source": "Engine Room Temperature",
+      "Temperature": 9.77
     }
   },
   "130311-maincabin": {
-    "timestamp": "2015-01-15-16:15:17.946",
-    "prio": "5",
-    "src": "41",
-    "dst": "255",
-    "pgn": "130311",
+    "timestamp": "2015-01-15-16:25:14.122",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130311,
     "description": "Environmental Parameters",
     "fields": {
-      "SID": "177",
-      "Temperature Instance": "Main Cabin",
-      "Temperature": "16.93"
+      "SID": 116,
+      "Temperature Source": "Main Cabin Temperature",
+      "Temperature": 17.21
     }
   },
 
-
-  "130312-heatingsystem": {
-    "timestamp": "2015-01-15-16:15:18.124",
-    "prio": "5",
-    "src": "41",
-    "dst": "255",
-    "pgn": "130312",
+  "130312-heatingsystem-novalue": {
+    "timestamp": "2015-01-15-16:25:12.126",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130312,
     "description": "Temperature",
     "fields": {
-      "SID": "179",
-      "Temperature Instance": "0",
+      "SID": 112,
+      "Temperature Instance": 0,
       "Temperature Source": "Heating System Temperature"
     }
   },
