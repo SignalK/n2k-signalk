@@ -375,7 +375,7 @@ exports.mappings = {
 */
 var temperatureMappings = {
   "Sea Temperature": {
-    prefix: 'environment.sea.',
+    prefix: 'environment.water.',
     postfix: '.temperature'
   },
   "Outside Temperature": {
