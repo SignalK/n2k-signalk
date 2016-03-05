@@ -31,10 +31,15 @@ var toDelta = function(n2k) {
 function getValue(n2k, theMapping) {
   if (typeof theMapping.source != 'undefined') {
     var stringValue = n2k.fields[theMapping.source];
+    if (!stringValue && stringValue != '') {
+      return undefined;
+    }
     var numberValue = Number(stringValue);
     return isNaN(numberValue) ? stringValue : numberValue;
   } else {
-    return theMapping.value(n2k);
+    if (theMapping.value) {
+      return theMapping.value(n2k);
+    }
   }
 }
 
@@ -51,19 +56,14 @@ var toValuesArray = function(theMappings, n2k) {
       })
       .map(function(theMapping) {
         try {
-          return typeof theMapping.node === 'function' ?
-            {
-              path: theMapping.node(n2k),
-              value: typeof theMapping.source != 'undefined' ?
-                Number(n2k.fields[theMapping.source]) :
-                theMapping.value(n2k)
-            } :
-            {
-              path: theMapping.node,
-              value: typeof theMapping.source != 'undefined' ?
-                Number(n2k.fields[theMapping.source]) :
-                getValue(n2k, theMapping)
+          var path = typeof theMapping.node === 'function' ? theMapping.node(n2k) : theMapping.node;
+          var value = typeof theMapping.source === 'function' ? theMapping.source(n2k) : getValue(n2k, theMapping);
+          if (value) {
+            return {
+              path: path,
+              value: value
             }
+          }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k);
         }
