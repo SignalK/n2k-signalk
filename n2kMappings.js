@@ -217,12 +217,10 @@ exports.mappings =
       node: 'navigation.rateOfTurn'
     }
   ],
-  '127258': [
-    {
-      source: 'Variation',
-      node: 'navigation.position.variation'
-    }
-  ],
+  '127258': [{
+    source: 'Variation',
+    node: 'navigation.magneticVariation'
+  }],
   //Speed
   '128259': [
     {
