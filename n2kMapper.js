@@ -58,7 +58,7 @@ var toValuesArray = function(theMappings, n2k) {
         try {
           var path = typeof theMapping.node === 'function' ? theMapping.node(n2k) : theMapping.node;
           var value = typeof theMapping.source === 'function' ? theMapping.source(n2k) : getValue(n2k, theMapping);
-          if (value) {
+          if (!(value == null)) { // null or undefined
             return {
               path: path,
               value: value
