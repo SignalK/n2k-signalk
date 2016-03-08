@@ -1,4 +1,12 @@
 {
+  "130310-nofields": {
+    "timestamp": "2015-01-15-16:25:13.593",
+    "prio": 5,
+    "src": 17,
+    "dst": 255,
+    "pgn": 130310,
+    "description": "Environmental Parameters"
+  },
   "130310-nodata": {
     "timestamp": "2015-01-15-16:15:21.650",
     "prio": "5",

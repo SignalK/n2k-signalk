@@ -47,7 +47,7 @@ function getValue(n2k, theMapping) {
 }
 
 var toValuesArray = function(theMappings, n2k) {
-  if (typeof theMappings != 'undefined') {
+  if (n2k.fields && typeof theMappings != 'undefined') {
     return theMappings
       .filter(function(theMapping) {
         try {
