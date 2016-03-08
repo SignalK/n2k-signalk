@@ -28,12 +28,18 @@ describe('130312 with Inside Temperature', function() {
 describe('temps', function() {
   it("works", function() {
     var n2kMapper = require("../n2kMapper.js");
+    var full = new (require('signalk-schema').FullSignalK)();
     _.forOwn(msgs, function(msg, key) {
-      console.log(key);
+//      console.log(key);
       var delta = n2kMapper.toDelta(msg);
+//      console.log(JSON.stringify(delta, null, 2));
+      delta.context = 'vessels.urn:mrn:imo:mmsi:230099999';
+      full.addDelta(delta);
+      delta.should.be.validSignalKDelta
       delta.updates[0].values.forEach(function(pathValue){
-        console.log(" " + pathValue.path + ":" + pathValue.value)
+//        console.log(" " + pathValue.path + ":" + pathValue.value)
       })
     })
+//    console.log(JSON.stringify(full.retrieve(), null, 2));
   })
 });
