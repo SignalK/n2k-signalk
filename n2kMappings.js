@@ -323,7 +323,7 @@ exports.mappings = {
       var postfix = '';
       var temperatureMapping = temperatureMappings[n2k.fields["Temperature Source"]];
       if (temperatureMapping) {
-        return temperatureMapping.prefix + 'default' + temperatureMapping.postfix;
+        return temperatureMapping.prefix + temperatureMapping.postfix.slice(1);
       }
     },
     source: 'Temperature'
@@ -348,8 +348,11 @@ exports.mappings = {
       var postfix = '';
       var temperatureMapping = temperatureMappings[n2k.fields["Temperature Source"]];
       if (temperatureMapping) {
-        return temperatureMapping.prefix + n2k.fields["Temperature Instance"] + temperatureMapping.postfix;
+        return temperatureMapping.prefix + temperatureMapping.postfix.slice(1);
       }
+    },
+    instance: function(n2k) {
+      return n2k.fields["Temperature Instance"] + '';
     },
     source: 'Actual Temperature'
   }]

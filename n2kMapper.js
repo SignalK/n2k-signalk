@@ -24,6 +24,9 @@ var toDelta = function(n2k) {
         result.context = mapping.context(n2k);
       }
     });
+    if (theMappings.length === 1 && theMappings[0].instance) {
+      result.updates[0].source.instance = theMappings[0].instance(n2k);
+    }
   }
   return result;
 }
