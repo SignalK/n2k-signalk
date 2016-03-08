@@ -62,7 +62,7 @@ var toValuesArray = function(theMappings, n2k) {
         }
       })
       .filter(function(x) {
-        return x != undefined;
+        return x != undefined && !(x.value == null);
       });
   }
   return [];
