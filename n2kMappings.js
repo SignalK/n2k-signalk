@@ -319,11 +319,9 @@ exports.mappings = {
   //Temp, humidity and pressure
   '130311': [{
     node: function(n2k) {
-      var prefix = '';
-      var postfix = '';
       var temperatureMapping = temperatureMappings[n2k.fields["Temperature Source"]];
       if (temperatureMapping) {
-        return temperatureMapping.prefix + temperatureMapping.postfix.slice(1);
+        return temperatureMapping.path;
       }
     },
     source: 'Temperature'
@@ -344,11 +342,9 @@ exports.mappings = {
   //Temperature
   '130312': [{
     node: function(n2k) {
-      var prefix = '';
-      var postfix = '';
       var temperatureMapping = temperatureMappings[n2k.fields["Temperature Source"]];
       if (temperatureMapping) {
-        return temperatureMapping.prefix + temperatureMapping.postfix.slice(1);
+        return temperatureMapping.path;
       }
     },
     instance: function(n2k) {
@@ -378,67 +374,53 @@ exports.mappings = {
 */
 var temperatureMappings = {
   "Sea Temperature": {
-    prefix: 'environment.water.',
-    postfix: '.temperature'
+    path:'environment.water.temperature'
   },
   "Outside Temperature": {
-    prefix: 'environment.air.outside.',
-    postfix: '.temperature'
+    path:'environment.air.outside.temperature'
   },
   "Inside Temperature": {
-    prefix: 'environment.air.inside.',
-    postfix: '.temperature'
+    path:'environment.air.inside.temperature'
   },
   "Engine Room Temperature": {
-    prefix: 'environment.air.inside.engineRoom.',
-    postfix: '.temperature'
+    path:'environment.air.inside.engineRoom.temperature'
   },
   "Main Cabin Temperature": {
-    prefix: 'environment.air.inside.maincabin.',
-    postfix: '.temperature'
+    path:'environment.air.inside.mainCabin.temperature'
   },
   "Live Well Temperature": {
-    prefix: 'environment.well.live.',
-    postfix: '.temperature'
+    path:'environment.well.live.temperature'
   },
   "Bait Well Temperature": {
-    prefix: 'environment.well.bait.',
-    postfix: '.temperature'
+    path:'environment.well.bait.temperature'
   },
   "Refridgeration Temperature": {
-    prefix: 'environment.refridgeration.',
-    postfix: '.temperature'
+    path:'environment.refridgeration.temperature'
   },
   "Heating System Temperature": {
-    prefix: 'environment.heating.',
-    postfix: '.temperature'
+    path:'environment.heating.temperature'
   },
   "Dew Point Temperature": {
-    prefix: 'environment.air.',
-    postfix: '.dewPointTemperature'
+    path:'environment.air.outside.dewPointTemperature'
   },
   "Apparent Wind Chill Temperature": {
-    prefix: 'environment.air.',
-    postfix: '.apparentWindChillTemperature'
+    path:'environment.air.outside.apparentWindChillTemperature'
   },
   "Theoretical Wind Chill Temperature": {
-    prefix: 'environment.air.',
-    postfix: '.theoreticalWindChillTemperature'
+    path:'environment.air.outside.theoreticalWindChillTemperature'
   },
   "Heat Index Temperature": {
-    prefix: 'environment.air.',
-    postfix: '.heatIndexTemperature'
+    path:'environment.air.outside.heatIndexTemperature'
   },
   "Heat Index Temperature": {
-    prefix: 'environment.air.',
-    postfix: '.heatIndexTemperature'
+    path:'environment.air.outside.heatIndexTemperature'
   },
   "Freezer Temperature": {
-    prefix: 'environment.freezer.',
-    postfix: '.temperature'
+    path:'environment.freezer.temperature'
   },
   "Exhaust Gas Temperature": {
-    prefix: 'propulsion.exhaust.',
-    postfix: '.temperature'
+    path:'propulsion.exhaust.temperature'
   }
 }
+
+exports.temperatureMappings = temperatureMappings;
