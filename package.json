@@ -20,15 +20,16 @@
   "repository": "https://github.com/SignalK/n2k-signalk",
   "dependencies": {
     "JSONStream": "0.7",
-    "debug": "^2.1.0",
+    "debug": "^2.1.1",
     "nomnom": "~1.6.2",
     "signalk-schema": "SignalK/specification",
     "through": ">=2.2.7 <3"
   },
   "devDependencies": {
-    "mocha": "^2.0.1",
     "chai": "1.9",
     "chai-things": "0.2",
+    "lodash": "^4.6.1",
+    "mocha": "^2.0.1",
     "tv4": "latest"
   }
 }

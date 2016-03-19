@@ -24,6 +24,9 @@ var toDelta = function(n2k) {
         result.context = mapping.context(n2k);
       }
     });
+    if (theMappings.length === 1 && theMappings[0].instance) {
+      result.updates[0].source.instance = theMappings[0].instance(n2k);
+    }
   }
   return result;
 }
@@ -31,15 +34,20 @@ var toDelta = function(n2k) {
 function getValue(n2k, theMapping) {
   if (typeof theMapping.source != 'undefined') {
     var stringValue = n2k.fields[theMapping.source];
+    if (!stringValue && stringValue != '') {
+      return undefined;
+    }
     var numberValue = Number(stringValue);
     return isNaN(numberValue) ? stringValue : numberValue;
   } else {
-    return theMapping.value(n2k);
+    if (theMapping.value) {
+      return theMapping.value(n2k);
+    }
   }
 }
 
 var toValuesArray = function(theMappings, n2k) {
-  if (typeof theMappings != 'undefined') {
+  if (n2k.fields && typeof theMappings != 'undefined') {
     return theMappings
       .filter(function(theMapping) {
         try {
@@ -51,10 +59,12 @@ var toValuesArray = function(theMappings, n2k) {
       })
       .map(function(theMapping) {
         try {
-          if (typeof theMapping.node != 'undefined') {
+          var path = typeof theMapping.node === 'function' ? theMapping.node(n2k) : theMapping.node;
+          var value = typeof theMapping.source === 'function' ? theMapping.source(n2k) : getValue(n2k, theMapping);
+          if (!(value == null)) { // null or undefined
             return {
-              path: theMapping.node,
-              value: getValue(n2k, theMapping)
+              path: path,
+              value: value
             }
           }
         } catch (ex) {
@@ -62,7 +72,7 @@ var toValuesArray = function(theMappings, n2k) {
         }
       })
       .filter(function(x) {
-        return x != undefined && !(x.value == null);
+        return x != undefined;
       });
   }
   return [];
