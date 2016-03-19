@@ -8,23 +8,6 @@ var _ = require('lodash');
 
 var msgs = require('./130310-2.json');
 
-/*
-describe('130312 with Inside Temperature', function() {
-  console.log(JSON.stringify(msgs['130312-insidetemp'], null, 2));
-
-  var tree = require("../n2kMapper.js").toNested(msgs['130312-insidetemp']);
-  console.log(tree)
-  it(' has correct value', function() {
-    tree.should.have.deep.property('environment.temperature.inside.value', 13.18);
-  });
-
-  it('is valid SignalK', function() {
-    tree.should.be.validSignalKVesselIgnoringIdentity;
-  });
-});
-*/
-
-
 describe('Temperature: ', function() {
   it("examples work", function() {
     var n2kMapper = require("../n2kMapper.js");
@@ -66,6 +49,7 @@ describe('Temperature: ', function() {
       full.addDelta(delta);
     })
     var fullDoc = full.retrieve();
+    //console.log(JSON.stringify(fullDoc, null, 2));
     fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999';
     fullDoc.should.be.validSignalK;
   })
