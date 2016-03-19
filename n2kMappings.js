@@ -179,7 +179,7 @@ exports.mappings = {
   }],
   '127258': [{
     source: 'Variation',
-    node: 'navigation.position.variation'
+    node: 'navigation.magneticVariation'
   }],
   //Speed
   '128259': [{
