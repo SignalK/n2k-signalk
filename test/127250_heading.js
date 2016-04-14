@@ -17,6 +17,13 @@ describe('127250 Heading', function () {
     tree.should.have.with.deep.property('navigation.magneticVariation.value', 8);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
+
+  it('True heading sentence converts', function () {
+    var tree = require("../n2kMapper.js").toNested(
+      JSON.parse('{"timestamp":"2016-04-14T09:34:11.275Z","prio":2,"src":2,"dst":255,"pgn":127250,"description":"Vessel Heading","fields":{"Heading":14.8,"Deviation":0.0,"Variation":0.0,"Reference":"True"}}'));
+    tree.should.have.with.deep.property('navigation.headingTrue.value', 14.8);
+    tree.should.be.validSignalKVesselIgnoringIdentity;
+  });
 });
 
 
