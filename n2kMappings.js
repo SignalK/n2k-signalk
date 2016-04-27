@@ -311,13 +311,13 @@ exports.mappings = {
   //Temp & humidity
   '130310': [{
     source: 'Outside Ambient Air Temperature',
-    node: 'environment.air.outside.temperature',
+    node: 'environment.outside.temperature',
     filter: function(n2k) {
       return n2k.fields['Outside Ambient Air Temperature']
     }
   }, {
     source: 'Atmospheric Pressure',
-    node: 'environment.air.outside.pressure',
+    node: 'environment.outside.pressure',
     filter: function(n2k) {
       return n2k.fields['Atmospheric Pressure']
     }
@@ -333,14 +333,14 @@ exports.mappings = {
     source: 'Temperature'
   }, {
     node: function(n2k) {
-      return 'environment.air.' +
+      return 'environment.' +
         (n2k.fields["Humidity Source"] === 'Inside' ? 'inside' : 'outside') +
         '.humidity';
     },
     source: 'Humidity'
   }, {
     source: 'Atmospheric Pressure',
-    node: 'environment.air.outside.pressure',
+    node: 'environment.outside.pressure',
     filter: function(n2k) {
       return n2k.fields['Atmospheric Pressure']
     }
@@ -383,46 +383,46 @@ var temperatureMappings = {
     path:'environment.water.temperature'
   },
   "Outside Temperature": {
-    path:'environment.air.outside.temperature'
+    path:'environment.outside.temperature'
   },
   "Inside Temperature": {
-    path:'environment.air.inside.temperature'
+    path:'environment.inside.temperature'
   },
   "Engine Room Temperature": {
-    path:'environment.air.inside.engineRoom.temperature'
+    path:'environment.inside.engineRoom.temperature'
   },
   "Main Cabin Temperature": {
-    path:'environment.air.inside.mainCabin.temperature'
+    path:'environment.inside.mainCabin.temperature'
   },
   "Live Well Temperature": {
-    path:'environment.well.live.temperature'
+    path:'environment.water.liveWell.temperature'
   },
   "Bait Well Temperature": {
-    path:'environment.well.bait.temperature'
+    path:'environment.water.baitWell.temperature'
   },
   "Refrigerator Temperature": {
-    path:'environment.refrigerator.temperature'
+    path:'environment.inside.refrigerator.temperature'
   },
   "Heating System Temperature": {
-    path:'environment.heating.temperature'
+    path:'environment.inside.heating.temperature'
   },
   "Dew Point Temperature": {
-    path:'environment.air.outside.dewPointTemperature'
+    path:'environment.outside.dewPointTemperature'
   },
   "Apparent Wind Chill Temperature": {
-    path:'environment.air.outside.apparentWindChillTemperature'
+    path:'environment.outside.apparentWindChillTemperature'
   },
   "Theoretical Wind Chill Temperature": {
-    path:'environment.air.outside.theoreticalWindChillTemperature'
+    path:'environment.outside.theoreticalWindChillTemperature'
   },
   "Heat Index Temperature": {
-    path:'environment.air.outside.heatIndexTemperature'
+    path:'environment.outside.heatIndexTemperature'
   },
   "Heat Index Temperature": {
-    path:'environment.air.outside.heatIndexTemperature'
+    path:'environment.outside.heatIndexTemperature'
   },
   "Freezer Temperature": {
-    path:'environment.freezer.temperature'
+    path:'environment.inside.freezer.temperature'
   },
   "Exhaust Gas Temperature": {
     path:'propulsion.exhaust.temperature'
