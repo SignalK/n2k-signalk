@@ -246,20 +246,25 @@ exports.mappings = {
 
   //Navigation data
   '129284': [{
-    node: function(n2k) {return 'navigation.course' + calculationType(n2k) +  '.bearingTrackTrue'},
+    node: function(n2k) {
+      return 'navigation.course' + calculationType(n2k) + '.bearingTrack' + n2k.fields["Course/Bearing reference"]
+    },
     source: 'Bearing, Origin to Destination Waypoint'
   }, {
-    node: function(n2k) {return 'navigation.course' + calculationType(n2k) + '.nextPoint'},
+    node: function(n2k) {
+      return 'navigation.course' + calculationType(n2k) + '.nextPoint'
+    },
     value: function(n2k) {
-      return  {
+      var result = {
         velocityMadeGood: Number(n2k.fields['Waypoint Closing Velocity']),
         distance: Number(n2k.fields['Distance to Waypoint']),
         position: {
           longitude: Number(n2k.fields['Destination Longitude']),
           latitude: Number(n2k.fields['Destination Latitude'])
-        },
-        'bearingTrue': n2k.fields['Bearing, Position to Destination Waypoint']
+        }
       };
+      result['bearing' + n2k.fields["Course/Bearing reference"]] =
+        n2k.fields['Bearing, Position to Destination Waypoint'];
     }
   }],
 
