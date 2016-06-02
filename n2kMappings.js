@@ -265,6 +265,7 @@ exports.mappings = {
       };
       result['bearing' + n2k.fields["Course/Bearing reference"]] =
         n2k.fields['Bearing, Position to Destination Waypoint'];
+      return result;
     }
   }],
 
