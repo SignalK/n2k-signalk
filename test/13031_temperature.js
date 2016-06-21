@@ -14,11 +14,12 @@ describe('Temperature: ', function() {
     var full = new(require('signalk-schema').FullSignalK)();
     _.forOwn(msgs, function(msg, key) {
       var delta = n2kMapper.toDelta(msg);
-      delta.context = 'vessels.urn:mrn:imo:mmsi:230099999';
-      full.addDelta(delta);
-      delta.should.be.validSignalKDelta;
-      delta.updates[0].values.forEach(function(pathValue) {
-      })
+      if (delta) {
+        delta.context = 'vessels.urn:mrn:imo:mmsi:230099999';
+        full.addDelta(delta);
+        delta.should.be.validSignalKDelta;
+        delta.updates[0].values.forEach(function(pathValue) {})
+      }
     })
     var fullDoc = full.retrieve();
     fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999';

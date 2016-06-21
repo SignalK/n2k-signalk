@@ -6,6 +6,10 @@ var debug = require('debug')('signalk:n2k-signalk')
 
 var toDelta = function(n2k) {
   var theMappings = n2kMappings[n2k.pgn];
+  var values = toValuesArray(theMappings, n2k);
+  if (values.length === 0) {
+    return;
+  }
   var result = {
     updates: [{
       source: {
@@ -27,6 +31,8 @@ var toDelta = function(n2k) {
     if (theMappings.length === 1 && theMappings[0].instance) {
       result.updates[0].source.instance = theMappings[0].instance(n2k);
     }
+  } else {
+    console.error(n2k.pgn + " " + n2k.description)
   }
   return result;
 }
@@ -119,10 +125,14 @@ function addAsNested(pathValue, source, timestamp, result) {
 exports.toDelta = toDelta;
 exports.toNested = function(n2k) {
   var delta = toDelta(n2k);
-  if (!delta.context) {
-    delta.context = "vessels." + signalkSchema.fakeMmsiId;
+  if (delta) {
+    if (!delta.context) {
+      delta.context = "vessels." + signalkSchema.fakeMmsiId;
+    }
+    return signalkSchema.deltaToFull(delta).vessels[delta.context.split('.')[1]];
+  } else {
+    return {}
   }
-  return signalkSchema.deltaToFull(delta).vessels[delta.context.split('.')[1]];
 }
 
 exports.toDeltaTransformer = function(options) {
