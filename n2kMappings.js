@@ -3,7 +3,6 @@ var RHUMBLINE = "Rhumb Line";
 var GREATCIRCLE = "Great Circle";
 
 function calculationType(n2k) {
-  console.log(n2k)
   return n2k.fields[CALCULATION_TYPE] === GREATCIRCLE ? 'GreatCircle' : 'Rhumbline';
 }
 
