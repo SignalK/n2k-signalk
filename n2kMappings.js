@@ -243,6 +243,18 @@ exports.mappings = {
     }
   }],
 
+  //Cross Track Error
+  '129283': [{
+    node: 'navigation.courseGreatCircle.crossTrackError',
+    filter: validXTE,
+    source: 'XTE'
+  }, {
+    node: 'navigation.courseRhumbline.crossTrackError',
+    filter: validXTE,
+    source: 'XTE'
+  }],
+
+
   //Navigation data
   '129284': [{
     node: function(n2k) {
@@ -393,6 +405,12 @@ exports.mappings = {
     source: 'Actual Temperature'
   }]
 
+}
+
+function validXTE(n2k) {
+  return n2k.fields["Navigation Terminated"] &&
+    n2k.fields["Navigation Terminated"] === "No" &&
+    typeof n2k.fields["XTE"] !== 'undefined';
 }
 
 /*
