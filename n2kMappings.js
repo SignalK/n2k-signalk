@@ -56,6 +56,9 @@ exports.mappings = {
   '128267': [{
     source: 'Depth',
     node: 'environment.depth.belowTransducer'
+    }, {
+    source: 'Offset',
+    node: 'environment.depth.surfaceToTransducer'
   }],
   //Log
   '128275': [{
@@ -181,7 +184,19 @@ exports.mappings = {
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
     }
-    },
+  }, {
+    source: 'Oil pressure',
+    node: 'propulsion.port.oilPressure',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+    }
+  }, {
+    source: 'Total Engine hours',
+    node: 'propulsion.port.runTime',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+    }
+  }, 
    {
     node: 'notifications.checkEngine',
     value: function(n2k) {
@@ -453,7 +468,17 @@ exports.mappings = {
       }
     }
   }],
-
+  
+  //XTE
+  '129283': [{
+    node: function(n2k) {
+      return 'navigation.course' + calculationType(n2k) + '.crossTrackError'
+    },
+    source: 'XTE',
+    filter: function(n2k) {
+      return n2k.fields['Navigation Terminated'] === 'No';
+    }
+    }],
   //Navigation data
   '129284': [{
     node: function(n2k) {
