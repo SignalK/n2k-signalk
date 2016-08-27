@@ -12,6 +12,31 @@ function getMmsiContext(n2k) {
 }
 
 exports.mappings = {
+  //Battery Voltage
+  '127508': [{
+    source: 'Voltage',
+    node: function(n2k) {
+      return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.voltage'
+    },
+  }
+    ],
+
+  //Fuel Tank
+  '127505': [{
+      source: 'Level',
+      node: 'tanks.fuel.currentLevel',
+    filter: function(n2k) {
+      return n2k.fields['Type'] === 'Fuel';
+      },
+    },
+    {
+      source: 'Capacity',
+      node: 'tanks.fuel.capacity',
+    filter: function(n2k) {
+      return n2k.fields['Type'] === 'Fuel';
+      }
+    }],
+
   //System time
   '126992': [{
     value: function(n2k) {
@@ -175,7 +200,196 @@ exports.mappings = {
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
     }
-  }],
+  }, {
+    source: 'Oil pressure',
+    node: 'propulsion.port.oilPressure',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+    }
+  }, {
+    source: 'Total Engine hours',
+    node: 'propulsion.port.runTime',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+    }
+  }, 
+   {
+    node: 'notifications.checkEngine',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<0)) ) {
+        return {
+	  message: 'Check Engine',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineOverTemperature',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<1)) ) {
+        return {
+	  message: 'Engine Over Temperature',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineLowOilPressure',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<2)) ) {
+        return {
+	  message: 'Engine Low Oil Pressure',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineLowOilLevel',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<3)) ) {
+        return {
+	  message: 'Engine Low Oil Level',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineLowFuelPressure',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<4)) ) {
+        return {
+	  message: 'Engine Low Fuel Pressure',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.lowSystemVoltage',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<5)) ) {
+        return {
+	  message: 'Low System Voltage',
+        };
+      }
+     }
+   },
+   {
+    node: 'notifications.engineLowCoolantLevel',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<6)) ) {
+        return {
+	  message: 'Engine Low Coolant Level',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineWaterFlow',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<7)) ) {
+        return {
+	  message: 'Engine Water Flow',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineWaterInFuel',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<8)) ) {
+        return {
+	  message: 'Water in Fuel',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineChargeIndicator',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<9)) ) {
+        return {
+	  message: 'Engine Charge Indicator',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.enginePreheatIndicator',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<10)) ) {
+        return {
+	  message: 'Preheat Indicator',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineHighBoostPressure',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<11)) ) {
+        return {
+	  message: 'Engine High Boost Pressure',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineRevLimitExceeded',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<12)) ) {
+        return {
+	  message: 'Engine Rev Limit Exceeded',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineEGRSystem',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<13)) ) {
+        return {
+	  message: 'Engine EGR System',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.engineThrottlePositionSensor',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<14)) ) {
+        return {
+	  message: 'Engine Throttle Position Sensor',
+        };
+      }
+    }
+   },
+   {
+    node: 'notifications.emergencyStopMode',
+    value: function(n2k) {
+      if (n2k.fields['Discrete Status 1'] != 0
+	  && ((n2k.fields['Discrete Status 1']) & (1<<15)) ) {
+        return {
+	  message: 'Engine Emergency Stop Mode',
+        };
+      }
+    }
+   },
+    ],
   //Wind data
   '130306': [{
     source: 'Wind Speed',
@@ -270,7 +484,17 @@ exports.mappings = {
       }
     }
   }],
-
+  
+  //XTE
+  '129283': [{
+    node: function(n2k) {
+      return 'navigation.course' + calculationType(n2k) + '.crossTrackError'
+    },
+    source: 'XTE',
+    filter: function(n2k) {
+      return n2k.fields['Navigation Terminated'] === 'No';
+    }
+    }],
   //Navigation data
   '129284': [{
     node: function(n2k) {
@@ -294,7 +518,25 @@ exports.mappings = {
         n2k.fields['Bearing, Position to Destination Waypoint'];
       return result;
     }
-  }],
+    },
+    {
+      source: 'ETA Time',
+      node: function(n2k) {
+	return 'navigation.course' + calculationType(n2k) + '.activeRoute.estimatedTimeOfArrival'
+      }
+    },
+   {
+    node: 'notifications.waypointArrival',
+    filter: function(n2k) {
+      return n2k.fields['Arrival Circle Entered'] === 'Yes';
+     },
+    value: function(n2k) {
+        return {
+	  message: 'Waypoint Arrival',
+        };
+      }
+    }
+   ],
 
 
   //Set & Drift rapid update
