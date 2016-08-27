@@ -396,12 +396,13 @@ exports.mappings = {
 
   //Tanks
   '127505': [{
-      source: 'Level',
-      node: 'tanks.fuel.currentLevel'
-    },
-    {
-      source: 'Capacity',
-      node: 'tanks.fuel.capacity'
+      node: 'tanks.fuel',
+      value: function(n2k) {
+	return {
+	  currentLevel: n2k.fields['Level'],
+	  capacity: n2k.fields['Capacity']
+	}
+      }
     }],
 }
 
