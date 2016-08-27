@@ -138,13 +138,13 @@ exports.mappings = {
     }
   }, {
     source: 'Fuel Rate',
-    node: 'propulsion.port.fuelRate',
+    node: 'propulsion.port.fuel.rate',
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
     }
   }, {
     source: 'Fuel Rate',
-    node: 'propulsion.starboard.fuelRate',
+    node: 'propulsion.starboard.fuel.rate',
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
     }

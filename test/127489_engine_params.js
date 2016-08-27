@@ -13,8 +13,8 @@ describe('127489 engine parameters Port', function () {
     tree.should.have.deep.property('propulsion.port.temperature.value', 29.85);
     tree.should.have.deep.property('propulsion.port.alternatorVoltage');
     tree.should.have.deep.property('propulsion.port.alternatorVoltage.value', 12.60);
-    tree.should.have.deep.property('propulsion.port.fuelRate');
-    tree.should.have.deep.property('propulsion.port.fuelRate.value', -0.1);
+    tree.should.have.deep.property('propulsion.port.fuel.rate');
+    tree.should.have.deep.property('propulsion.port.fuel.rate.value', -0.1);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
@@ -27,8 +27,8 @@ describe('127489 engine parameters Starboard', function () {
     tree.should.have.deep.property('propulsion.starboard.temperature.value', 29.85);
     tree.should.have.deep.property('propulsion.starboard.alternatorVoltage');
     tree.should.have.deep.property('propulsion.starboard.alternatorVoltage.value', 12.60);
-    tree.should.have.deep.property('propulsion.starboard.fuelRate');
-    tree.should.have.deep.property('propulsion.starboard.fuelRate.value', -0.1);
+    tree.should.have.deep.property('propulsion.starboard.fuel.rate');
+    tree.should.have.deep.property('propulsion.starboard.fuel.rate.value', -0.1);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
