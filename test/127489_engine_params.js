@@ -33,10 +33,12 @@ describe('127489 engine parameters Starboard', function () {
     tree.should.have.deep.property('propulsion.starboard.alternatorVoltage.value', 12.60);
     tree.should.have.deep.property('propulsion.starboard.fuel.rate');
     tree.should.have.deep.property('propulsion.starboard.fuel.rate.value', -0.1);
-    tree.should.have.deep.property('propulsion.port.runTime');
-    tree.should.have.deep.property('propulsion.port.runTime.value', 309960);
-    tree.should.have.deep.property('propulsion.port.oilPressure');
-    tree.should.have.deep.property('propulsion.port.oilPressure.value', 80);
+    tree.should.have.deep.property('propulsion.starboard.runTime');
+    tree.should.have.deep.property('propulsion.starboard.runTime.value', 309960);
+    tree.should.have.deep.property('propulsion.starboard.oilPressure');
+    tree.should.have.deep.property('propulsion.starboard.oilPressure.value', 80);
+    tree.should.have.deep.property('propulsion.starboard.fuel.rate');
+    tree.should.have.deep.property('propulsion.starboard.fuel.rate.value', -0.1);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
