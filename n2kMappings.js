@@ -397,23 +397,11 @@ exports.mappings = {
   //Tanks
   '127505': [{
       source: 'Level',
-      node: function(n2k) { 
-	return 'tanks.' + n2k.fields['Type'] + '_' + n2k.fields['Instance'] + '.currentLevel;' 
-      }
+      node: 'tanks.fuel.currentLevel'
     },
     {
       source: 'Capacity',
-      node: function(n2k) { 
-	return 'tanks.' + n2k.fields['Type'] + '_' + n2k.fields['Instance'] + '.capacity'; 
-      },
-    },
-    {
-      node: function(n2k) {
-	return 'tanks.' + n2k.fields['Type'] + '_' + n2k.fields['Instance'] + '.name'; 
-      },
-      value: function(n2k) { 
-	return n2k.fields['Type'] + ' ' + n2k.fields['Instance']; 
-      }
+      node: 'tanks.fuel.capacity'
     }],
 }
 
