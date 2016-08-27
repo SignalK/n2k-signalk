@@ -392,8 +392,15 @@ exports.mappings = {
       return n2k.fields["Temperature Instance"] + '';
     },
     source: 'Actual Temperature'
-  }]
+    }],
 
+  //Battery Voltage
+  '127508': [{
+    source: 'Voltage',
+    node: function(n2k) {
+      return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.voltage'
+    },
+  }],
 }
 
 /*
