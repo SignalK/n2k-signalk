@@ -23,6 +23,9 @@ exports.mappings = {
   '128267': [{
     source: 'Depth',
     node: 'environment.depth.belowTransducer'
+    }, {
+    source: 'Offset',
+    node: 'environment.depth.surfaceToTransducer'
   }],
   //Log
   '128275': [{
