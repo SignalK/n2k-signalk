@@ -150,6 +150,30 @@ exports.mappings = {
     node: 'propulsion.starboard.fuel.rate',
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
+    },
+  }, {
+    source: 'Oil pressure',
+    node: 'propulsion.port.oilPressure',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+    }
+  }, {
+    source: 'Oil pressure',
+    node: 'propulsion.starboard.oilPressure',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
+    }
+  }, {
+    source: 'Total Engine hours',
+    node: 'propulsion.port.runTime',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+    }
+  }, {
+    source: 'Total Engine hours',
+    node: 'propulsion.starboard.runTime',
+    filter: function(n2k) {
+      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
     }
   }],
   //Wind data
