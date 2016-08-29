@@ -269,14 +269,11 @@ exports.mappings = {
     }
   }, {
     node: 'notifications.waypointArrival',
-    filter: function(n2k) {
-      return n2k.fields['Arrival Circle Entered'] === 'Yes';
-     },
     value: function(n2k) {
         return {
 	  message: 'Waypoint Arrival',
 	  method: 'visual',
-	  state: 'alert',
+          state: n2k.fields['Arrival Circle Entered'] === 'Yes' ? 'alert' :  'normal'
         };
       }
     }],
