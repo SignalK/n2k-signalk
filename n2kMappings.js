@@ -419,8 +419,21 @@ exports.mappings = {
       return n2k.fields["Temperature Instance"] + '';
     },
     source: 'Actual Temperature'
-  }]
+    }],
 
+    //Tanks
+    '127505': [{
+	node: function(n2k) { return 'tanks.fuel.' + n2k.fields['Instance'] + '.currentLevel' },
+	value: function(n2k) {
+	    return {
+		value: n2k.fields['Level']
+	    }
+	}
+    }, {
+	node: function(n2k) { return 'tanks.fuel.' + n2k.fields['Instance']  },
+	value: function(n2k) { return { capacity: n2k.fields['Capacity'] } }
+	
+    }],    
 }
 
 /*
