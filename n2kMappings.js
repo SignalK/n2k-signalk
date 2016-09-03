@@ -274,6 +274,9 @@ exports.mappings = {
     },
     value: function(n2k) {
       return { estimatedTimeOfArrival: n2k.fields['ETA Date'].replace(/\./g,'-') + 'T' + n2k.fields['ETA Time'] + 'Z' };
+    },
+    filter: function(n2k) {
+        return typeof n2k.fields['ETA Date'] != 'undefined'
     }
   }],
 
