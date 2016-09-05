@@ -10,6 +10,8 @@ function getMmsiContext(n2k) {
   return 'vessels.urn:mrn:imo:mmsi:' + n2k.fields['User ID'];
 }
 
+
+
 exports.mappings = {
   //System time
   '126992': [{
@@ -22,7 +24,7 @@ exports.mappings = {
   '128267': [{
     source: 'Depth',
     node: 'environment.depth.belowTransducer'
-    }, {
+  }, {
     source: 'Offset',
     node: 'environment.depth.surfaceToTransducer'
   }],
@@ -174,6 +176,18 @@ exports.mappings = {
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
     }
+  }],
+  // Fluid Level
+  '127505': [{
+    node: function(n2k) {
+      return 'tanks.' + tankMappings[n2k.fields['Type']] + '.' + n2k.fields['Instance'] + '.currentLevel'
+    },
+    source: 'Level'
+  }, {
+    node: function(n2k) {
+      return 'tanks.' + tankMappings[n2k.fields['Type']] + '.' + n2k.fields['Instance'] + '.capacity'
+    },
+    source: 'Capacity'
   }],
   //Wind data
   '130306': [{
@@ -448,53 +462,62 @@ exports.mappings = {
 */
 var temperatureMappings = {
   "Sea Temperature": {
-    path:'environment.water.temperature'
+    path: 'environment.water.temperature'
   },
   "Outside Temperature": {
-    path:'environment.outside.temperature'
+    path: 'environment.outside.temperature'
   },
   "Inside Temperature": {
-    path:'environment.inside.temperature'
+    path: 'environment.inside.temperature'
   },
   "Engine Room Temperature": {
-    path:'environment.inside.engineRoom.temperature'
+    path: 'environment.inside.engineRoom.temperature'
   },
   "Main Cabin Temperature": {
-    path:'environment.inside.mainCabin.temperature'
+    path: 'environment.inside.mainCabin.temperature'
   },
   "Live Well Temperature": {
-    path:'environment.water.liveWell.temperature'
+    path: 'environment.water.liveWell.temperature'
   },
   "Bait Well Temperature": {
-    path:'environment.water.baitWell.temperature'
+    path: 'environment.water.baitWell.temperature'
   },
   "Refrigerator Temperature": {
-    path:'environment.inside.refrigerator.temperature'
+    path: 'environment.inside.refrigerator.temperature'
   },
   "Heating System Temperature": {
-    path:'environment.inside.heating.temperature'
+    path: 'environment.inside.heating.temperature'
   },
   "Dew Point Temperature": {
-    path:'environment.outside.dewPointTemperature'
+    path: 'environment.outside.dewPointTemperature'
   },
   "Apparent Wind Chill Temperature": {
-    path:'environment.outside.apparentWindChillTemperature'
+    path: 'environment.outside.apparentWindChillTemperature'
   },
   "Theoretical Wind Chill Temperature": {
-    path:'environment.outside.theoreticalWindChillTemperature'
+    path: 'environment.outside.theoreticalWindChillTemperature'
   },
   "Heat Index Temperature": {
-    path:'environment.outside.heatIndexTemperature'
+    path: 'environment.outside.heatIndexTemperature'
   },
   "Heat Index Temperature": {
-    path:'environment.outside.heatIndexTemperature'
+    path: 'environment.outside.heatIndexTemperature'
   },
   "Freezer Temperature": {
-    path:'environment.inside.freezer.temperature'
+    path: 'environment.inside.freezer.temperature'
   },
   "Exhaust Gas Temperature": {
-    path:'propulsion.exhaust.temperature'
+    path: 'propulsion.exhaust.temperature'
   }
+}
+
+var tankMappings = {
+  "Fuel": "fuel",
+  "Water": "freshWater",
+  "Gray water": "wasteWater",
+  "Live well": "liveWell",
+  "Oil": "lubrication",
+  "Black water": "blackWater"
 }
 
 exports.temperatureMappings = temperatureMappings;
