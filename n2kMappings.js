@@ -507,10 +507,10 @@ var temperatureMappings = {
 
 var tankMappings = {
   "Fuel": "fuel",
-  "Water": "water",
-  "Gray water": "grayWater",
+  "Water": "freshWater",
+  "Gray water": "wasteWater",
   "Live well": "liveWell",
-  "Oil": "oil",
+  "Oil": "lubrication",
   "Black water": "blackWater"
 }
 

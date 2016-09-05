@@ -31,18 +31,18 @@ describe('127505 water', function() {
   it('level and capacity', function() {
     var tree = require("../n2kMapper.js").toNested(
       JSON.parse('{"timestamp":"2015-01-15-16:15:33.366","prio":"6","src":"114","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Water","Level":"88.596","Capacity":"71.9"}}'));
-    tree.should.have.deep.property('tanks.water.0.currentLevel.value', 88.596);
-    tree.should.have.deep.property('tanks.water.0.capacity.value', 71.9);
+    tree.should.have.deep.property('tanks.freshWater.0.currentLevel.value', 88.596);
+    tree.should.have.deep.property('tanks.freshWater.0.capacity.value', 71.9);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
 
-describe('127505 water', function() {
+describe('127505 grayWater', function() {
   it('level and capacity', function() {
     var tree = require("../n2kMapper.js").toNested(
       JSON.parse('{"timestamp":"2015-01-15-16:15:33.369","prio":"6","src":"113","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Gray water","Level":"90.240","Capacity":"37.9"}}'));
-    tree.should.have.deep.property('tanks.grayWater.0.currentLevel.value', 90.240);
-    tree.should.have.deep.property('tanks.grayWater.0.capacity.value', 37.9);
+    tree.should.have.deep.property('tanks.wasteWater.0.currentLevel.value', 90.240);
+    tree.should.have.deep.property('tanks.wasteWater.0.capacity.value', 37.9);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
