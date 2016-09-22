@@ -1,10 +1,14 @@
 var n2kMappings = require("./n2kMappings.js").mappings;
+var sourceMappers = require('./sourcemappers');
 var signalkSchema = require("signalk-schema");
 var through = require('through');
 var debug = require('debug')('signalk:n2k-signalk')
 
 
 var toDelta = function(n2k) {
+  if (sourceMappers[n2k.pgn]) {
+    return sourceMappers[n2k.pgn](n2k);
+  }
   var theMappings = n2kMappings[n2k.pgn];
   var result = {
     updates: [{
