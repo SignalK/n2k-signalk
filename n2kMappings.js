@@ -209,10 +209,15 @@ exports.mappings = {
       return n2k.fields['Reference'] === 'True (ground referenced to North)';
     }
   }, {
-    source: 'Wind Angle',
     node: 'environment.wind.angleApparent',
     filter: function(n2k) {
       return n2k.fields['Reference'] === 'Apparent';
+    },
+    value: function(n2k) {
+	let angle = Number(n2k.fields['Wind Angle'])
+	if ( angle > 180 )
+	    angle = angle-360;
+	return angle;
     }
   }, {
     source: 'Wind Angle',
