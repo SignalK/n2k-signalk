@@ -215,8 +215,8 @@ exports.mappings = {
     },
     value: function(n2k) {
 	let angle = Number(n2k.fields['Wind Angle'])
-	if ( angle > 180 )
-	    angle = angle-360;
+	if ( angle > Math.PI )
+	    angle = angle-(Math.PI*2);
 	return angle;
     }
   }, {
