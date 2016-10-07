@@ -7,25 +7,25 @@ chai.use(require('signalk-schema').chaiModule);
 describe('130306 Wind Data', function () {
   it('Apparent sentence converts positive', function () {
     var tree = require("../n2kMapper.js").toNested(
-      JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"50.0","Reference":"Apparent"}}'));
+      JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"0.872665","Reference":"Apparent"}}'));
     tree.should.have.deep.property('environment.wind.speedApparent.value', 6.22);
-    tree.should.have.deep.property('environment.wind.angleApparent.value', 50.0);
+    tree.should.have.deep.property('environment.wind.angleApparent.value', 0.872665);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 
   it('Apparent sentence converts positive gt 180', function () {
     var tree = require("../n2kMapper.js").toNested(
-      JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"190.0","Reference":"Apparent"}}'));
+      JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"3.31613","Reference":"Apparent"}}'));
     tree.should.have.deep.property('environment.wind.speedApparent.value', 6.22);
-    tree.should.have.deep.property('environment.wind.angleApparent.value', -170.0);
+    tree.should.have.deep.property('environment.wind.angleApparent.value', -2.9670553071795864);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 
   it('Apparent sentence converts negative', function () {
     var tree = require("../n2kMapper.js").toNested(
-      JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"-50.0","Reference":"Apparent"}}'));
+      JSON.parse('{"timestamp":"2013-10-08-15:47:28.263","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"-0.872665","Reference":"Apparent"}}'));
     tree.should.have.deep.property('environment.wind.speedApparent.value', 6.22);
-    tree.should.have.deep.property('environment.wind.angleApparent.value', -50.0);
+    tree.should.have.deep.property('environment.wind.angleApparent.value', -0.872665);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });    
 
