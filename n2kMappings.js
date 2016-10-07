@@ -209,10 +209,13 @@ exports.mappings = {
       return n2k.fields['Reference'] === 'True (ground referenced to North)';
     }
   }, {
-    source: 'Wind Angle',
     node: 'environment.wind.angleApparent',
     filter: function(n2k) {
       return n2k.fields['Reference'] === 'Apparent';
+    },
+    value: function(n2k) {
+      var angle = Number(n2k.fields['Wind Angle'])
+      return angle <= Math.PI ? angle : angle - (Math.PI * 2);
     }
   }, {
     source: 'Wind Angle',
@@ -432,13 +435,13 @@ exports.mappings = {
       return n2k.fields["Temperature Instance"] + '';
     },
     source: 'Actual Temperature'
-    }],
+  }],
 
   //Battery Voltage
   '127508': [{
     source: 'Voltage',
     node: function(n2k) {
-	return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.voltage'
+      return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.voltage'
     },
   }],
 }
