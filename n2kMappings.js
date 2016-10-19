@@ -406,7 +406,7 @@ exports.mappings = {
     },
     value: function(n2k) {
       var hpa = Number(n2k.fields['Atmospheric Pressure'])
-      return kpa * 100.0;
+      return hpa * 100.0;
     }
   }],
   //Temp, humidity and pressure
