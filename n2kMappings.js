@@ -444,6 +444,17 @@ exports.mappings = {
       return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.voltage'
     },
   }],
+
+  // Seatalk: Pilot Wind Datum
+  '65345': [{
+    node: 'steering.autopilot.target.wind',
+    value: function(n2k) {
+      var angle = Number(n2k.fields['Wind Datum'])
+      if ( angle > Math.PI )
+	angle = angle-(Math.PI*2);
+      return angle;
+    }	
+  }],
 }
 
 /*
