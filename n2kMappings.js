@@ -444,6 +444,17 @@ exports.mappings = {
       return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.voltage'
     },
   }],
+
+  //Seatalk: Pilot Locked Heading
+  '65360': [{
+    node: 'steering.autopilot.target.angle',
+    value: function(n2k) {
+      var trueHeading = n2k.fields['Target Heading True']
+      var magHeading = n2k.fields['Target Heading Magnetic']
+
+      return magHeading ? magHeading : trueHeading; 
+    }
+  }],
 }
 
 /*
