@@ -110,7 +110,7 @@ exports.mappings = {
     value: function(n2k) {
       var rpm = Number(n2k.fields['Engine Speed'])
       return rpm / 60.0;
-    }      
+    }
   }, {
     node: 'propulsion.starboard.revolutions',
     filter: function(n2k) {
@@ -119,7 +119,7 @@ exports.mappings = {
     value: function(n2k) {
       var rpm = Number(n2k.fields['Engine Speed'])
       return rpm / 60.0;
-    }      
+    }
   }],
   // Engine operating parameters
   '127489': [{
@@ -458,17 +458,28 @@ exports.mappings = {
       var mode = Number(n2k.fields['Pilot Mode']);
       var subMode = Number(n2k.fields['Sub Mode']);
       if ( mode == 0 && subMode == 0 )
-	return 'standby';
+        return 'standby';
       else if ( mode == 0 && subMode == 1 )
-	return 'wind';
+        return 'wind';
       else if ( (mode == 128 || mode == 129) && subMode == 1 )
-	return 'route';
+        return 'route';
       else if ( mode == 64 && subMode == 0 )
-	return 'auto';
+        return 'auto';
       else
-	return 'standby';
+        return 'standby';
     }
   }],
+
+  //Seatalk: Pilot Locked Heading
+  '65360': [{
+    node: 'steering.autopilot.target.angle',
+    value: function(n2k) {
+      var trueHeading = n2k.fields['Target Heading True']
+      var magHeading = n2k.fields['Target Heading Magnetic']
+
+      return magHeading ? magHeading : trueHeading;
+    }
+  }]
 }
 
 /*
