@@ -166,7 +166,7 @@ exports.mappings = {
     value: function(n2k) {
       var kpa = Number(n2k.fields['Oil pressure'])
       return kpa * 1000.0;
-    }            
+    }
   }, {
     node: 'propulsion.starboard.oilPressure',
     filter: function(n2k) {
@@ -175,7 +175,7 @@ exports.mappings = {
     value: function(n2k) {
       var kpa = Number(n2k.fields['Oil pressure'])
       return kpa * 1000.0;
-    }                  
+    }
   }, {
     source: 'Total Engine hours',
     node: 'propulsion.port.runTime',
@@ -439,7 +439,7 @@ exports.mappings = {
     value: function(n2k) {
       var hpa = Number(n2k.fields['Atmospheric Pressure'])
       return hpa * 100.0;
-    }      
+    }
   }],
   //Temperature
   '130312': [{
@@ -490,6 +490,37 @@ exports.mappings = {
       var magHeading = n2k.fields['Target Heading Magnetic']
 
       return magHeading ? magHeading : trueHeading;
+    }
+  }],
+
+  // Seatalk: Alarm
+  '65288': [{
+    node: function(n2k) {
+      var alarmName = n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '') + n2k.fields['Alarm ID'].replace(/ /g, '');
+      return 'notifications.' + alarmName;
+    },
+    value: function(n2k) {
+      var state = n2k.fields['Alarm Status'];
+
+      var method = [ 'visual' ];
+
+      if ( state == 'Alarm condition met and not silenced' ) {
+        method.push('sound');
+      }
+
+      if ( state == 'Alarm condition not met' ) {
+        state = 'normal'
+      } else {
+        state = 'alarm'
+      }
+
+
+      return {
+        message: n2k.fields['Alarm ID'],
+        method: method,
+        state: state,
+        timestamp: n2k.timestamp
+      }
     }
   }]
 }
