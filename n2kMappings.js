@@ -159,17 +159,23 @@ exports.mappings = {
       return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
     },
   }, {
-    source: 'Oil pressure',
     node: 'propulsion.port.oilPressure',
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
-    }
+    },
+    value: function(n2k) {
+      var kpa = Number(n2k.fields['Oil pressure'])
+      return kpa * 1000.0;
+    }            
   }, {
-    source: 'Oil pressure',
     node: 'propulsion.starboard.oilPressure',
     filter: function(n2k) {
       return n2k.fields['Engine Instance'] === 'Dual Engine Starboard';
-    }
+    },
+    value: function(n2k) {
+      var kpa = Number(n2k.fields['Oil pressure'])
+      return kpa * 1000.0;
+    }                  
   }, {
     source: 'Total Engine hours',
     node: 'propulsion.port.runTime',
@@ -400,10 +406,13 @@ exports.mappings = {
       return n2k.fields['Outside Ambient Air Temperature']
     }
   }, {
-    source: 'Atmospheric Pressure',
     node: 'environment.outside.pressure',
     filter: function(n2k) {
       return n2k.fields['Atmospheric Pressure']
+    },
+    value: function(n2k) {
+      var hpa = Number(n2k.fields['Atmospheric Pressure'])
+      return hpa * 100.0;
     }
   }],
   //Temp, humidity and pressure
@@ -423,11 +432,14 @@ exports.mappings = {
     },
     source: 'Humidity'
   }, {
-    source: 'Atmospheric Pressure',
     node: 'environment.outside.pressure',
     filter: function(n2k) {
       return n2k.fields['Atmospheric Pressure']
-    }
+    },
+    value: function(n2k) {
+      var hpa = Number(n2k.fields['Atmospheric Pressure'])
+      return hpa * 100.0;
+    }      
   }],
   //Temperature
   '130312': [{
