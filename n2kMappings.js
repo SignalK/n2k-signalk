@@ -447,13 +447,17 @@ exports.mappings = {
 
   //Seatalk: Pilot Locked Heading
   '65360': [{
-    node: 'steering.autopilot.target.angle',
-    value: function(n2k) {
-      var trueHeading = n2k.fields['Target Heading True']
-      var magHeading = n2k.fields['Target Heading Magnetic']
-
-      return magHeading ? magHeading : trueHeading; 
-    }
+    node: 'steering.autopilot.target.headingTrue',
+    filter: function(n2k) {
+      return n2k.fields['Target Heading True']
+    },
+    source: 'Target Heading True'
+  },{
+    node: 'steering.autopilot.target.headingMagnetic',
+    filter: function(n2k) {
+      return n2k.fields['Target Heading Magnetic']
+    },
+    source: 'Target Heading Magnetic'
   }],
 }
 
