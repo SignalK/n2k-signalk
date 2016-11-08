@@ -11,7 +11,7 @@ var msgs = require('./130310-2.json');
 describe('Temperature: ', function() {
   it("examples work", function() {
     var n2kMapper = require("../n2kMapper.js");
-    var full = new(require('signalk-schema').FullSignalK)();
+    var full = new(require('signalk-schema').FullSignalK)("urn:mrn:imo:mmsi:230099999");
     _.forOwn(msgs, function(msg, key) {
       var delta = n2kMapper.toDelta(msg);
       delta.context = 'vessels.urn:mrn:imo:mmsi:230099999';
@@ -27,7 +27,7 @@ describe('Temperature: ', function() {
 
   it("all 130312 mappings are valid", function() {
     var temperatureMappings = require("../n2kMappings").temperatureMappings;
-    var full = new(require('signalk-schema').FullSignalK)();
+    var full = new(require('signalk-schema').FullSignalK)("urn:mrn:imo:mmsi:230099999");
     _.forOwn(temperatureMappings, function(mapping, key) {
       var delta = {
         context: 'vessels.urn:mrn:imo:mmsi:230099999',
