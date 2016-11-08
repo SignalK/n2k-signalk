@@ -27,6 +27,14 @@ exports.mappings = {
   }, {
     source: 'Offset',
     node: 'environment.depth.surfaceToTransducer'
+  }, {
+    node: 'environment.depth.belowSurface',
+    filter: function(n2k) {
+      return typeof n2k.fields['Depth'] != 'undefined' && typeof n2k.fields['Offset'] != 'undefined'
+    },
+    value: function(n2k) {
+      return Number(n2k.fields.Depth) + Number(n2k.fields.Offset)
+    }
   }],
   //Log
   '128275': [{
