@@ -13,6 +13,8 @@ describe('128267_water_depth', function () {
     tree.should.have.deep.property('environment.depth.belowTransducer.value', 8.20);
     tree.should.have.deep.property('environment.depth.surfaceToTransducer');
     tree.should.have.deep.property('environment.depth.surfaceToTransducer.value', 0.304);
+    tree.should.have.deep.property('environment.depth.belowSurface');
+    tree.should.have.deep.property('environment.depth.belowSurface.value', 8.504);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
