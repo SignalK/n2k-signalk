@@ -519,7 +519,7 @@ exports.mappings = {
   // Seatalk: Alarm
   '65288': [{
     node: function(n2k) {
-      var alarmName = n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '') + n2k.fields['Alarm ID'].replace(/ /g, '');
+      var alarmName = n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '') + '.' + n2k.fields['Alarm ID'].replace(/ /g, '');
       return 'notifications.' + alarmName;
     },
     value: function(n2k) {
