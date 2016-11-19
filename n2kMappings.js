@@ -471,17 +471,6 @@ exports.mappings = {
     },
   }],
 
-  // Seatalk: Pilot Wind Datum
-  '65345': [{
-    node: 'steering.autopilot.target.windAngleApparent',
-    value: function(n2k) {
-      var angle = Number(n2k.fields['Wind Datum'])
-      if ( angle > Math.PI )
-        angle = angle-(Math.PI*2);
-      return angle;
-    }   
-  }],
-
   //Seatalk: Pilot Mode
   '65379': [{
     node: 'steering.autopilot.state',
@@ -503,23 +492,19 @@ exports.mappings = {
 
   //Seatalk: Pilot Locked Heading
   '65360': [{
-    node: 'steering.autopilot.target.headingTrue',
-    filter: function(n2k) {
-      return n2k.fields['Target Heading True']
-    },
-    source: 'Target Heading True'
-  },{
-    node: 'steering.autopilot.target.headingMagnetic',
-    filter: function(n2k) {
-      return n2k.fields['Target Heading Magnetic']
-    },
-    source: 'Target Heading Magnetic'
+    node: 'steering.autopilot.target.angle',
+    value: function(n2k) {
+      var trueHeading = n2k.fields['Target Heading True']
+      var magHeading = n2k.fields['Target Heading Magnetic']
+
+      return magHeading ? magHeading : trueHeading;
+    }
   }],
 
   // Seatalk: Alarm
   '65288': [{
     node: function(n2k) {
-      var alarmName = n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '') + '.' + n2k.fields['Alarm ID'].replace(/ /g, '');
+      var alarmName = n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '') + n2k.fields['Alarm ID'].replace(/ /g, '');
       return 'notifications.' + alarmName;
     },
     value: function(n2k) {
@@ -545,7 +530,135 @@ exports.mappings = {
         timestamp: n2k.timestamp
       }
     }
-  }]
+  }],
+
+    // Fusion
+    '130820': [{
+	source: 'Artist',
+	node: 'entertainment.track.artist',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Artist' && n2k.fields.Artist != 0 }
+    }, {
+	source: 'Album',
+	node: 'entertainment.track.album',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Album'  && n2k.fields.Album != 0 }
+    }, {
+	source: 'Track',
+	node: 'entertainment.track.title',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Title'  && n2k.fields.Track != 0  }	
+    }, {
+	source: 'Progress',
+	node: 'entertainment.track.progress',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Progress' }
+    }, {
+	source: 'Artist',
+	node: 'entertainment.track.artist',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Artist' }
+    }, {
+	source: 'Title',
+	node: 'entertainment.track.title',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Title' }
+    }, {
+	source: 'Channel',
+	node: 'entertainment.radio.channel',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Channel' }
+    }, {
+	source: 'Genre',
+	node: 'entertainment.track.genre',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Genre' }
+    }, {
+	source: 'Track #',
+	node: 'entertainment.track.index',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' }
+    }, {
+	source: 'Track Count',
+	node: 'entertainment.playlist.count',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' }
+    }, {
+	source: 'Track Length',
+	node: 'entertainment.track.length',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' }
+    }, {
+	node: 'entertainment.zones.1.volume',
+	source: 'Zone 1',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    }, {
+	node: 'entertainment.zones.2.volume',
+	source: 'Zone 2',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    }, {
+	node: 'entertainment.zones.3.volume',
+	source: 'Zone 3',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    }, {
+	node: 'entertainment.zones.4.volume',
+	source: 'Zone 4',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    }, {
+	node: function (n2k) { return 'entertainment.zones.' + (Number(n2k.fields.Number)+1) + '.name' },
+
+	source: 'Name',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Zone Name' }
+    }, {
+	node: 'entertainment.currentSource',
+
+	source: 'Current Source ID',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+    }, {
+	node: function (n2k) { return 'entertainment.sources.' + n2k.fields['Source ID'] + '.name' },
+
+	source: 'Source',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+    }, {
+	node: function (n2k) { return 'entertainment.sources.' + n2k.fields['Source ID'] + '.id' },
+	source: 'Source ID',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+    }, {
+	node: function (n2k) { return 'entertainment.sources.' + n2k.fields['Source ID'] + '.id' },
+	source: 'Source ID',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+    }, {
+	source: 'AM/FM',
+	node: 'entertainment.radio.band',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'AM/FM Station' }
+    }, {
+	source: 'Frequency',
+	node: 'entertainment.radio.frequency',
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'AM/FM Station' }
+    }, {
+	node: 'entertainment.transport',
+	value: function(n2k) {
+	    var val = n2k.fields['Transport']
+	    return val == 'Paused' ? 'paused' : 'playing'
+	},
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' }
+    }, {
+	node: 'entertainment.muted',
+	value: function(n2k) {
+	    var val = n2k.fields['Mute']
+	    return val == 'Muted' ? true : false
+	},
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
+    }, {
+	node: 'entertainment.tone',
+	value: function(n2k) {
+	    return {
+		bass: Number(n2k.fields.Bass),
+		mid: Number(n2k.fields.Mid),
+		treble: Number(n2k.fields.Treble)
+	    }
+	},
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Tone' }
+    },{
+	node: function(n2k) { 'entertainment.menus.' + n2k.fields.Source },
+	value: function(n2k) {
+	    return {
+		text: n2k.fields.Text,
+		line: n2k.fields.Line,
+		type: n2k.fields.Type
+	    }
+	},
+	filter: function(n2k) { return n2k.fields['Message ID'] == 'Menu Item' }
+    }]
 }
 
 /*
