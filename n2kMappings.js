@@ -330,6 +330,17 @@ exports.mappings = {
         n2k.fields['Bearing, Position to Destination Waypoint'];
       return result;
     }
+  },
+  {
+    node: function(n2k) {
+      return 'navigation.course' + calculationType(n2k) + '.activeRoute'
+    },
+    value: function(n2k) {
+      return { estimatedTimeOfArrival: n2k.fields['ETA Date'].replace(/\./g,'-') + 'T' + n2k.fields['ETA Time'] + 'Z' };
+    },
+    filter: function(n2k) {
+        return typeof n2k.fields['ETA Date'] != 'undefined'
+    }
   }],
 
 
