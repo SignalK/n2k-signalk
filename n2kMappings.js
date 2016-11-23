@@ -330,7 +330,16 @@ exports.mappings = {
         n2k.fields['Bearing, Position to Destination Waypoint'];
       return result;
     }
-  }],
+  }, {
+    node: 'notifications.waypointArrival',
+    value: function(n2k) {
+        return {
+	  message: 'Waypoint Arrival',
+	  method: 'visual',
+          state: n2k.fields['Arrival Circle Entered'] === 'Yes' ? 'alert' :  'normal'
+        };
+      }
+    }],
 
 
   //Set & Drift rapid update
