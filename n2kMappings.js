@@ -555,7 +555,7 @@ exports.mappings = {
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Unit Name' }
   }, {
     source: 'Artist',
-    node: function (n2k) { 'entertainment.fusion1.avsource.source' + currentFusionSource + '.track.artistName' },
+    node: function (n2k) { return 'entertainment.fusion1.avsource.source' + currentFusionSource + '.track.artistName' },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Artist' && n2k.fields.Artist != 0 && currentFusionSource != null }
   }, {
     source: 'Album',
