@@ -320,6 +320,17 @@ exports.mappings = {
     }
   }],
 
+  //XTE
+  '129283': [{
+    node: function(n2k) {
+      return 'navigation.course.crossTrackError'
+    },
+    source: 'XTE',
+    filter: function(n2k) {
+      return n2k.fields['Navigation Terminated'] === 'No';
+    }
+    }],
+
   //Navigation data
   '129284': [{
     node: function(n2k) {
