@@ -20,6 +20,7 @@ describe('128267_water_depth', function () {
       JSON.parse('{"timestamp":"2013-10-08-15:47:28.280","prio":"3","src":"1","dst":"255","pgn":"128267","description":"Water Depth","fields":{"SID":"91","Depth":"8.20", "Offset":-0.304}}'));
     tree.should.have.deep.property('environment.depth.belowTransducer.value', 8.20);
     tree.should.have.deep.property('environment.depth.transducerToKeel.value', -0.304);
+    tree.should.have.deep.property('environment.depth.belowKeel.value', 7.895999999999999);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
