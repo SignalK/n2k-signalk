@@ -1,7 +1,6 @@
 
-exports.mappings = {
-  // Fluid Level
-  '127505': [{
+module.exports = [
+  {
     node: function(n2k) {
       return 'tanks.' + tankMappings[n2k.fields['Type']] + '.' + n2k.fields['Instance'] + '.currentLevel'
     },
@@ -11,8 +10,8 @@ exports.mappings = {
       return 'tanks.' + tankMappings[n2k.fields['Type']] + '.' + n2k.fields['Instance'] + '.capacity'
     },
     source: 'Capacity'
-  }]
-}
+  }
+]
 
 var tankMappings = {
   "Fuel": "fuel",

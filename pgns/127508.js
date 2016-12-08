@@ -1,12 +1,9 @@
 
-
-exports.mappings = {
-  //Battery Voltage
-  '127508': [{
+module.exports = [
+  {
     source: 'Voltage',
     node: function(n2k) {
       return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.voltage'
-    },
-  }]
-}
-
+    }
+  }
+]

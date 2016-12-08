@@ -1,40 +1,22 @@
-var extend = require('util')._extend
+//var extend = require('util')._extend
+const path = require('path')
+const fs = require('fs')
+const glob = require('glob')
 
-
-function getMmsiContext(n2k) {
-  return 'vessels.urn:mrn:imo:mmsi:' + n2k.fields['User ID'];
+function load_pgns(dir, mappings)
+{
+  fpath = path.join(__dirname, dir)
+  files = fs.readdirSync(fpath);
+  files.forEach(fname => {
+    pgn = path.basename(fname, '.js')
+    mappings[pgn] = require(path.join(fpath, pgn))
+  });
 }
 
-mappings = {
-  '129809': [{
-    node: '',
-    value: function(n2k) {
-      return {
-        name: n2k.fields.Name
-      }
-    }
-  }, {
-    context: getMmsiContext
-  }],
-  '129794': [{
-    node: '',
-    value: function(n2k) {
-      return {
-        name: n2k.fields.Name
-      }
-    }
-  }, {
-    context: getMmsiContext
-  }]
-}
+var mappings = {}
 
-extend(mappings, require('./groups/environment').mappings)
-extend(mappings, require('./groups/navigation').mappings)
-extend(mappings, require('./groups/steering').mappings)
-extend(mappings, require('./groups/propulsion').mappings)
-extend(mappings, require('./groups/tanks').mappings)
-extend(mappings, require('./groups/electrical').mappings)
-extend(mappings, require('./groups/raymarine').mappings)
+load_pgns('pgns', mappings)
+load_pgns('raymarine', mappings)
 
 exports.mappings = mappings
 
