@@ -23,7 +23,7 @@
     "debug": "^2.1.1",
     "nomnom": "~1.6.2",
     "signalk-schema": "SignalK/specification",
-    "through": ">=2.2.7 <3",
+    "through": ">=2.2.7 <3"
   },
   "devDependencies": {
     "chai": "1.9",
