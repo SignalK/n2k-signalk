@@ -24,7 +24,6 @@
     "nomnom": "~1.6.2",
     "signalk-schema": "SignalK/specification",
     "through": ">=2.2.7 <3",
-    "glob": "^7.7.1"
   },
   "devDependencies": {
     "chai": "1.9",
