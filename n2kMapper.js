@@ -68,7 +68,7 @@ var toValuesArray = function(theMappings, n2k) {
             }
           }
         } catch (ex) {
-          process.stderr.write(ex + ' ' + n2k);
+          process.stderr.write(ex + ' ' + JSON.stringify(n2k));
         }
       })
       .filter(function(x) {
