@@ -4,7 +4,8 @@
   "description": "NMEA 2000 to SignalK conversion library",
   "main": "n2kMapper.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "changelog": "github-changes -o signalk -r n2k-signalk -a --only-pulls --use-commit-body --data=pulls"
   },
   "keywords": [
     "nmea",
@@ -28,6 +29,7 @@
   "devDependencies": {
     "chai": "~3.5.0",
     "chai-things": "0.2",
+    "github-changes": "^1.0.4",
     "lodash": "^4.6.1",
     "mocha": "^3.2.0",
     "tv4": "latest"
