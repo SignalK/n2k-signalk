@@ -122,7 +122,10 @@ exports.toNested = function(n2k) {
   if (!delta.context) {
     delta.context = "vessels." + signalkSchema.fakeMmsiId;
   }
-  return signalkSchema.deltaToFull(delta).vessels[delta.context.split('.')[1]];
+
+  var contextParts = delta.context.split('.');
+
+  return signalkSchema.deltaToFull(delta)[contextParts[0]][contextParts[1]];
 }
 
 exports.toDeltaTransformer = function(options) {
