@@ -22,7 +22,7 @@ describe('130842 Simnet AIS Class B static data', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:338184313');
     var tree = mapper.toNested(msg);
     tree.should.have.deep.property('design.length.overall.value', 9.0);
-    tree.should.have.deep.property('design.type.value', "Sailing");
+    tree.should.have.deep.property('design.aisShipType.value', "Sailing");
     tree.should.have.deep.property('design.beam.value', 4.0);
   });
 });

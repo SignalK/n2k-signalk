@@ -52,7 +52,7 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     var tree = mapper.toNested(msg);
     tree.should.have.deep.property('design.draft.maximum.value', 10.6);
     tree.should.have.deep.property('design.length.overall.value', 183.0);
-    tree.should.have.deep.property('design.type.value', "Tanker hazard cat C");
+    tree.should.have.deep.property('design.aisShipType.value', "Tanker hazard cat C");
     tree.should.have.deep.property('design.beam.value', 32.0);
     tree.should.have.deep.property('navigation.destination.name.value', 'USA (BALTIMORE)')
   });
