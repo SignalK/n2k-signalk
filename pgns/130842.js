@@ -1,4 +1,5 @@
 const getMmsiContext = require('../mmsi-context')
+const getFromStarboard = require('../aisFromStarboard')
 
 module.exports = [
   {
@@ -32,6 +33,14 @@ module.exports = [
     filter: function(n2k) {
       return n2k.fields['Beam'];
     }
+  },
+  {
+    node: 'sensors.ais.fromBow',
+    source: 'Position reference from Bow'
+  },
+  {
+    node: 'sensors.ais.fromCenter',
+    value: getFromStarboard
   },
   {
     context: getMmsiContext

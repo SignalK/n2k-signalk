@@ -18,7 +18,7 @@ describe('129040 AIS Class B Extended Position Repeat', function () {
     tree.should.have.deep.property('design.length.overall.value', 16.0);
     tree.should.have.deep.property('design.aisShipType.value', "SAR");
     tree.should.have.deep.property('design.beam.value', 4.0);
-    tree.should.have.deep.property('navigation.destination.name.value', "HELSINKI LIFEBOAT");
+    tree.should.have.deep.property('navigation.destination.commonName.value', "HELSINKI LIFEBOAT");
     tree.navigation.position.longitude.should.equal(25.2026083);
     tree.navigation.position.latitude.should.equal(60.2176150);
     tree.should.have.deep.property('navigation.courseOverGroundTrue');
@@ -26,5 +26,7 @@ describe('129040 AIS Class B Extended Position Repeat', function () {
     tree.should.have.deep.property('navigation.speedOverGround');
     tree.should.have.deep.property('navigation.speedOverGround.value', 2.26);
     tree.should.have.deep.property('navigation.headingTrue.value', 158.0);
+    tree.should.have.deep.property('sensors.ais.fromBow.value', 9.0);
+    tree.should.have.deep.property('sensors.ais.fromCenter.value', 0);
   });
 });
