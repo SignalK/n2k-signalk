@@ -11,7 +11,7 @@ module.exports = [
   },
   {
     source: 'Destination',
-    node: 'navigation.destination.name'
+    node: 'navigation.destination.commonName'
   },
   {
     value: function(n2k) {

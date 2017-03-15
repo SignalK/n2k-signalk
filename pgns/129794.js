@@ -10,7 +10,7 @@ module.exports = [
     }
   },
   {
-    node: 'navigation.destination.name',
+    node: 'navigation.destination.commonName',
     source: 'Destination'
   },
   {
