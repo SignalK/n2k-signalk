@@ -14,7 +14,7 @@ var toDelta = function(n2k) {
         pgn: Number(n2k.pgn),
         src: n2k.src.toString()
       },
-      timestamp: n2k.timestamp,
+      timestamp: n2k.timestamp.substring(0,10) + "T" + n2k.timestamp.substring(11,n2k.timestamp.length),
       values: toValuesArray(theMappings, n2k)
     }]
   };
