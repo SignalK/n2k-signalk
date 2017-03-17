@@ -39,7 +39,7 @@ describe('Temperature: ', function() {
             "src": "36",
             "instance": "0"
           },
-          timestamp: '',
+          timestamp: '2016-10-18T15:52:48.152Z',
           values: [{
             path: mapping.path,
             value: 0
