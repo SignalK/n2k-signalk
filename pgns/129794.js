@@ -15,12 +15,22 @@ module.exports = [
     source: 'Destination'
   },
   {
-    node: 'design.draft.maximum',
-    source: 'Draft'
+    node: 'design.draft',
+    filter: function(n2k) {
+      return n2k.fields['Draft']
+    },
+    value: function (n2k) {
+      return { maximum: n2k.fields['Draft'] }
+    }
   },
   {
-    node: 'design.length.overall',
-    source: 'Length'
+    node: 'design.length',
+    value: function(n2k) {
+      return { overall: Number(n2k.fields.Length) }
+    },
+    filter: function(n2k) {
+      return n2k.fields['Length'];
+    }
   },
   {
     node: 'design.aisShipType',
@@ -36,7 +46,10 @@ module.exports = [
   },
   {
     node: 'sensors.ais.fromCenter',
-    value: getFromStarboard
+    value: getFromStarboard,
+    filter: function(n2k) {
+      return n2k.fields['Position reference from Starboard'] && n2k.fields['Beam'];
+    }
   },
   {
     context: getMmsiContext

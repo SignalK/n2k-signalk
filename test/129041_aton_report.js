@@ -18,5 +18,6 @@ describe('129041 AIS Aids to Navigation (AtoN) Report', function () {
     tree.should.have.deep.property('design.atonType.value', "Fixed beacon: port hand");
     tree.navigation.position.latitude.should.equal(38.9938400);
     tree.navigation.position.longitude.should.equal(-76.3847132);
+    tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });

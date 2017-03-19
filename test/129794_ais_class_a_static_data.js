@@ -50,12 +50,13 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     delta.updates[0].values[0].path.should.equal('');
     delta.updates[0].values[0].value.name.should.equal('SILVER GWEN');
     var tree = mapper.toNested(msg);
-    tree.should.have.deep.property('design.draft.maximum.value', 10.6);
-    tree.should.have.deep.property('design.length.overall.value', 183.0);
+    tree.should.have.deep.property('design.draft.maximum', 10.6);
+    tree.should.have.deep.property('design.length.overall', 183.0);
     tree.should.have.deep.property('design.aisShipType.value', "Tanker hazard cat C");
     tree.should.have.deep.property('design.beam.value', 32.0);
     tree.should.have.deep.property('navigation.destination.commonName.value', 'USA (BALTIMORE)')
     tree.should.have.deep.property('sensors.ais.fromBow.value', 147.0);
     tree.should.have.deep.property('sensors.ais.fromCenter.value', 8);
+    tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });

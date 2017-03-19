@@ -20,8 +20,13 @@ module.exports = [
     node: 'navigation.position'
   },
   {
-    node: 'design.length.overall',
-    source: 'Length/Diameter'
+    node: 'design.length',
+    value: function(n2k) {
+      return { overall: Number(n2k.fields['Length/Diameter']) }
+    },
+    filter: function(n2k) {
+      return n2k.fields['Length/Diameter'];
+    }
   },
   {
     node: 'design.atonType',
@@ -37,7 +42,10 @@ module.exports = [
   },
   {
     node: 'sensors.ais.fromCenter',
-    value: getFromStarboard
+    value: getFromStarboard,
+    filter: function(n2k) {
+      return n2k.fields['Position reference from Starboard'] && n2k.fields['Beam/Diameter'];
+    }
   },
   {
     context: function(n2k) { return 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] }

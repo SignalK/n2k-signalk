@@ -14,10 +14,12 @@ module.exports = [
     }      
   },
   {
-    node: 'design.length.overall',
-    source: 'Length',
+    node: 'design.length',
+    value: function(n2k) {
+      return { overall: Number(n2k.fields.Length) }
+    },
     filter: function(n2k) {
-      return n2k.fields['Length'] 
+      return n2k.fields['Length'];
     }
   },
   {
@@ -40,7 +42,10 @@ module.exports = [
   },
   {
     node: 'sensors.ais.fromCenter',
-    value: getFromStarboard
+    value: getFromStarboard,
+    filter: function(n2k) {
+      return n2k.fields['Position reference from Starboard'] && n2k.fields['Beam'];
+    }
   },
   {
     context: getMmsiContext
