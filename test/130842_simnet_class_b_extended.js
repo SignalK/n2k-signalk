@@ -26,7 +26,7 @@ describe('130842 Simnet AIS Class B static data', function () {
     var tree = mapper.toNested(msg);
     tree.should.have.deep.property('mmsi', '338184313');
     tree.should.have.deep.property('design.length.overall', 9.0);
-    tree.should.have.deep.property('design.aisShipType.value', "Sailing");
+    tree.should.have.deep.property('design.aisShipType.value', 36);
     tree.should.have.deep.property('design.beam.value', 4.0);
     tree.should.have.deep.property('sensors.ais.fromBow.value', 6.0);
     tree.should.have.deep.property('sensors.ais.fromCenter.value', 0);

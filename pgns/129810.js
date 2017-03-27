@@ -1,5 +1,6 @@
 const getMmsiContext = require('../mmsi-context')
 const getFromStarboard = require('../aisFromStarboard')
+const getShipType = require('../aisShipTypeMapping')
 
 module.exports = [
   {
@@ -13,7 +14,12 @@ module.exports = [
   },
   {
     node: 'design.aisShipType',
-    source: 'Type of ship'
+    value: function(n2k) {
+      return getShipType(n2k.fields['Type of ship'])
+    },
+    filter: function(n2k) {
+      return n2k.fields['Type of ship'];
+    }
   },
   {
     node: 'design.beam',
