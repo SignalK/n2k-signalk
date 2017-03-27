@@ -29,7 +29,7 @@ module.exports = [
     }
   },
   {
-    node: 'design.atonType',
+    node: 'atonType',
     source: 'AtoN Type'
   },
   {
