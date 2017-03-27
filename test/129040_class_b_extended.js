@@ -28,6 +28,7 @@ describe('129040 AIS Class B Extended Position Repeat', function () {
     tree.should.have.deep.property('navigation.headingTrue.value', 158.0);
     tree.should.have.deep.property('sensors.ais.fromBow.value', 9.0);
     tree.should.have.deep.property('sensors.ais.fromCenter.value', 0);
+    delete tree.design.aisShipType;
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });

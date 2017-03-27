@@ -49,6 +49,7 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:356307000');
     delta.updates[0].values[0].path.should.equal('');
     delta.updates[0].values[0].value.name.should.equal('SILVER GWEN');
+    console.log(JSON.stringify(delta, null, 2))
     var tree = mapper.toNested(msg);
     tree.should.have.deep.property('design.draft.maximum', 10.6);
     tree.should.have.deep.property('design.length.overall', 183.0);
@@ -57,6 +58,7 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     tree.should.have.deep.property('navigation.destination.commonName.value', 'USA (BALTIMORE)')
     tree.should.have.deep.property('sensors.ais.fromBow.value', 147.0);
     tree.should.have.deep.property('sensors.ais.fromCenter.value', 8);
+    delete tree.design.aisShipType;
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
