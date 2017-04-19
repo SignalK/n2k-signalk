@@ -7,22 +7,12 @@ module.exports = [
     node: '',
     value: function(n2k) {
       return {
-        name: n2k.fields.Name
+        name: n2k.fields.Name,
       }
-    }
-  },
-  {
-    node: 'navigation.destination.commonName',
-    source: 'Destination'
-  },
-  {
-    node: 'design.draft',
-    filter: function(n2k) {
-      return n2k.fields['Draft']
     },
-    value: function (n2k) {
-      return { maximum: n2k.fields['Draft'] }
-    }
+    filter: function(n2k) {
+      return n2k.fields['Name'] 
+    }      
   },
   {
     node: 'design.length',
@@ -44,7 +34,10 @@ module.exports = [
   },
   {
     node: 'design.beam',
-    source: 'Beam'
+    source: 'Beam',
+    filter: function(n2k) {
+      return n2k.fields['Beam'];
+    }
   },
   {
     node: 'sensors.ais.fromBow',

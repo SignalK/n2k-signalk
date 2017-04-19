@@ -16,6 +16,36 @@ module.exports = [
     },
     node: 'navigation.position'
   }, {
+    source: 'Rate of Turn',
+    node: 'navigation.rateOfTurn'
+  }, {
+    source: 'Heading',
+    node: 'navigation.headingTrue'
+  }, {
+    node: 'navigation.state',
+    value: function(n2k) {
+      return stateMapping[n2k.fields['Nav Status']]
+    },
+    filter: function(n2k) {
+      return n2k.fields['Nav Status']
+    }
+  }, {
     context: getMmsiContext
   }
 ]
+
+
+const stateMapping = {
+  'Under way using engine': 'motoring',
+  'At anchor': 'anchored',
+  'Not under command': 'not under command',
+  'Restricted manoeuverability': 'restricted manouverability',
+  'Constrained by her draught': 'constrained by draft',
+  'Moored': 'moored',
+  'Aground': 'aground',
+  'Engaged in Fishing': 'fishing',
+  'Under way sailing': 'sailing',
+  'Hazardous material, High Speed': 'hazardous material high speed',
+  'Hazardous material, Wing in Ground': 'hazardous material wing in ground',
+  'AIS-SART': 'ais-sart'
+}

@@ -7,22 +7,34 @@ module.exports = [
     node: '',
     value: function(n2k) {
       return {
-        name: n2k.fields.Name
+        name: n2k.fields.Name,
       }
     }
   },
   {
-    node: 'navigation.destination.commonName',
-    source: 'Destination'
+    source: 'Destination',
+    node: 'navigation.destination.commonName'
   },
   {
-    node: 'design.draft',
-    filter: function(n2k) {
-      return n2k.fields['Draft']
+    value: function(n2k) {
+      return {
+        longitude: Number(n2k.fields.Longitude),
+        latitude: Number(n2k.fields.Latitude)
+      }
     },
-    value: function (n2k) {
-      return { maximum: n2k.fields['Draft'] }
-    }
+    node: 'navigation.position'
+  },
+  {
+    source: 'SOG',
+    node: 'navigation.speedOverGround'
+  },
+  {
+    source: 'COG',
+    node: 'navigation.courseOverGroundTrue'
+  },
+  {
+    source: 'True Heading',
+    node: 'navigation.headingTrue'
   },
   {
     node: 'design.length',

@@ -16,6 +16,12 @@ describe('129038 Class A Update', function () {
     tree.should.have.deep.property('navigation.speedOverGround.value', 2.26);
     tree.navigation.position.longitude.should.equal(25.2026083);
     tree.navigation.position.latitude.should.equal(60.2176150);
+    tree.should.have.deep.property('navigation.rateOfTurn');
+    tree.should.have.deep.property('navigation.rateOfTurn.value', 0.047);
+    tree.should.have.deep.property('navigation.headingTrue');
+    tree.should.have.deep.property('navigation.headingTrue.value', 153.0);
+    tree.should.have.deep.property('navigation.state');
+    tree.should.have.deep.property('navigation.state.value', 'motoring');
     tree.should.be.validSignalKVesselIgnoringIdentity;
     var delta = mapper.toDelta(msg);
     delta.updates.length.should.equal(1);
