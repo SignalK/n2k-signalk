@@ -16,5 +16,8 @@ module.exports = [
     },
     node: 'navigation.position'
   }, {
+    source: 'Heading',
+    node: 'navigation.headingTrue'
+  }, {
     context: getMmsiContext
   }]

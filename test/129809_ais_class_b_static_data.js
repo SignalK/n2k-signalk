@@ -14,5 +14,7 @@ describe('129809 Class B static data', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230044160');
     delta.updates[0].values[0].path.should.equal('');
     delta.updates[0].values[0].value.name.should.equal('LAGUNA');
+    var tree = mapper.toNested(msg);
+    tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
