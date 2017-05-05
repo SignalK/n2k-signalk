@@ -31,7 +31,7 @@ module.exports = [
     },
     value: function(n2k) {
       var lph = Number(n2k.fields['Fuel Rate'])
-      return lph * 0.00000028;      
+      return lph / 3600000;      
     }
   }, {
     node: 'propulsion.starboard.fuel.rate',
@@ -40,7 +40,7 @@ module.exports = [
     },
     value: function(n2k) {
       var lph = Number(n2k.fields['Fuel Rate'])
-      return lph * 0.00000028;      
+      return lph / 3600000;      
     }
   }, {
     node: 'propulsion.port.oilPressure',

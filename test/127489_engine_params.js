@@ -14,7 +14,7 @@ describe('127489 engine parameters Port', function () {
     tree.should.have.deep.property('propulsion.port.alternatorVoltage');
     tree.should.have.deep.property('propulsion.port.alternatorVoltage.value', 12.60);
     tree.should.have.deep.property('propulsion.port.fuel.rate');
-    tree.should.have.deep.property('propulsion.port.fuel.rate.value', 1.1200000000000001e-07);
+    tree.should.have.deep.property('propulsion.port.fuel.rate.value', 1.1111111111111112e-7);
     tree.should.have.deep.property('propulsion.port.runTime');
     tree.should.have.deep.property('propulsion.port.runTime.value', 309960);
     tree.should.have.deep.property('propulsion.port.oilPressure');
@@ -34,7 +34,7 @@ describe('127489 engine parameters Starboard', function () {
     tree.should.have.deep.property('propulsion.starboard.alternatorVoltage');
     tree.should.have.deep.property('propulsion.starboard.alternatorVoltage.value', 12.60);
     tree.should.have.deep.property('propulsion.starboard.fuel.rate');
-    tree.should.have.deep.property('propulsion.starboard.fuel.rate.value', 2.8000000000000003e-8);
+    tree.should.have.deep.property('propulsion.starboard.fuel.rate.value', 2.777777777777778e-8);
     tree.should.have.deep.property('propulsion.starboard.runTime');
     tree.should.have.deep.property('propulsion.starboard.runTime.value', 309960);
     tree.should.have.deep.property('propulsion.starboard.oilPressure');
