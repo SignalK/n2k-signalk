@@ -27,7 +27,7 @@
     "through": ">=2.2.7 <3"
   },
   "devDependencies": {
-    "chai": "~3.5.0",
+    "chai": "~4.0.1",
     "chai-things": "0.2",
     "github-changes": "^1.0.4",
     "lodash": "^4.6.1",
