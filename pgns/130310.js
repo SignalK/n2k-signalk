@@ -12,8 +12,7 @@ module.exports = [
       return n2k.fields['Atmospheric Pressure']
     },
     value: function(n2k) {
-      var hpa = Number(n2k.fields['Atmospheric Pressure'])
-      return hpa * 100.0;
+      return Number(n2k.fields['Atmospheric Pressure'])
     }
   }
 ]
