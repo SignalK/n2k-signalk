@@ -39,5 +39,15 @@ module.exports =  [
         }
       }
     }
+  },{
+    node: function(n2k) {
+      return 'navigation.course' + calculationType(n2k) + '.activeRoute.estimatedTimeOfArrival'
+    },
+    filter: function(n2k) {
+      return n2k.fields['ETA Date'] && n2k.fields['ETA Time']
+    },
+    value: function(n2k) {
+      return n2k.fields['ETA Date'].replace(/\./g,'-') + 'T' + n2k.fields['ETA Time'] + 'Z' 
+    }
   }
 ]
