@@ -39,5 +39,18 @@ module.exports =  [
         }
       }
     }
+  },{
+    node: function(n2k) {
+      return 'navigation.course' + calculationType(n2k) + '.nextPoint.timeToGo'
+    },
+    filter: function(n2k) {
+      return n2k.fields['ETA Date'] && n2k.fields['ETA Time']
+    },
+    value: function(n2k) {
+      var dateStr = n2k.fields['ETA Date'].replace(/\./g,'-') + 'T' + n2k.fields['ETA Time'] + 'Z'
+      var eta = new Date(dateStr)
+      var now = new Date(n2k.timestamp)
+      return (eta.getTime() - now.getTime())/1000
+    }
   }
 ]
