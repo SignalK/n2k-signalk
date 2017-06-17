@@ -1,9 +1,16 @@
+
+const debug = require('debug')('n2k-signalk-129284')
+const state = require('../state')
+
 var CALCULATION_TYPE = "Calculation Type";
 var RHUMBLINE = "Rhumb Line";
 var GREATCIRCLE = "Great Circle";
 
 function calculationType(n2k) {
-  return n2k.fields[CALCULATION_TYPE] === GREATCIRCLE ? 'GreatCircle' : 'Rhumbline';
+  var res = n2k.fields[CALCULATION_TYPE] === GREATCIRCLE ? 'GreatCircle' : 'Rhumbline';
+  debug('set calculationType to: ' + res)
+  state.lastCourseCalculationType = res
+  return res
 }
 
 module.exports =  [
