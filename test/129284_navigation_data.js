@@ -16,6 +16,7 @@ describe('129284 Navigation Data', function () {
     tree.should.have.deep.property('navigation.courseGreatCircle.nextPoint.bearingTrue.value', 2.7651);
     tree.should.have.deep.property('navigation.courseGreatCircle.nextPoint.position.latitude', 60.1366607);
     tree.should.have.deep.property('navigation.courseGreatCircle.nextPoint.position.longitude', 24.9068518);
+    tree.should.have.deep.property('navigation.courseGreatCircle.nextPoint.timeToGo.value', 31360.412);
     tree.should.be.validSignalKVesselIgnoringIdentity;
     var delta = mapper.toDelta(msg);
     delta.updates.length.should.equal(1);
