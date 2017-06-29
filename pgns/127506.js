@@ -15,10 +15,10 @@ module.exports = [
     node: function(n2k) {
       return 'electrical.batteries.' + n2k.fields['DC Instance'] + '.capacity.timeRemaining'
     }
-  },{
+  }/*,{
     source: 'Ripple Voltage',
     node: function(n2k) {
       return 'electrical.batteries.' + n2k.fields['DC Instance'] + '.voltage.ripple'
     }
-  }
+  }*/
 ]
