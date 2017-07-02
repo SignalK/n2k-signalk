@@ -4,7 +4,7 @@ var through = require('through');
 var debug = require('debug')('signalk:n2k-signalk')
 
 
-var toDelta = function(n2k, context) {
+var toDelta = function(n2k, state) {
   try {
     var theMappings = n2kMappings[n2k.pgn];
     var result = {
@@ -16,13 +16,13 @@ var toDelta = function(n2k, context) {
           src: n2k.src.toString()
         },
         timestamp: n2k.timestamp.substring(0, 10) + "T" + n2k.timestamp.substring(11, n2k.timestamp.length),
-        values: toValuesArray(theMappings, n2k, context)
+        values: toValuesArray(theMappings, n2k, state)
     }]
     };
     if(typeof theMappings != 'undefined') {
       theMappings.forEach(function(mapping) {
         if(typeof mapping.context === 'function') {
-          result.context = callFunction(mapping.context, n2k, context);
+          result.context = callFunction(mapping.context, n2k, state);
         }
       });
       if(theMappings.length === 1 && theMappings[0].instance) {
@@ -36,10 +36,10 @@ var toDelta = function(n2k, context) {
   }
 }
 
-function callFunction(aFunction, n2k, context) {
+function callFunction(aFunction, n2k, state) {
 
   if ( aFunction.length == 2 ) {
-    return aFunction(n2k, context)
+    return aFunction(n2k, state)
   } else {
     return aFunction(n2k)
   }
@@ -60,12 +60,12 @@ function getValue(n2k, theMapping) {
   }
 }
 
-var toValuesArray = function(theMappings, n2k, context) {
+var toValuesArray = function(theMappings, n2k, state) {
   if(n2k.fields && typeof theMappings != 'undefined') {
     return theMappings
       .filter(function(theMapping) {
         try {
-          return typeof theMapping.filter === 'undefined' || callFunction(theMapping.filter, n2k, context);
+          return typeof theMapping.filter === 'undefined' || callFunction(theMapping.filter, n2k, state);
         } catch(ex) {
           process.stderr.write(ex + ' ' + n2k);
           return false;
@@ -73,8 +73,8 @@ var toValuesArray = function(theMappings, n2k, context) {
       })
       .map(function(theMapping) {
         try {
-          var path = typeof theMapping.node === 'function' ? callFunction(theMapping.node, n2k, context) : theMapping.node;
-          var value = typeof theMapping.source === 'function' ? callFunction(theMapping.source, n2k, context) : getValue(n2k, theMapping);
+          var path = typeof theMapping.node === 'function' ? callFunction(theMapping.node, n2k, state) : theMapping.node;
+          var value = typeof theMapping.source === 'function' ? callFunction(theMapping.source, n2k, state) : getValue(n2k, theMapping);
           if(!(value == null)) { // null or undefined
             return {
               path: path,
@@ -131,8 +131,8 @@ function addAsNested(pathValue, source, timestamp, result) {
 
 
 exports.toDelta = toDelta;
-exports.toNested = function(n2k, context) {
-  var delta = toDelta(n2k, context);
+exports.toNested = function(n2k, state) {
+  var delta = toDelta(n2k, state);
   if(!delta.context) {
     delta.context = "vessels." + signalkSchema.fakeMmsiId;
   }

@@ -2,15 +2,15 @@
 
 module.exports = [
   {
-    node: function(n2k, context) {
-      return "navigation.course" + context.lastCourseCalculationType + ".crossTrackError"
+    node: function(n2k, state) {
+      return "navigation.course" + state.lastCourseCalculationType + ".crossTrackError"
     },
-    filter: function(n2k, context) {
+    filter: function(n2k, state) {
       return (
         n2k.fields["Navigation Terminated"] &&
         n2k.fields["Navigation Terminated"] === "No" &&
           typeof n2k.fields["XTE"] !== "undefined" &&
-          typeof context.lastCourseCalculationType !== 'undefined'
+          typeof state.lastCourseCalculationType !== 'undefined'
       );
     },
     source: "XTE"
