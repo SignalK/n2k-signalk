@@ -10,5 +10,10 @@ module.exports = [
     node: function(n2k) {
       return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.current'
     }
+  },{
+    source: 'Temperature',
+    node: function(n2k) {
+      return 'electrical.batteries.' + n2k.fields['Battery Instance'] + '.temperature'
+    }
   }
 ]
