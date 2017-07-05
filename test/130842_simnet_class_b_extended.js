@@ -15,7 +15,7 @@ describe('130842 Simnet AIS Class B static data', function () {
     delta.updates[0].values[0].path.should.equal('');
     delta.updates[0].values[0].value.name.should.equal('WILHELM');
     var tree = mapper.toNested(msg);
-    tree.should.have.deep.property('mmsi', '338184313');
+    tree.should.have.nested.property('mmsi', '338184313');
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
   it('complete part B sentence converts', function () {
@@ -24,12 +24,12 @@ describe('130842 Simnet AIS Class B static data', function () {
     delta.updates.length.should.equal(1);
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:338184313');
     var tree = mapper.toNested(msg);
-    tree.should.have.deep.property('mmsi', '338184313');
-    tree.should.have.deep.property('design.length.overall', 9.0);
-    tree.should.have.deep.property('design.aisShipType.value', 36);
-    tree.should.have.deep.property('design.beam.value', 4.0);
-    tree.should.have.deep.property('sensors.ais.fromBow.value', 6.0);
-    tree.should.have.deep.property('sensors.ais.fromCenter.value', 0);
+    tree.should.have.nested.property('mmsi', '338184313');
+    tree.should.have.nested.property('design.length.overall', 9.0);
+    tree.should.have.nested.property('design.aisShipType.value', 36);
+    tree.should.have.nested.property('design.beam.value', 4.0);
+    tree.should.have.nested.property('sensors.ais.fromBow.value', 6.0);
+    tree.should.have.nested.property('sensors.ais.fromCenter.value', 0);
     delete tree.design.aisShipType;
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });

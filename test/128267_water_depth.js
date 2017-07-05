@@ -9,18 +9,18 @@ describe('128267_water_depth', function () {
   it('complete positive offset sentence converts', function () {
     var tree = require("../n2kMapper.js").toNested(
       JSON.parse('{"timestamp":"2013-10-08-15:47:28.280Z","prio":"3","src":"1","dst":"255","pgn":"128267","description":"Water Depth","fields":{"SID":"91","Depth":"8.20", "Offset":0.304}}'));
-    tree.should.have.deep.property('environment.depth.belowTransducer.value', 8.20);
-    tree.should.have.deep.property('environment.depth.surfaceToTransducer.value', 0.304);
-    tree.should.have.deep.property('environment.depth.belowSurface.value', 8.504);
+    tree.should.have.nested.property('environment.depth.belowTransducer.value', 8.20);
+    tree.should.have.nested.property('environment.depth.surfaceToTransducer.value', 0.304);
+    tree.should.have.nested.property('environment.depth.belowSurface.value', 8.504);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 
   it('complete negative offset sentence converts', function () {
     var tree = require("../n2kMapper.js").toNested(
       JSON.parse('{"timestamp":"2013-10-08-15:47:28.280Z","prio":"3","src":"1","dst":"255","pgn":"128267","description":"Water Depth","fields":{"SID":"91","Depth":"8.20", "Offset":-0.304}}'));
-    tree.should.have.deep.property('environment.depth.belowTransducer.value', 8.20);
-    tree.should.have.deep.property('environment.depth.transducerToKeel.value', -0.304);
-    tree.should.have.deep.property('environment.depth.belowKeel.value', 7.895999999999999);
+    tree.should.have.nested.property('environment.depth.belowTransducer.value', 8.20);
+    tree.should.have.nested.property('environment.depth.transducerToKeel.value', -0.304);
+    tree.should.have.nested.property('environment.depth.belowKeel.value', 7.895999999999999);
     tree.should.be.validSignalKVesselIgnoringIdentity;
   });
 });
