@@ -1,6 +1,16 @@
 ## Change Log
 
-### upcoming (2017/03/21 16:17 +00:00)
+### upcoming (2017/07/06 05:12 +00:00)
+- [#63](https://github.com/SignalK/n2k-signalk/pull/63) Update chai to the latest version 🚀 (@greenkeeper[bot])
+- [#70](https://github.com/SignalK/n2k-signalk/pull/70) add: PGN 127506 DC Detailed Status (@sbender9)
+- [#69](https://github.com/SignalK/n2k-signalk/pull/69) add: temperature to pgn 127508 (@sbender9)
+- [#67](https://github.com/SignalK/n2k-signalk/pull/67) Add netxPoint.timeToGo to PGN 129284 (@sbender9)
+- [#65](https://github.com/SignalK/n2k-signalk/pull/65) Add fusion stereo support (@sbender9)
+- [#58](https://github.com/SignalK/n2k-signalk/pull/58) Fix for L/h -> m3/s unit conversion (@aplathan)
+- [#57](https://github.com/SignalK/n2k-signalk/pull/57) Fix fuel rate units to be m3/s (@sbender9)
+- [#56](https://github.com/SignalK/n2k-signalk/pull/56) Add engine load and torque to pgn 127489 (@sbender9)
+- [#55](https://github.com/SignalK/n2k-signalk/pull/55) Add pgn 129029 GNSS Position Data (@sbender9)
+- [#54](https://github.com/SignalK/n2k-signalk/pull/54) Update signalk-schema to the latest version 🚀 (@greenkeeper[bot])
 - [#53](https://github.com/SignalK/n2k-signalk/pull/53) fix: add error handling for malformed n2k messages (@tkurki)
 - [#52](https://github.com/SignalK/n2k-signalk/pull/52) Update signalk-schema to the latest version 🚀 (@greenkeeper[bot])
 - [#50](https://github.com/SignalK/n2k-signalk/pull/50) Add current for battery PGN 127508  (@sbender9)
