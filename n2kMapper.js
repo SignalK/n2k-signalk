@@ -7,6 +7,13 @@ var debug = require('debug')('signalk:n2k-signalk')
 var toDelta = function(n2k, state) {
   try {
     var theMappings = n2kMappings[n2k.pgn];
+    if ( state ) {
+      var n2k_src = n2k.src.toString()
+      if ( ! state[n2k_src] ) {
+        state[n2k_src] = {}
+      }
+      state = state[n2k_src]
+    }
     var result = {
       updates: [{
         source: {
