@@ -27,7 +27,7 @@ module.exports = [
   }, {
     node: 'propulsion.port.fuel.rate',
     filter: function(n2k) {
-      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' && n2k.fields['Fuel Rate'];
     },
     value: function(n2k) {
       var lph = Number(n2k.fields['Fuel Rate'])
@@ -75,7 +75,7 @@ module.exports = [
   }, {
     node: 'propulsion.port.engineLoad',
     filter: function(n2k) {
-      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' && n2k.fields['Percent Engine Load']
     },
     value: function(n2k) {
       var percent = Number(n2k.fields['Percent Engine Load'])
@@ -84,7 +84,7 @@ module.exports = [
   }, {
     node: 'propulsion.port.engineTorque',
     filter: function(n2k) {
-      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port';
+      return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' && n2k.fields['Percent Engine Torque']
     },
     value: function(n2k) {
       var percent = Number(n2k.fields['Percent Engine Torque'])
