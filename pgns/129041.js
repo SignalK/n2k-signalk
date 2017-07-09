@@ -4,14 +4,14 @@ const getFromStarboard = require('../aisFromStarboard')
 module.exports = [
   {
     node: '',
-    value: function(n2k) {
+    value: function (n2k) {
       return {
         name: n2k.fields['AtoN Name']
       }
     }
   },
   {
-    value: function(n2k) {
+    value: function (n2k) {
       return {
         longitude: Number(n2k.fields.Longitude),
         latitude: Number(n2k.fields.Latitude)
@@ -21,11 +21,11 @@ module.exports = [
   },
   {
     node: 'design.length',
-    value: function(n2k) {
+    value: function (n2k) {
       return { overall: Number(n2k.fields['Length/Diameter']) }
     },
-    filter: function(n2k) {
-      return n2k.fields['Length/Diameter'];
+    filter: function (n2k) {
+      return n2k.fields['Length/Diameter']
     }
   },
   {
@@ -43,11 +43,16 @@ module.exports = [
   {
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
-    filter: function(n2k) {
-      return n2k.fields['Position reference from Starboard'] && n2k.fields['Beam/Diameter'];
+    filter: function (n2k) {
+      return (
+        n2k.fields['Position reference from Starboard'] &&
+        n2k.fields['Beam/Diameter']
+      )
     }
   },
   {
-    context: function(n2k) { return 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] }
+    context: function (n2k) {
+      return 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
+    }
   }
 ]

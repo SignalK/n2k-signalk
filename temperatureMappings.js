@@ -1,4 +1,3 @@
-
 /*
 {"0": "Sea Temperature"},
 {"1": "Outside Temperature"},
@@ -17,52 +16,52 @@
 {"14": "Exhaust Gas Temperature"}]},
 */
 module.exports = {
-  "Sea Temperature": {
+  'Sea Temperature': {
     path: 'environment.water.temperature'
   },
-  "Outside Temperature": {
+  'Outside Temperature': {
     path: 'environment.outside.temperature'
   },
-  "Inside Temperature": {
+  'Inside Temperature': {
     path: 'environment.inside.temperature'
   },
-  "Engine Room Temperature": {
+  'Engine Room Temperature': {
     path: 'environment.inside.engineRoom.temperature'
   },
-  "Main Cabin Temperature": {
+  'Main Cabin Temperature': {
     path: 'environment.inside.mainCabin.temperature'
   },
-  "Live Well Temperature": {
+  'Live Well Temperature': {
     path: 'environment.water.liveWell.temperature'
   },
-  "Bait Well Temperature": {
+  'Bait Well Temperature': {
     path: 'environment.water.baitWell.temperature'
   },
-  "Refrigerator Temperature": {
+  'Refrigerator Temperature': {
     path: 'environment.inside.refrigerator.temperature'
   },
-  "Heating System Temperature": {
+  'Heating System Temperature': {
     path: 'environment.inside.heating.temperature'
   },
-  "Dew Point Temperature": {
+  'Dew Point Temperature': {
     path: 'environment.outside.dewPointTemperature'
   },
-  "Apparent Wind Chill Temperature": {
+  'Apparent Wind Chill Temperature': {
     path: 'environment.outside.apparentWindChillTemperature'
   },
-  "Theoretical Wind Chill Temperature": {
+  'Theoretical Wind Chill Temperature': {
     path: 'environment.outside.theoreticalWindChillTemperature'
   },
-  "Heat Index Temperature": {
+  'Heat Index Temperature': {
     path: 'environment.outside.heatIndexTemperature'
   },
-  "Heat Index Temperature": {
+  'Heat Index Temperature': {
     path: 'environment.outside.heatIndexTemperature'
   },
-  "Freezer Temperature": {
+  'Freezer Temperature': {
     path: 'environment.inside.freezer.temperature'
   },
-  "Exhaust Gas Temperature": {
+  'Exhaust Gas Temperature': {
     path: 'propulsion.exhaust.temperature'
   }
 }
