@@ -5,20 +5,20 @@ const getShipType = require('../aisShipTypeMapping')
 module.exports = [
   {
     node: 'design.length',
-    value: function(n2k) {
+    value: function (n2k) {
       return { overall: Number(n2k.fields.Length) }
     },
-    filter: function(n2k) {
-      return n2k.fields['Length'];
+    filter: function (n2k) {
+      return n2k.fields['Length']
     }
   },
   {
     node: 'design.aisShipType',
-    value: function(n2k) {
+    value: function (n2k) {
       return getShipType(n2k.fields['Type of ship'])
     },
-    filter: function(n2k) {
-      return n2k.fields['Type of ship'];
+    filter: function (n2k) {
+      return n2k.fields['Type of ship']
     }
   },
   {
@@ -32,8 +32,10 @@ module.exports = [
   {
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
-    filter: function(n2k) {
-      return n2k.fields['Position reference from Starboard'] && n2k.fields['Beam'];
+    filter: function (n2k) {
+      return (
+        n2k.fields['Position reference from Starboard'] && n2k.fields['Beam']
+      )
     }
   },
   {
