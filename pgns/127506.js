@@ -16,7 +16,21 @@ module.exports = [
       return 'electrical.batteries.' + n2k.fields['DC Instance'] + '.capacity.stateOfHealth'
     }
   },{
-    source: 'Time Remaining',
+    value: function(n2k, state) {
+      var val = n2k.fields['Time Remaining']
+      console.log("state: " + state)
+      var res
+      if ( typeof val !== 'undefined' ) {
+        res = val * 60; //convert to seconds
+      } else if ( state && typeof state.lastTimeRemaining !== 'undefined' ) {
+        res = null;
+      }
+      if ( state ) {
+        state.lastTimeRemaining = val;
+      }
+      console.log("returning: " + val)
+      return res;
+    },
     node: function(n2k) {
       return 'electrical.batteries.' + n2k.fields['DC Instance'] + '.capacity.timeRemaining'
     }
