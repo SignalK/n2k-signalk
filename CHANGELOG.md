@@ -1,6 +1,11 @@
 ## Change Log
 
-### upcoming (2017/07/06 05:12 +00:00)
+### v0.0.1 (2017/07/11 07:43 +00:00)
+- [#72](https://github.com/SignalK/n2k-signalk/pull/72) Add pgn 129283 cross track error (@sbender9)
+- [#73](https://github.com/SignalK/n2k-signalk/pull/73) [WIP] Prettier standard (@tkurki)
+- [#71](https://github.com/SignalK/n2k-signalk/pull/71) fix: convert battery state of charge from percent to a ratio (@sbender9)
+
+### v0.0.1-2 (2017/07/06 05:14 +00:00)
 - [#63](https://github.com/SignalK/n2k-signalk/pull/63) Update chai to the latest version 🚀 (@greenkeeper[bot])
 - [#70](https://github.com/SignalK/n2k-signalk/pull/70) add: PGN 127506 DC Detailed Status (@sbender9)
 - [#69](https://github.com/SignalK/n2k-signalk/pull/69) add: temperature to pgn 127508 (@sbender9)
@@ -16,7 +21,7 @@
 - [#50](https://github.com/SignalK/n2k-signalk/pull/50) Add current for battery PGN 127508  (@sbender9)
 - [#49](https://github.com/SignalK/n2k-signalk/pull/49) Update dependencies to enable Greenkeeper 🌴 (@greenkeeper[bot])
 
-### v0.0.1-0 (2016/12/27 19:34 +00:00)
+### v1.0.0-0 (2016/12/27 19:30 +00:00)
 - [#48](https://github.com/SignalK/n2k-signalk/pull/48) Split mappings into separate files for each pgn (@sbender9)
 - [#46](https://github.com/SignalK/n2k-signalk/pull/46) Handle negative transducer offsets correctly (@sbender9)
 - [#43](https://github.com/SignalK/n2k-signalk/pull/43) Raymarine alarm update (@sbender9)
