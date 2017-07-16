@@ -19,7 +19,7 @@ describe('127506 dc detailed status', function () {
     )
     tree.should.have.nested.property(
       'electrical.batteries.1.capacity.timeRemaining.value',
-      600
+      36000
     )
     // tree.should.have.nested.property('electrical.batteries.1.voltage.ripple.value', 10.9);
     tree.should.be.validSignalKVesselIgnoringIdentity
