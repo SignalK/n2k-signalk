@@ -87,7 +87,10 @@ var toValuesArray = function (theMappings, n2k, state) {
             typeof theMapping.source === 'function'
               ? theMapping.source(n2k, state)
               : getValue(n2k, theMapping, state)
-          if (!(value == null)) {
+          var allownull =
+            typeof theMapping.allownull !== 'undefined' &&
+              theMapping.allownull
+          if (!(value == null) || allownull) {
             // null or undefined
             return {
               path: path,
