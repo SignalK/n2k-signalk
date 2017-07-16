@@ -25,7 +25,13 @@ module.exports = [
     }
   },
   {
-    source: 'Time Remaining',
+    filter: function (n2k) {
+      return typeof n2k.fields['Time Remaining'] !== 'undefined'
+    },
+    value: function(n2k, state) {                                               
+      var val = n2k.fields['Time Remaining']
+      return val * 60; //convert to seconds
+    },                                                                          
     node: function (n2k) {
       return (
         'electrical.batteries.' +
