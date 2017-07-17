@@ -2,6 +2,8 @@ var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
 
+state = {}
+
 describe('127506 dc detailed status', function () {
   it('complete sentence converts', function () {
     var tree = require('../n2kMapper.js').toNested(
@@ -23,5 +25,17 @@ describe('127506 dc detailed status', function () {
     )
     // tree.should.have.nested.property('electrical.batteries.1.voltage.ripple.value', 10.9);
     tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+  it('null timeRemaining converts', function () {
+    var delta = require('../n2kMapper.js').toDelta(
+      JSON.parse(
+        '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"DC Instance":1,"SID":0}}'
+      )
+    )
+    delta.updates[0].values[0].should.have.property(
+      'path',
+      'electrical.batteries.1.capacity.timeRemaining'
+    )
+    delta.updates[0].values[0].should.have.property('value', null)
   })
 })
