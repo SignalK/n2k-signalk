@@ -27,15 +27,17 @@ describe('127506 dc detailed status', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
   it('null timeRemaining converts', function () {
-    var delta = require('../n2kMapper.js').toDelta(
-      JSON.parse(
-        '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"DC Instance":1,"SID":0}}'
-      )
-    )
+    var pgn = '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"DC Instance":1,"SID":0}}'
+    var delta = require('../n2kMapper.js').toDelta(JSON.parse(pgn))
+    tree = require('../n2kMapper.js').toNested(JSON.parse(pgn))
     delta.updates[0].values[0].should.have.property(
       'path',
       'electrical.batteries.1.capacity.timeRemaining'
     )
     delta.updates[0].values[0].should.have.property('value', null)
+    tree.should.have.nested.property(
+      'electrical.batteries.1.capacity.timeRemaining.value',
+      null
+    )
   })
 })
