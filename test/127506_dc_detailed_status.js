@@ -2,8 +2,6 @@ var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
 
-state = {}
-
 describe('127506 dc detailed status', function () {
   it('complete sentence converts', function () {
     var tree = require('../n2kMapper.js').toNested(
