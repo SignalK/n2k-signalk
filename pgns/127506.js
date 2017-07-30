@@ -25,13 +25,17 @@ module.exports = [
     }
   },
   {
-    filter: function (n2k) {
-      return typeof n2k.fields['Time Remaining'] !== 'undefined'
-    },
-    value: function(n2k, state) {                                               
+    allowNull: true,
+    value: function (n2k) {
       var val = n2k.fields['Time Remaining']
-      return val * 60; //convert to seconds
-    },                                                                          
+      var res
+      if (typeof val !== 'undefined') {
+        res = val * 60 // convert to seconds
+      } else {
+        res = null
+      }
+      return res
+    },
     node: function (n2k) {
       return (
         'electrical.batteries.' +
