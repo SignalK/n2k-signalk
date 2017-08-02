@@ -1,77 +1,32 @@
 const util = require('util')
 
+function skEngineId(n2k) {
+  return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' ? "port" : "starboard";
+}
+
+function skEngineTitle(n2k) {
+  var engine = skEngineId(n2k);
+  return engine.charAt(0).toUpperCase() + engine.slice(1);
+}
+
 module.exports = [
   {
     source: 'Temperature',
-    node: 'propulsion.port.temperature',
-    filter: function (n2k) {
-      return (
-        n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port'
-      )
-    }
-  },
-  {
-    source: 'Temperature',
-    node: 'propulsion.starboard.temperature',
-    filter: function (n2k) {
-      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard'
-    }
+    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.temperature'},
   },
   {
     source: 'Alternator Potential',
-    node: 'propulsion.port.alternatorVoltage',
-    filter: function (n2k) {
-      return (
-        n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port'
-      )
-    }
+    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage' },
   },
   {
-    source: 'Alternator Potential',
-    node: 'propulsion.starboard.alternatorVoltage',
-    filter: function (n2k) {
-      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard'
-    }
-  },
-  {
-    node: 'propulsion.port.fuel.rate',
-    filter: function (n2k) {
-      return (
-        n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port'
-      )
-    },
+    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.rate' },
     value: function (n2k) {
       var lph = Number(n2k.fields['Fuel Rate'])
       return lph / 3600000
     }
   },
   {
-    node: 'propulsion.starboard.fuel.rate',
-    filter: function (n2k) {
-      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard'
-    },
-    value: function (n2k) {
-      var lph = Number(n2k.fields['Fuel Rate'])
-      return lph / 3600000
-    }
-  },
-  {
-    node: 'propulsion.port.oilPressure',
-    filter: function (n2k) {
-      return (
-        n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port'
-      )
-    },
-    value: function (n2k) {
-      var kpa = Number(n2k.fields['Oil pressure'])
-      return kpa * 1000.0
-    }
-  },
-  {
-    node: 'propulsion.starboard.oilPressure',
-    filter: function (n2k) {
-      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard'
-    },
+    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilPressure' },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Oil pressure'])
       return kpa * 1000.0
@@ -79,59 +34,17 @@ module.exports = [
   },
   {
     source: 'Total Engine hours',
-    node: 'propulsion.port.runTime',
-    filter: function (n2k) {
-      return (
-        n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port'
-      )
-    }
+    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.runTime' },
   },
   {
-    source: 'Total Engine hours',
-    node: 'propulsion.starboard.runTime',
-    filter: function (n2k) {
-      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard'
-    }
-  },
-  {
-    node: 'propulsion.port.engineLoad',
-    filter: function (n2k) {
-      return (
-        n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port'
-      )
-    },
+    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineLoad'},
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Load'])
       return percent / 100.0
     }
   },
   {
-    node: 'propulsion.port.engineTorque',
-    filter: function (n2k) {
-      return (
-        n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port'
-      )
-    },
-    value: function (n2k) {
-      var percent = Number(n2k.fields['Percent Engine Torque'])
-      return percent / 100.0
-    }
-  },
-  {
-    node: 'propulsion.starboard.engineLoad',
-    filter: function (n2k) {
-      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard'
-    },
-    value: function (n2k) {
-      var percent = Number(n2k.fields['Percent Engine Load'])
-      return percent / 100.0
-    }
-  },
-  {
-    node: 'propulsion.starboard.engineTorque',
-    filter: function (n2k) {
-      return n2k.fields['Engine Instance'] === 'Dual Engine Starboard'
-    },
+    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineTorque' },
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Torque'])
       return percent / 100.0
@@ -247,13 +160,10 @@ function generateMappingsForStatus(field, notifications)
   notifications.forEach((notif,index) => {
     var mapping = {
       node: function(n2k) {
-        var engine = n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' ? "port" : "starboard";
-        return util.format(notif.node, engine);
+        return util.format(notif.node, skEngineId(n2k));
       },
       filter: function(n2k) { return typeof n2k.fields[field] !== 'undefined'; },
       value: function(n2k, state) {
-        var engine = n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' ? "Port" : "Starboard";
-        
         if ( n2k.fields[field] != 0 ) {
           if ( n2k.fields[field] & (1<<index) ) {
             if ( typeof state === 'undefined'
@@ -264,7 +174,7 @@ function generateMappingsForStatus(field, notifications)
               return {
                 state: 'alarm',
                 method: [ "visual", "sound" ],
-                message: util.format(notif.message, engine)
+                message: util.format(notif.message, skEngineTitle(n2k))
               }
             } else {
               return null
@@ -277,7 +187,7 @@ function generateMappingsForStatus(field, notifications)
           return {
             state: 'normal',
             method: [ "visual" ],
-            message: util.format(notif.message, engine) + ' is Normal'
+            message: util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
           }
         } else {
           return null;
