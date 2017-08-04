@@ -44,7 +44,7 @@ var toDelta = function (n2k, state) {
     return result
   } catch (ex) {
     console.error('Unable to convert:' + ex.message + ':' + JSON.stringify(n2k))
-    console.error(ex.stack)
+    debug(ex.stack)
     return { updates: [] }
   }
 }
@@ -75,7 +75,7 @@ var toValuesArray = function (theMappings, n2k, state) {
           )
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k)
-          process.stderr.write(ex.stack)
+          debug(ex.stack)
           return false
         }
       })
@@ -101,7 +101,7 @@ var toValuesArray = function (theMappings, n2k, state) {
           }
         } catch (ex) {
           process.stderr.write(ex + ' ' + JSON.stringify(n2k))
-          process.stderr.write(ex.stack)
+          debug(ex.stack)
         }
       })
       .filter(function (x) {
