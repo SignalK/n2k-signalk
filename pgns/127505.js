@@ -9,7 +9,10 @@ module.exports = [
         '.currentLevel'
       )
     },
-    source: 'Level'
+    value: function (n2k) {
+      var ratio100 = Number(n2k.fields['Level'])
+      return ratio100 / 100
+    }
   },
   {
     node: function (n2k) {
