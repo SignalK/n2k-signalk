@@ -7,7 +7,7 @@ describe('127489 engine parameters Port', function () {
   it('complete engine params sentence converts', function () {
     var tree = require('../n2kMapper.js').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489",	"description":"Engine Parameters, Dynamic","fields":{"Engine Instance":"Single Engine or Dual Engine Port","Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.4","Total Engine hours":"309960","Discrete Status 1":"68","Discrete Status 2":"9","Percent Engine Load": 20,"Percent Engine Torque":57,"Oil pressure":80}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489",	"description":"Engine Parameters, Dynamic","fields":{"Engine Instance":"Single Engine or Dual Engine Port","Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.4","Total Engine hours":"309960","Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Percent Engine Load": 20,"Percent Engine Torque":57,"Oil pressure":80}}'
       )
     )
     tree.should.have.nested.property('propulsion.port.temperature')
@@ -44,17 +44,13 @@ describe('127489 engine parameters Port', function () {
   })
 })
 
-var starboard_state = {}
-
 describe('127489 engine parameters Starboard', function () {
   it('complete engine params sentence converts', function () {
     var tree = require('../n2kMapper.js').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Engine Instance":"Dual Engine Starboard","Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.1","Total Engine hours":"309960","Discrete Status 1":"68","Discrete Status 2":"9","Percent Engine Load": 20,"Percent Engine Torque": 57,"Oil pressure":80}}'
-      ),
-      starboard_state
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Engine Instance":"Dual Engine Starboard","Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.1","Total Engine hours":"309960","Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":["Warning Level 1","Maintenance Needed"],"Percent Engine Load": 20,"Percent Engine Torque": 57,"Oil pressure":80}}'
+      )
     )
-    console.log("tree: " + JSON.stringify(tree, null, 2))
     tree.should.have.nested.property('propulsion.starboard.temperature')
     tree.should.have.nested.property(
       'propulsion.starboard.temperature.value',
@@ -104,13 +100,13 @@ describe('127489 engine parameters Starboard', function () {
 
     tree = require('../n2kMapper.js').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Engine Instance":"Dual Engine Starboard","Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.1","Total Engine hours":"309960","Discrete Status 1":"0","Discrete Status 2":"0","Percent Engine Load": 20,"Percent Engine Torque": 57,"Oil pressure":80}}'
-      ),
-      starboard_state
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Engine Instance":"Dual Engine Starboard","Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.1","Total Engine hours":"309960","Discrete Status 1":["Low Oil Pressure"],"Discrete Status 2": [],"Percent Engine Load": 20,"Percent Engine Torque": 57,"Oil pressure":80}}'
+      )
     )
+    console.log("tree: " + JSON.stringify(tree, null, 2))
     tree.should.have.nested.property(
       'notifications.propulsion.starboard.lowOilPressure.state',
-      'normal')
+      'alarm')
     tree.should.have.nested.property(
       'notifications.propulsion.starboard.lowCoolantLevel.state',
       'normal')

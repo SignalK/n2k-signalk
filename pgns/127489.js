@@ -55,102 +55,126 @@ module.exports = [
 var status1Notifications = [
   {
     node: 'notifications.propulsion.%s.checkEngine',
-    message: 'Check %s Engine'
+    message: 'Check %s Engine',
+    analyzerText: 'Check Engine'
   },
   {
     node: 'notifications.propulsion.%s.overTemperature',
-    message: '%s Engine Over Temperature'
+    message: '%s Engine Over Temperature',
+    analyzerText: 'Over Temperature'
   },
   {
     node: 'notifications.propulsion.%s.lowOilPressure',
-    message: '%s Engine Low Oil Pressure'
+    message: '%s Engine Low Oil Pressure',
+    analyzerText: 'Low Oil Pressure'
   },
   {
     node: 'notifications.propulsion.%s.lowOilLevel',
-    message: '%s Engine Low Oil Level'
+    message: '%s Engine Low Oil Level',
+    analyzerText: 'Low Oil Level'
   },
   {
     node: 'notifications.propulsion.%s.lowFuelPressure',
-    message: '%s Engine Low Fuel Pressure'
+    message: '%s Engine Low Fuel Pressure',
+    analyzerText: 'Low Fuel Pressure'
   },
   {
     node: 'notifications.propulsion.%s.lowSystemVoltage',
-    message: '%s Low System Voltage'
+    message: '%s Low System Voltage',
+    analyzerText: 'Low System Voltage'
   },
   {
     node: 'notifications.propulsion.%s.lowCoolantLevel',
-    message: '%s Engine Low Coolant Level'
+    message: '%s Engine Low Coolant Level',
+    analyzerText: 'Low Coolant Level'
   },
   {
     node: 'notifications.propulsion.%s.waterFlow',
-    message: '%s Engine Water Flow'
+    message: '%s Engine Water Flow',
+    analyzerText: 'Water Flow'
   },
   {
     node: 'notifications.propulsion.%s.waterInFuel',
-    message: '%s Water in Fuel'
+    message: '%s Water in Fuel',
+    analyzerText: 'Water In Fuel'
   },
   {
     node: 'notifications.propulsion.%s.chargeIndicator',
-    message: '%s Engine Charge Indicator'
+    message: '%s Engine Charge Indicator',
+    analyzerText: 'Charge Indicator'
   },
   {
     node: 'notifications.propulsion.%s.preheatIndicator',
-    message: '%s Preheat Indicator'
+    message: '%s Preheat Indicator',
+    analyzerText: 'Preheat Indicator'
   },
   {
     node: 'notifications.propulsion.%s.highBoostPressure',
-    message: '%s Engine High Boost Pressure'
+    message: '%s Engine High Boost Pressure',
+    analyzerText: 'High Boost Pressure'
   },
   {
     node: 'notifications.propulsion.%s.revLimitExceeded',
-    message: '%s Engine Rev Limit Exceeded'
+    message: '%s Engine Rev Limit Exceeded',
+    analyzerText: 'Rev Limit Exceeded'
   },
   {
     node: 'notifications.propulsion.%s.eGRSystem',
-    message: '%s Engine EGR System'
+    message: '%s Engine EGR System',
+    analyzerText: 'EGR System'
   },
   {
     node: 'notifications.propulsion.%s.throttlePositionSensor',
-    message: '%s Engine Throttle Position Sensor'
+    message: '%s Engine Throttle Position Sensor',
+    analyzerText: 'Throttle Position Sensor'
   },
   {
     node: 'notifications.propulsion.%s.emergencyStopMode',
-    message: '%s Engine Emergency Stop Mode'
+    message: '%s Engine Emergency Stop Mode',
+    analyzerText: 'Emergency Stop'
   }
 ];
 
 var status2Notifications = [
   { 
     node: 'notifications.propulsion.%s.warningLevel1',
-    message: '%s Engine Warning Level 1'
+    message: '%s Engine Warning Level 1',
+    analyzerText: 'Warning Level 1'
   },
   {
     node: 'notifications.propulsion.%s.warningLevel2',
-    message: '%s Engine Warning Level 2'
+    message: '%s Engine Warning Level 2',
+    analyzerText: 'Warning Level 2'
   },
   {
     node: 'notifications.propulsion.%s.powerReduction',
-    message: '%s Engine Power Reduction'
+    message: '%s Engine Power Reduction',
+    analyzerText: 'Power Reduction'
   },
   {
     node: 'notifications.propulsion.%s.maintenanceNeeded',
-    message: '%s Engine Maintenance Needed'
+    message: '%s Engine Maintenance Needed',
+    analyzerText: 'Maintenance Needed'
   },
   {
     node: 'notifications.propulsion.%s.commError',
-    message: '%s Engine Comm Error'
+    message: '%s Engine Comm Error',
+    analyzerText: 'Engine Comm Error'
   },
   {
     node: 'notifications.propulsion.%s.subOrSecondaryThrottle',
-    message: '%s Engine Sub or Secondary Throttle'
+    message: '%s Engine Sub or Secondary Throttle',
+    analyzerText: 'Sub or Secondary Throttle'
   },
   {
     node: 'notifications.propulsion.%s.neutralStartProtect',
-    message: '%s Neutral Start Protect'
+    message: '%s Neutral Start Protect',
+    analyzerText: 'Neutral Start Protect'
   },
   {
     node: 'notifications.propulsion.%s.shuttingDown',
-    message: '%s Engine Shutting Down'
+    message: '%s Engine Shutting Down',
+    analyzerText: 'Engine Shutting Down'
   }
 ];
 
@@ -164,34 +188,36 @@ function generateMappingsForStatus(field, notifications)
       },
       filter: function(n2k) { return typeof n2k.fields[field] !== 'undefined'; },
       value: function(n2k, state) {
-        if ( n2k.fields[field] != 0 ) {
-          if ( n2k.fields[field] & (1<<index) ) {
-            if ( typeof state === 'undefined'
-                 || typeof state[notif.node] === 'undefined'
-                 || state[notif.node] != 'alarm') {
-              if ( typeof state !== 'undefined' )
-                state[notif.node] = 'alarm'
-              return {
-                state: 'alarm',
-                method: [ "visual", "sound" ],
-                message: util.format(notif.message, skEngineTitle(n2k))
-              }
-            } else {
-              return null
+        if ( n2k.fields[field].indexOf(notif.analyzerText) != -1  ) {
+          /*
+          if ( typeof state === 'undefined'
+               || typeof state[notif.node] === 'undefined'
+               || state[notif.node] != 'alarm') {
+            if ( typeof state !== 'undefined' )
+              state[notif.node] = 'alarm'
+          */
+            return {
+              state: 'alarm',
+              method: [ "visual", "sound" ],
+              message: util.format(notif.message, skEngineTitle(n2k))
             }
+          /*
+          } else {
+            return undefined
           }
-        } else if ( typeof state !== 'undefined'
+          */
+        } else /*if ( typeof state !== 'undefined'
                     && typeof state[notif.node] !== 'undefined'
-                    && state[notif.node] == 'alarm') {
-          state[notif.node] = 'normal'
+                    && state[notif.node] == 'alarm') */ {
+          //state[notif.node] = 'normal'
           return {
             state: 'normal',
             method: [ "visual" ],
             message: util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
           }
-        } else {
-          return null;
-        }
+        } /*else {
+          return undefined;
+        }*/
       }
     }
     module.exports.push(mapping);
