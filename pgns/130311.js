@@ -19,7 +19,13 @@ module.exports = [
         '.humidity'
       )
     },
-    source: 'Humidity'
+    filter: function (n2k) {
+      return typeof n2k.fields['Humidity'] !== 'undefined'
+    },
+    value: function (n2k) {
+      var ratio100 = Number(n2k.fields['Humidity'])
+      return ratio100 / 100
+    }
   },
   {
     node: 'environment.outside.pressure',
