@@ -189,35 +189,18 @@ function generateMappingsForStatus(field, notifications)
       filter: function(n2k) { return typeof n2k.fields[field] !== 'undefined'; },
       value: function(n2k, state) {
         if ( n2k.fields[field].indexOf(notif.analyzerText) != -1  ) {
-          /*
-          if ( typeof state === 'undefined'
-               || typeof state[notif.node] === 'undefined'
-               || state[notif.node] != 'alarm') {
-            if ( typeof state !== 'undefined' )
-              state[notif.node] = 'alarm'
-          */
             return {
               state: 'alarm',
               method: [ "visual", "sound" ],
               message: util.format(notif.message, skEngineTitle(n2k))
             }
-          /*
-          } else {
-            return undefined
-          }
-          */
-        } else /*if ( typeof state !== 'undefined'
-                    && typeof state[notif.node] !== 'undefined'
-                    && state[notif.node] == 'alarm') */ {
-          //state[notif.node] = 'normal'
+        } else {
           return {
             state: 'normal',
             method: [ "visual" ],
             message: util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
           }
-        } /*else {
-          return undefined;
-        }*/
+        }
       }
     }
     module.exports.push(mapping);
