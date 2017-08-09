@@ -34,7 +34,7 @@
 var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
-chai.use(require('signalk-schema').chaiModule)
+chai.use(require('@signalk/signalk-schema').chaiModule)
 
 var mapper = require('../n2kMapper.js')
 

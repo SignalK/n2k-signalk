@@ -1,5 +1,5 @@
 var n2kMappings = require('./n2kMappings.js').mappings
-var signalkSchema = require('signalk-schema')
+var signalkSchema = require('@signalk/signalk-schema')
 var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
 

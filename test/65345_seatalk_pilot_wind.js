@@ -1,7 +1,7 @@
 var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
-chai.use(require('signalk-schema').chaiModule)
+chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('65345 Seatalk Wind Datum', function () {
   it('complet wind datum sentence converts positive', function () {

@@ -1,7 +1,7 @@
 var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
-chai.use(require('signalk-schema').chaiModule)
+chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('130306 Wind Data', function () {
   it('Apparent sentence converts positive', function () {

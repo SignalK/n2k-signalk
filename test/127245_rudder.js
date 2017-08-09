@@ -1,6 +1,6 @@
 var chai = require('chai')
 chai.Should()
-chai.use(require('signalk-schema').chaiModule)
+chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('127245_rudder ', function () {
   it('complete sentence converts', function () {

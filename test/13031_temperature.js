@@ -1,7 +1,7 @@
 var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
-chai.use(require('signalk-schema').chaiModule)
+chai.use(require('@signalk/signalk-schema').chaiModule)
 var debug = require('debug')('n2k-signalk:test:130312')
 var _ = require('lodash')
 
@@ -10,7 +10,7 @@ var msgs = require('./130310-2.json')
 describe('Temperature: ', function () {
   it('examples work', function () {
     var n2kMapper = require('../n2kMapper.js')
-    var full = new (require('signalk-schema')).FullSignalK(
+    var full = new (require('@signalk/signalk-schema')).FullSignalK(
       'urn:mrn:imo:mmsi:230099999'
     )
     _.forOwn(msgs, function (msg, key) {
@@ -27,7 +27,7 @@ describe('Temperature: ', function () {
 
   it('all 130312 mappings are valid', function () {
     var temperatureMappings = require('../n2kMappings').temperatureMappings
-    var full = new (require('signalk-schema')).FullSignalK(
+    var full = new (require('@signalk/signalk-schema')).FullSignalK(
       'urn:mrn:imo:mmsi:230099999'
     )
     _.forOwn(temperatureMappings, function (mapping, key) {

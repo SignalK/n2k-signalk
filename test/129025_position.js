@@ -1,6 +1,6 @@
 var chai = require('chai')
 chai.Should()
-chai.use(require('signalk-schema').chaiModule)
+chai.use(require('@signalk/signalk-schema').chaiModule)
 
 var msg = JSON.parse(
   '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"2","dst":"255","pgn":"129025","description":"Position, Rapid Update","fields":{"Latitude":"60.1445540","Longitude":"24.7921348"}}'
