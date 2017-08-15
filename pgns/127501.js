@@ -1,43 +1,21 @@
-module.exports = []
+module.exports = function (n2k) {
+  var res = []
+  for (var i = 1; i <= 28; i++) {
+    const field = 'Indicator' + i
+    if (typeof n2k.fields[field] !== 'undefined') {
+      const basePath =
+        'electrical.switch.' + n2k.fields['Indicator Bank Instance'] + '.' + i
 
-for (var i = 1; i <= 28; i++) {
-  const idx = i
-  const field = 'Indicator' + idx
-  var mapping = {
-    node: function (n2k) {
-      return (
-        'electrical.switch.' +
-        n2k.fields['Indicator Bank Instance'] +
-        '.' +
-        idx +
-        '.state'
-      )
-    },
-    filter: function (n2k) {
-      return typeof n2k.fields[field] !== 'undefined'
-    },
-    value: function (n2k) {
-      return n2k.fields[field] == 'On'
+      res.push({
+        path: basePath + '.state',
+        value: n2k.fields[field] == 'On'
+      })
+
+      res.push({
+        path: basePath + '.order',
+        value: i
+      })
     }
   }
-
-  var orderMapping = {
-    node: function (n2k) {
-      return (
-        'electrical.switch.' +
-        n2k.fields['Indicator Bank Instance'] +
-        '.' +
-        idx +
-        '.order'
-      )
-    },
-    filter: function (n2k) {
-      return typeof n2k.fields[field] !== 'undefined'
-    },
-    value: function (n2k) {
-      return idx
-    }
-  }  
-  module.exports.push(mapping)
-  module.exports.push(orderMapping)
+  return res
 }
