@@ -15,5 +15,6 @@ var mappings = {}
 load_pgns('pgns', mappings)
 load_pgns('raymarine', mappings)
 load_pgns('fusion', mappings)
+load_pgns('lowrance', mappings)
 
 exports.mappings = mappings
