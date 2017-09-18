@@ -6,6 +6,9 @@ module.exports = [
         latitude: Number(n2k.fields.Latitude)
       }
     },
+    filter: n2k =>
+      typeof n2k.fields.Longitude !== 'undefined' &&
+      typeof n2k.fields.Latitude !== 'undefined',
     node: 'navigation.position'
   },
   {
