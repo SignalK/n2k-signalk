@@ -1,8 +1,24 @@
 ## Change Log
 
+### v0.0.4 (2017/09/19 17:46 +00:00)
+- [#93](https://github.com/SignalK/n2k-signalk/pull/93) fix: do not emit empty position pgn 129029 (@tkurki)
+- [#86](https://github.com/SignalK/n2k-signalk/pull/86) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+- [#85](https://github.com/SignalK/n2k-signalk/pull/85) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+- [#84](https://github.com/SignalK/n2k-signalk/pull/84) add: engine alarm notifications to PGN 127489 (@sbender9)
+
+### v0.0.3 (2017/08/09 17:25 +00:00)
+- [#83](https://github.com/SignalK/n2k-signalk/pull/83) Update debug to the latest version 🚀 (@greenkeeper[bot])
+
+### v0.0.2 (2017/08/06 07:58 +00:00)
+- [#82](https://github.com/SignalK/n2k-signalk/pull/82) fix: percent to ratio (@e-sailing)
+- [#80](https://github.com/SignalK/n2k-signalk/pull/80) update: send null delta for timeRemaining when it is undefined (@sbender9)
+- [#77](https://github.com/SignalK/n2k-signalk/pull/77) feature: allow specific mappings to send null values (@sbender9)
+- [#76](https://github.com/SignalK/n2k-signalk/pull/76) fix: convert battery time reamaining to seconds per the spec (@sbender9)
+- [#75](https://github.com/SignalK/n2k-signalk/pull/75) Update chai to the latest version 🚀 (@greenkeeper[bot])
+
 ### v0.0.1 (2017/07/11 07:43 +00:00)
 - [#72](https://github.com/SignalK/n2k-signalk/pull/72) Add pgn 129283 cross track error (@sbender9)
-- [#73](https://github.com/SignalK/n2k-signalk/pull/73) [WIP] Prettier standard (@tkurki)
+- [#73](https://github.com/SignalK/n2k-signalk/pull/73) Prettier standard (@tkurki)
 - [#71](https://github.com/SignalK/n2k-signalk/pull/71) fix: convert battery state of charge from percent to a ratio (@sbender9)
 
 ### v0.0.1-2 (2017/07/06 05:14 +00:00)
