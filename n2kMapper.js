@@ -72,23 +72,24 @@ function getValue (n2k, theMapping, state) {
 
 var toValuesArray = function (theMappings, n2k, state) {
   if (n2k.fields && typeof theMappings !== 'undefined') {
-    if (typeof theMappings === 'function') {
-      return theMappings(n2k, state)
-    } else {
-      return theMappings
-        .filter(function (theMapping) {
-          try {
-            return (
-              typeof theMapping.filter === 'undefined' ||
-              theMapping.filter(n2k, state)
-            )
-          } catch (ex) {
-            process.stderr.write(ex + ' ' + n2k)
-            return false
-          }
-        })
-        .map(function (theMapping) {
-          try {
+    return theMappings
+      .filter(function (theMapping) {
+        try {
+          return (
+            typeof theMapping.filter === 'undefined' ||
+            theMapping.filter(n2k, state)
+          )
+        } catch (ex) {
+          process.stderr.write(ex + ' ' + n2k)
+          return false
+        }
+      })
+      .reduce(function (updates, theMapping) {
+        try {
+          if (typeof theMapping === 'function') {
+            var mapped = theMapping(n2k, state)
+            updates.push.apply(updates, mapped)
+          } else {
             var path =
               typeof theMapping.node === 'function'
                 ? theMapping.node(n2k, state)
@@ -102,19 +103,20 @@ var toValuesArray = function (theMappings, n2k, state) {
               theMapping.allowNull
             if (!(value == null) || allowNull) {
               // null or undefined
-              return {
+              updates.push({
                 path: path,
                 value: value
-              }
+              })
             }
-          } catch (ex) {
-            process.stderr.write(ex + ' ' + JSON.stringify(n2k))
           }
-        })
-        .filter(function (x) {
-          return x != undefined
-        })
-    }
+        } catch (ex) {
+          process.stderr.write(ex + ' ' + JSON.stringify(n2k))
+        }
+        return updates
+      }, [])
+      .filter(function (x) {
+        return x != undefined
+      })
   }
   return []
 }
