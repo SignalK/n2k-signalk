@@ -9,7 +9,7 @@
     "fields": {
       "Manufacturer Code":"Lowrance",
       "Industry Code":"Marine Industry",
-      "Temperature Source":0,
+      "Temperature Source":"Engine Room Temperature",
       "Actual Temperature":25.60
     }
   }
