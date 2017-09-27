@@ -33,7 +33,7 @@
     "github-changes": "^1.0.4",
     "lodash": "^4.6.1",
     "mocha": "^3.2.0",
-    "prettier-standard": "^6.0.0",
+    "prettier-standard": "^7.0.0",
     "tv4": "latest"
   }
 }
