@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('128267_water_depth', function () {
   it('complete positive offset sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.280Z","prio":"3","src":"1","dst":"255","pgn":"128267","description":"Water Depth","fields":{"SID":"91","Depth":"8.20", "Offset":0.304}}'
       )
@@ -26,7 +26,7 @@ describe('128267_water_depth', function () {
   })
 
   it('complete negative offset sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.280Z","prio":"3","src":"1","dst":"255","pgn":"128267","description":"Water Depth","fields":{"SID":"91","Depth":"8.20", "Offset":-0.304}}'
       )

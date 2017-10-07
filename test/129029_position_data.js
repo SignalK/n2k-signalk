@@ -13,7 +13,7 @@ const invalidDataMsg = JSON.parse(
 
 describe('129029 Position Data ', function () {
   it('complete sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(msg)
+    var tree = require('./testMapper').toNested(msg)
     tree.navigation.position.longitude.should.equal(-76.3972731)
     tree.navigation.position.latitude.should.equal(39.0536632)
     tree.navigation.gnss.antennaAltitude.value.should.equal(1.0)
@@ -29,7 +29,7 @@ describe('129029 Position Data ', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
   it('no position in input produces no position output', function() {
-    var delta = require('../n2kMapper.js').toDelta(invalidDataMsg)
+    var delta = require('./testMapper').toDelta(invalidDataMsg)
     delta.updates[0].values.should.not.contain.a.thing.with.property('path', 'navigation.position')
   })
 })

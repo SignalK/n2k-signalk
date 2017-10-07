@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('128259 speed', function () {
   it('complete sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2014-08-15-18:00:30.175Z","prio":"2","src":"115","dst":"255","pgn":"128259","description":"Speed","fields":{"SID":"0","Speed Water Referenced":"3.47","Speed Water Referenced Type":"-0"}}'
       )

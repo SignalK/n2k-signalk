@@ -3,7 +3,7 @@ chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
-var mapper = require('../n2kMapper.js')
+var mapper = require('./testMapper')
 
 describe('129038 Class A Update', function () {
   it('complete sentence converts', function () {

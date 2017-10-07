@@ -8,14 +8,14 @@ var msg = JSON.parse(
 
 describe('129025 Position, rapid update ', function () {
   it('complete sentence converts to tree', function () {
-    var tree = require('../n2kMapper.js').toNested(msg)
+    var tree = require('./testMapper').toNested(msg)
     tree.navigation.position.longitude.should.equal(24.7921348)
     tree.navigation.position.latitude.should.equal(60.144554)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('complete sentence produces valid delta', function () {
-    var delta = require('../n2kMapper.js').toDelta(msg)
+    var delta = require('./testMapper').toDelta(msg)
     delta.should.be.validSignalKDelta
   })
 })

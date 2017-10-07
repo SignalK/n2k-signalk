@@ -3,7 +3,7 @@ chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
-const mapper = require('../n2kMapper.js')
+const mapper = require('./testMapper')
 
 var state = {}
 

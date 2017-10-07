@@ -1,7 +1,7 @@
 const chai = require('chai')
 chai.Should()
 const assert = require('assert')
-const mapper = require('../n2kMapper.js')
+const mapper = require('./testMapper')
 
 describe('Unknown pgn', function () {
   it('returns delta with one update that has no values', function () {

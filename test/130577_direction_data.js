@@ -4,7 +4,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('130577 direction_data sentence without drift', function () {
-  var tree = require('../n2kMapper.js').toNested(
+  var tree = require('./testMapper').toNested(
     JSON.parse(
       '{"timestamp":"2014-08-15-10:01:35.236Z","prio":"3","src":"160","dst":"255","pgn":"130577","description":"Direction Data","fields":{"Data Mode":"Autonomous","COG Reference":"True","SID":"21","COG":"70.1","SOG":"0.01"}}'
     )
@@ -27,7 +27,7 @@ describe('130577 direction_data sentence without drift', function () {
 })
 
 describe('130577 direction_data sentence with drift', function () {
-  var tree = require('../n2kMapper.js').toNested(
+  var tree = require('./testMapper').toNested(
     JSON.parse(
       '{"timestamp":"2014-08-15-18:00:00.755Z","prio":"3","src":"160","dst":"255","pgn":"130577","description":"Direction Data","fields":{"Data Mode":"Autonomous","COG Reference":"True","SID":"84","COG":"206.9","SOG":"3.51","Set":"58.9","Drift":"0.28"}}'
     )
