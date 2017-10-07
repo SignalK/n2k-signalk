@@ -1,5 +1,4 @@
 var n2kMappings = require('./n2kMappings.js').mappings
-var signalkSchema = require('@signalk/signalk-schema')
 var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
 
@@ -145,36 +144,8 @@ function addAsNested (pathValue, source, timestamp, result) {
 }
 
 exports.toDelta = toDelta
-exports.toNested = function (n2k, state) {
-  var delta = toDelta(n2k, state)
-  if (!delta.context) {
-    delta.context = 'vessels.' + signalkSchema.fakeMmsiId
-  }
-
-  var contextParts = delta.context.split('.')
-
-  return signalkSchema.deltaToFull(delta)[contextParts[0]][contextParts[1]]
-}
-
 exports.toDeltaTransformer = function (options) {
-  var stream = through(function (data) {
-    if (options.debug) {
-      console.log(data)
-    }
-    stream.queue(exports.toDelta(data))
+  return through(function (data) {
+    this.queue(exports.toDelta(data))
   })
-  return stream
-}
-
-exports.toNestedTransformer = function (options) {
-  var stream = through(function (data) {
-    if (options.debug) {
-      console.log(data)
-    }
-    var nested = exports.toNested(data)
-    if (Object.getOwnPropertyNames(nested).length > 0) {
-      stream.queue(nested)
-    }
-  })
-  return stream
 }

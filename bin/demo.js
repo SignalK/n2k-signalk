@@ -17,5 +17,3 @@ var msg = {
 
 console.log(".toDelta()\n----------");
 console.log(JSON.stringify(n2kMapper.toDelta(msg), null, 2));
-console.log("\n.toNested()\n-----------");
-console.log(JSON.stringify(n2kMapper.toNested(msg), null, 2));

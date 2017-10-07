@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('130306 Wind Data', function () {
   it('Apparent sentence converts positive', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"0.872665","Reference":"Apparent"}}'
       )
@@ -22,7 +22,7 @@ describe('130306 Wind Data', function () {
   })
 
   it('Apparent sentence converts positive gt 180', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"3.31613","Reference":"Apparent"}}'
       )
@@ -39,7 +39,7 @@ describe('130306 Wind Data', function () {
   })
 
   it('Apparent sentence converts negative', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"-0.872665","Reference":"Apparent"}}'
       )
@@ -56,7 +56,7 @@ describe('130306 Wind Data', function () {
   })
 
   it('True Boat sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"68","Wind Speed":"4.89","Wind Angle":"86.0","Reference":"True (boat referenced)"}}'
       )
@@ -70,7 +70,7 @@ describe('130306 Wind Data', function () {
   })
 
   it('True Ground sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"3","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"94","Wind Speed":"4.82","Wind Angle":"218.6","Reference":"True (ground referenced to North)"}}'
       )

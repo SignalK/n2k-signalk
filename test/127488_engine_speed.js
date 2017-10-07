@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('127488 engine speed Port', function () {
   it('complete engine speed sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2015-01-15-16:16:56.749Z","prio":"2","src":"17","dst":"255","pgn":"127488","description":"Engine Parameters, Rapid Update","fields":{"Engine Instance":"Single Engine or Dual Engine Port","Engine Speed":"3190"}}'
       )
@@ -21,7 +21,7 @@ describe('127488 engine speed Port', function () {
 
 describe('127488 engine speed Starboard', function () {
   it('complete engine speed sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2015-01-15-16:16:56.749Z","prio":"2","src":"17","dst":"255","pgn":"127488","description":"Engine Parameters, Rapid Update","fields":{"Engine Instance":"Dual Engine Starboard","Engine Speed":"3190"}}'
       )

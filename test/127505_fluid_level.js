@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('127505 fuel', function () {
   it('just level, no capacity', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2015-01-15-16:15:30.984Z","prio":"6","src":"17","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Fuel","Level":"131.068"}}'
       )
@@ -14,7 +14,7 @@ describe('127505 fuel', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
   it('level and capacity', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2015-01-15-16:15:33.341Z","prio":"6","src":"112","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"1","Type":"Fuel","Level":"64.284","Capacity":"41.6"}}'
       )
@@ -27,7 +27,7 @@ describe('127505 fuel', function () {
 
 describe('127505 water', function () {
   it('level and capacity', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2015-01-15-16:15:33.366Z","prio":"6","src":"114","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Water","Level":"88.596","Capacity":"71.9"}}'
       )
@@ -43,7 +43,7 @@ describe('127505 water', function () {
 
 describe('127505 grayWater', function () {
   it('level and capacity', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2015-01-15-16:15:33.369Z","prio":"6","src":"113","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Gray water","Level":"90.240","Capacity":"37.9"}}'
       )

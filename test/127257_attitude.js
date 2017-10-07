@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('127257_attitude', function () {
   it('complete sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"204","dst":"255","pgn":"127257","description":"Attitude","fields":{"Yaw":"37.190","Pitch":"0.464","Roll":"-2.496"}}'
       )

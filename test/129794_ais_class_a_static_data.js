@@ -36,7 +36,7 @@ chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
-var mapper = require('../n2kMapper.js')
+var mapper = require('./testMapper')
 
 describe('129794 AIS Class A Static and Voyage Related Data', function () {
   it('complete sentence converts', function () {

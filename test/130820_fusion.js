@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('130820 Fusion Stereo', function () {
   it('complet device name sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.895Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Unit Name","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"Unit Name","A":128,"Name":"Fusion"}}'
       )
@@ -14,7 +14,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet current source sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.901Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Source Name","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"Source","A":128,"Source ID":4,"Current Source ID":4,"D":3,"E":5,"Source":"SiriusXM"}}'
       )
@@ -31,7 +31,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet SiriusXM channel sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.906Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: SiriusXM Channel","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"SiriusXM Channel","A":6554752,"Channel":"xL Howard 100"}}'
       )
@@ -44,7 +44,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet SiriusXM Genre sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.911Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: SiriusXM Genre","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"SiriusXM Genre","A":6554752,"Genre":"Howard Stern"}}'
       )
@@ -57,7 +57,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet SiriusXM title sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.915Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: SiriusXM Title","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"SiriusXM Title","A":6554752,"Title":"A title"}}'
       )
@@ -70,7 +70,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet SiriusXM Artist sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.918Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: SiriusXM Artist","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"SiriusXM Artist","A":6554752,"Artist":"Howard Stern"}}'
       )
@@ -83,7 +83,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet mute sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.973Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Mute","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"Mute","A":128,"Mute":"Not Muted"}}'
       )
@@ -96,7 +96,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complete equalizer sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.986Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Tone","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"Tone","A":128,"B":3,"Bass":1,"Mid":2,"Treble":3}}'
       )
@@ -117,7 +117,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet volume sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.991Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Volume","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"Volume","A":128,"Zone 1":10,"Zone 2":11,"Zone 3":12,"Zone 4":13}}'
       )
@@ -142,7 +142,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet zone name sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-26T20:40:00.996Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Zone Name","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"Zone Name","A":128,"Number":0,"Name":"Cockpit"}}'
       )
@@ -155,7 +155,7 @@ describe('130820 Fusion Stereo', function () {
   })
 
   it('complet track name sentence converts', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-11-12T20:26:52.150Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Track","fields":{"Manufacturer Code":"Fusion","Industry Code":"Marine Industry","Message ID":"Track Title","A":128,"B":3592,"Track":"Flow"}}'
       )

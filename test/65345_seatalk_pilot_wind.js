@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('65345 Seatalk Wind Datum', function () {
   it('complet wind datum sentence converts positive', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-09-06T23:01:38.825Z","prio":7,"src":204,"dst":255,"pgn":65345,"description":"Seatalk: Pilot Wind Datum","fields":{"Manufacturer Code":"Raymarine","Industry Code":"Marine Industry","Wind Datum":1.0265,"Rolling Average Wind Angle":5.0195}}'
       )
@@ -18,7 +18,7 @@ describe('65345 Seatalk Wind Datum', function () {
   })
 
   it('complet wind datum sentence converts negative', function () {
-    var tree = require('../n2kMapper.js').toNested(
+    var tree = require('./testMapper').toNested(
       JSON.parse(
         '{"timestamp":"2016-09-06T23:01:38.825Z","prio":7,"src":204,"dst":255,"pgn":65345,"description":"Seatalk: Pilot Wind Datum","fields":{"Manufacturer Code":"Raymarine","Industry Code":"Marine Industry","Wind Datum":5.1454,"Rolling Average Wind Angle":5.0195}}'
       )
