@@ -52,7 +52,11 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('design.draft.maximum', 10.6)
     tree.should.have.nested.property('design.length.overall', 183.0)
-    tree.should.have.nested.property('design.aisShipType.value', 83)
+    tree.should.have.nested.property('design.aisShipType.value.id', 83)
+    tree.should.have.nested.property(
+      'design.aisShipType.value.name',
+      'Tanker hazard cat C'
+    )
     tree.should.have.nested.property('design.beam.value', 32.0)
     tree.should.have.nested.property(
       'navigation.destination.commonName.value',

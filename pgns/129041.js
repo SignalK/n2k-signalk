@@ -1,5 +1,6 @@
 const getMmsiContext = require('../mmsi-context')
 const getFromStarboard = require('../aisFromStarboard')
+const schema = require('@signalk/signalk-schema')
 
 module.exports = [
   {
@@ -30,7 +31,19 @@ module.exports = [
   },
   {
     node: 'atonType',
-    source: 'AtoN Type'
+    value: function(n2k) {
+      const num = nameMapping[n2k.fields['AtoN Type']]
+      if (typeof num !== 'undefined' && (name = schema.getAtonTypeName(num))) {
+        return {
+          value: {
+            'id': num,
+            'name': name
+          }
+        }
+      } else {
+        return null
+      }
+    }
   },
   {
     node: 'design.beam',
@@ -56,3 +69,37 @@ module.exports = [
     }
   }
 ]
+
+const nameMapping = {
+  "Default: Type of AtoN not specified": 0,
+  "Referece point": 1,
+  "RACON": 2,
+  "Fixed structure off-shore": 3,
+  "Reserved for future use": 4,
+  "Fixed light: without sectors": 5,
+  "Fixed light: with sectors": 6,
+  "Fixed leading light front": 7,
+  "Fixed leading light rear": 8,
+  "Fixed beacon: cardinal N": 9,
+  "Fixed beacon: cardinal E": 10,
+  "Fixed beacon: cardinal S": 11,
+  "Fixed beacon: cardinal W": 12,
+  "Fixed beacon: port hand": 13,
+  "Fixed beacon: starboard hand": 14,
+  "Fixed beacon: preferred channel port hand": 15,
+  "Fixed beacon: preferred channel starboard hand": 16,
+  "Fixed beacon: isolated danger": 17,
+  "Fixed beacon: safe water": 18,
+  "Floating AtoN: cardinal N": 20,
+  "Floating AtoN: cardinal E": 21,
+  "Floating AtoN: cardinal S": 22,
+  "Floating AtoN: cardinal W": 23,
+  "Floating AtoN: port hand mark": 24,
+  "Floating AtoN: starboard hand mark": 25,
+  "Floating AtoN: preferred channel port hand": 26,
+  "Floating AtoN: preferred channel starboard hand": 27,
+  "Floating AtoN: isolated danger": 28,
+  "Floating AtoN: safe water": 29,
+  "Floating AtoN: special mark": 30,
+  "Floating AtoN: light vessel/LANBY/rigs": 31
+}

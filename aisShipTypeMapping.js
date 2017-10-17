@@ -1,9 +1,21 @@
+const schema = require('@signalk/signalk-schema')
+
 module.exports = function (type) {
-  num = mapping[type]
-  return typeof num === 'undefined' ? 0 : num
+  const num = mapping[type]
+  var name
+  if (typeof num !== 'undefined' && (name = schema.getAISShipTypeName(num))) {
+    return {
+      value: {
+        'id': num,
+        'name': name
+      }
+    }
+  } else {
+    return null
+  }
 }
 
-mapping = {
+const mapping = {
   unavailable: 0,
   'Wing In Ground': 20,
   'Wing In Ground (no other information)': 29,
@@ -14,15 +26,15 @@ mapping = {
   'Engaged in diving operations': 34,
   'Engaged in military operations': 35,
   Sailing: 36,
-  Pleasur: 37,
+  Pleasure: 37,
   'High speed craft': 40,
   'High speed craft carrying dangerous goods': 41,
   'High speed craft hazard cat B': 42,
   'High speed craft hazard cat C': 43,
   'High speed craft hazard cat D': 44,
-  'High speed craft (no additional information': 49,
+  'High speed craft (no additional information)': 49,
   'Pilot vessel': 50,
-  SAR: 51,
+  'SAR': 51,
   Tug: 52,
   'Port tender': 53,
   'Anti-pollution': 54,
@@ -32,23 +44,23 @@ mapping = {
   Medical: 58,
   'RR Resolution No.1': 59,
   'Passenger ship': 60,
-  'Passenger ship (no additional information': 69,
+  'Passenger ship (no additional information)': 69,
   'Cargo ship': 70,
   'Cargo ship carrying dangerous goods': 71,
   'Cargo ship hazard cat B': 72,
   'Cargo ship hazard cat C': 73,
   'Cargo ship hazard cat D': 74,
-  'Cargo ship (no additional information': 79,
+  'Cargo ship (no additional information)': 79,
   Tanker: 80,
   'Tanker carrying dangerous goods': 81,
   'Tanker hazard cat B': 82,
   'Tanker hazard cat C': 83,
   'Tanker hazard cat D': 84,
-  'Tanker (no additional information': 89,
+  'Tanker (no additional information)': 89,
   Other: 90,
   'Other carrying dangerous goods': 91,
   'Other hazard cat B': 92,
   'Other hazard cat C': 93,
   'Other hazard cat D': 94,
-  'Other (no additional information': 99
+  'Other (no additional information)': 99
 }
