@@ -17,7 +17,8 @@ describe('129040 AIS Class B Extended Position Repeat', function () {
     delta.updates[0].values[0].value.name.should.equal('RESCUE RAUTAUOMA')
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('design.length.overall', 16.0)
-    tree.should.have.nested.property('design.aisShipType.value', 51)
+    tree.should.have.nested.property('design.aisShipType.value.id', 51)
+    tree.should.have.nested.property('design.aisShipType.value.name', 'SAR')
     tree.should.have.nested.property('design.beam.value', 4.0)
     tree.should.have.nested.property(
       'navigation.destination.commonName.value',
