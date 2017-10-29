@@ -28,7 +28,7 @@ describe('130842 Simnet AIS Class B static data', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:338184313')
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('mmsi', '338184313')
-    tree.should.have.nested.property('design.length.overall', 9.0)
+    tree.should.have.nested.property('design.length.value.overall', 9.0)
     tree.should.have.nested.property('design.aisShipType.value.id', 36)
     tree.should.have.nested.property('design.aisShipType.value.name', 'Sailing')
     tree.should.have.nested.property('design.beam.value', 4.0)

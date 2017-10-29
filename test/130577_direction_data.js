@@ -40,8 +40,8 @@ describe('130577 direction_data sentence with drift', function () {
       'navigation.courseOverGroundTrue.value',
       206.9
     )
-    tree.should.have.nested.property('environment.current.setTrue', 58.9)
-    tree.should.have.nested.property('environment.current.drift', 0.28)
+    tree.should.have.nested.property('environment.current.value.setTrue', 58.9)
+    tree.should.have.nested.property('environment.current.value.drift', 0.28)
   })
   it('is valid SignalK', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity

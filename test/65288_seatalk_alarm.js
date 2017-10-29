@@ -11,10 +11,10 @@ describe('65288 Seatalk Alarm', function () {
       )
     )
     tree.should.have.nested.property(
-      'notifications.autopilot.PilotWayPointAdvance.state',
+      'notifications.autopilot.PilotWayPointAdvance.value.state',
       'alarm'
     )
-    tree.notifications.autopilot.PilotWayPointAdvance.method.should.eql([
+    tree.notifications.autopilot.PilotWayPointAdvance.value.method.should.eql([
       'visual',
       'sound'
     ])
@@ -29,7 +29,7 @@ describe('65288 Seatalk Alarm', function () {
       )
     )
     tree.should.have.nested.property(
-      'notifications.autopilot.PilotWayPointAdvance.state',
+      'notifications.autopilot.PilotWayPointAdvance.value.state',
       'normal'
     )
     // https://github.com/SignalK/specification/issues/281
@@ -43,10 +43,10 @@ describe('65288 Seatalk Alarm', function () {
       )
     )
     tree.should.have.nested.property(
-      'notifications.autopilot.PilotWayPointAdvance.state',
+      'notifications.autopilot.PilotWayPointAdvance.value.state',
       'alarm'
     )
-    tree.notifications.autopilot.PilotWayPointAdvance.method.should.eql([
+    tree.notifications.autopilot.PilotWayPointAdvance.value.method.should.eql([
       'visual'
     ])
     // https://github.com/SignalK/specification/issues/281

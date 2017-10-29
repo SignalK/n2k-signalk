@@ -35,10 +35,8 @@ module.exports = [
       const num = nameMapping[n2k.fields['AtoN Type']]
       if (typeof num !== 'undefined' && (name = schema.getAtonTypeName(num))) {
         return {
-          value: {
-            'id': num,
-            'name': name
-          }
+          'id': num,
+          'name': name
         }
       } else {
         return null

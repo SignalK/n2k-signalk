@@ -10,10 +10,10 @@ describe('129291 set & drift rapid update complete sentence', function () {
     )
   )
   it('result has correct values', function () {
-    tree.should.have.nested.property('environment.current.setTrue')
-    tree.should.have.nested.property('environment.current.setTrue', 212.6)
-    tree.should.have.nested.property('environment.current.drift')
-    tree.should.have.nested.property('environment.current.drift', 0.24)
+    tree.should.have.nested.property('environment.current.value.setTrue')
+    tree.should.have.nested.property('environment.current.value.setTrue', 212.6)
+    tree.should.have.nested.property('environment.current.value.drift')
+    tree.should.have.nested.property('environment.current.value.drift', 0.24)
   })
   it('result is valid SignalK', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity

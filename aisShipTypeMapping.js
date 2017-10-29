@@ -5,10 +5,8 @@ module.exports = function (type) {
   var name
   if (typeof num !== 'undefined' && (name = schema.getAISShipTypeName(num))) {
     return {
-      value: {
-        'id': num,
-        'name': name
-      }
+      'id': num,
+      'name': name
     }
   } else {
     return null
