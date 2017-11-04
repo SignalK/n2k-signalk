@@ -102,15 +102,15 @@ describe('130820 Fusion Stereo', function () {
       )
     )
     tree.should.have.nested.property(
-      'entertainment.device.fusion1.output.zone1.equalizer.bass',
+      'entertainment.device.fusion1.output.zone1.equalizer.value.bass',
       1
     )
     tree.should.have.nested.property(
-      'entertainment.device.fusion1.output.zone1.equalizer.mid',
+      'entertainment.device.fusion1.output.zone1.equalizer.value.mid',
       2
     )
     tree.should.have.nested.property(
-      'entertainment.device.fusion1.output.zone1.equalizer.treble',
+      'entertainment.device.fusion1.output.zone1.equalizer.value.treble',
       3
     )
     // tree.should.be.validSignalKVesselIgnoringIdentity;

@@ -50,8 +50,8 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     delta.updates[0].values[0].value.name.should.equal('SILVER GWEN')
     // console.log(JSON.stringify(delta, null, 2))
     var tree = mapper.toNested(msg)
-    tree.should.have.nested.property('design.draft.maximum', 10.6)
-    tree.should.have.nested.property('design.length.overall', 183.0)
+    tree.should.have.nested.property('design.draft.value.maximum', 10.6)
+    tree.should.have.nested.property('design.length.value.overall', 183.0)
     tree.should.have.nested.property('design.aisShipType.value.id', 83)
     tree.should.have.nested.property(
       'design.aisShipType.value.name',

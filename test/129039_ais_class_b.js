@@ -18,8 +18,8 @@ describe('129039 Class B Update', function () {
     )
     tree.should.have.nested.property('navigation.speedOverGround')
     tree.should.have.nested.property('navigation.speedOverGround.value', 3.75)
-    tree.navigation.position.longitude.should.equal(24.9024733)
-    tree.navigation.position.latitude.should.equal(60.03951)
+    tree.navigation.position.value.longitude.should.equal(24.9024733)
+    tree.navigation.position.value.latitude.should.equal(60.03951)
     tree.should.have.nested.property('navigation.headingTrue')
     tree.should.have.nested.property('navigation.headingTrue.value', 153.0)
     tree.should.be.validSignalKVesselIgnoringIdentity

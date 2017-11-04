@@ -57,14 +57,16 @@ module.exports = [
   },
   {
     node: function (n2k, state) {
-      return 'navigation.course' + calculationType(n2k, state) + '.nextPoint'
+      return (
+        'navigation.course' +
+        calculationType(n2k, state) +
+        '.nextPoint.position'
+      )
     },
     value: function (n2k) {
       return {
-        position: {
-          longitude: Number(n2k.fields['Destination Longitude']),
-          latitude: Number(n2k.fields['Destination Latitude'])
-        }
+        longitude: Number(n2k.fields['Destination Longitude']),
+        latitude: Number(n2k.fields['Destination Latitude'])
       }
     }
   },

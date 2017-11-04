@@ -28,11 +28,11 @@ describe('129284 Navigation Data', function () {
       2.7651
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.position.latitude',
+      'navigation.courseGreatCircle.nextPoint.position.value.latitude',
       60.1366607
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.position.longitude',
+      'navigation.courseGreatCircle.nextPoint.position.value.longitude',
       24.9068518
     )
     tree.should.have.nested.property(

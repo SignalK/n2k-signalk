@@ -29,16 +29,16 @@ describe('127489 engine parameters Port', function () {
     tree.should.have.nested.property('propulsion.port.engineLoad.value', 0.2)
     tree.should.have.nested.property('propulsion.port.engineTorque.value', 0.57)
     tree.should.have.nested.property(
-      'notifications.propulsion.port.lowOilPressure.state',
+      'notifications.propulsion.port.lowOilPressure.value.state',
       'alarm')
     tree.should.have.nested.property(
-      'notifications.propulsion.port.lowCoolantLevel.state',
+      'notifications.propulsion.port.lowCoolantLevel.value.state',
       'alarm')
     tree.should.have.nested.property(
-      'notifications.propulsion.port.warningLevel1.state',
+      'notifications.propulsion.port.warningLevel1.value.state',
       'alarm')
     tree.should.have.nested.property(
-      'notifications.propulsion.port.maintenanceNeeded.state',
+      'notifications.propulsion.port.maintenanceNeeded.value.state',
       'alarm')
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
@@ -85,16 +85,16 @@ describe('127489 engine parameters Starboard', function () {
       0.57
     )
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.lowOilPressure.state',
+      'notifications.propulsion.starboard.lowOilPressure.value.state',
       'alarm')
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.lowCoolantLevel.state',
+      'notifications.propulsion.starboard.lowCoolantLevel.value.state',
       'alarm')
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.warningLevel1.state',
+      'notifications.propulsion.starboard.warningLevel1.value.state',
       'alarm')
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.maintenanceNeeded.state',
+      'notifications.propulsion.starboard.maintenanceNeeded.value.state',
       'alarm')
     tree.should.be.validSignalKVesselIgnoringIdentity
 
@@ -104,16 +104,16 @@ describe('127489 engine parameters Starboard', function () {
       )
     )
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.lowOilPressure.state',
+      'notifications.propulsion.starboard.lowOilPressure.value.state',
       'alarm')
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.lowCoolantLevel.state',
+      'notifications.propulsion.starboard.lowCoolantLevel.value.state',
       'normal')
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.warningLevel1.state',
+      'notifications.propulsion.starboard.warningLevel1.value.state',
       'normal')
     tree.should.have.nested.property(
-      'notifications.propulsion.starboard.maintenanceNeeded.state',
+      'notifications.propulsion.starboard.maintenanceNeeded.value.state',
       'normal')
     tree.should.be.validSignalKVesselIgnoringIdentity
   })

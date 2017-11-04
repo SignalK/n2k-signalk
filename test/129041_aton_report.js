@@ -21,8 +21,8 @@ describe('129041 AIS Aids to Navigation (AtoN) Report', function () {
       'Beacon, Port Hand'
     )
     tree.should.have.nested.property('atonType.value.id', 13)
-    tree.navigation.position.latitude.should.equal(38.99384)
-    tree.navigation.position.longitude.should.equal(-76.3847132)
+    tree.navigation.position.value.latitude.should.equal(38.99384)
+    tree.navigation.position.value.longitude.should.equal(-76.3847132)
     // tree.should.be.validSignalKAtoNIgnoringIdentity;
   })
 })
