@@ -62,6 +62,14 @@ module.exports = [
     }
   },
   {
+    node: '',
+    value: function (n2k) {
+      return {
+        mmsi: n2k.fields["User ID"].toString()
+      }
+    }
+  },
+  {
     context: function (n2k) {
       return 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
     }
