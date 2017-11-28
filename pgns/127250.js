@@ -25,5 +25,12 @@ module.exports = [
     filter: function (n2k) {
       return typeof n2k.fields['Variation'] !== 'undefined'
     }
+  },
+  {
+    source: 'Deviation',
+    node: 'navigation.magneticDeviation',
+    filter: function (n2k) {
+      return typeof n2k.fields['Deviation'] !== 'undefined'
+    }
   }
 ]
