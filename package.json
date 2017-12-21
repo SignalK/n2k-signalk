@@ -32,7 +32,7 @@
     "github-changes": "^1.0.4",
     "lodash": "^4.6.1",
     "mocha": "^4.0.0",
-    "prettier-standard": "^7.0.1",
+    "prettier-standard": "^8.0.0",
     "tv4": "latest"
   }
 }
