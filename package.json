@@ -26,7 +26,7 @@
     "through": ">=2.2.7 <3"
   },
   "devDependencies": {
-    "@signalk/signalk-schema": "0.0.1-12",
+    "@signalk/signalk-schema": "1.0.1",
     "chai": "~4.1.0",
     "chai-things": "0.2",
     "github-changes": "^1.0.4",
