@@ -16,6 +16,7 @@ describe('Temperature: ', function () {
     _.forOwn(msgs, function (msg, key) {
       var delta = n2kMapper.toDelta(msg)
       delta.context = 'vessels.urn:mrn:imo:mmsi:230099999'
+      delta.updates[0].source.label = 'aLabel'
       full.addDelta(delta)
       delta.should.be.validSignalKDelta
       delta.updates[0].values.forEach(function (pathValue) {})
