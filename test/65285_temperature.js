@@ -7,7 +7,7 @@ var _ = require('lodash')
 
 var msgs = require('./65285_temperature-2.json')
 
-describe('Temperature: ', function () {
+describe('65285 Lowrance Temperature: ', function () {
   it('examples work', function () {
     var n2kMapper = require('../n2kMapper.js')
     var full = new (require('@signalk/signalk-schema')).FullSignalK(
