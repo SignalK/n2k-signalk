@@ -30,7 +30,7 @@
     "chai": "~4.1.0",
     "chai-things": "0.2",
     "github-changes": "^1.0.4",
-    "lodash": "^4.6.1",
+    "lodash": "^4.17.4",
     "mocha": "^5.0.0",
     "prettier-standard": "^8.0.0",
     "tv4": "latest"
