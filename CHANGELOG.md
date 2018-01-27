@@ -1,6 +1,33 @@
 ## Change Log
 
-### v0.0.4 (2017/09/19 17:46 +00:00)
+### v1.1.0 (2018/01/27 07:00 +00:00)
+- [#92](https://github.com/SignalK/n2k-signalk/pull/92) Added PGN 65285 for Lowrance Temperature sensor (@lfrancois)
+- [#113](https://github.com/SignalK/n2k-signalk/pull/113) Update mocha to the latest version 🚀 (@greenkeeper[bot])
+- [#112](https://github.com/SignalK/n2k-signalk/pull/112) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+
+### v1.0.1 (2018/01/02 21:17 +00:00)
+- [#111](https://github.com/SignalK/n2k-signalk/pull/111) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+
+### v1.0.0 (2018/01/01 19:23 +00:00)
+- [#110](https://github.com/SignalK/n2k-signalk/pull/110) chore(package): update @signalk/signalk-schema to version 1.0.1 (@tkurki)
+
+### v0.0.7 (2017/12/31 08:11 +00:00)
+- [#106](https://github.com/SignalK/n2k-signalk/pull/106) add: magneticDeviation and speedThroughWaterReferenceType (@sbender9)
+- [#108](https://github.com/SignalK/n2k-signalk/pull/108) Update prettier-standard to the latest version 🚀 (@greenkeeper[bot])
+
+### v0.0.6 (2017/11/23 05:35 +00:00)
+- [#105](https://github.com/SignalK/n2k-signalk/pull/105) fix: should send delta for mmsi for AIS pgns (@sbender9)
+
+### v0.0.5 (2017/11/04 19:56 +00:00)
+- [#103](https://github.com/SignalK/n2k-signalk/pull/103) feature: object valued properties under value in full model (@tkurki)
+- [#102](https://github.com/SignalK/n2k-signalk/pull/102) update: ais reflect latest spec for aisShipType and atonType (@sbender9)
+- [#101](https://github.com/SignalK/n2k-signalk/pull/101) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+- [#100](https://github.com/SignalK/n2k-signalk/pull/100) feature: cleanup: remove toNested and options, make schema a devDependency (@tkurki)
+- [#98](https://github.com/SignalK/n2k-signalk/pull/98) Update mocha to the latest version 🚀 (@greenkeeper[bot])
+- [#96](https://github.com/SignalK/n2k-signalk/pull/96) chore(package): update prettier-standard to version 7.0.1 (@tkurki)
+- [#95](https://github.com/SignalK/n2k-signalk/pull/95) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+
+### v0.0.4 (2017/09/19 17:48 +00:00)
 - [#93](https://github.com/SignalK/n2k-signalk/pull/93) fix: do not emit empty position pgn 129029 (@tkurki)
 - [#86](https://github.com/SignalK/n2k-signalk/pull/86) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
 - [#85](https://github.com/SignalK/n2k-signalk/pull/85) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
