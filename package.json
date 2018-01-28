@@ -30,7 +30,7 @@
     "@signalk/signalk-schema": "1.0.3",
     "chai": "~4.1.0",
     "chai-things": "0.2",
-    "github-changes": "^1.0.4",
+    "github-changes": "1.1.2",
     "lodash": "^4.6.1",
     "mocha": "^5.0.0",
     "prettier-standard": "^8.0.0",
