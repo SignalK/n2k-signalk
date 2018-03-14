@@ -22,14 +22,14 @@ module.exports = [
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.rate' },
     value: function (n2k) {
       var lph = Number(n2k.fields['Fuel Rate'])
-      return lph / 3600000
+      return isNaN(lph) ? null : lph / 3600000
     }
   },
   {
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilPressure' },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Oil pressure'])
-      return kpa * 1000.0
+      return isNaN(kpa) ? null : kpa * 1000.0
     }
   },
   {
@@ -44,33 +44,28 @@ module.exports = [
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.coolantPressure' },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Coolant Pressure'])
-      return kpa * 1000.0
+      return isNaN(kpa) ? null : kpa * 1000.0
     }
   },
   {
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineLoad' },
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Load'])
-      return percent / 100.0
+      return isNaN(percent) ? null : percent / 100.0
     }
   },
   {
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineTorque' },
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Torque'])
-      return percent / 100.0
+      return isNaN(percent) ? null : percent / 100.0
     }
   },
   {
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure' },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Fuel Pressure'])
-
-      if (isNaN(kpa) || !n2k.fields.hasOwnProperty('Fuel Pressure')) {
-        return null
-      }
-
-      return kpa * 1000.0
+      return isNaN(kpa) ? null : kpa * 1000.0
     }
   }
 ]
