@@ -37,6 +37,17 @@ module.exports = [
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.runTime' }
   },
   {
+    source: 'Oil temperature',
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilTemperature' }
+  },
+  {
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.coolantPressure' },
+    value: function (n2k) {
+      var kpa = Number(n2k.fields['Coolant Pressure'])
+      return kpa * 1000.0
+    }
+  },
+  {
     node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineLoad' },
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Load'])
