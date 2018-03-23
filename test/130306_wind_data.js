@@ -85,4 +85,17 @@ describe('130306 Wind Data', function () {
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+
+  it('Magnetic Ground sentence converts', function () {
+    var tree = require('./testMapper').toNested(
+      JSON.parse(
+        '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"3","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"94","Wind Speed":"4.82","Wind Angle":"218.6","Reference":"Magnetic (ground referenced to Magnetic North)"}}'
+      )
+    )
+    tree.should.have.nested.property(
+      'environment.wind.directionMagnetic.value',
+      218.6
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
+  })
 })
