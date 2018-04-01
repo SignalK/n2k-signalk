@@ -29,7 +29,7 @@ module.exports = [
     node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilPressure' },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Oil pressure'])
-      return kpa * 1000.0
+      return kpa
     }
   },
   {
