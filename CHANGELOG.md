@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.2.0 (2018/04/02 23:50 +00:00)
+- [#118](https://github.com/SignalK/n2k-signalk/pull/118) Add missing fields to PGN 127489 parser (@fabdrol)
+- [#119](https://github.com/SignalK/n2k-signalk/pull/119) feature: add environment.wind.directionMagnetic to 130306 (@sbender9)
+- [#120](https://github.com/SignalK/n2k-signalk/pull/120) fix: incorrect conversion of oil pressure for pgn 127489 (@sbender9)
+- [#115](https://github.com/SignalK/n2k-signalk/pull/115) add: pgn 129285 Route/WP Information (@sbender9)
+- [#116](https://github.com/SignalK/n2k-signalk/pull/116) chore: use node lts version (@tkurki)
+
 ### v1.1.0 (2018/01/27 07:00 +00:00)
 - [#92](https://github.com/SignalK/n2k-signalk/pull/92) Added PGN 65285 for Lowrance Temperature sensor (@lfrancois)
 - [#113](https://github.com/SignalK/n2k-signalk/pull/113) Update mocha to the latest version 🚀 (@greenkeeper[bot])
