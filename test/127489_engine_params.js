@@ -72,7 +72,7 @@ describe('127489 engine parameters Port', function () {
     tree.should.have.nested.property('propulsion.port.runTime')
     tree.should.have.nested.property('propulsion.port.runTime.value', 309960)
     tree.should.have.nested.property('propulsion.port.oilPressure')
-    tree.should.have.nested.property('propulsion.port.oilPressure.value', 80000)
+    tree.should.have.nested.property('propulsion.port.oilPressure.value', 80)
     tree.should.have.nested.property('propulsion.port.engineLoad.value', 0.2)
     tree.should.have.nested.property('propulsion.port.engineTorque.value', 0.57)
     tree.should.have.nested.property(
@@ -168,7 +168,7 @@ describe('127489 engine parameters Starboard', function () {
     tree.should.have.nested.property('propulsion.starboard.oilPressure')
     tree.should.have.nested.property(
       'propulsion.starboard.oilPressure.value',
-      80000
+      80
     )
     tree.should.have.nested.property(
       'propulsion.starboard.engineLoad.value',
