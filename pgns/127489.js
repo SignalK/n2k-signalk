@@ -1,53 +1,71 @@
 const util = require('util')
 
-function skEngineId(n2k) {
-  return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' ? "port" : "starboard";
+function skEngineId (n2k) {
+  return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' ? 'port' : 'starboard'
 }
 
-function skEngineTitle(n2k) {
-  var engine = skEngineId(n2k);
-  return engine.charAt(0).toUpperCase() + engine.slice(1);
+function skEngineTitle (n2k) {
+  var engine = skEngineId(n2k)
+  return engine.charAt(0).toUpperCase() + engine.slice(1)
 }
 
 module.exports = [
   {
     source: 'Temperature',
-    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.temperature'},
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.temperature' }
   },
   {
     source: 'Alternator Potential',
-    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage' },
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage' }
   },
   {
-    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.rate' },
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.rate' },
     value: function (n2k) {
       var lph = Number(n2k.fields['Fuel Rate'])
-      return lph / 3600000
+      return isNaN(lph) ? null : lph / 3600000
     }
   },
   {
-    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilPressure' },
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilPressure' },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Oil pressure'])
-      return kpa
+      return isNaN(kpa) ? null : kpa
     }
   },
   {
     source: 'Total Engine hours',
-    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.runTime' },
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.runTime' }
   },
   {
-    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineLoad'},
+    source: 'Oil temperature',
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilTemperature' }
+  },
+  {
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.coolantPressure' },
     value: function (n2k) {
-      var percent = Number(n2k.fields['Percent Engine Load'])
-      return percent / 100.0
+      var kpa = Number(n2k.fields['Coolant Pressure'])
+      return isNaN(kpa) ? null : kpa * 1000.0
     }
   },
   {
-    node: function(n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineTorque' },
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineLoad' },
+    value: function (n2k) {
+      var percent = Number(n2k.fields['Percent Engine Load'])
+      return isNaN(percent) ? null : percent / 100.0
+    }
+  },
+  {
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineTorque' },
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Torque'])
-      return percent / 100.0
+      return isNaN(percent) ? null : percent / 100.0
+    }
+  },
+  {
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure' },
+    value: function (n2k) {
+      var kpa = Number(n2k.fields['Fuel Pressure'])
+      return isNaN(kpa) ? null : kpa * 1000.0
     }
   }
 ]
@@ -133,10 +151,10 @@ var status1Notifications = [
     message: '%s Engine Emergency Stop Mode',
     analyzerText: 'Emergency Stop'
   }
-];
+]
 
 var status2Notifications = [
-  { 
+  {
     node: 'notifications.propulsion.%s.warningLevel1',
     message: '%s Engine Warning Level 1',
     analyzerText: 'Warning Level 1'
@@ -176,37 +194,34 @@ var status2Notifications = [
     message: '%s Engine Shutting Down',
     analyzerText: 'Engine Shutting Down'
   }
-];
+]
 
-
-function generateMappingsForStatus(field, notifications)
-{
-  notifications.forEach((notif,index) => {
+function generateMappingsForStatus (field, notifications) {
+  notifications.forEach((notif, index) => {
     var mapping = {
-      node: function(n2k) {
-        return util.format(notif.node, skEngineId(n2k));
+      node: function (n2k) {
+        return util.format(notif.node, skEngineId(n2k))
       },
-      filter: function(n2k) { return typeof n2k.fields[field] !== 'undefined'; },
-      value: function(n2k, state) {
-        if ( n2k.fields[field].indexOf(notif.analyzerText) != -1  ) {
-            return {
-              state: 'alarm',
-              method: [ "visual", "sound" ],
-              message: util.format(notif.message, skEngineTitle(n2k))
-            }
+      filter: function (n2k) { return typeof n2k.fields[field] !== 'undefined' },
+      value: function (n2k, state) {
+        if (n2k.fields[field].indexOf(notif.analyzerText) != -1) {
+          return {
+            state: 'alarm',
+            method: [ 'visual', 'sound' ],
+            message: util.format(notif.message, skEngineTitle(n2k))
+          }
         } else {
           return {
             state: 'normal',
-            method: [ "visual" ],
+            method: [ 'visual' ],
             message: util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
           }
         }
       }
     }
-    module.exports.push(mapping);
-  });
+    module.exports.push(mapping)
+  })
 }
 
-generateMappingsForStatus('Discrete Status 1', status1Notifications);
-generateMappingsForStatus('Discrete Status 2', status2Notifications);
-
+generateMappingsForStatus('Discrete Status 1', status1Notifications)
+generateMappingsForStatus('Discrete Status 2', status2Notifications)
