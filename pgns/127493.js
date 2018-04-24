@@ -5,21 +5,22 @@
  * 3. Reserved (byte alignment)
  * 4. Transmission oil pressure:    propulsion.«instance».transmission.oilPressure
  * 5. Transmission oil temperature: propulsion.«instance».transmission.oilTemperature
- * 6. Transmission discrete status: not supported by schema
+ * 6. Transmission discrete status: notifications.propulsion.«instance».transmission.checkTransmission
+ *                                  notifications.propulsion.«instance».transmission.overTemperature
+ *                                  notifications.propulsion.«instance».transmission.lowOilPressure
+ *                                  notifications.propulsion.«instance».transmission.lowOilLevel
  * 7. Reserved (byte alignment)
  */
 
-function skEngineId (n2k) {
-  return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' ? 'port' : 'starboard'
-}
+const engine = require('../engine')
 
-module.exports = [
+var translations = [
   {
     source: 'Transmission Gear',
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.transmission.gear' }
+    node: function (n2k) { return 'propulsion.' + engine.skEngineId(n2k) + '.transmission.gear' }
   },
   {
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.transmission.oilPressure' },
+    node: function (n2k) { return 'propulsion.' + engine.skEngineId(n2k) + '.transmission.oilPressure' },
     value: function (n2k) {
       var hpa = Number(n2k.fields['Oil pressure'])
       return isNaN(hpa) ? null : hpa * 100.0
@@ -27,6 +28,33 @@ module.exports = [
   },
   {
     source: 'Oil temperature',
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.transmission.oilTemperature' }
+    node: function (n2k) { return 'propulsion.' + engine.skEngineId(n2k) + '.transmission.oilTemperature' }
   }
 ];
+
+var statusNotifications = [
+  {
+    node: 'notifications.propulsion.%s.transmission.checkTransmission',
+    message: 'Check %s Transmission',
+    analyzerText: 'Check Transmission'
+  },
+  {
+    node: 'notifications.propulsion.%s.transmission.overTemperature',
+    message: '%s Transmission Over Temperature',
+    analyzerText: 'Over Temperature'
+  },
+  {
+    node: 'notifications.propulsion.%s.transmission.lowOilPressure',
+    message: '%s Transmission Low Oil Pressure',
+    analyzerText: 'Low Oil Pressure'
+  },
+  {
+    node: 'notifications.propulsion.%s.transmission.lowOilLevel',
+    message: '%s Transmission Low Oil Level',
+    analyzerText: 'Low Oil Level'
+  }
+];
+
+var notifications = engine.generateMappingsForStatus('Discrete Status 1', statusNotifications)
+
+module.exports = translations.concat(notifications)
