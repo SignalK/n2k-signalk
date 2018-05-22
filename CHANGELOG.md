@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.3.1 (2018/05/22 20:51 +00:00)
+- [#124](https://github.com/SignalK/n2k-signalk/pull/124)  fix: missing navigation.speedThroughWater when the value is zero (@sbender9)
+
 ### v1.3.0 (2018/04/06 00:04 +00:00)
 - [#121](https://github.com/SignalK/n2k-signalk/pull/121) feature: add support for pgn 130314 (Actual Pressure) (@sbender9)
 
