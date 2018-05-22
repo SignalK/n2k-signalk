@@ -3,7 +3,7 @@ module.exports = [
     source: 'Speed Water Referenced',
     node: 'navigation.speedThroughWater',
     filter: function (n2k) {
-      return n2k.fields['Speed Water Referenced']
+      return typeof n2k.fields['Speed Water Referenced'] !== 'undefined'
     }
   },
   {
