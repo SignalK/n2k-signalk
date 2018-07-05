@@ -1,13 +1,13 @@
-const path = require('path')
-const fs = require('fs')
+const path = require('./path.js')
+const fs = require('./fs.js')
 
 function load_pgns (dir, mappings) {
   fpath = path.join(__dirname, dir)
-  files = fs.readdirSync(fpath)
-  files.forEach(fname => {
-    pgn = path.basename(fname, '.js')
-    mappings[pgn] = require(path.join(fpath, pgn))
-  })
+ // files = fs.readdirSync(fpath)
+ // files.forEach(fname => {
+  //  pgn = path.basename(fname, '.js')
+  //  mappings[pgn] = require(path.join(fpath, pgn))
+  //})
 }
 
 var mappings = {}
