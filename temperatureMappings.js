@@ -32,10 +32,12 @@ module.exports = {
     path: 'environment.inside.mainCabin.temperature'
   },
   'Live Well Temperature': {
-    path: 'environment.water.liveWell.temperature'
+    // FIXME: Does not exist in SignalK 1.0.4
+    //path: 'environment.water.liveWell.temperature'
   },
   'Bait Well Temperature': {
-    path: 'environment.water.baitWell.temperature'
+    // FIXME: Does not exist in SignalK 1.0.4
+    //path: 'environment.water.baitWell.temperature'
   },
   'Refrigerator Temperature': {
     path: 'environment.inside.refrigerator.temperature'

@@ -27,7 +27,7 @@ describe('Temperature: ', function () {
   })
 
   it('all 130312 mappings are valid', function () {
-    var temperatureMappings = {}
+    var temperatureMappings = require('../temperatureMappings')
     var full = new (require('@signalk/signalk-schema')).FullSignalK(
       'urn:mrn:imo:mmsi:230099999'
     )
