@@ -1,6 +1,11 @@
-var n2kMappings = require('./n2kMappings.js').mappings
 var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
+
+var n2kMappings = {}
+Object.assign(n2kMappings, require('./pgns'))
+Object.assign(n2kMappings, require('./fusion'))
+Object.assign(n2kMappings, require('./lowrance'))
+Object.assign(n2kMappings, require('./raymarine'))
 
 var toDelta = function (n2k, state) {
   try {
