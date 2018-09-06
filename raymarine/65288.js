@@ -2,8 +2,16 @@
 module.exports = [
   {
     node: function(n2k) {
-      var alarmName = n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '') + '.' + n2k.fields['Alarm ID'].replace(/ /g, '');
-      return 'notifications.' + alarmName;
+      var alarmName = n2k.fields['Alarm ID']
+
+      if ( typeof alarmName === 'string' ) {
+        alarmName = alarmName.replace(/ /g, '')
+      } else {
+        alarmName = `unknown${alarmName}`
+      }
+      
+      var path = n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '')  + '.' + alarmName;
+      return 'notifications.' + path;
     },
     value: function(n2k) {
       var state = n2k.fields['Alarm Status'];
@@ -20,9 +28,14 @@ module.exports = [
         state = 'alarm'
       }
 
+      var alarmName = n2k.fields['Alarm ID']
+
+      if ( typeof alarmName !== 'string' ) {
+        alarmName = `Unknown Seatalk Alarm ${alarmName}`
+      }
 
       return {
-        message: n2k.fields['Alarm ID'],
+        message: alarmName,
         method: method,
         state: state,
         timestamp: n2k.timestamp
