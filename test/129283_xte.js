@@ -21,7 +21,6 @@ describe('129283 cross track error', function () {
       ),
       state
     )
-    console.log('state: ' + JSON.stringify(tree))
 
     tree.should.have.nested.property(
       'navigation.courseGreatCircle.crossTrackError.value',
@@ -36,6 +35,19 @@ describe('129283 cross track error', function () {
         '{"timestamp":"2016-08-11T07:58:36.263Z","prio":3,"src":3,"dst":255,"pgn":129283,"description":"Cross Track Error","fields":{"XTE mode":"Autonomous","Navigation Terminated":"No","XTE":-5.63}}'
       ),
       {}
+    )
+    tree.should.not.have.nested.property(
+      'navigation.courseGreatCircle.crossTrackError.value'
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+
+  it('does not choke when state is null', function() {
+    var tree = mapper.toNested(
+      JSON.parse(
+        '{"timestamp":"2016-08-11T07:58:36.263Z","prio":3,"src":3,"dst":255,"pgn":129283,"description":"Cross Track Error","fields":{"XTE mode":"Autonomous","Navigation Terminated":"No","XTE":-5.63}}'
+      ),
+      null
     )
     tree.should.not.have.nested.property(
       'navigation.courseGreatCircle.crossTrackError.value'

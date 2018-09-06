@@ -14,6 +14,7 @@ module.exports = [
         n2k.fields['Navigation Terminated'] &&
         n2k.fields['Navigation Terminated'] === 'No' &&
         typeof n2k.fields['XTE'] !== 'undefined' &&
+        typeof state === 'object' &&
         typeof state.lastCourseCalculationType !== 'undefined'
       )
     },
