@@ -31,6 +31,18 @@
       "Atmospheric Pressure": "1018"
     }
   },
+  "130310-water-temperature": {
+   "timestamp":"2018-09-20T00:33:11.411Z",
+   "prio":5,
+   "src":105,
+   "dst":255,
+   "pgn":130310,
+   "description":"Environmental Parameters",
+   "fields":{
+      "SID":0,
+      "Water Temperature":15.50
+    }
+  },
   "130311-outside-temp-humidity-pressure": {
     "timestamp": "2015-01-15-16:25:13.828Z",
     "prio": 5,
