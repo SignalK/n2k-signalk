@@ -112,6 +112,19 @@
       "Temperature Source": "Heating System Temperature"
     }
   },
+  "130312-heatingsystem-novalue-new": {
+    "timestamp": "2015-01-15-16:25:12.126Z",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130312,
+    "description": "Temperature",
+    "fields": {
+      "SID": 112,
+      "Instance": 0,
+      "Source": "Heating System Temperature"
+    }
+  },
   "130312-engineroomtemp": {
     "timestamp": "2015-01-15-16:15:18.127Z",
     "prio": "5",
@@ -123,6 +136,20 @@
       "SID": "179",
       "Temperature Instance": "2",
       "Temperature Source": "Engine Room Temperature",
+      "Actual Temperature": "7.76"
+    }
+  },
+  "130312-engineroomtemp-new": {
+    "timestamp": "2015-01-15-16:15:18.127Z",
+    "prio": "5",
+    "src": "41",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "SID": "179",
+      "Instance": "2",
+      "Source": "Engine Room Temperature",
       "Actual Temperature": "7.76"
     }
   },
@@ -140,7 +167,35 @@
       "Actual Temperature": "13.18"
     }
   },
+  "130312-insidetemp-new": {
+    "timestamp": "2015-01-15-16:15:18.129Z",
+    "prio": "5",
+    "src": "41",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "SID": "179",
+      "Instance": "3",
+      "Source": "Inside Temperature",
+      "Actual Temperature": "13.18"
+    }
+  },
   "130312-maincabin": {
+    "timestamp": "2015-01-15-16:15:18.131Z",
+    "prio": "5",
+    "src": "41",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "SID": "179",
+      "Temperature Instance": "4",
+      "Temperature Source": "Main Cabin Temperature",
+      "Actual Temperature": "16.93"
+    }
+  },
+  "130312-maincabin-new": {
     "timestamp": "2015-01-15-16:15:18.131Z",
     "prio": "5",
     "src": "41",
@@ -168,6 +223,20 @@
       "Actual Temperature": "70"
     }
   },
+  "130312-engineroomtemp-new": {
+    "timestamp": "2015-01-15-16:15:18.136Z",
+    "prio": "5",
+    "src": "41",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "SID": "179",
+      "Instance": "5",
+      "Source": "Engine Room Temperature",
+      "Actual Temperature": "70"
+    }
+  },
   "130312-engineroomtemp-novalue": {
     "timestamp": "2015-01-15-16:15:18.136Z",
     "prio": "5",
@@ -181,7 +250,34 @@
       "Temperature Source": "Engine Room Temperature"
     }
   },
+  "130312-engineroomtemp-novalue-new": {
+    "timestamp": "2015-01-15-16:15:18.136Z",
+    "prio": "5",
+    "src": "41",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "SID": "179",
+      "Instance": "5",
+      "Source": "Engine Room Temperature"
+    }
+  },
   "130312-outsidetemp": {
+    "timestamp": "2015-01-15-16:15:18.371Z",
+    "prio": "5",
+    "src": "130",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "SID": "14",
+      "Temperature Instance": "0",
+      "Temperature Source": "Outside Temperature",
+      "Actual Temperature": "7.84"
+    }
+  },
+  "130312-outsidetemp-new": {
     "timestamp": "2015-01-15-16:15:18.371Z",
     "prio": "5",
     "src": "130",
@@ -205,6 +301,19 @@
     "fields": {
       "Temperature Instance": "0",
       "Temperature Source": "Sea Temperature",
+      "Actual Temperature": "15.2"
+    }
+  },
+  "130312-seatemp-new": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "Instance": "0",
+      "Source": "Sea Temperature",
       "Actual Temperature": "15.2"
     }
   }
