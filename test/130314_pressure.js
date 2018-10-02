@@ -5,10 +5,9 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('130314_pressure', function () {
   it('complete sentence converts', function () {
-    [
-      '{"timestamp":"2016-04-09T16:41:39.364Z","prio":5,"src":28,"dst":255,"pgn":130314,"description":"Actual Pressure","fields":{"SID":0,"Pressure Instance":0,"Pressure Source":"Atmospheric","Pressure":100578}}',
-      '{"timestamp":"2016-04-09T16:41:39.364Z","prio":5,"src":28,"dst":255,"pgn":130314,"description":"Actual Pressure","fields":{"SID":0,"Instance":0,"Source":"Atmospheric","Pressure":100578}}'
-    ].forEach(pgn => {
+    const json = '{"timestamp":"2016-04-09T16:41:39.364Z","prio":5,"src":28,"dst":255,"pgn":130314,"description":"Actual Pressure","fields":{"SID":0,"Pressure Instance":0,"Pressure Source":"Atmospheric","Pressure":100578}}'
+    const pgns = [ json, json.replace('Pressure Instance', 'Pressure') ]
+    pgns.forEach(pgn => {
     var tree = require('./testMapper').toNested(
       JSON.parse(pgn)
     )
