@@ -1,7 +1,8 @@
 const util = require('util')
+const {chooseField} = require('../utils.js')
 
 function skEngineId (n2k) {
-  return n2k.fields['Engine Instance'] === 'Single Engine or Dual Engine Port' ? 'port' : 'starboard'
+  return chooseField(n2k, 'Engine Instance', 'Instance') === 'Single Engine or Dual Engine Port' ? 'port' : 'starboard'
 }
 
 function skEngineTitle (n2k) {

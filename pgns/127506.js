@@ -1,3 +1,9 @@
+const {chooseField} = require('../utils.js')
+
+function instance(n2k) {
+  return chooseField(n2k, 'DC Instance', 'Instance')
+}
+
 module.exports = [
   {
     value: function (n2k) {
@@ -9,7 +15,7 @@ module.exports = [
     node: function (n2k) {
       return (
         'electrical.batteries.' +
-        n2k.fields['DC Instance'] +
+        instance(n2k) +
         '.capacity.stateOfCharge'
       )
     }
@@ -19,7 +25,7 @@ module.exports = [
     node: function (n2k) {
       return (
         'electrical.batteries.' +
-        n2k.fields['DC Instance'] +
+        instance(n2k) +
         '.capacity.stateOfHealth'
       )
     }
@@ -39,14 +45,14 @@ module.exports = [
     node: function (n2k) {
       return (
         'electrical.batteries.' +
-        n2k.fields['DC Instance'] +
+        instance(n2k) +
         '.capacity.timeRemaining'
       )
     }
   } /*, {
     source: 'Ripple Voltage',
     node: function(n2k) {
-      return 'electrical.batteries.' + n2k.fields['DC Instance'] + '.voltage.ripple'
+      return 'electrical.batteries.' + instance(n2k) + '.voltage.ripple'
     }
   } */
 ]
