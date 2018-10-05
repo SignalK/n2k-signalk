@@ -7,7 +7,12 @@ module.exports = [
       var temperatureMapping =
           temperatureMappings[chooseField(n2k, 'Temperature Source', 'Source')]
       if (temperatureMapping) {
-        return temperatureMapping.path
+        if (temperatureMapping.pathWithIndex) {
+          return temperatureMapping.pathWithIndex.replace('<index>', n2k.fields['Temperature Instance'])
+        }
+        else if (temperatureMapping.path) {
+          return temperatureMapping.path
+        }
       }
     },
     instance: function (n2k) {

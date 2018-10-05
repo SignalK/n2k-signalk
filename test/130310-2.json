@@ -5,7 +5,8 @@
     "src": 17,
     "dst": 255,
     "pgn": 130310,
-    "description": "Environmental Parameters"
+    "description": "Environmental Parameters",
+    "testExpectConvertedValues": {}
   },
   "130310-nodata": {
     "timestamp": "2015-01-15-16:15:21.650Z",
@@ -16,7 +17,8 @@
     "description": "Environmental Parameters",
     "fields": {
       "SID": "145"
-    }
+    },
+    "testExpectConvertedValues": {}
   },
   "130310-outtemp_pressure": {
     "timestamp": "2015-01-15-16:15:21.862Z",
@@ -29,6 +31,10 @@
       "SID": "154",
       "Outside Ambient Air Temperature": "7.76",
       "Atmospheric Pressure": "1018"
+    },
+    "testExpectConvertedValues": {
+      "environment.outside.temperature": 7.76,
+      "environment.outside.pressure": 1018
     }
   },
   "130310-water-temperature": {
@@ -41,7 +47,8 @@
    "fields":{
       "SID":0,
       "Water Temperature":15.50
-    }
+    },
+    "testExpectConvertedValues": {}
   },
   "130311-outside-temp-humidity-pressure": {
     "timestamp": "2015-01-15-16:25:13.828Z",
@@ -57,6 +64,11 @@
       "Temperature": 8.05,
       "Humidity": 72.772,
       "Atmospheric Pressure": 101800
+    },
+    "testExpectConvertedValues": {
+      "environment.outside.temperature": 8.05,
+      "environment.outside.pressure": 10180000,
+      "environment.outside.humidity": 0.72772
     }
   },
   "130311-insidetemp": {
@@ -70,7 +82,8 @@
       "SID": 116,
       "Temperature Source": "Inside Temperature",
       "Temperature": 13.51
-    }
+    },
+    "testExpectConvertedValues": {"environment.inside.temperature": 13.51 }
   },
   "130311-engineroom": {
     "timestamp": "2015-01-15-16:25:14.120Z",
@@ -83,6 +96,9 @@
       "SID": 116,
       "Temperature Source": "Engine Room Temperature",
       "Temperature": 9.77
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.engineRoom.temperature": 9.77
     }
   },
   "130311-maincabin": {
@@ -96,8 +112,44 @@
       "SID": 116,
       "Temperature Source": "Main Cabin Temperature",
       "Temperature": 17.21
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.mainCabin.temperature": 17.21
     }
   },
+  "130311-livewell": {
+    "timestamp": "2015-01-15-16:25:14.122Z",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130311,
+    "description": "Environmental Parameters",
+    "fields": {
+      "SID": 116,
+      "Temperature Source": "Live Well Temperature",
+      "Temperature": 17.21
+    },
+    "testExpectConvertedValues": {
+      "tanks.liveWell.default.temperature": 17.21
+    }
+  },
+  "130311-baitwell": {
+    "timestamp": "2015-01-15-16:25:14.122Z",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130311,
+    "description": "Environmental Parameters",
+    "fields": {
+      "SID": 116,
+      "Temperature Source": "Bait Well Temperature",
+      "Temperature": 17.21
+    },
+    "testExpectConvertedValues": {
+      "tanks.baitWell.default.temperature": 17.21
+    }
+  },
+
 
   "130312-heatingsystem-novalue": {
     "timestamp": "2015-01-15-16:25:12.126Z",
@@ -110,6 +162,8 @@
       "SID": 112,
       "Temperature Instance": 0,
       "Temperature Source": "Heating System Temperature"
+    },
+    "testExpectConvertedValues": {
     }
   },
   "130312-heatingsystem-novalue-new": {
@@ -123,7 +177,8 @@
       "SID": 112,
       "Instance": 0,
       "Source": "Heating System Temperature"
-    }
+    },
+    "testExpectConvertedValues": {}
   },
   "130312-engineroomtemp": {
     "timestamp": "2015-01-15-16:15:18.127Z",
@@ -137,6 +192,9 @@
       "Temperature Instance": "2",
       "Temperature Source": "Engine Room Temperature",
       "Actual Temperature": "7.76"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.engineRoom.temperature": 7.76
     }
   },
   "130312-engineroomtemp-new": {
@@ -151,6 +209,9 @@
       "Instance": "2",
       "Source": "Engine Room Temperature",
       "Actual Temperature": "7.76"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.engineRoom.temperature": 7.76
     }
   },
   "130312-insidetemp": {
@@ -165,6 +226,9 @@
       "Temperature Instance": "3",
       "Temperature Source": "Inside Temperature",
       "Actual Temperature": "13.18"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.temperature": 13.18
     }
   },
   "130312-insidetemp-new": {
@@ -179,6 +243,9 @@
       "Instance": "3",
       "Source": "Inside Temperature",
       "Actual Temperature": "13.18"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.temperature": 13.18
     }
   },
   "130312-maincabin": {
@@ -193,6 +260,9 @@
       "Temperature Instance": "4",
       "Temperature Source": "Main Cabin Temperature",
       "Actual Temperature": "16.93"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.mainCabin.temperature": 16.93
     }
   },
   "130312-maincabin-new": {
@@ -207,9 +277,12 @@
       "Temperature Instance": "4",
       "Temperature Source": "Main Cabin Temperature",
       "Actual Temperature": "16.93"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.mainCabin.temperature": 16.93
     }
   },
-  "130312-engineroomtemp": {
+  "130312-engineroomtemp-instance5": {
     "timestamp": "2015-01-15-16:15:18.136Z",
     "prio": "5",
     "src": "41",
@@ -221,9 +294,12 @@
       "Temperature Instance": "5",
       "Temperature Source": "Engine Room Temperature",
       "Actual Temperature": "70"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.engineRoom.temperature": 70
     }
   },
-  "130312-engineroomtemp-new": {
+  "130312-engineroomtemp-instance5-new": {
     "timestamp": "2015-01-15-16:15:18.136Z",
     "prio": "5",
     "src": "41",
@@ -235,6 +311,9 @@
       "Instance": "5",
       "Source": "Engine Room Temperature",
       "Actual Temperature": "70"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.engineRoom.temperature": 70
     }
   },
   "130312-engineroomtemp-novalue": {
@@ -248,6 +327,8 @@
       "SID": "179",
       "Temperature Instance": "5",
       "Temperature Source": "Engine Room Temperature"
+    },
+    "testExpectConvertedValues": {
     }
   },
   "130312-engineroomtemp-novalue-new": {
@@ -261,6 +342,8 @@
       "SID": "179",
       "Instance": "5",
       "Source": "Engine Room Temperature"
+    },
+    "testExpectConvertedValues": {
     }
   },
   "130312-outsidetemp": {
@@ -275,6 +358,9 @@
       "Temperature Instance": "0",
       "Temperature Source": "Outside Temperature",
       "Actual Temperature": "7.84"
+    },
+    "testExpectConvertedValues": {
+      "environment.outside.temperature": 7.84
     }
   },
   "130312-outsidetemp-new": {
@@ -289,6 +375,9 @@
       "Temperature Instance": "0",
       "Temperature Source": "Outside Temperature",
       "Actual Temperature": "7.84"
+    },
+    "testExpectConvertedValues": {
+      "environment.outside.temperature": 7.84
     }
   },
   "130312-seatemp": {
@@ -302,6 +391,41 @@
       "Temperature Instance": "0",
       "Temperature Source": "Sea Temperature",
       "Actual Temperature": "15.2"
+    },
+    "testExpectConvertedValues": {
+      "environment.water.temperature": 15.2
+    }
+  },
+  "130312-livewell": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "Temperature Instance": "0",
+      "Temperature Source": "Live Well Temperature",
+      "Actual Temperature": "14.2"
+    },
+    "testExpectConvertedValues": {
+      "tanks.liveWell.0.temperature": 14.2
+    }
+  },
+  "130312-baitwell-index42": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "Temperature Instance": "42",
+      "Temperature Source": "Bait Well Temperature",
+      "Actual Temperature": "13.2"
+    },
+    "testExpectConvertedValues": {
+      "tanks.baitWell.42.temperature": 13.2
     }
   },
   "130312-seatemp-new": {
@@ -315,6 +439,9 @@
       "Instance": "0",
       "Source": "Sea Temperature",
       "Actual Temperature": "15.2"
+    },
+    "testExpectConvertedValues": {
+      "environment.water.temperature": 15.2
     }
   }
 }
