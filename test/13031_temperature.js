@@ -22,9 +22,6 @@ describe('Temperature: ', function () {
       full.addDelta(delta)
       delta.should.be.validSignalKDelta
 
-      console.log(testCase)
-      console.log(delta.updates[0])
-
       Object.keys(testCase['testExpectConvertedValues']).forEach(expectedValuePath => {
         const expectedValueFound = delta.updates[0].values.filter(value => value.path === expectedValuePath)
         expectedValueFound.length.should.equal(1, `Expected value ${expectedValuePath} not found.`)
