@@ -16,4 +16,19 @@ describe('65285 Lowrance Temperature ', function () {
     tree.environment.inside.engineRoom.temperature.should.have.property('value', 25.60)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+
+  it('converts livewell to a tank temperature', function () {
+    var tree = require('./testMapper').toNested(
+      JSON.parse(
+		'{"timestamp": "2015-01-15-16:25:14.120Z","prio": 0,"src": 5,"dst": 255,"pgn": 65285,"description": "Lowrance: Temperature","fields": {"Manufacturer Code":"Lowrance","Industry Code":"Marine Industry","Temperature Source":"Live Well Temperature", "Actual Temperature": 15.60}}'
+      )
+    )
+    tree.tanks.liveWell.default.temperature.should.have.property(
+      'timestamp',
+      '2015-01-15T16:25:14.120Z'
+    )
+    tree.tanks.liveWell.default.temperature.should.have.property('value', 15.60)
+    tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+
 })

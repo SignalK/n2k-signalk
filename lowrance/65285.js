@@ -1,4 +1,4 @@
-const temperatureMappings = require('../temperatureMappings') 
+const temperatureMappings = require('../temperatureMappings')
 
 module.exports = [
   {
@@ -6,7 +6,7 @@ module.exports = [
     node: function (n2k) {
       var temperatureMapping =
         temperatureMappings[n2k.fields['Temperature Source']]
-      if (temperatureMapping) {
+      if (temperatureMapping && temperatureMapping.path) {
         return temperatureMapping.path
       }
     },

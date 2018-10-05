@@ -5,25 +5,37 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 var debug = require('debug')('n2k-signalk:test:130312')
 var _ = require('lodash')
 
-var msgs = require('./130310-2.json')
-
 describe('Temperature: ', function () {
-  it('examples work', function () {
-    var n2kMapper = require('./testMapper')
-    var full = new (require('@signalk/signalk-schema')).FullSignalK(
-      'urn:mrn:imo:mmsi:230099999'
-    )
-    _.forOwn(msgs, function (msg, key) {
-      var delta = n2kMapper.toDelta(msg)
+  var n2kMapper = require('./testMapper')
+  var full = new (require('@signalk/signalk-schema')).FullSignalK(
+    'urn:mrn:imo:mmsi:230099999'
+  )
+
+  var testCases = require('./130310-2.json')
+  Object.keys(testCases).forEach(testCaseName => {
+    it(`Converts ${testCaseName}`, () => {
+      const testCase = testCases[testCaseName]
+
+      var delta = n2kMapper.toDelta(testCase)
       delta.context = 'vessels.urn:mrn:imo:mmsi:230099999'
       delta.updates[0].source.label = 'aLabel'
       full.addDelta(delta)
       delta.should.be.validSignalKDelta
-      delta.updates[0].values.forEach(function (pathValue) {})
+
+      console.log(testCase)
+      console.log(delta.updates[0])
+
+      Object.keys(testCase['testExpectConvertedValues']).forEach(expectedValuePath => {
+        const expectedValueFound = delta.updates[0].values.filter(value => value.path === expectedValuePath)
+        expectedValueFound.length.should.equal(1, `Expected value ${expectedValuePath} not found.`)
+        expectedValueFound[0].value.should.equal(testCase['testExpectConvertedValues'][expectedValuePath],
+          `Value ${expectedValuePath} incorrectly converted to ${ expectedValueFound[0].value} - expected ${testCase['testExpectConvertedValues'][expectedValuePath]}`)
+      })
+
+      var fullDoc = full.retrieve()
+      fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999'
+      fullDoc.should.be.validSignalK
     })
-    var fullDoc = full.retrieve()
-    fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999'
-    fullDoc.should.be.validSignalK
   })
 
   it('all 130312 mappings are valid', function () {
