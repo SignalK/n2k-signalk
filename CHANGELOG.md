@@ -1,5 +1,14 @@
 ## Change Log
 
+### v1.3.2 (2018/10/08 19:21 +00:00)
+- [#132](https://github.com/SignalK/n2k-signalk/pull/132) fix: bug parsing PGN 129025 without position data (@sarfata)
+- [#131](https://github.com/SignalK/n2k-signalk/pull/131) fix: support changes to some key names in canboat (@sbender9)
+- [#130](https://github.com/SignalK/n2k-signalk/pull/130) Extend pgn 130310 for water temperature (@free-x)
+- [#129](https://github.com/SignalK/n2k-signalk/pull/129) Update debug to the latest version 🚀 (@greenkeeper[bot])
+- [#128](https://github.com/SignalK/n2k-signalk/pull/128) fix: exception when an unknown raymarine alarm is received (@sbender9)
+- [#127](https://github.com/SignalK/n2k-signalk/pull/127) fix: 129283 should not throw exception when state is undefined (@sarfata)
+- [#126](https://github.com/SignalK/n2k-signalk/pull/126) feature: make browser compatible (@sarfata)
+
 ### v1.3.1 (2018/05/22 20:51 +00:00)
 - [#124](https://github.com/SignalK/n2k-signalk/pull/124)  fix: missing navigation.speedThroughWater when the value is zero (@sbender9)
 
