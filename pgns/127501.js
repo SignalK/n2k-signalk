@@ -5,11 +5,11 @@ module.exports = [
       const field = 'Indicator' + i
       if (typeof n2k.fields[field] !== 'undefined') {
         const basePath =
-          'electrical.switch.' + n2k.fields['Indicator Bank Instance'] + '.' + i
+          'electrical.switches.' + n2k.fields['Instance'] + '.' + i
 
         res.push({
           path: basePath + '.state',
-          value: n2k.fields[field] == 'On'
+          value: n2k.fields[field] == 'On' ? 1 : 0
         })
 
         res.push({
