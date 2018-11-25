@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.4.0 (2018/11/25 14:40 +00:00)
+- [#125](https://github.com/SignalK/n2k-signalk/pull/125) test: fix tests for 13031x temperature (@sarfata)
+- [#134](https://github.com/SignalK/n2k-signalk/pull/134) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+- [#133](https://github.com/SignalK/n2k-signalk/pull/133) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
+
 ### v1.3.2 (2018/10/08 19:21 +00:00)
 - [#132](https://github.com/SignalK/n2k-signalk/pull/132) fix: bug parsing PGN 129025 without position data (@sarfata)
 - [#131](https://github.com/SignalK/n2k-signalk/pull/131) fix: support changes to some key names in canboat (@sbender9)
