@@ -1,7 +1,7 @@
 ## Change Log
 
-### v1.4.0 (2018/11/25 14:40 +00:00)
-- [#125](https://github.com/SignalK/n2k-signalk/pull/125) test: fix tests for 13031x temperature (@sarfata)
+### v1.4.0 (2018/11/25 14:41 +00:00)
+- [#125](https://github.com/SignalK/n2k-signalk/pull/125) feature: add live/bailWell, fix tests for 13031x temperature (@sarfata)
 - [#134](https://github.com/SignalK/n2k-signalk/pull/134) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
 - [#133](https://github.com/SignalK/n2k-signalk/pull/133) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
 
