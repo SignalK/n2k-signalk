@@ -30,8 +30,7 @@ var toDelta = function (n2k, state) {
           timestamp:
             n2k.timestamp.substring(0, 10) +
             'T' +
-            n2k.timestamp.substring(11, n2k.timestamp.length) +
-            'Z',
+            n2k.timestamp.substring(11, n2k.timestamp.length),
           values: toValuesArray(theMappings, n2k, src_state)
         }
       ]
