@@ -56,7 +56,7 @@ module.exports = [
     node: '',
     value: function (n2k) {
       return {
-        mmsi: n2k.fields["User ID"].toString()
+        mmsi: n2k.fields['User ID'].toString()
       }
     }
   },

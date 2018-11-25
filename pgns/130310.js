@@ -16,12 +16,12 @@ module.exports = [
     }
   },
   {
-     node: 'environment.water.temperature',
-     filter: function (n2k) {
-       return n2k.fields['Water Temperature']
-     },
-     value: function (n2k) {
-	return Number(n2k.fields['Water Temperature'])
-     }
+    node: 'environment.water.temperature',
+    filter: function (n2k) {
+      return n2k.fields['Water Temperature']
+    },
+    value: function (n2k) {
+      return Number(n2k.fields['Water Temperature'])
+    }
   }
 ]

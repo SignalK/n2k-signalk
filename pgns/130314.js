@@ -1,4 +1,4 @@
-const {chooseField} = require('../utils.js')
+const { chooseField } = require('../utils.js')
 
 module.exports = [
   {

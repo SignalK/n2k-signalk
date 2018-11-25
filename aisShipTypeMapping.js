@@ -5,8 +5,8 @@ module.exports = function (type) {
   var name
   if (typeof num !== 'undefined' && (name = schema.getAISShipTypeName(num))) {
     return {
-      'id': num,
-      'name': name
+      id: num,
+      name: name
     }
   } else {
     return null
@@ -32,7 +32,7 @@ const mapping = {
   'High speed craft hazard cat D': 44,
   'High speed craft (no additional information)': 49,
   'Pilot vessel': 50,
-  'SAR': 51,
+  SAR: 51,
   Tug: 52,
   'Port tender': 53,
   'Anti-pollution': 54,

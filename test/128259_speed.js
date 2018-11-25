@@ -23,7 +23,10 @@ describe('128259 speed', function () {
     )
     tree.should.have.nested.property('navigation.speedThroughWater')
     tree.should.have.nested.property('navigation.speedThroughWater.value', 3.47)
-    tree.should.have.nested.property('navigation.speedThroughWaterReferenceType.value', 'Paddle wheel')
+    tree.should.have.nested.property(
+      'navigation.speedThroughWaterReferenceType.value',
+      'Paddle wheel'
+    )
   })
 
   it('zerop speed sentence converts', function () {

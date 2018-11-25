@@ -38,15 +38,15 @@
     }
   },
   "130310-water-temperature": {
-   "timestamp":"2018-09-20T00:33:11.411Z",
-   "prio":5,
-   "src":105,
-   "dst":255,
-   "pgn":130310,
-   "description":"Environmental Parameters",
-   "fields":{
-      "SID":0,
-      "Water Temperature":15.50
+    "timestamp": "2018-09-20T00:33:11.411Z",
+    "prio": 5,
+    "src": 105,
+    "dst": 255,
+    "pgn": 130310,
+    "description": "Environmental Parameters",
+    "fields": {
+      "SID": 0,
+      "Water Temperature": 15.5
     },
     "testExpectConvertedValues": {}
   },
@@ -83,7 +83,7 @@
       "Temperature Source": "Inside Temperature",
       "Temperature": 13.51
     },
-    "testExpectConvertedValues": {"environment.inside.temperature": 13.51 }
+    "testExpectConvertedValues": { "environment.inside.temperature": 13.51 }
   },
   "130311-engineroom": {
     "timestamp": "2015-01-15-16:25:14.120Z",
@@ -150,7 +150,6 @@
     }
   },
 
-
   "130312-heatingsystem-novalue": {
     "timestamp": "2015-01-15-16:25:12.126Z",
     "prio": 5,
@@ -163,8 +162,7 @@
       "Temperature Instance": 0,
       "Temperature Source": "Heating System Temperature"
     },
-    "testExpectConvertedValues": {
-    }
+    "testExpectConvertedValues": {}
   },
   "130312-heatingsystem-novalue-new": {
     "timestamp": "2015-01-15-16:25:12.126Z",
@@ -328,8 +326,7 @@
       "Temperature Instance": "5",
       "Temperature Source": "Engine Room Temperature"
     },
-    "testExpectConvertedValues": {
-    }
+    "testExpectConvertedValues": {}
   },
   "130312-engineroomtemp-novalue-new": {
     "timestamp": "2015-01-15-16:15:18.136Z",
@@ -343,8 +340,7 @@
       "Instance": "5",
       "Source": "Engine Room Temperature"
     },
-    "testExpectConvertedValues": {
-    }
+    "testExpectConvertedValues": {}
   },
   "130312-outsidetemp": {
     "timestamp": "2015-01-15-16:15:18.371Z",

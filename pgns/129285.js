@@ -8,10 +8,10 @@ module.exports = [
   },
   {
     node: 'navigation.currentRoute.waypoints',
-    filter: (n2k) => {
+    filter: n2k => {
       return !_.isUndefined(n2k.fields.list)
     },
-    value: (n2k) => {
+    value: n2k => {
       var idx = 0
       return n2k.fields.list.map(wp => {
         return {

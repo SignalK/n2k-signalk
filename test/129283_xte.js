@@ -42,7 +42,7 @@ describe('129283 cross track error', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
-  it('does not choke when state is null', function() {
+  it('does not choke when state is null', function () {
     var tree = mapper.toNested(
       JSON.parse(
         '{"timestamp":"2016-08-11T07:58:36.263Z","prio":3,"src":3,"dst":255,"pgn":129283,"description":"Cross Track Error","fields":{"XTE mode":"Autonomous","Navigation Terminated":"No","XTE":-5.63}}'

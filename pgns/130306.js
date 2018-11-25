@@ -48,7 +48,10 @@ module.exports = [
     source: 'Wind Angle',
     node: 'environment.wind.directionMagnetic',
     filter: function (n2k) {
-      return n2k.fields['Reference'] === 'Magnetic (ground referenced to Magnetic North)'
+      return (
+        n2k.fields['Reference'] ===
+        'Magnetic (ground referenced to Magnetic North)'
+      )
     }
   }
 ]

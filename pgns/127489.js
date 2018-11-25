@@ -1,8 +1,11 @@
 const util = require('util')
-const {chooseField} = require('../utils.js')
+const { chooseField } = require('../utils.js')
 
 function skEngineId (n2k) {
-  return chooseField(n2k, 'Engine Instance', 'Instance') === 'Single Engine or Dual Engine Port' ? 'port' : 'starboard'
+  return chooseField(n2k, 'Engine Instance', 'Instance') ===
+    'Single Engine or Dual Engine Port'
+    ? 'port'
+    : 'starboard'
 }
 
 function skEngineTitle (n2k) {
@@ -13,21 +16,29 @@ function skEngineTitle (n2k) {
 module.exports = [
   {
     source: 'Temperature',
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.temperature' }
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.temperature'
+    }
   },
   {
     source: 'Alternator Potential',
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage' }
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage'
+    }
   },
   {
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.rate' },
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.fuel.rate'
+    },
     value: function (n2k) {
       var lph = Number(n2k.fields['Fuel Rate'])
       return isNaN(lph) ? null : lph / 3600000
     }
   },
   {
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilPressure' },
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.oilPressure'
+    },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Oil pressure'])
       return isNaN(kpa) ? null : kpa
@@ -35,35 +46,47 @@ module.exports = [
   },
   {
     source: 'Total Engine hours',
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.runTime' }
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.runTime'
+    }
   },
   {
     source: 'Oil temperature',
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.oilTemperature' }
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.oilTemperature'
+    }
   },
   {
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.coolantPressure' },
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.coolantPressure'
+    },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Coolant Pressure'])
       return isNaN(kpa) ? null : kpa * 1000.0
     }
   },
   {
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineLoad' },
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.engineLoad'
+    },
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Load'])
       return isNaN(percent) ? null : percent / 100.0
     }
   },
   {
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.engineTorque' },
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.engineTorque'
+    },
     value: function (n2k) {
       var percent = Number(n2k.fields['Percent Engine Torque'])
       return isNaN(percent) ? null : percent / 100.0
     }
   },
   {
-    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure' },
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure'
+    },
     value: function (n2k) {
       var kpa = Number(n2k.fields['Fuel Pressure'])
       return isNaN(kpa) ? null : kpa * 1000.0
@@ -203,19 +226,22 @@ function generateMappingsForStatus (field, notifications) {
       node: function (n2k) {
         return util.format(notif.node, skEngineId(n2k))
       },
-      filter: function (n2k) { return typeof n2k.fields[field] !== 'undefined' },
+      filter: function (n2k) {
+        return typeof n2k.fields[field] !== 'undefined'
+      },
       value: function (n2k, state) {
         if (n2k.fields[field].indexOf(notif.analyzerText) != -1) {
           return {
             state: 'alarm',
-            method: [ 'visual', 'sound' ],
+            method: ['visual', 'sound'],
             message: util.format(notif.message, skEngineTitle(n2k))
           }
         } else {
           return {
             state: 'normal',
-            method: [ 'visual' ],
-            message: util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
+            method: ['visual'],
+            message:
+              util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
           }
         }
       }

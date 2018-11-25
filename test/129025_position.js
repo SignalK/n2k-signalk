@@ -8,10 +8,13 @@ var msg = JSON.parse(
 
 // Seen in the wild - Original sentence: $PCDIN,01F801,5B26371E,01,FFFFFF7FFFFFFF7F*2C
 var messageWithoutPosition = {
-  "pgn":129025,
-  "timestamp":"1970-01-18T16:47:11.134Z","src":1,"dst":255,"prio":0,
-  "fields":{},
-  "description":"Position, Rapid Update"
+  pgn: 129025,
+  timestamp: '1970-01-18T16:47:11.134Z',
+  src: 1,
+  dst: 255,
+  prio: 0,
+  fields: {},
+  description: 'Position, Rapid Update'
 }
 
 describe('129025 Position, rapid update ', function () {
