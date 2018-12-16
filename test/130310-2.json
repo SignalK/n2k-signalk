@@ -67,7 +67,7 @@
     },
     "testExpectConvertedValues": {
       "environment.outside.temperature": 8.05,
-      "environment.outside.pressure": 10180000,
+      "environment.outside.pressure": 101800,
       "environment.outside.humidity": 0.72772
     }
   },
