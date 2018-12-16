@@ -57,9 +57,6 @@ module.exports = {
   'Heat Index Temperature': {
     path: 'environment.outside.heatIndexTemperature'
   },
-  'Heat Index Temperature': {
-    path: 'environment.outside.heatIndexTemperature'
-  },
   'Freezer Temperature': {
     path: 'environment.inside.freezer.temperature'
   },
