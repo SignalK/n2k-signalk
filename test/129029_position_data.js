@@ -16,6 +16,7 @@ describe('129029 Position Data ', function () {
     var tree = require('./testMapper').toNested(msg)
     tree.navigation.position.value.longitude.should.equal(-76.3972731)
     tree.navigation.position.value.latitude.should.equal(39.0536632)
+    tree.navigation.datetime.value.should.equal('2017-04-15T15:50:48.04950Z')
     tree.navigation.gnss.antennaAltitude.value.should.equal(1.0)
     tree.navigation.gnss.satellites.value.should.equal(18)
     tree.navigation.gnss.horizontalDilution.value.should.equal(0.73)
