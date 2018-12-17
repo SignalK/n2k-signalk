@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.4.1 (2018/12/17 22:36 +00:00)
+- [#138](https://github.com/SignalK/n2k-signalk/pull/138) style: Remove duplicate Heat Index Temp (@webmasterkai)
+- [#137](https://github.com/SignalK/n2k-signalk/pull/137) feature: add 129029 navigation.datetime (@tkurki)
+- [#136](https://github.com/SignalK/n2k-signalk/pull/136) fix: 130311 atmospheric pressure (@tkurki)
+- [#135](https://github.com/SignalK/n2k-signalk/pull/135) REVERTED LATER fix: generate UTC timestamps with Z (@tkurki)
+
 ### v1.4.0 (2018/11/25 14:41 +00:00)
 - [#125](https://github.com/SignalK/n2k-signalk/pull/125) feature: add live/bailWell, fix tests for 13031x temperature (@sarfata)
 - [#134](https://github.com/SignalK/n2k-signalk/pull/134) Update @signalk/signalk-schema to the latest version 🚀 (@greenkeeper[bot])
