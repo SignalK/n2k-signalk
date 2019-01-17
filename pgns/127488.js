@@ -28,7 +28,7 @@ module.exports = [
     }
   },
   {
-    node: 'propulsion.port.trimPosition',
+    node: 'propulsion.port.drive.trimState',
     filter: function (n2k) {
       return (
         chooseField(n2k, 'Engine Instance', 'Instance') ===
@@ -46,7 +46,7 @@ module.exports = [
     }
   },
   {
-    node: 'propulsion.starboard.trimPosition',
+    node: 'propulsion.starboard.drive.trimState',
     filter: function (n2k) {
       return (
         chooseField(n2k, 'Engine Instance', ['Instance']) ===
