@@ -33,6 +33,7 @@ module.exports = [
       return (
         chooseField(n2k, 'Engine Instance', 'Instance') ===
         'Single Engine or Dual Engine Port'
+        && typeof n2k.fields['Tilt/Trim'] !== 'undefined'
       )
     },
     value: function (n2k) {
@@ -51,6 +52,7 @@ module.exports = [
       return (
         chooseField(n2k, 'Engine Instance', ['Instance']) ===
         'Dual Engine Starboard'
+        && typeof n2k.fields['Tilt/Trim'] !== 'undefined'
       )
     },
     value: function (n2k) {
