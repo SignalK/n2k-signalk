@@ -1,6 +1,10 @@
 ## Change Log
 
-### v1.4.1 (2018/12/17 22:36 +00:00)
+### v1.5.0 (2019/02/27 18:09 +00:00)
+- [#141](https://github.com/SignalK/n2k-signalk/pull/141) feature: add pgn 129793 AIS base station (@tkurki)
+- [#139](https://github.com/SignalK/n2k-signalk/pull/139) feature: add support for engine trim (@fencer)
+
+### v1.4.1 (2018/12/17 22:37 +00:00)
 - [#138](https://github.com/SignalK/n2k-signalk/pull/138) style: Remove duplicate Heat Index Temp (@webmasterkai)
 - [#137](https://github.com/SignalK/n2k-signalk/pull/137) feature: add 129029 navigation.datetime (@tkurki)
 - [#136](https://github.com/SignalK/n2k-signalk/pull/136) fix: 130311 atmospheric pressure (@tkurki)
