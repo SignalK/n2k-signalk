@@ -1,16 +1,13 @@
 const util = require('util')
-const { chooseField } = require('../utils.js')
-
-function skEngineId (n2k) {
-  return chooseField(n2k, 'Engine Instance', 'Instance') ===
-    'Single Engine or Dual Engine Port'
-    ? 'port'
-    : 'starboard'
-}
+const { chooseField, skEngineId } = require('../utils.js')
 
 function skEngineTitle (n2k) {
   var engine = skEngineId(n2k)
-  return engine.charAt(0).toUpperCase() + engine.slice(1)
+  if ( typeof engine === 'number' ) {
+    return engine
+  } else {
+    return engine.charAt(0).toUpperCase() + engine.slice(1)
+  }
 }
 
 module.exports = [
