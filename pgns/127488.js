@@ -1,26 +1,18 @@
-const {chooseField} = require('../utils.js')
+const { chooseField, skEngineId } = require('../utils.js')
 
 module.exports = [
   {
-    node: 'propulsion.port.revolutions',
-    filter: function (n2k) {
-      return (
-        chooseField(n2k, 'Engine Instance', 'Instance') === 'Single Engine or Dual Engine Port'
-      )
-    },
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.revolutions' },
     value: function (n2k) {
       var rpm = Number(chooseField(n2k, 'Engine Speed', 'Speed'))
       return rpm / 60.0
     }
   },
   {
-    node: 'propulsion.starboard.revolutions',
-    filter: function (n2k) {
-      return chooseField(n2k, 'Engine Instance', ['Instance']) === 'Dual Engine Starboard'
-    },
+    node: function (n2k) { return 'propulsion.' + skEngineId(n2k) + '.trimPosition' },
     value: function (n2k) {
-      var rpm = Number(chooseField(n2k, 'Engine Speed', 'Speed'))
-      return rpm / 60.0
+      var trimPos = n2k.fields['Tilt/Trim']
+      return trimPos
     }
   }
 ]
