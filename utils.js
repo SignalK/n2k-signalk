@@ -17,5 +17,7 @@ function skEngineId(n2k) {
   }
 }
 
-module.exports.chooseField = chooseField
-module.exports.skEngineId = skEngineId
+module.exports = {
+  chooseField,
+  skEngineId
+}
