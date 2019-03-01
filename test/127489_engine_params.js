@@ -283,3 +283,93 @@ describe('127489 engine parameters Starboard', function () {
     })
   })
 })
+
+describe('127489 engine parameters 2', function () {
+  it('every field in the PGN from the NMEA2000 spec converts', function () {
+    generatePGNs('{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489", "description":"Engine Parameters, Dynamic","fields":{"Engine Instance":2,"Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.4","Total Engine hours":"309960","Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Percent Engine Load": 20,"Percent Engine Torque":57,"Oil pressure":80,"Fuel Pressure":504,"Oil temperature":36,"Coolant Pressure":489}}')
+      .forEach(pgn => {
+        var tree = require('./testMapper').toNested(
+          JSON.parse(pgn)
+        )
+    
+    tree.should.have.nested.property('propulsion.2.oilTemperature')
+    tree.should.have.nested.property('propulsion.2.oilTemperature.value', 36)
+    tree.should.have.nested.property('propulsion.2.coolantPressure')
+    tree.should.have.nested.property('propulsion.2.coolantPressure.value', 489000)
+    tree.should.have.nested.property('propulsion.2.fuel.pressure')
+    tree.should.have.nested.property('propulsion.2.fuel.pressure.value', 504000)
+
+    tree.should.have.nested.property('propulsion.2.temperature')
+    tree.should.have.nested.property('propulsion.2.temperature.value', 29.85)
+    tree.should.have.nested.property('propulsion.2.alternatorVoltage')
+    tree.should.have.nested.property(
+      'propulsion.2.alternatorVoltage.value',
+      12.6
+    )
+    tree.should.have.nested.property('propulsion.2.fuel.rate')
+    tree.should.have.nested.property(
+      'propulsion.2.fuel.rate.value',
+      1.1111111111111112e-7
+    )
+    tree.should.have.nested.property('propulsion.2.runTime')
+    tree.should.have.nested.property('propulsion.2.runTime.value', 309960)
+    tree.should.have.nested.property('propulsion.2.oilPressure')
+    tree.should.have.nested.property('propulsion.2.oilPressure.value', 80)
+    tree.should.have.nested.property('propulsion.2.engineLoad.value', 0.2)
+    tree.should.have.nested.property('propulsion.2.engineTorque.value', 0.57)
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.lowOilPressure.value.state',
+      'alarm')
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.lowCoolantLevel.value.state',
+      'alarm')
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.warningLevel1.value.state',
+      'alarm')
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.maintenanceNeeded.value.state',
+      'alarm')
+      tree.should.be.validSignalKVesselIgnoringIdentity
+    })
+  })
+
+  it('complete engine params sentence converts', function () {
+    generatePGNs('{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489",	"description":"Engine Parameters, Dynamic","fields":{"Engine Instance":2,"Temperature":"29.85","Alternator Potential":"12.60","Fuel Rate":"0.4","Total Engine hours":"309960","Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Percent Engine Load": 20,"Percent Engine Torque":57,"Oil pressure":80}}')
+      .forEach(pgn => {
+    var tree = require('./testMapper').toNested(
+      JSON.parse(pgn)
+    )
+    tree.should.have.nested.property('propulsion.2.temperature')
+    tree.should.have.nested.property('propulsion.2.temperature.value', 29.85)
+    tree.should.have.nested.property('propulsion.2.alternatorVoltage')
+    tree.should.have.nested.property(
+      'propulsion.2.alternatorVoltage.value',
+      12.6
+    )
+    tree.should.have.nested.property('propulsion.2.fuel.rate')
+    tree.should.have.nested.property(
+      'propulsion.2.fuel.rate.value',
+      1.1111111111111112e-7
+    )
+    tree.should.have.nested.property('propulsion.2.runTime')
+    tree.should.have.nested.property('propulsion.2.runTime.value', 309960)
+    tree.should.have.nested.property('propulsion.2.oilPressure')
+    tree.should.have.nested.property('propulsion.2.oilPressure.value', 80)
+    tree.should.have.nested.property('propulsion.2.engineLoad.value', 0.2)
+    tree.should.have.nested.property('propulsion.2.engineTorque.value', 0.57)
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.lowOilPressure.value.state',
+      'alarm')
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.lowCoolantLevel.value.state',
+      'alarm')
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.warningLevel1.value.state',
+      'alarm')
+    tree.should.have.nested.property(
+      'notifications.propulsion.2.maintenanceNeeded.value.state',
+      'alarm')
+    tree.should.be.validSignalKVesselIgnoringIdentity
+    })
+  })
+})
