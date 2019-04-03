@@ -114,7 +114,7 @@ var toValuesArray = function (theMappings, n2k, state) {
       .reduce((updates, theMapping) => {
         try {
           if (typeof theMapping === 'function') {
-            updates.push.apply(updates, theMapping(n2k, state))
+            Array.prototype.push.apply(updates, theMapping(n2k, state))
           } else {
             var path =
                 typeof theMapping.node === 'function'
