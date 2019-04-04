@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.7.0 (2019/04/04 13:42 +00:00)
+- [#146](https://github.com/SignalK/n2k-signalk/pull/146) add: PGN 127501 binary switch bank status (@sbender9)
+
 ### v1.6.0 (2019/03/03 18:34 +00:00)
 - [#145](https://github.com/SignalK/n2k-signalk/pull/145) fix: engine instances numbers above 1 show as starboard (@sbender9)
 
