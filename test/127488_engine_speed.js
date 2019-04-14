@@ -44,17 +44,16 @@ describe('127488 engine speed Starboard', function () {
 
 describe('127488 engine speed 2', function () {
   it('complete engine speed sentence converts', function () {
-    generatePGNs('{"timestamp":"2015-01-15-16:16:56.749Z","prio":"2","src":"17","dst":"255","pgn":"127488","description":"Engine Parameters, Rapid Update","fields":{"Engine Instance":2,"Engine Speed":"3190"}}')
-      .forEach(pgn => {
-        var tree = require('./testMapper').toNested(
-          JSON.parse(pgn)
-        )
-        tree.should.have.nested.property('propulsion.2.revolutions')
-        tree.should.have.nested.property(
-          'propulsion.2.revolutions.value',
-          53.166666666666664
-        )
-        tree.should.be.validSignalKVesselIgnoringIdentity
-      })
+    generatePGNs(
+      '{"timestamp":"2015-01-15-16:16:56.749Z","prio":"2","src":"17","dst":"255","pgn":"127488","description":"Engine Parameters, Rapid Update","fields":{"Engine Instance":2,"Engine Speed":"3190"}}'
+    ).forEach(pgn => {
+      var tree = require('./testMapper').toNested(JSON.parse(pgn))
+      tree.should.have.nested.property('propulsion.2.revolutions')
+      tree.should.have.nested.property(
+        'propulsion.2.revolutions.value',
+        53.166666666666664
+      )
+      tree.should.be.validSignalKVesselIgnoringIdentity
+    })
   })
 })
