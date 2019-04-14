@@ -3,7 +3,7 @@ const { chooseField, skEngineId } = require('../utils.js')
 
 function skEngineTitle (n2k) {
   var engine = skEngineId(n2k)
-  if ( typeof engine === 'number' ) {
+  if (typeof engine === 'number') {
     return engine
   } else {
     return engine.charAt(0).toUpperCase() + engine.slice(1)

@@ -35,8 +35,10 @@ var toDelta = function (n2k, state) {
         }
       ]
     }
-    if (typeof theMappings !== 'undefined' &&
-        typeof theMappings !== 'function' ) {
+    if (
+      typeof theMappings !== 'undefined' &&
+      typeof theMappings !== 'function'
+    ) {
       theMappings.forEach(function (mapping) {
         if (typeof mapping.context === 'function') {
           result.context = mapping.context(n2k, src_state)
@@ -68,21 +70,21 @@ function getValue (n2k, theMapping, state) {
   }
 }
 
-function reduceMapping(updates, theMapping) {
+function reduceMapping (updates, theMapping) {
   try {
     if (typeof theMapping === 'function') {
       updates.push.apply(updates, theMapping(n2k, state))
     } else {
       var path =
-          typeof theMapping.node === 'function'
+        typeof theMapping.node === 'function'
           ? theMapping.node(n2k, state)
           : theMapping.node
       var value =
-          typeof theMapping.source === 'function'
+        typeof theMapping.source === 'function'
           ? theMapping.source(n2k, state)
           : getValue(n2k, theMapping, state)
       var allowNull =
-          typeof theMapping.allowNull !== 'undefined' && theMapping.allowNull
+        typeof theMapping.allowNull !== 'undefined' && theMapping.allowNull
       if (!(value == null) || allowNull) {
         // null or undefined
         updates.push({
@@ -117,15 +119,16 @@ var toValuesArray = function (theMappings, n2k, state) {
             Array.prototype.push.apply(updates, theMapping(n2k, state))
           } else {
             var path =
-                typeof theMapping.node === 'function'
+              typeof theMapping.node === 'function'
                 ? theMapping.node(n2k, state)
                 : theMapping.node
             var value =
-                typeof theMapping.source === 'function'
+              typeof theMapping.source === 'function'
                 ? theMapping.source(n2k, state)
                 : getValue(n2k, theMapping, state)
             var allowNull =
-                typeof theMapping.allowNull !== 'undefined' && theMapping.allowNull
+              typeof theMapping.allowNull !== 'undefined' &&
+              theMapping.allowNull
             if (!(value == null) || allowNull) {
               // null or undefined
               updates.push({

@@ -28,7 +28,7 @@ module.exports = [
   },
   {
     context: function (n2k) {
-        return 'shore.basestations.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
-      }
+      return 'shore.basestations.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
     }
+  }
 ]
