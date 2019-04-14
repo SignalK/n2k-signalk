@@ -191,17 +191,5 @@ module.exports = [
       }
     },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Tone' }
-
-    
-  },{
-    node: function(n2k) { 'entertainment.menus.' + n2k.fields.Source },
-    value: function(n2k) {
-      return {
-	text: n2k.fields.Text,
-	line: n2k.fields.Line,
-	type: n2k.fields.Type
-      }
-    },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Menu Item' }
   }
 ]
