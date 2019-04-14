@@ -1,4 +1,5 @@
 var chai = require('chai')
+const assert = require('assert')
 chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
@@ -25,6 +26,6 @@ describe('129039 Class B Update', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
-    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230035780')
+    assert.equal(delta.context, undefined)
   })
 })
