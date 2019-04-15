@@ -5,8 +5,8 @@
   "main": "n2kMapper.js",
   "scripts": {
     "test": "mocha",
-    "changelog": "github-changes -o signalk -r n2k-signalk -a --only-pulls --use-commit-body --data=pulls --tag-name=v$npm_package_version",
-    "release": "git tag -d v$npm_package_version ; npm run changelog && git add CHANGELOG.md && git commit -m 'chore: update changelog' && git tag v$npm_package_version && git push --tags && git push && npm publish",
+    "create-release": "github-create-release --owner signalk --repository n2k-signalk",
+    "release": "git tag -d v$npm_package_version ; git tag v$npm_package_version && git push --tags && git push && npm run create-release && npm publish",
     "format": "prettier-standard '*.js*' 'pgns/**/*.js' 'test/**/*.js*'"
   },
   "keywords": [
@@ -27,10 +27,10 @@
     "through": ">=2.2.7 <3"
   },
   "devDependencies": {
+    "@signalk/github-create-release": "^1.0.1",
     "@signalk/signalk-schema": "1.1.1",
     "chai": "~4.1.0",
     "chai-things": "0.2",
-    "github-changes": "1.1.2",
     "lodash": "^4.6.1",
     "mocha": "^6.1.3",
     "prettier-standard": "^9.1.1",
