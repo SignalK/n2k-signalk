@@ -26,5 +26,14 @@ module.exports = [
     filter: function (n2k) {
       return typeof n2k.fields['Tilt/Trim'] !== 'undefined'
     }
+  },
+  {
+    node: function (n2k) {
+      return 'propulsion.' + skEngineId(n2k) + '.boostPressure'
+    },
+    value: function (n2k) {
+      const hpa = Number(n2k.fields['Boost Pressure'])
+      return isNaN(hpa) ? null : hpa * 100;
+    }
   }
 ]
