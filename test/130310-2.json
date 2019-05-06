@@ -439,5 +439,37 @@
     "testExpectConvertedValues": {
       "environment.water.temperature": 15.2
     }
+  },
+  "130312-frige": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "Temperature Instance": "0",
+      "Temperature Source": "Refridgeration Temperature",
+      "Actual Temperature": "15.2"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.refrigerator.temperature": 15.2
+    }
+  },
+  "130312-frige-new": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "Instance": "0",
+      "Source": "Refridgeration Temperature",
+      "Actual Temperature": "15.2"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.refrigerator.temperature": 15.2
+    }
   }
 }

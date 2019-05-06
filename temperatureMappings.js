@@ -39,7 +39,7 @@ module.exports = {
     path: 'tanks.baitWell.default.temperature',
     pathWithIndex: 'tanks.baitWell.<index>.temperature'
   },
-  'Refrigerator Temperature': {
+  'Refridgeration Temperature': {
     path: 'environment.inside.refrigerator.temperature'
   },
   'Heating System Temperature': {
