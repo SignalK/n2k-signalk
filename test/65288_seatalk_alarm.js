@@ -12,7 +12,7 @@ describe('65288 Seatalk Alarm', function () {
     )
     tree.should.have.nested.property(
       'notifications.autopilot.PilotWayPointAdvance.value.state',
-      'alarm'
+      'alert'
     )
     tree.notifications.autopilot.PilotWayPointAdvance.value.method.should.eql([
       'visual',
@@ -44,7 +44,7 @@ describe('65288 Seatalk Alarm', function () {
     )
     tree.should.have.nested.property(
       'notifications.autopilot.PilotWayPointAdvance.value.state',
-      'alarm'
+      'alert'
     )
     tree.notifications.autopilot.PilotWayPointAdvance.value.method.should.eql([
       'visual'
