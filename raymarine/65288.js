@@ -32,6 +32,11 @@ module.exports = [
 
       if ( typeof alarmName !== 'string' ) {
         alarmName = `Unknown Seatalk Alarm ${alarmName}`
+      } else if ( state == 'alarm'
+                  && (alarmName === 'WP Arrival'
+                      || alarmName ===  'Pilot Way Point Advance'
+                      || alarmName === 'Pilot Route Complete') ) {
+        state = 'alert'
       }
 
       return {
