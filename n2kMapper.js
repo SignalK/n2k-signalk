@@ -7,8 +7,23 @@ Object.assign(n2kMappings, require('./fusion'))
 Object.assign(n2kMappings, require('./lowrance'))
 Object.assign(n2kMappings, require('./raymarine'))
 
+var requestedInfo = false
+
 var toDelta = function (n2k, state) {
   try {
+    if ( requestedInfo == false && state && state.app ) {
+      setTimeout(() => {                                                            
+        state.app.emit('nmea2000JsonOut', {
+          "pgn": 59904,
+          "dst": 255,
+          "PGN": 126996
+        })
+        state.app.emit('nmea2000JsonOut', { "pgn": 59904, "dst": 255, "PGN": 126998 })
+        state.app.emit('nmea2000JsonOut', { "pgn": 59904, "dst": 255, "PGN": 60928 })
+      }, 5000)
+      requestedInfo = true
+    }
+    
     var theMappings = n2kMappings[n2k.pgn]
     var src_state
     if (state) {
@@ -18,10 +33,27 @@ var toDelta = function (n2k, state) {
       }
       src_state = state[n2k_src]
     }
+
+    let info
+    if ( src_state ) {
+      info = {
+        ...src_state.productInformation || {},
+        ...src_state.configurationInformation || {},
+        ...src_state.deviceInformation || {}
+      }
+    } else {
+      info = {}
+    }
+      /*
+    var prodInfo = src_state.productInformation || {}
+    var configInfo = src_state.configurationInformation || {}
+    var deviceInfo = src_state.deviceInformation || {}
+      */
     var result = {
       updates: [
         {
           source: {
+            ...info,
             label: '',
             type: 'NMEA2000',
             pgn: Number(n2k.pgn),
