@@ -2,6 +2,12 @@ const getMmsiContext = require('../mmsi-context')
 
 module.exports = [
   {
+    node: 'sensors.ais.class',
+    value: function (n2k) {
+      return 'B'
+    }
+  },
+  {
     node: '',
     value: function (n2k) {
       return {

@@ -4,6 +4,12 @@ const getShipType = require('../aisShipTypeMapping')
 
 module.exports = [
   {
+    node: 'sensors.ais.class',
+    value: function (n2k) {
+      return 'A'
+    }
+  },
+  {
     node: '',
     value: function (n2k) {
       return {
