@@ -10,7 +10,7 @@ module.exports = [
         if (temperatureMapping.pathWithIndex) {
           return temperatureMapping.pathWithIndex.replace(
             '<index>',
-            n2k.fields['Temperature Instance']
+            n2k.fields['Instance']
           )
         } else if (temperatureMapping.path) {
           return temperatureMapping.path
