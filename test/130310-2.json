@@ -159,7 +159,7 @@
     "description": "Temperature",
     "fields": {
       "SID": 112,
-      "Temperature Instance": 0,
+      "Instance": 0,
       "Temperature Source": "Heating System Temperature"
     },
     "testExpectConvertedValues": {}
@@ -187,7 +187,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "179",
-      "Temperature Instance": "2",
+      "Instance": "2",
       "Temperature Source": "Engine Room Temperature",
       "Actual Temperature": "7.76"
     },
@@ -221,7 +221,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "179",
-      "Temperature Instance": "3",
+      "Instance": "3",
       "Temperature Source": "Inside Temperature",
       "Actual Temperature": "13.18"
     },
@@ -255,7 +255,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "179",
-      "Temperature Instance": "4",
+      "Instance": "4",
       "Temperature Source": "Main Cabin Temperature",
       "Actual Temperature": "16.93"
     },
@@ -272,7 +272,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "179",
-      "Temperature Instance": "4",
+      "Instance": "4",
       "Temperature Source": "Main Cabin Temperature",
       "Actual Temperature": "16.93"
     },
@@ -289,7 +289,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "179",
-      "Temperature Instance": "5",
+      "Instance": "5",
       "Temperature Source": "Engine Room Temperature",
       "Actual Temperature": "70"
     },
@@ -323,7 +323,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "179",
-      "Temperature Instance": "5",
+      "Instance": "5",
       "Temperature Source": "Engine Room Temperature"
     },
     "testExpectConvertedValues": {}
@@ -351,7 +351,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "14",
-      "Temperature Instance": "0",
+      "Instance": "0",
       "Temperature Source": "Outside Temperature",
       "Actual Temperature": "7.84"
     },
@@ -368,7 +368,7 @@
     "description": "Temperature",
     "fields": {
       "SID": "14",
-      "Temperature Instance": "0",
+      "Instance": "0",
       "Temperature Source": "Outside Temperature",
       "Actual Temperature": "7.84"
     },
@@ -384,7 +384,7 @@
     "pgn": "130312",
     "description": "Temperature",
     "fields": {
-      "Temperature Instance": "0",
+      "Instance": "0",
       "Temperature Source": "Sea Temperature",
       "Actual Temperature": "15.2"
     },
@@ -400,7 +400,7 @@
     "pgn": "130312",
     "description": "Temperature",
     "fields": {
-      "Temperature Instance": "0",
+      "Instance": "0",
       "Temperature Source": "Live Well Temperature",
       "Actual Temperature": "14.2"
     },
@@ -416,7 +416,7 @@
     "pgn": "130312",
     "description": "Temperature",
     "fields": {
-      "Temperature Instance": "42",
+      "Instance": "42",
       "Temperature Source": "Bait Well Temperature",
       "Actual Temperature": "13.2"
     },
@@ -448,7 +448,7 @@
     "pgn": "130312",
     "description": "Temperature",
     "fields": {
-      "Temperature Instance": "0",
+      "Instance": "0",
       "Temperature Source": "Refridgeration Temperature",
       "Actual Temperature": "15.2"
     },
