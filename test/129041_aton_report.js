@@ -18,6 +18,8 @@ describe('129041 AIS Aids to Navigation (AtoN) Report', function () {
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('atonType.value.name', 'Beacon, Port Hand')
     tree.should.have.nested.property('atonType.value.id', 13)
+    tree.should.have.nested.property('virtual.value', true)
+    tree.should.have.nested.property('offPosition.value', false)
     tree.navigation.position.value.latitude.should.equal(38.99384)
     tree.navigation.position.value.longitude.should.equal(-76.3847132)
     // tree.should.be.validSignalKAtoNIgnoringIdentity;

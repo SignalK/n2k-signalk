@@ -62,6 +62,20 @@ module.exports = [
     }
   },
   {
+    node: 'virtual',
+    value: function (n2k) {
+      const flag  = n2k.fields['Virtual AtoN Flag']
+      return typeof flag != 'undefined' ? flag === 'Yes' : undefined
+    }
+  },
+  {
+    node: 'offPosition',
+    value: function (n2k) {
+      const flag  = n2k.fields['Off Position Indicator']
+      return typeof flag != 'undefined' ? flag === 'Yes' : undefined
+    }
+  },
+  {
     node: '',
     value: function (n2k) {
       return {
