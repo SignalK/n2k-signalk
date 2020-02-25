@@ -36,6 +36,15 @@ module.exports = [
     }
   },
   {
+    node: 'navigation.specialManeuver',
+    value: function (n2k) {
+      return specialManeuverMapping[n2k.fields['Special Maneuver Indicator']]
+    },
+    filter: function (n2k) {
+      return n2k.fields['Special Maneuver Indicator']
+    }
+  },
+  {
     node: '',
     value: function (n2k) {
       return {
@@ -61,4 +70,11 @@ const stateMapping = {
   'Hazardous material, High Speed': 'hazardous material high speed',
   'Hazardous material, Wing in Ground': 'hazardous material wing in ground',
   'AIS-SART': 'ais-sart'
+}
+
+const specialManeuverMapping = {
+  'Not available': 'not available',
+  'Not engaged in special maneuver': 'not engaged',
+  'Engaged in special maneuver': 'engaged',
+  'Reserverd': 'reserved'
 }
