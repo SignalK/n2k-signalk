@@ -74,6 +74,19 @@ module.exports = [
     }
   },
   {
+    node: '',
+    value: function (n2k) {
+      return {
+        registrations: {
+          imo: `IMO ${n2k.fields['IMO number']}`
+        }
+      }
+    },
+    filter: function (n2k) {
+      return n2k.fields['IMO number'] && n2k.fields['IMO number'] != 0
+    }
+  },
+  {
     context: getMmsiContext
   }
 ]

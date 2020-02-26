@@ -31,7 +31,8 @@
  }
  */
 
-var chai = require('chai')
+const chai = require('chai')
+const expect = chai.expect
 chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
@@ -46,10 +47,28 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:356307000')
-    delta.updates[0].values.find(pathValue => pathValue.path === '').value.name.should.equal('SILVER GWEN')
     delta.updates[0].values.find(pathValue => pathValue.path === 'sensors.ais.class').value.should.equal('A')
 
-    // console.log(JSON.stringify(delta, null, 2))
+    const valuesWithEmptyPath = delta.updates[0].values.filter(pathValue => pathValue.path === '')
+    valuesWithEmptyPath.length.should.equal(3)
+    expect(valuesWithEmptyPath).to.have.deep.members([{
+      path: '',
+      value: {
+        name: 'SILVER GWEN'
+      }
+    }, {
+      path: '',
+      value: {
+        'mmsi': '356307000'
+      }
+    }, {
+      path: '',
+      value: {
+        registrations: {
+          imo: 'IMO 9683362'
+        }
+      }
+    }])
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('design.draft.value.maximum', 10.6)
     tree.should.have.nested.property('design.length.value.overall', 183.0)
