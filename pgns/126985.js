@@ -2,7 +2,7 @@
 const debug = require('debug')('n2k-signalk-126985')
 
 module.exports = [{
-  node: function(n2k, state) {
+  filter: function(n2k, state) {
       if (typeof state !== 'undefined') {
         var alertId = n2k.fields['Alert ID']
         var text = {
@@ -17,7 +17,7 @@ module.exports = [{
 
         debug('set alert state text: ' + JSON.stringify(text))
       }
-      return true
+      return false
   },
   source: 'Alert Text'
 }]
