@@ -21,7 +21,7 @@ var state = {
 }
 
 var value = {
-  "state": "Warn",
+  "state": "warn",
   "method": [
     "visual",
     "sound"
