@@ -3,19 +3,19 @@ const debug = require('debug')('n2k-signalk-126983')
 
 const alertTypes = [{
     "nmea": "Emergency Alarm",
-    "sk": "Emergency"
+    "sk": "emergency"
   },
   {
     "nmea": "Alarm",
-    "sk": "Alarm"
+    "sk": "alarm"
   },
   {
     "nmea": "Warning",
-    "sk": "Warn"
+    "sk": "warn"
   },
   {
     "nmea": "Caution",
-    "sk": "Alert"
+    "sk": "alert"
   }
 ]
 
