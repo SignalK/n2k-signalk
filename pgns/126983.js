@@ -65,6 +65,12 @@ module.exports = [{
       "alertPriority": n2k.fields['Alert Priority'],
       "alertState": n2k.fields['Alert State']
     }
+
+    //if the alert is silenced or acknowledged then dont alert in SK
+    if (n2k.fields['Temporary Silence Status'] == 'Temporary Silence' ||
+      n2k.fields['Acknowledge Status'] == 'Acknowledged') {
+      value.method = []
+    }
     debug('126983 value: ' + JSON.stringify(value))
 
     return value
