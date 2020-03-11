@@ -1,0 +1,99 @@
+{
+  "130314-nodata": {
+    "timestamp": "2015-01-15-16:15:21.650Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID": "243"
+    },
+    "testExpectConvertedValues": {}
+  },
+  "130314-atmospheric_pressure": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID":0,
+      "Instance":0,
+      "Source":"Atmospheric",
+      "Pressure":100578
+    },
+    "testExpectConvertedValues": {
+      "environment.outside.pressure": 100578
+    }
+  },
+  "130314-water_pressure": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID":0,
+      "Instance":2,
+      "Source":"Water",
+      "Pressure":180911.6
+    },
+    "testExpectConvertedValues": {
+      "water.2.pressure": 180911.6
+    }
+  },
+  "130314-steam_pressure": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID":0,
+      "Instance":2,
+      "Source":"Steam",
+      "Pressure":180911.6
+    },
+    "testExpectConvertedValues": {
+      "steam.2.pressure": 180911.6
+    }
+  },
+  "130314-compressedair_pressure": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID":0,
+      "Instance":2,
+      "Source":"Compressed Air",
+      "Pressure":180911.6
+    },
+    "testExpectConvertedValues": {
+      "compressedAir.2.pressure": 180911.6
+    }
+  },
+  "130314-hydraulic_pressure": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID":0,
+      "Instance":2,
+      "Source":"Hydraulic",
+      "Pressure":180911.6
+    },
+    "testExpectConvertedValues": {
+      "hydraulic.2.pressure": 180911.6
+    }
+  }
+}
