@@ -8,6 +8,12 @@ module.exports = [
     node: 'entertainment.device.fusion1.name',
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Unit Name' }
   }, {
+    node: 'entertainment.device.fusion1.state',
+    filter: function(n2k) { return n2k.fields['Message ID'] == 'Power' },
+    value: function(n2k) {
+      return n2k.fields['State'] === 'On' ? 'on' : 'off'
+    }
+  }, {
     source: 'Artist',
     node: function (n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.artistName' },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Artist' && n2k.fields.Artist != 0 && currentFusionSource != null }
