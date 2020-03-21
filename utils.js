@@ -16,7 +16,17 @@ function skEngineId (n2k) {
   }
 }
 
+function skEngineTitle (n2k) {
+  var engine = skEngineId(n2k)
+  if (typeof engine === 'number') {
+    return engine
+  } else {
+    return engine.charAt(0).toUpperCase() + engine.slice(1)
+  }
+}
+
 module.exports = {
   chooseField,
-  skEngineId
+  skEngineId,
+  skEngineTitle
 }
