@@ -9,6 +9,7 @@ Object.assign(n2kMappings, require('./pgns'))
 Object.assign(n2kMappings, require('./fusion'))
 Object.assign(n2kMappings, require('./lowrance'))
 Object.assign(n2kMappings, require('./raymarine'))
+Object.assign(n2kMappings, require('./maretron'))
 
 function N2kMapper (options) {
   this.state = {}
@@ -255,8 +256,8 @@ const metaPGNs = {
 
 exports.N2kMapper = N2kMapper
 exports.toDelta = toDelta
-exports.toDeltaTransformer = function (options) {
+exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
-    this.queue(exports.toDelta(data))
+    this.queue(exports.toDelta(data, state))
   })
 }
