@@ -1,32 +1,32 @@
 
 module.exports = (type, phase) => {
-  function prefix(n2k) {
-    return `electrical.${type}.0.${phase}`
+  function prefix(n2k, state) {
+    return `electrical.${type}.${state.deviceInstance || 0}.${phase}`
   }
 
   return [
     {
       source: 'Line-Line AC RMS Voltage',
-      node: function (n2k) {
-        return `${prefix(n2k)}.lineLineVoltage`
+      node: function (n2k, state) {
+        return `${prefix(n2k, state)}.lineLineVoltage`
       }
     },
     {
       source: 'Line-Neutral AC RMS Voltage',
-      node: function (n2k) {
-        return `${prefix(n2k)}.lineNeutralVoltage`
+      node: function (n2k, state) {
+        return `${prefix(n2k, state)}.lineNeutralVoltage`
       }
     },
     {
       source: 'AC Frequency',
-    node: function (n2k) {
-      return `${prefix(n2k)}.frequency`
+    node: function (n2k, state) {
+      return `${prefix(n2k, state)}.frequency`
     }
     },
     {
       source: 'AC RMS Current',
-      node: function (n2k) {
-        return `${prefix(n2k)}.current`
+      node: function (n2k, state) {
+        return `${prefix(n2k, state)}.current`
       }
     }
   ]

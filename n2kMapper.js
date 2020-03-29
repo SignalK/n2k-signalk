@@ -36,6 +36,12 @@ function N2kMapper (options) {
 N2kMapper.prototype.toDelta = function(n2k) {
   if ( metaPGNs[n2k.pgn] ) {
     const meta = metaPGNs[n2k.pgn](n2k)
+    if ( n2k.pgn === 60928 ) {
+      if ( ! this.state.deviceInstances ) {
+        this.state[n2k.src] = {}
+      }
+      this.state[n2k.src].deviceInstance = meta.deviceInstances
+    }
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
     return toDelta(n2k, this.state)
@@ -229,7 +235,8 @@ const metaPGNs = {
       deviceClass: n2k.fields['Device Class'],
       deviceInstanceLower: n2k.fields['Device Instance Lower'],
       deviceInstanceUpper: n2k.fields['Device Instance Upper'],
-      systemInstance: n2k.fields['System Instance']
+      systemInstance: n2k.fields['System Instance'],
+      deviceInstance: (n2k.fields['Device Instance Upper'] << 3) | n2k.fields['Device Instance Lower']
     }
   },
   126998: (n2k) => {

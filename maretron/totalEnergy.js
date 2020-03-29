@@ -1,12 +1,12 @@
 
 module.exports = (type) => {
-  function prefix(n2k) {
+  function prefix(n2k, state) {
     return `electrical.${type}.0.total`
   }
   return [
     {
-      node: function (n2k) {
-        return `${prefix(n2k)}.energyExport`
+      node: function (n2k, state) {
+        return `${prefix(n2k, state)}.energyExport`
       },
       value: (n2k) => {
         return n2k.fields['Total Energy Export'] * 3.6e+6
@@ -16,8 +16,8 @@ module.exports = (type) => {
       }
     },
     {
-      node: function (n2k) {
-        return `${prefix(n2k)}.energyImport`
+      node: function (n2k, state) {
+        return `${prefix(n2k, state)}.energyImport`
       },
       value: (n2k) => {
         return n2k.fields['Total Energy Import'] * 3.6e+6
