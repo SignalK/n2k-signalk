@@ -40,7 +40,7 @@ N2kMapper.prototype.toDelta = function(n2k) {
       if ( ! this.state.deviceInstances ) {
         this.state[n2k.src] = {}
       }
-      this.state[n2k.src].deviceInstance = meta.deviceInstances
+      this.state[n2k.src].deviceInstance = meta.deviceInstance
     }
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
