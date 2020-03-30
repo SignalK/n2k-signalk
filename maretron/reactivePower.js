@@ -25,7 +25,7 @@ module.exports = (type, phase) => {
         set(state, `maretron.${prefix(n2k, state)}.powerFactor`, val)
         return val / 32768
       },
-      filter: (n2k) => {
+      filter: (n2k, state) => {
         return n2k.fields['Power Factor'] != null &&
           state.deviceInstance != null
       }
@@ -37,7 +37,7 @@ module.exports = (type, phase) => {
       value: (n2k) => {
         return n2k.fields['Power Factor Lagging'].toLowerCase()
       },
-      filter: (n2k) => {
+      filter: (n2k, state) => {
         return n2k.fields['Power Factor Lagging'] != null &&
           state.deviceInstance != null
       }
