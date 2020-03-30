@@ -11,7 +11,7 @@ module.exports = (type) => {
       value: (n2k) => {
         return n2k.fields['Total Energy Export'] * 3.6e+6
       },
-      filter: (n2k) => {
+      filter: (n2k, state) => {
         return n2k.fields['Total Energy Export'] != null &&
           state.deviceInstance != null
       }
@@ -23,7 +23,7 @@ module.exports = (type) => {
       value: (n2k) => {
         return n2k.fields['Total Energy Import'] * 3.6e+6
       },
-      filter: (n2k) => {
+      filter: (n2k, state) => {
         return n2k.fields['Total Energy Import'] != null &&
           state.deviceInstance != null
       }
