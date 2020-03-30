@@ -1,7 +1,7 @@
 
 module.exports = (type) => {
   function prefix(n2k, state) {
-    return `electrical.${type}.0.total`
+    return `electrical.${type}.${state.deviceInstance || 0}.total`
   }
   return [
     {
@@ -12,7 +12,8 @@ module.exports = (type) => {
         return n2k.fields['Total Energy Export'] * 3.6e+6
       },
       filter: (n2k) => {
-        return n2k.fields['Total Energy Export'] != null
+        return n2k.fields['Total Energy Export'] != null &&
+          state.deviceInstance != null
       }
     },
     {
@@ -23,7 +24,8 @@ module.exports = (type) => {
         return n2k.fields['Total Energy Import'] * 3.6e+6
       },
       filter: (n2k) => {
-        return n2k.fields['Total Energy Import'] != null
+        return n2k.fields['Total Energy Import'] != null &&
+          state.deviceInstance != null
       }
     }
   ]

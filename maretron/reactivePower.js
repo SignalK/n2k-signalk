@@ -11,6 +11,9 @@ module.exports = (type, phase) => {
       source: 'Reactive Power',
       node: function (n2k, state) {
         return `${prefix(n2k, state)}.reactivePower`
+      },
+      filter: (n2k, state) => {
+        return state.deviceInstance != null
       }
     },
     {
@@ -23,18 +26,20 @@ module.exports = (type, phase) => {
         return val / 32768
       },
       filter: (n2k) => {
-        return n2k.fields['Power Factor'] != null
+        return n2k.fields['Power Factor'] != null &&
+          state.deviceInstance != null
       }
     },
     {
       node: function (n2k, state) {
-        return `${prefix(n2k, state)}.powerFactorLogging`
+        return `${prefix(n2k, state)}.powerFactorLagging`
       },
       value: (n2k) => {
         return n2k.fields['Power Factor Lagging'].toLowerCase()
       },
       filter: (n2k) => {
-        return n2k.fields['Power Factor Lagging'] != null
+        return n2k.fields['Power Factor Lagging'] != null &&
+          state.deviceInstance != null
       }
     },
   ]
