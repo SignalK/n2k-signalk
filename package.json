@@ -1,6 +1,6 @@
 {
   "name": "@signalk/n2k-signalk",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "NMEA 2000 to SignalK conversion library",
   "main": "n2kMapper.js",
   "scripts": {
