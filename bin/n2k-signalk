@@ -5,4 +5,6 @@ var JSONStream = require('JSONStream');
 
 process.stdin.setEncoding('utf8');
 
-process.stdin.pipe(JSONStream.parse()).pipe(n2kMapper.toDeltaTransformer()).pipe(JSONStream.stringify(false)).pipe(process.stdout);
+const state = {}
+
+process.stdin.pipe(JSONStream.parse()).pipe(n2kMapper.toDeltaTransformer(null, state)).pipe(JSONStream.stringify(false)).pipe(process.stdout);

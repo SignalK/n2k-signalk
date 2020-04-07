@@ -9,6 +9,7 @@ Object.assign(n2kMappings, require('./pgns'))
 Object.assign(n2kMappings, require('./fusion'))
 Object.assign(n2kMappings, require('./lowrance'))
 Object.assign(n2kMappings, require('./raymarine'))
+Object.assign(n2kMappings, require('./maretron'))
 
 function N2kMapper (options) {
   this.state = {}
@@ -35,6 +36,12 @@ function N2kMapper (options) {
 N2kMapper.prototype.toDelta = function(n2k) {
   if ( metaPGNs[n2k.pgn] ) {
     const meta = metaPGNs[n2k.pgn](n2k)
+    if ( n2k.pgn === 60928 ) {
+      if ( ! this.state[n2k.src] ) {
+        this.state[n2k.src] = {}
+      }
+      this.state[n2k.src].deviceInstance = meta.deviceInstance
+    }
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
     return toDelta(n2k, this.state)
@@ -228,7 +235,8 @@ const metaPGNs = {
       deviceClass: n2k.fields['Device Class'],
       deviceInstanceLower: n2k.fields['Device Instance Lower'],
       deviceInstanceUpper: n2k.fields['Device Instance Upper'],
-      systemInstance: n2k.fields['System Instance']
+      systemInstance: n2k.fields['System Instance'],
+      deviceInstance: (n2k.fields['Device Instance Upper'] << 3) | n2k.fields['Device Instance Lower']
     }
   },
   126998: (n2k) => {
@@ -255,8 +263,8 @@ const metaPGNs = {
 
 exports.N2kMapper = N2kMapper
 exports.toDelta = toDelta
-exports.toDeltaTransformer = function (options) {
+exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
-    this.queue(exports.toDelta(data))
+    this.queue(exports.toDelta(data, state))
   })
 }
