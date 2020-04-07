@@ -16,7 +16,27 @@ function skEngineId (n2k) {
   }
 }
 
+function acPhase(n2k) {
+  const line = n2k.fields['Line']
+  if ( !line ) {
+    return 'A'
+  } else {
+    switch ( line ) {
+    case 'Line 1':
+      return 'A'
+    case 'Line 2':
+      return 'B'
+    case 'Line 3':
+      return 'C'
+    default:
+      return 'A'
+    }
+  }
+}
+
+
 module.exports = {
   chooseField,
-  skEngineId
+  skEngineId,
+  acPhase
 }
