@@ -14,17 +14,14 @@ describe('127493 transmission parameters Port', function () {
     ).forEach(pgn => {
       var tree = require('./testMapper').toNested(JSON.parse(pgn))
 
-      tree.should.have.nested.property('propulsion.port.transmission.oilTemperature')
       tree.should.have.nested.property(
         'propulsion.port.transmission.oilTemperature.value',
         15
       )
-      tree.should.have.nested.property('propulsion.port.transmission.gear')
       tree.should.have.nested.property(
         'propulsion.port.transmission.gear.value',
         'Forward'
       )
-      tree.should.have.nested.property('propulsion.port.transmission.oilPressure')
       tree.should.have.nested.property(
         'propulsion.port.transmission.oilPressure.value',
         20
@@ -59,17 +56,14 @@ describe('127493 transmission parameters Port', function () {
     ).forEach(pgn => {
       var tree = require('./testMapper').toNested(JSON.parse(pgn))
 
-      tree.should.have.nested.property('propulsion.port.transmission.oilTemperature')
       tree.should.have.nested.property(
         'propulsion.port.transmission.oilTemperature.value',
         15
       )
-      tree.should.have.nested.property('propulsion.port.transmission.gear')
       tree.should.have.nested.property(
         'propulsion.port.transmission.gear.value',
         'Forward'
       )
-      tree.should.have.nested.property('propulsion.port.transmission.oilPressure')
       tree.should.have.nested.property(
         'propulsion.port.transmission.oilPressure.value',
         20
