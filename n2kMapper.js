@@ -37,6 +37,9 @@ N2kMapper.prototype.toDelta = function(n2k) {
   if ( metaPGNs[n2k.pgn] ) {
     const meta = metaPGNs[n2k.pgn](n2k)
     if ( n2k.pgn === 60928 ) {
+      if ( ! this.state[n2k.src] ) {
+        this.state[n2k.src] = {}
+      }
       this.state[n2k.src].deviceInstance = meta.deviceInstance
     }
     this.emit('n2kSourceMetadata', n2k, meta)
