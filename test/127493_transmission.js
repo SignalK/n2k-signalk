@@ -46,6 +46,10 @@ describe('127493 transmission parameters Port', function () {
         'notifications.propulsion.port.transmission.sailDrive.value.state',
         'normal'
       )
+
+      //temporarily until the specification is fixed
+      delete tree.propulsion.port.transmission.gear
+      
       tree.should.be.validSignalKVesselIgnoringIdentity
     })
   })
@@ -88,6 +92,10 @@ describe('127493 transmission parameters Port', function () {
         'notifications.propulsion.port.transmission.sailDrive.value.state',
         'alarm'
       )
+
+      //temporarily until the specification is fixed
+      delete tree.propulsion.port.transmission.gear
+      
       tree.should.be.validSignalKVesselIgnoringIdentity
     })
   })
