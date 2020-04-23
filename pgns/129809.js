@@ -3,12 +3,14 @@ const getMmsiContext = require('../mmsi-context')
 module.exports = [
   {
     node: 'sensors.ais.class',
+    filter: n2k => n2k.fields['User ID'],
     value: function (n2k) {
       return 'B'
     }
   },
   {
     node: '',
+    filter: n2k => n2k.fields['User ID'],
     value: function (n2k) {
       return {
         name: n2k.fields.Name
@@ -17,6 +19,7 @@ module.exports = [
   },
   {
     node: '',
+    filter: n2k => n2k.fields['User ID'],
     value: function (n2k) {
       return {
         mmsi: n2k.fields['User ID'].toString()
@@ -24,6 +27,7 @@ module.exports = [
     }
   },
   {
-    context: getMmsiContext
+    context: getMmsiContext,
+    filter: n2k => n2k.fields['User ID']
   }
 ]
