@@ -473,6 +473,7 @@
     }
   },
   "130312-userDefined129": {
+    "notInSpec": true,
     "timestamp": "2015-01-15-16:15:19.628Z",
     "prio": "5",
     "src": "36",
