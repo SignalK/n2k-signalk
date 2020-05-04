@@ -15,6 +15,8 @@ module.exports = [
         } else if (temperatureMapping.path) {
           return temperatureMapping.path
         }
+      } else {
+        return `generic.temperatures.userDefined${n2k.fields['Source']}.${n2k.fields['Instance']}.temperature`
       }
     },
     instance: function (n2k) {

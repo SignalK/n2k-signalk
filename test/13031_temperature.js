@@ -42,9 +42,11 @@ describe('Temperature: ', function () {
         }
       )
 
-      var fullDoc = full.retrieve()
-      fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999'
-      fullDoc.should.be.validSignalK
+      if(!testCase.notInSpec || testCase.notInSpec == false){
+        var fullDoc = full.retrieve()
+        fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999'
+        fullDoc.should.be.validSignalK
+      }
     })
   })
 
