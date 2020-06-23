@@ -17,27 +17,49 @@ function N2kMapper (options) {
   this.state = {}
 
   this.on('n2kRequestMetadata', (src) => {
-    this.emit('n2kOut', {
-      "pgn": 59904,
-      "dst": src,
-      "PGN": 126996
-    })
-    this.emit('n2kOut', {
-      "pgn": 59904,
-      "dst": src,
-      "PGN": 126998
-    })
-    this.emit('n2kOut', {
-      "pgn": 59904,
-      "dst": src,
-      "PGN": 60928
-    })
+    if ( src === 255 ) {
+      return
+    }
+    this.requestMetaData(src, 126996)
+    this.requestMetaData(src, 126998)
+    this.requestMetaData(src, 60928)
   })
+}
+
+N2kMapper.prototype.requestMetaData = function(src, pgn) {
+  const reqPgn = {
+    "pgn": 59904,
+    "dst": src,
+    "PGN": pgn
+  }
+  let retries = 5
+  debug(`requesting pgn ${pgn} from src ${src}`)
+  this.emit('n2kOut', reqPgn)
+  let interval = setInterval(() => {
+    if ( retries-- === 0 ) {
+      debug(`did not get meta pgn ${pgn} for src ${src}`)
+      clearInterval(interval)
+    } else if ( this.state[src] && this.state[src].metaPGNsReceived && this.state[src].metaPGNsReceived.indexOf(pgn) != -1 ) {
+      clearInterval(interval)
+      debug(`got meta pgn ${pgn} from src ${src}`)
+    } else {
+      debug(`did not get pgn ${pgn} from src ${src}, retrying..`)
+      this.emit('n2kOut', reqPgn)
+    }
+  }, 2000)
 }
 
 N2kMapper.prototype.toDelta = function(n2k) {
   if ( metaPGNs[n2k.pgn] ) {
     const meta = metaPGNs[n2k.pgn](n2k)
+    if ( ! this.state[n2k.src] ) {
+      this.state[n2k.src] = {}
+    }
+
+    if ( !this.state[n2k.src].metaPGNsReceived ) {
+      this.state[n2k.src].metaPGNsReceived = []
+    }
+
     if ( n2k.pgn === 60928 ) {
       const canName = new Uint64LE(toPgn(n2k)).toString()
       if ( ! this.state[n2k.src] ) {
@@ -52,6 +74,9 @@ N2kMapper.prototype.toDelta = function(n2k) {
       meta.canName = canName
       this.state[n2k.src].canName = canName
     }
+
+    this.state[n2k.src].metaPGNsReceived.push(n2k.pgn)
+    
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
     return toDelta(n2k, this.state)
