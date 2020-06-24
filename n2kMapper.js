@@ -1,6 +1,8 @@
 const EventEmitter = require('events').EventEmitter
 var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
+const toPgn = require('@canboat/canboatjs').toPgn
+const Uint64LE = require('int64-buffer').Uint64LE
 
 require('util').inherits(N2kMapper, EventEmitter);
 
@@ -41,6 +43,8 @@ N2kMapper.prototype.toDelta = function(n2k) {
         this.state[n2k.src] = {}
       }
       this.state[n2k.src].deviceInstance = meta.deviceInstance
+      meta.canName = new Uint64LE(toPgn(n2k)).toString()
+      this.state[n2k.src].canName = meta.canName
     }
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
@@ -66,7 +70,8 @@ var toDelta = function (n2k, state) {
             label: '',
             type: 'NMEA2000',
             pgn: Number(n2k.pgn),
-            src: n2k.src.toString()
+            src: n2k.src.toString(),
+            canName: src_state && src_state.canName
           },
           timestamp:
             n2k.timestamp.substring(0, 10) +
