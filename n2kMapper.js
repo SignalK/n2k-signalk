@@ -83,6 +83,9 @@ var toDelta = function (n2k, state) {
     if ( src_state && src_state.canName ) {
       result.updates[0].source.canName = src_state.canName
     }
+    if ( src_state && typeof src_state.deviceInstance !== 'undefined' ) {
+      result.updates[0].source.canName = src_state.deviceInstance
+    }
     if (
       typeof theMappings !== 'undefined' &&
       typeof theMappings !== 'function'
