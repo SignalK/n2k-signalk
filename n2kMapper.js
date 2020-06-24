@@ -70,8 +70,7 @@ var toDelta = function (n2k, state) {
             label: '',
             type: 'NMEA2000',
             pgn: Number(n2k.pgn),
-            src: n2k.src.toString(),
-            canName: src_state && src_state.canName
+            src: n2k.src.toString()
           },
           timestamp:
             n2k.timestamp.substring(0, 10) +
@@ -80,6 +79,9 @@ var toDelta = function (n2k, state) {
           values: toValuesArray(theMappings, n2k, src_state)
         }
       ]
+    }
+    if ( src_state && src_state.canName ) {
+      result.updates[0].source.canName = src_state.canName
     }
     if (
       typeof theMappings !== 'undefined' &&
