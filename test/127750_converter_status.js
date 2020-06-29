@@ -43,4 +43,40 @@ describe('127750 converter status', function () {
       'ripple too high'
     )
   })
+
+  it('unknown states convert', function () {
+    var tree = require('./testMapper').toNested(
+      {
+        timestamp:'2016-11-26T20:40:00.895Z',
+        prio:7,
+        src:10,
+        dst:255,
+        pgn:127750,
+        description:'Converter Status',
+        fields: {
+          'Connection Number': 100,
+          'Operating State': 100,
+          'Temperature State': 100,
+          'Overload State': 100,
+          'Low DC Voltage State': 'DC voltage too low',
+          'Ripple State': 'Ripple Too High'
+        }
+      }
+    )
+    tree.should.not.have.nested.property(
+      'electrical.converter.10.1.operatingState.value'
+    )
+    tree.should.not.have.nested.property(
+      'electrical.converter.10.1.temperatureState.value'
+    )
+    tree.should.not.have.nested.property(
+      'electrical.converter.10.1.overloadState.value'
+    )
+    tree.should.not.have.nested.property(
+      'electrical.converter.10.1.lowDCVoltageState.value'
+    )
+    tree.should.not.have.nested.property(
+      'electrical.converter.10.1.rippleState.value'
+    )
+  })
 })
