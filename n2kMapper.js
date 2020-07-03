@@ -44,8 +44,8 @@ N2kMapper.prototype.toDelta = function(n2k) {
         this.state[n2k.src] = {}
       } else if ( this.state[n2k.src].canName && this.state[n2k.src].canName != canName ) {
         // clear out any existing state since the src addresses have changed
+        this.emit('n2kSourceChanged', n2k.src, this.state[n2k.src].canName, canName)
         this.state[n2k.src] = {}
-        this.emit('n2kSourceChanged', n2k.src)
         this.emit('n2kRequestMetadata', n2k.src)
       }
       this.state[n2k.src].deviceInstance = meta.deviceInstance
