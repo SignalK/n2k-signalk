@@ -39,7 +39,7 @@ N2kMapper.prototype.requestMetaData = function(src, pgn) {
     if ( retries-- === 0 ) {
       debug(`did not get meta pgn ${pgn} for src ${src}`)
       clearInterval(interval)
-    } else if ( this.state[src] && this.state[src].metaPGNsReceived && this.state[src].metaPGNsReceived.indexOf(pgn) != -1 ) {
+    } else if ( this.state[src] && this.state[src].metaPGNsReceived && this.state[src].metaPGNsReceived[pgn] ) {
       clearInterval(interval)
       debug(`got meta pgn ${pgn} from src ${src}`)
     } else {
@@ -57,7 +57,7 @@ N2kMapper.prototype.toDelta = function(n2k) {
     }
 
     if ( !this.state[n2k.src].metaPGNsReceived ) {
-      this.state[n2k.src].metaPGNsReceived = []
+      this.state[n2k.src].metaPGNsReceived = {}
     }
 
     if ( n2k.pgn === 60928 ) {
@@ -75,7 +75,7 @@ N2kMapper.prototype.toDelta = function(n2k) {
       this.state[n2k.src].canName = canName
     }
 
-    this.state[n2k.src].metaPGNsReceived.push(n2k.pgn)
+    this.state[n2k.src].metaPGNsReceived[n2k.pgn] = true
     
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
