@@ -39,12 +39,18 @@ N2kMapper.prototype.toDelta = function(n2k) {
   if ( metaPGNs[n2k.pgn] ) {
     const meta = metaPGNs[n2k.pgn](n2k)
     if ( n2k.pgn === 60928 ) {
+      const canName = new Uint64LE(toPgn(n2k)).toString()
       if ( ! this.state[n2k.src] ) {
         this.state[n2k.src] = {}
+      } else if ( this.state[n2k.src].canName && this.state[n2k.src].canName != canName ) {
+        // clear out any existing state since the src addresses have changed
+        this.state[n2k.src] = {}
+        this.emit('n2kSourceChanged', n2k.src)
+        this.emit('n2kRequestMetadata', n2k.src)
       }
       this.state[n2k.src].deviceInstance = meta.deviceInstance
-      meta.canName = new Uint64LE(toPgn(n2k)).toString()
-      this.state[n2k.src].canName = meta.canName
+      meta.canName = canName
+      this.state[n2k.src].canName = canName
     }
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
