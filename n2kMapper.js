@@ -39,6 +39,7 @@ N2kMapper.prototype.requestMetaData = function(src, pgn) {
     if ( retries-- === 0 ) {
       debug(`did not get meta pgn ${pgn} for src ${src}`)
       clearInterval(interval)
+      this.emit('n2kSourceMetadataTimeout', pgn, src)
     } else if ( this.state[src] && this.state[src].metaPGNsReceived && this.state[src].metaPGNsReceived[pgn] ) {
       clearInterval(interval)
       debug(`got meta pgn ${pgn} from src ${src}`)
