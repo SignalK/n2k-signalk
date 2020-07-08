@@ -1,6 +1,8 @@
 const EventEmitter = require('events').EventEmitter
 var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
+const toPgn = require('@canboat/canboatjs').toPgn
+const Uint64LE = require('int64-buffer').Uint64LE
 
 require('util').inherits(N2kMapper, EventEmitter);
 
@@ -37,10 +39,18 @@ N2kMapper.prototype.toDelta = function(n2k) {
   if ( metaPGNs[n2k.pgn] ) {
     const meta = metaPGNs[n2k.pgn](n2k)
     if ( n2k.pgn === 60928 ) {
+      const canName = new Uint64LE(toPgn(n2k)).toString()
       if ( ! this.state[n2k.src] ) {
         this.state[n2k.src] = {}
+      } else if ( this.state[n2k.src].canName && this.state[n2k.src].canName != canName ) {
+        // clear out any existing state since the src addresses have changed
+        this.emit('n2kSourceChanged', n2k.src, this.state[n2k.src].canName, canName)
+        this.state[n2k.src] = {}
+        this.emit('n2kRequestMetadata', n2k.src)
       }
       this.state[n2k.src].deviceInstance = meta.deviceInstance
+      meta.canName = canName
+      this.state[n2k.src].canName = canName
     }
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
@@ -75,6 +85,12 @@ var toDelta = function (n2k, state) {
           values: toValuesArray(theMappings, n2k, src_state)
         }
       ]
+    }
+    if ( src_state && src_state.canName ) {
+      result.updates[0].source.canName = src_state.canName
+    }
+    if ( src_state && typeof src_state.deviceInstance !== 'undefined' ) {
+      result.updates[0].source.deviceInstance = src_state.deviceInstance
     }
     if (
       typeof theMappings !== 'undefined' &&
