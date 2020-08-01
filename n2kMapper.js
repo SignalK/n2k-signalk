@@ -3,7 +3,6 @@ var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
 const toPgn = require('@canboat/canboatjs').toPgn
 const Uint64LE = require('int64-buffer').Uint64LE
-const _ = require('lodash')
 
 require('util').inherits(N2kMapper, EventEmitter);
 
@@ -28,7 +27,6 @@ N2kMapper.prototype.requestMetaData = function(dst, pgn) {
   }
   debug(`requesting pgn ${pgn} from src ${dst}`)
   return new Promise((resolve, reject) => {
-    const requested = Date.now()
     this.emit('n2kOut', reqPgn)
     setTimeout(() => {
       resolve()
@@ -42,30 +40,32 @@ N2kMapper.prototype.requestMetaPGNs = async function(dst, pgns) {
   }
 }
 
-N2kMapper.prototype.requestAllMeta = function() {
-  this.requestMetaPGNs(255, _.keys(metaPGNs))
-    .then(() => {
-      _.keys(this.state).forEach(src => {
-        if ( src !== "255" ) {
-          const neededPGNs = _.keys(metaPGNs).filter(pgn => {
-            return !this.state[src].metaPGNsReceived ||
-              !this.state[src].metaPGNsReceived[pgn]
+N2kMapper.prototype.checkSrcMetasAndRetry = function(src) {
+  if ( src !== "255" ) {
+    const neededPGNs = Object.keys(metaPGNs).filter(pgn => {
+      return !this.state[src].metaPGNsReceived ||
+        !this.state[src].metaPGNsReceived[pgn]
+    })
+    if ( neededPGNs.length > 0 ) {
+      debug('did not get meta pgns %j for src %d', neededPGNs, src)
+      this.requestMetaPGNs(src, neededPGNs)
+        .then(() => {
+          neededPGNs.forEach(pgn => {
+            if (!this.state[src].metaPGNsReceived ||
+                !this.state[src].metaPGNsReceived[pgn]) {
+              debug(`did not get meta pgn ${pgn} for src ${src}`)
+              this.emit('n2kSourceMetadataTimeout', pgn, src)
+            }
           })
-          if ( neededPGNs.length > 0 ) {
-            debug('did not get meta pgns %j for src %d', neededPGNs, src)
-            this.requestMetaPGNs(src, neededPGNs)
-              .then(() => {
-                neededPGNs.forEach(pgn => {
-                  if (!this.state[src].metaPGNsReceived ||
-                      !this.state[src].metaPGNsReceived[pgn]) {
-                    debug(`did not get meta pgn ${pgn} for src ${src}`)
-                    this.emit('n2kSourceMetadataTimeout', pgn, src)
-                  }
-                })
-              })
-          }
-        }
-      })
+        })
+    }
+  }
+}
+
+N2kMapper.prototype.requestAllMeta = function() {
+  this.requestMetaPGNs(255, Object.keys(metaPGNs))
+    .then(() => {
+      Object.keys(this.state).forEach(src => this.checkSrcMetasAndRetry(src))
     })
 }
 
