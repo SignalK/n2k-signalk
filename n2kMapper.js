@@ -16,8 +16,8 @@ Object.assign(n2kMappings, require('./maretron'))
 
 function N2kMapper (options) {
   this.state = {}
-
   this.requestedAllMeta = false
+  this.unknownPGNs = {}
 }
 
 N2kMapper.prototype.requestMetaData = function(dst, pgn) {
@@ -110,6 +110,15 @@ N2kMapper.prototype.toDelta = function(n2k) {
     
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
+    if ( !n2kMappings[n2k.pgn] ) {
+      if ( !this.unknownPGNs[n2k.src] ) {
+        this.unknownPGNs[n2k.src] = {}
+      }
+      if ( !this.unknownPGNs[n2k.src][n2k.pgn] ) {
+        this.unknownPGNs[n2k.src][n2k.pgn] = n2k
+        this.emit('n2kSourceMetadata', n2k, { unknownPGNs: this.unknownPGNs[n2k.src] })
+      }
+    }
     return toDelta(n2k, this.state)
   }
 }
