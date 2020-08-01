@@ -37,20 +37,16 @@ N2kMapper.prototype.requestMetaData = function(dst, pgn) {
 }
 
 N2kMapper.prototype.requestMetaPGNs = async function(dst, pgns) {
-  debug('start requsting %j from %d', pgns, dst)
   for ( let i = 0; i < pgns.length; i++ ) {
     await this.requestMetaData(dst, pgns[i])
   }
-  debug('end requsting %j from %d', pgns, dst)
 }
 
 N2kMapper.prototype.requestAllMeta = function() {
-  debug('requesting all')
   this.requestMetaPGNs(255, _.keys(metaPGNs))
     .then(() => {
-      debug('requesting all done')
       _.keys(this.state).forEach(src => {
-        if ( src !== 255 ) {
+        if ( src !== "255" ) {
           const neededPGNs = _.keys(metaPGNs).filter(pgn => {
             return !this.state[src].metaPGNsReceived ||
               !this.state[src].metaPGNsReceived[pgn]
