@@ -39,7 +39,7 @@ module.exports = [
   },
   {
     source: 'Wind Angle',
-    node: 'environment.wind.directionTrue',
+    node: 'environment.wind.directionGround',
     filter: function (n2k) {
       return n2k.fields['Reference'] === 'True (ground referenced to North)'
     }
