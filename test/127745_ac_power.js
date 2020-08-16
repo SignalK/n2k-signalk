@@ -2,7 +2,7 @@ var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
 
-describe('127755 ac power/currrent', function () {
+describe('127745 ac power/currrent', function () {
   it('complete sentence converts', function () {
     var tree = require('./testMapper').toNested(
       {
@@ -21,11 +21,11 @@ describe('127755 ac power/currrent', function () {
       }
     )
     tree.should.have.nested.property(
-      'electrical.ac.33.0.l2.power.value',
+      'electrical.ac.33.0.phase.B.power.value',
       120
     )
     tree.should.have.nested.property(
-      'electrical.ac.33.0.l2.current.value',
+      'electrical.ac.33.0.phase.B.current.value',
       11
     )
   })

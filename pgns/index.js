@@ -42,7 +42,7 @@ module.exports = {
   129798: require('./129798.js'),
   127750: require('./127750.js'),
   127751: require('./127751.js'),
-  127744: require('./127744.js'),
-  127745: require('./127745.js'),
-  127746: require('./127746.js')
+  127744: require('./acPower.js')('phase.A'),
+  127745: require('./acPower.js')('phase.B'),
+  127746: require('./acPower.js')('phase.C')
 }
