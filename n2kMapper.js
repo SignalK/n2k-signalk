@@ -16,40 +16,62 @@ Object.assign(n2kMappings, require('./maretron'))
 function N2kMapper (options) {
   this.state = {}
   this.unknownPGNs = {}
-  
-  this.on('n2kRequestMetadata', (src) => {
-    if ( src === 255 ) {
-      return
-    }
-    this.requestMetaData(src, 126996)
-    this.requestMetaData(src, 126998)
-    this.requestMetaData(src, 60928)
+}
+
+N2kMapper.prototype.n2kOutIsAvailable = function(listener, event) {
+  this.n2kOutEvent = event
+  this.n2kListener = listener
+  this.requestAllMeta()
+}
+
+N2kMapper.prototype.requestMetaData = function(dst, pgn) {
+  const reqPgn = {
+    "pgn": 59904,
+    "dst": dst,
+    "PGN": pgn
+  }
+  debug(`requesting pgn ${pgn} from src ${dst}`)
+  return new Promise((resolve, reject) => {
+    this.n2kListener.emit(this.n2kOutEvent, reqPgn)
+    setTimeout(() => {
+      resolve()
+    }, 5000)
   })
 }
 
-N2kMapper.prototype.requestMetaData = function(src, pgn) {
-  const reqPgn = {
-    "pgn": 59904,
-    "dst": src,
-    "PGN": pgn
+N2kMapper.prototype.requestMetaPGNs = async function(dst, pgns) {
+  for ( let i = 0; i < pgns.length; i++ ) {
+    await this.requestMetaData(dst, pgns[i])
   }
-  let retries = 5
-  debug(`requesting pgn ${pgn} from src ${src}`)
-  const requested = Date.now()
-  this.emit('n2kOut', reqPgn)
-  let interval = setInterval(() => {
-    if ( retries-- === 0 ) {
-      debug(`did not get meta pgn ${pgn} for src ${src}`)
-      clearInterval(interval)
-      this.emit('n2kSourceMetadataTimeout', pgn, src)
-    } else if ( this.state[src] && this.state[src].metaPGNsReceived && this.state[src].metaPGNsReceived[pgn] > requested ) {
-      clearInterval(interval)
-      debug(`got meta pgn ${pgn} from src ${src}`)
-    } else {
-      debug(`did not get pgn ${pgn} from src ${src}, retrying..`)
-      this.emit('n2kOut', reqPgn)
+}
+
+N2kMapper.prototype.checkSrcMetasAndRetry = function(src) {
+  if ( src !== "255" ) {
+    const neededPGNs = Object.keys(metaPGNs).filter(pgn => {
+      return !this.state[src].metaPGNsReceived ||
+        !this.state[src].metaPGNsReceived[pgn]
+    })
+    if ( neededPGNs.length > 0 ) {
+      debug('did not get meta pgns %j for src %d', neededPGNs, src)
+      this.requestMetaPGNs(src, neededPGNs)
+        .then(() => {
+          neededPGNs.forEach(pgn => {
+            if (!this.state[src].metaPGNsReceived ||
+                !this.state[src].metaPGNsReceived[pgn]) {
+              debug(`did not get meta pgn ${pgn} for src ${src}`)
+              this.emit('n2kSourceMetadataTimeout', pgn, src)
+            }
+          })
+        })
     }
-  }, 2000)
+  }
+}
+
+N2kMapper.prototype.requestAllMeta = function() {
+  this.requestMetaPGNs(255, Object.keys(metaPGNs))
+    .then(() => {
+      Object.keys(this.state).forEach(src => this.checkSrcMetasAndRetry(src))
+    })
 }
 
 N2kMapper.prototype.toDelta = function(n2k) {
@@ -71,7 +93,10 @@ N2kMapper.prototype.toDelta = function(n2k) {
         // clear out any existing state since the src addresses have changed
         this.emit('n2kSourceChanged', n2k.src, this.state[n2k.src].canName, canName)
         this.state[n2k.src] = {}
-        this.emit('n2kRequestMetadata', n2k.src)
+        this.requestMetaData(n2k.src, 126996)
+          .then(() => {
+            return this.requestMetaData(n2k.src, 126998)
+          })
       }
       this.state[n2k.src].deviceInstance = meta.deviceInstance
       meta.canName = canName
