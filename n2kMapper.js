@@ -86,7 +86,7 @@ N2kMapper.prototype.toDelta = function(n2k) {
     }
 
     if ( n2k.pgn === 60928 ) {
-      const canName = new Uint64LE(toPgn(n2k)).toString()
+      const canName = new Uint64LE(toPgn(n2k)).toString(16)
       if ( ! this.state[n2k.src] ) {
         this.state[n2k.src] = {}
       } else if ( this.state[n2k.src].canName && this.state[n2k.src].canName != canName ) {
