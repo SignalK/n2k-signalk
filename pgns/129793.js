@@ -20,6 +20,7 @@ module.exports = [
   },
   {
     node: '',
+    filter: n2k => n2k.fields['User ID'],
     value: function (n2k) {
       return {
         mmsi: n2k.fields['User ID'].toString()
@@ -28,7 +29,7 @@ module.exports = [
   },
   {
     context: function (n2k) {
-      return 'shore.basestations.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
+      return n2k.fields['User ID'] ? 'shore.basestations.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] : undefined
     }
   }
 ]
