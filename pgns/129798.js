@@ -9,6 +9,7 @@ module.exports = [
     node: 'navigation.courseOverGroundTrue'
   },
   {
+    filter: (n2k) => n2k.fields.Longitude && n2k.fields.Latitude,
     value: function (n2k) {
       var res = {
         longitude: Number(n2k.fields.Longitude),
@@ -23,6 +24,7 @@ module.exports = [
   },
   {
     node: '',
+    filter: n2k => n2k.fields['User ID'],
     value: function (n2k) {
       return {
         mmsi: n2k.fields['User ID'].toString()
@@ -31,7 +33,7 @@ module.exports = [
   },
   {
     context: function (n2k) {
-      return 'sar.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
+      return n2k.fields['User ID'] ? 'sar.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] : undefined
     }
   }
 ]

@@ -5,6 +5,7 @@ const schema = require('@signalk/signalk-schema')
 module.exports = [
   {
     node: '',
+    filter: n2k => n2k.fields['AtoN Name'],
     value: function (n2k) {
       return {
         name: n2k.fields['AtoN Name']
@@ -12,6 +13,7 @@ module.exports = [
     }
   },
   {
+    filter: (n2k) => n2k.fields.Longitude && n2k.fields.Latitude,
     value: function (n2k) {
       return {
         longitude: Number(n2k.fields.Longitude),
@@ -77,6 +79,7 @@ module.exports = [
   },
   {
     node: '',
+    filter: n2k => n2k.fields['User ID'],
     value: function (n2k) {
       return {
         mmsi: n2k.fields['User ID'].toString()
@@ -85,7 +88,7 @@ module.exports = [
   },
   {
     context: function (n2k) {
-      return 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
+      return n2k.fields['User ID'] ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] : undefined
     }
   }
 ]
