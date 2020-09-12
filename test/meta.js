@@ -16,7 +16,7 @@ describe('Meta data works', function () {
       meta.should.have.property('deviceInstanceLower', 0)
       meta.should.have.property('deviceInstanceUpper', 0)
       meta.should.have.property('systemInstance', 0)
-      meta.should.have.property('canName', '13905569736850221503')
+      meta.should.have.property('canName', 'c0fa8200346129bf')
       meta.should.have.property('deviceInstance', 0)
       done()
     })
