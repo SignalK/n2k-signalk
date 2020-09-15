@@ -31,9 +31,6 @@ module.exports = [
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.boostPressure'
     },
-    value: function (n2k) {
-      const hpa = Number(n2k.fields['Boost Pressure'])
-      return isNaN(hpa) ? null : hpa * 100;
-    }
+    source: 'Boost Pressure'
   }
 ]
