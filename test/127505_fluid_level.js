@@ -20,7 +20,7 @@ describe('127505 fuel', function () {
       )
     )
     tree.tanks.fuel['1'].currentLevel.value.should.be.closeTo(0.64284, 0.000005)
-    tree.should.have.nested.property('tanks.fuel.1.capacity.value', 41.6)
+    tree.should.have.nested.property('tanks.fuel.1.capacity.value', 0.0416)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
@@ -36,7 +36,7 @@ describe('127505 water', function () {
       0.88596,
       0.000005
     )
-    tree.should.have.nested.property('tanks.freshWater.0.capacity.value', 71.9)
+    tree.should.have.nested.property('tanks.freshWater.0.capacity.value', 0.0719)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
@@ -52,7 +52,7 @@ describe('127505 grayWater', function () {
       'tanks.wasteWater.0.currentLevel.value',
       0.9024
     )
-    tree.should.have.nested.property('tanks.wasteWater.0.capacity.value', 37.9)
+    tree.should.have.nested.property('tanks.wasteWater.0.capacity.value', 0.037899999999999996)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
