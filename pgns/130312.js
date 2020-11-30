@@ -25,3 +25,16 @@ module.exports = [
     source: 'Actual Temperature'
   }
 ]
+
+module.exports.meta = (n2k) => {
+  let res = []
+  if ( !temperatureMappings[chooseField(n2k, 'Temperature Source', 'Source')] ) {
+    res.push({
+      path: `generic.temperatures.userDefined${n2k.fields['Source']}.${n2k.fields['Instance']}.temperature`,
+      value: {
+        units: 'K'
+      }
+    })
+  }
+  return res
+}

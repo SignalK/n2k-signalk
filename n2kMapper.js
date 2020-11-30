@@ -168,6 +168,23 @@ var toDelta = function (n2k, state) {
       if (theMappings.length === 1 && theMappings[0].instance) {
         result.updates[0].source.instance = theMappings[0].instance(n2k)
       }
+
+      if ( theMappings.meta ) {
+        if (src_state && !src_state.sentMetaPaths ) {
+          src_state.sentMetaPaths = {}
+        }
+        let meta = theMappings.meta(n2k).filter(kp => {
+          if ( !src_state || !src_state.sentMetaPaths[kp.path] ) {
+            if ( src_state ) {
+              src_state.sentMetaPaths[kp.path] = true
+            }
+            return kp
+          }
+        })
+        if ( meta.length > 0 ) {
+          result.updates[0].meta = meta
+        }
+      }
     }
     return result
   } catch (ex) {
