@@ -28,7 +28,7 @@ module.exports.meta = (n2k) => {
     const field = 'Indicator' + i
     if (typeof n2k.fields[field] !== 'undefined') {
       const basePath =
-            `electrical.switches.bank.${n2k.fields['Instance']}.${i}.state`
+            `electrical.switches.bank.${n2k.fields['Instance']}.${i}`
       
       res.push({
         path: basePath,
