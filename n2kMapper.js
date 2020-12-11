@@ -18,6 +18,7 @@ Object.assign(n2kMappings, require('./digitalyacht'))
 function N2kMapper (options) {
   this.state = {}
   this.unknownPGNs = {}
+  this.options = options || {}
 }
 
 N2kMapper.prototype.n2kOutIsAvailable = function(listener, event) {
@@ -118,11 +119,11 @@ N2kMapper.prototype.toDelta = function(n2k) {
         this.emit('n2kSourceMetadata', n2k, { unknownPGNs: this.unknownPGNs[n2k.src] })
       }
     }
-    return toDelta(n2k, this.state)
+    return toDelta(n2k, this.state, this.options.sendMetaData)
   }
 }
 
-var toDelta = function (n2k, state) {
+var toDelta = function (n2k, state, sendMetaData) {
   try {
     var theMappings = n2kMappings[n2k.pgn]
     var src_state
@@ -169,7 +170,7 @@ var toDelta = function (n2k, state) {
         result.updates[0].source.instance = theMappings[0].instance(n2k)
       }
 
-      if ( theMappings.meta ) {
+      if ( theMappings.meta && sendMetaData ) {
         if (src_state && !src_state.sentMetaPaths ) {
           src_state.sentMetaPaths = {}
         }
