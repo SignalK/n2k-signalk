@@ -2,7 +2,7 @@ const n2kMapper = require('../n2kMapper')
 const signalkSchema = require('@signalk/signalk-schema')
 
 n2kMapper.toNested = function (n2k, state) {
-  var delta = n2kMapper.toDelta(n2k, state)
+  var delta = n2kMapper.toDelta(n2k, state, true)
   if (!delta.context) {
     delta.context = 'vessels.' + signalkSchema.fakeMmsiId
   }

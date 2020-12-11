@@ -66,11 +66,11 @@ describe('127501 switch bank status', function () {
       7
     )
     tree.should.have.nested.property(
-      'electrical.switches.bank.0.1.state.meta.bankNumber',
+      'electrical.switches.bank.0.1.meta.bankNumber',
       0
     )
     tree.should.have.nested.property(
-      'electrical.switches.bank.0.1.state.meta.switchNumber',
+      'electrical.switches.bank.0.1.meta.switchNumber',
       1
     )
     
