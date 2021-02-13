@@ -18,10 +18,16 @@ Object.assign(n2kMappings, require('./digitalyacht'))
 function N2kMapper (options, emitter) {
   this.state = {  }
   this.unknownPGNs = {}
+  this.customPgns = {}
+  this.options = options || {}
 
   if ( emitter ) {
     emitter.on('pgn-to-signalk', (pgnNumber, mappings) => {
-      n2kMappings[pgnNumber] = mappings
+      if ( n2kMappings[pgnNumber] && !this.options.allowCustomPGNOverride ) {
+        console.error(`pgn ${pgnNumber} can't be overwritten`)
+      } else {
+        this.customPgns[pgnNumber] = mappings
+      }
     })
     emitter.emit('pgn-to-signalk-available')
   }
@@ -125,13 +131,20 @@ N2kMapper.prototype.toDelta = function(n2k) {
         this.emit('n2kSourceMetadata', n2k, { unknownPGNs: this.unknownPGNs[n2k.src] })
       }
     }
-    return toDelta(n2k, this.state)
+    return toDelta(n2k, this.state, this.customPgns)
   }
 }
 
-var toDelta = function (n2k, state) {
+var toDelta = function (n2k, state, customPgns) {
   try {
-    var theMappings = n2kMappings[n2k.pgn]
+    var theMappings
+
+    if ( customPgns && customPgns[n2k.pgn] ) {
+      theMappings = customPgns[n2k.pgn]
+    } else {
+      theMappings = n2kMappings[n2k.pgn]
+    }
+    
     var src_state
     if (state) {
       var n2k_src = n2k.src.toString()
