@@ -41,6 +41,5 @@ describe('custom pgns', function () {
     var tree = signalkSchema.deltaToFull(delta)[contextParts[0]][contextParts[1]]
 
     tree.should.have.nested.property('tanks.fuel.0.customCurrentLevel.value', 1.31068)
-    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
