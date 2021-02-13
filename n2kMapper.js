@@ -15,9 +15,14 @@ Object.assign(n2kMappings, require('./maretron'))
 Object.assign(n2kMappings, require('./actisense'))
 Object.assign(n2kMappings, require('./digitalyacht'))
 
-function N2kMapper (options) {
-  this.state = {}
+function N2kMapper (options, emitter) {
+  this.state = {  }
   this.unknownPGNs = {}
+  
+  emitter.on('pgn-to-signalk', (pgnNumber, mapping) => {
+    n2kMappings[pgnNumber] = mapping
+  })
+  emitter.emit('pgn-to-signalk-available')
 }
 
 N2kMapper.prototype.n2kOutIsAvailable = function(listener, event) {
