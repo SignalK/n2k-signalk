@@ -15,21 +15,26 @@ Object.assign(n2kMappings, require('./maretron'))
 Object.assign(n2kMappings, require('./actisense'))
 Object.assign(n2kMappings, require('./digitalyacht'))
 
-function N2kMapper (options, emitter) {
+function N2kMapper (options, propertyValues) {
   this.state = {  }
   this.unknownPGNs = {}
   this.customPgns = {}
   this.options = options || {}
 
-  if ( emitter ) {
-    emitter.on('pgn-to-signalk', (pgnNumber, mappings) => {
-      if ( n2kMappings[pgnNumber] && !this.options.allowCustomPGNOverride ) {
-        console.error(`pgn ${pgnNumber} can't be overwritten`)
-      } else {
-        this.customPgns[pgnNumber] = mappings
-      }
+  if ( propertyValues ) {
+    propertyValues.onPropertyValues('pgn-to-signalk', values => {
+      values.filter(v => v != null).forEach(pv => {
+        Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
+          if ( n2kMappings[pgnNumber] &&
+               !this.options.allowCustomPGNOverride ) {
+            console.error(`pgn ${pgnNumber} can't be overwritten`)
+          } else {
+            this.customPgns[pgnNumber] = mappings
+            debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
+          }
+        })
+      })
     })
-    emitter.emit('pgn-to-signalk-available')
   }
 }
 
