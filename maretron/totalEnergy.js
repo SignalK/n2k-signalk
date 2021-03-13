@@ -9,7 +9,7 @@ module.exports = (type) => {
         return `${prefix(n2k, state)}.energyExport`
       },
       value: (n2k) => {
-        return n2k.fields['Total Energy Export'] * 3.6e+6
+        return n2k.fields['Total Energy Export']
       },
       filter: (n2k, state) => {
         return n2k.fields['Total Energy Export'] != null &&
@@ -21,7 +21,7 @@ module.exports = (type) => {
         return `${prefix(n2k, state)}.energyImport`
       },
       value: (n2k) => {
-        return n2k.fields['Total Energy Import'] * 3.6e+6
+        return n2k.fields['Total Energy Import']
       },
       filter: (n2k, state) => {
         return n2k.fields['Total Energy Import'] != null &&
