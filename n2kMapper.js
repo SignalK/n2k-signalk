@@ -15,14 +15,14 @@ Object.assign(n2kMappings, require('./maretron'))
 Object.assign(n2kMappings, require('./actisense'))
 Object.assign(n2kMappings, require('./digitalyacht'))
 
-function N2kMapper (options, propertyValues) {
+function N2kMapper (options) {
   this.state = {  }
   this.unknownPGNs = {}
   this.customPgns = {}
   this.options = options || {}
 
-  if ( propertyValues ) {
-    propertyValues.onPropertyValues('pgn-to-signalk', values => {
+  if ( options.onPropertyValues ) {
+    options.onPropertyValues('pgn-to-signalk', values => {
       values.filter(v => v != null).forEach(pv => {
         Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
           if ( n2kMappings[pgnNumber] &&
