@@ -7,7 +7,7 @@ describe('127501 switch bank status', function () {
     var tree = require('./testMapper.js').toNested(
       JSON.parse(
         '{"timestamp":"2017-08-12T15:51:46.369Z","prio":3,"src":32,"dst":255,"pgn":127501,"description":"Binary Switch Bank Status","fields":{"Instance":0,"Indicator1":"On","Indicator2":"Off","Indicator3":"On","Indicator4":"Off","Indicator5":"Off","Indicator6":"Off","Indicator7":"Off","list":[{}]}}'
-      )
+      ), {}
     )
     tree.should.have.nested.property(
       'electrical.switches.bank.0.1.state.value',
@@ -65,6 +65,15 @@ describe('127501 switch bank status', function () {
       'electrical.switches.bank.0.7.order.value',
       7
     )
+    tree.should.have.nested.property(
+      'electrical.switches.bank.0.1.meta.bankNumber',
+      0
+    )
+    tree.should.have.nested.property(
+      'electrical.switches.bank.0.1.meta.switchNumber',
+      1
+    )
+    
     // tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
