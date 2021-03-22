@@ -37,7 +37,7 @@ describe('custom pgns', function () {
       value: mappings
     })
     
-    const n2kMapper = new N2kMapper({}, propertyValues)
+    const n2kMapper = new N2kMapper({ onPropertyValues: propertyValues.onPropertyValues.bind(propertyValues) })
    
     var delta = n2kMapper.toDelta(JSON.parse(
       '{"timestamp":"2015-01-15-16:15:30.984Z","prio":"6","src":"17","dst":"255","pgn":"127999","description":"Fluid Level","fields":{"Instance":"0","Type":"Fuel","Level":"131.068"}}'
