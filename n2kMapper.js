@@ -140,16 +140,12 @@ N2kMapper.prototype.toDelta = function(n2k) {
   }
 }
 
-var toDelta = function (n2k, state, customPgns) {
+var toDelta = function (n2k, state, customPgns = {}) {
   try {
-    var theMappings
+    var theMappings, customMappings
 
-    if ( customPgns && customPgns[n2k.pgn] ) {
-      theMappings = customPgns[n2k.pgn]
-    } else {
-      theMappings = n2kMappings[n2k.pgn]
-    }
-    
+    theMappings = [ ...customPgns[n2k.pgn] || [], ...n2kMappings[n2k.pgn] || []]
+
     var src_state
     if (state) {
       var n2k_src = n2k.src.toString()
@@ -196,6 +192,7 @@ var toDelta = function (n2k, state, customPgns) {
     }
     return result
   } catch (ex) {
+    console.error(ex)
     console.error('Unable to convert:' + ex.message + ':' + JSON.stringify(n2k))
     return { updates: [] }
   }
