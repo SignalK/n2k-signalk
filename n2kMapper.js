@@ -20,9 +20,9 @@ function N2kMapper (options) {
   this.unknownPGNs = {}
   this.customPgns = {}
   this.options = options || {}
-
-  if ( options.onPropertyValues ) {
-    options.onPropertyValues('pgn-to-signalk', values => {
+  
+  if ( this.options.onPropertyValues ) {
+    this.options.onPropertyValues('pgn-to-signalk', values => {
       values.filter(v => v != null).forEach(pv => {
         Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
           if ( n2kMappings[pgnNumber] &&
