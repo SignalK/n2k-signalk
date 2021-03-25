@@ -1,3 +1,5 @@
+const camelCase = require('camelcase')
+
 function prefix (key, n2k, state) {
   return state.deviceName
     ? `entertainment.device.${state.deviceName}.${key}`
@@ -14,7 +16,7 @@ module.exports = [
   {
     source: 'Name',
     node: (n2k, state) => {
-      state.deviceName = n2k.fields.Name
+      state.deviceName = camelCase(n2k.fields.Name)
       return prefix('name', n2k, state)
     },
     filter: n2k => n2k.fields['Message ID'] == 'Unit Name'
@@ -164,6 +166,11 @@ module.exports = [
     source: 'Frequency',
     node: sourcePrefix.bind(null, 'tuner.frequency'),
     filter: (n2k, state) => n2k.fields['Message ID'] == 'AM/FM Station'
+  },
+  {
+    source: 'Track',
+    node: sourcePrefix.bind(null, 'track.name'),
+    filter: (n2k, state) => n2k.fields['Message ID'] == 'AM/FM Station' && n2k.fields['Track'] && n2k.fields['Track'].length > 0
   },
   {
     node: sourcePrefix.bind(null, 'playbackState'),
