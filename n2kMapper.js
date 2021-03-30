@@ -16,8 +16,26 @@ Object.assign(n2kMappings, require('./actisense'))
 Object.assign(n2kMappings, require('./digitalyacht'))
 
 function N2kMapper (options) {
-  this.state = {}
+  this.state = {  }
   this.unknownPGNs = {}
+  this.customPgns = {}
+  this.options = options || {}
+  
+  if ( this.options.onPropertyValues ) {
+    this.options.onPropertyValues('pgn-to-signalk', values => {
+      values.filter(v => v !== undefined).forEach(pv => {
+        Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
+          if ( n2kMappings[pgnNumber] &&
+               !this.options.allowCustomPGNOverride ) {
+            console.error(`pgn ${pgnNumber} can't be overwritten`)
+          } else {
+            this.customPgns[pgnNumber] = mappings
+            debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
+          }
+        })
+      })
+    })
+  }
 }
 
 N2kMapper.prototype.n2kOutIsAvailable = function(listener, event) {
@@ -118,13 +136,16 @@ N2kMapper.prototype.toDelta = function(n2k) {
         this.emit('n2kSourceMetadata', n2k, { unknownPGNs: this.unknownPGNs[n2k.src] })
       }
     }
-    return toDelta(n2k, this.state)
+    return toDelta(n2k, this.state, this.customPgns)
   }
 }
 
-var toDelta = function (n2k, state) {
+var toDelta = function (n2k, state, customPgns = {}) {
   try {
-    var theMappings = n2kMappings[n2k.pgn]
+    var theMappings, customMappings
+
+    theMappings = [ ...customPgns[n2k.pgn] || [], ...n2kMappings[n2k.pgn] || []]
+
     var src_state
     if (state) {
       var n2k_src = n2k.src.toString()
@@ -171,6 +192,7 @@ var toDelta = function (n2k, state) {
     }
     return result
   } catch (ex) {
+    console.error(ex)
     console.error('Unable to convert:' + ex.message + ':' + JSON.stringify(n2k))
     return { updates: [] }
   }

@@ -41,3 +41,9 @@ See [bin/n2k-signalk](https://github.com/SignalK/n2k-signalk/blob/master/bin/n2k
 
 See [bin/demo.js](https://github.com/SignalK/n2k-signalk/blob/master/bin/demo.js).
 
+
+### Custom Sentences
+
+You can add custom n2k mappings via the [Signal K Server plugin mechanism](https://github.com/SignalK/signalk-server/blob/master/SERVERPLUGINS.md). A plugin can register custom mappings by emitting `pgn-to-signalk` PropertyValues with a value that is a map with the pgn number has the key and the n2k mappings as the value.
+
+See [signalk-over-n2k](https://github.com/SignalK/signalk-over-n2k) for an example.
