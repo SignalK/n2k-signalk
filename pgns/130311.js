@@ -15,8 +15,7 @@ module.exports = [
     node: function (n2k) {
       return (
         'environment.' +
-        (n2k.fields['Humidity Source'] === 'Inside' ? 'inside' : 'outside') +
-        '.humidity'
+        (n2k.fields['Humidity Source'] === 'Inside' ? 'inside.relativeHumidity' : 'outside.humidity') 
       )
     },
     filter: function (n2k) {
