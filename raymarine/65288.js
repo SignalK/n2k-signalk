@@ -1,6 +1,11 @@
 
 module.exports = [
   {
+    filter: function(n2k) {
+      return n2k.fields['Manufacturer Code'] === 'Raymarine'
+        && typeof n2k.fields['Alarm Group'] !== 'undefined'
+        && typeof n2k.fields['Alarm Status'] !== 'undefined'
+    },
     node: function(n2k) {
       var alarmName = n2k.fields['Alarm ID']
 
