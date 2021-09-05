@@ -4,7 +4,7 @@ var debug = require('debug')('signalk:n2k-signalk')
 const toPgn = require('@canboat/canboatjs').toPgn
 const Uint64LE = require('int64-buffer').Uint64LE
 
-require('util').inherits(N2kMapper, EventEmitter);
+require('util').inherits(N2kMapper, EventEmitter)
 
 var n2kMappings = {}
 Object.assign(n2kMappings, require('./pgns'))
@@ -17,39 +17,43 @@ Object.assign(n2kMappings, require('./digitalyacht'))
 Object.assign(n2kMappings, require('./bandg'))
 
 function N2kMapper (options) {
-  this.state = {  }
+  this.state = {}
   this.unknownPGNs = {}
   this.customPgns = {}
   this.options = options || {}
-  
-  if ( this.options.onPropertyValues ) {
+
+  if (this.options.onPropertyValues) {
     this.options.onPropertyValues('pgn-to-signalk', values => {
-      values.filter(v => v !== undefined).forEach(pv => {
-        Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
-          if ( n2kMappings[pgnNumber] &&
-               !this.options.allowCustomPGNOverride ) {
-            console.error(`pgn ${pgnNumber} can't be overwritten`)
-          } else {
-            this.customPgns[pgnNumber] = mappings
-            debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
-          }
+      values
+        .filter(v => v !== undefined)
+        .forEach(pv => {
+          Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
+            if (
+              n2kMappings[pgnNumber] &&
+              !this.options.allowCustomPGNOverride
+            ) {
+              console.error(`pgn ${pgnNumber} can't be overwritten`)
+            } else {
+              this.customPgns[pgnNumber] = mappings
+              debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
+            }
+          })
         })
-      })
     })
   }
 }
 
-N2kMapper.prototype.n2kOutIsAvailable = function(listener, event) {
+N2kMapper.prototype.n2kOutIsAvailable = function (listener, event) {
   this.n2kOutEvent = event
   this.n2kListener = listener
   this.requestAllMeta()
 }
 
-N2kMapper.prototype.requestMetaData = function(dst, pgn) {
+N2kMapper.prototype.requestMetaData = function (dst, pgn) {
   const reqPgn = {
-    "pgn": 59904,
-    "dst": dst,
-    "PGN": pgn
+    pgn: 59904,
+    dst: dst,
+    PGN: pgn
   }
   debug(`requesting pgn ${pgn} from src ${dst}`)
   return new Promise((resolve, reject) => {
@@ -60,64 +64,73 @@ N2kMapper.prototype.requestMetaData = function(dst, pgn) {
   })
 }
 
-N2kMapper.prototype.requestMetaPGNs = async function(dst, pgns) {
-  for ( let i = 0; i < pgns.length; i++ ) {
+N2kMapper.prototype.requestMetaPGNs = async function (dst, pgns) {
+  for (let i = 0; i < pgns.length; i++) {
     await this.requestMetaData(dst, pgns[i])
   }
 }
 
-N2kMapper.prototype.checkSrcMetasAndRetry = function(src) {
-  if ( src !== "255" ) {
+N2kMapper.prototype.checkSrcMetasAndRetry = function (src) {
+  if (src !== '255') {
     const neededPGNs = Object.keys(metaPGNs).filter(pgn => {
-      return !this.state[src].metaPGNsReceived ||
+      return (
+        !this.state[src].metaPGNsReceived ||
         !this.state[src].metaPGNsReceived[pgn]
+      )
     })
-    if ( neededPGNs.length > 0 ) {
+    if (neededPGNs.length > 0) {
       debug('did not get meta pgns %j for src %d', neededPGNs, src)
-      this.requestMetaPGNs(src, neededPGNs)
-        .then(() => {
-          neededPGNs.forEach(pgn => {
-            if (!this.state[src].metaPGNsReceived ||
-                !this.state[src].metaPGNsReceived[pgn]) {
-              debug(`did not get meta pgn ${pgn} for src ${src}`)
-              this.emit('n2kSourceMetadataTimeout', pgn, src)
-            }
-          })
+      this.requestMetaPGNs(src, neededPGNs).then(() => {
+        neededPGNs.forEach(pgn => {
+          if (
+            !this.state[src].metaPGNsReceived ||
+            !this.state[src].metaPGNsReceived[pgn]
+          ) {
+            debug(`did not get meta pgn ${pgn} for src ${src}`)
+            this.emit('n2kSourceMetadataTimeout', pgn, src)
+          }
         })
+      })
     }
   }
 }
 
-N2kMapper.prototype.requestAllMeta = function() {
-  this.requestMetaPGNs(255, Object.keys(metaPGNs))
-    .then(() => {
-      Object.keys(this.state).forEach(src => this.checkSrcMetasAndRetry(src))
-    })
+N2kMapper.prototype.requestAllMeta = function () {
+  this.requestMetaPGNs(255, Object.keys(metaPGNs)).then(() => {
+    Object.keys(this.state).forEach(src => this.checkSrcMetasAndRetry(src))
+  })
 }
 
-N2kMapper.prototype.toDelta = function(n2k) {
-  if ( metaPGNs[n2k.pgn] ) {
+N2kMapper.prototype.toDelta = function (n2k) {
+  if (metaPGNs[n2k.pgn]) {
     const meta = metaPGNs[n2k.pgn](n2k)
-    if ( ! this.state[n2k.src] ) {
+    if (!this.state[n2k.src]) {
       this.state[n2k.src] = {}
     }
 
-    if ( !this.state[n2k.src].metaPGNsReceived ) {
+    if (!this.state[n2k.src].metaPGNsReceived) {
       this.state[n2k.src].metaPGNsReceived = {}
     }
 
-    if ( n2k.pgn === 60928 ) {
+    if (n2k.pgn === 60928) {
       const canName = new Uint64LE(toPgn(n2k)).toString(16)
-      if ( ! this.state[n2k.src] ) {
+      if (!this.state[n2k.src]) {
         this.state[n2k.src] = {}
-      } else if ( this.state[n2k.src].canName && this.state[n2k.src].canName != canName ) {
+      } else if (
+        this.state[n2k.src].canName &&
+        this.state[n2k.src].canName != canName
+      ) {
         // clear out any existing state since the src addresses have changed
-        this.emit('n2kSourceChanged', n2k.src, this.state[n2k.src].canName, canName)
+        this.emit(
+          'n2kSourceChanged',
+          n2k.src,
+          this.state[n2k.src].canName,
+          canName
+        )
         this.state[n2k.src] = {}
-        this.requestMetaData(n2k.src, 126996)
-          .then(() => {
-            return this.requestMetaData(n2k.src, 126998)
-          })
+        this.requestMetaData(n2k.src, 126996).then(() => {
+          return this.requestMetaData(n2k.src, 126998)
+        })
       }
       this.state[n2k.src].deviceInstance = meta.deviceInstance
       meta.canName = canName
@@ -125,16 +138,18 @@ N2kMapper.prototype.toDelta = function(n2k) {
     }
 
     this.state[n2k.src].metaPGNsReceived[n2k.pgn] = Date.now()
-    
+
     this.emit('n2kSourceMetadata', n2k, meta)
   } else {
-    if ( !n2kMappings[n2k.pgn] ) {
-      if ( !this.unknownPGNs[n2k.src] ) {
+    if (!n2kMappings[n2k.pgn]) {
+      if (!this.unknownPGNs[n2k.src]) {
         this.unknownPGNs[n2k.src] = {}
       }
-      if ( !this.unknownPGNs[n2k.src][n2k.pgn] ) {
+      if (!this.unknownPGNs[n2k.src][n2k.pgn]) {
         this.unknownPGNs[n2k.src][n2k.pgn] = n2k
-        this.emit('n2kSourceMetadata', n2k, { unknownPGNs: this.unknownPGNs[n2k.src] })
+        this.emit('n2kSourceMetadata', n2k, {
+          unknownPGNs: this.unknownPGNs[n2k.src]
+        })
       }
     }
     return toDelta(n2k, this.state, this.customPgns)
@@ -145,7 +160,10 @@ var toDelta = function (n2k, state, customPgns = {}) {
   try {
     var theMappings, customMappings
 
-    theMappings = [ ...customPgns[n2k.pgn] || [], ...n2kMappings[n2k.pgn] || []]
+    theMappings = [
+      ...(customPgns[n2k.pgn] || []),
+      ...(n2kMappings[n2k.pgn] || [])
+    ]
 
     var src_state
     if (state) {
@@ -172,10 +190,10 @@ var toDelta = function (n2k, state, customPgns = {}) {
         }
       ]
     }
-    if ( src_state && src_state.canName ) {
+    if (src_state && src_state.canName) {
       result.updates[0].source.canName = src_state.canName
     }
-    if ( src_state && typeof src_state.deviceInstance !== 'undefined' ) {
+    if (src_state && typeof src_state.deviceInstance !== 'undefined') {
       result.updates[0].source.deviceInstance = src_state.deviceInstance
     }
     if (
@@ -330,7 +348,7 @@ function addAsNested (pathValue, source, timestamp, result) {
 }
 
 const metaPGNs = {
-  60928: (n2k) => {
+  60928: n2k => {
     return {
       uniqueId: n2k.fields['Unique Number'],
       manufacturerName: n2k.fields['Manufacturer Code'],
@@ -339,10 +357,12 @@ const metaPGNs = {
       deviceInstanceLower: n2k.fields['Device Instance Lower'],
       deviceInstanceUpper: n2k.fields['Device Instance Upper'],
       systemInstance: n2k.fields['System Instance'],
-      deviceInstance: (n2k.fields['Device Instance Upper'] << 3) | n2k.fields['Device Instance Lower']
+      deviceInstance:
+        (n2k.fields['Device Instance Upper'] << 3) |
+        n2k.fields['Device Instance Lower']
     }
   },
-  126998: (n2k) => {
+  126998: n2k => {
     return {
       installationNote1: n2k.fields['Installation Description #1'],
       installationNote2: n2k.fields['Installation Description #2'],
@@ -350,7 +370,7 @@ const metaPGNs = {
       manufacturerInfo: n2k.fields['Manufacturer Information']
     }
   },
-  126996: (n2k) => {
+  126996: n2k => {
     return {
       productName: n2k.fields['Model ID'],
       hardwareVersion: n2k.fields['Model Version'],
