@@ -472,6 +472,22 @@
       "environment.inside.refrigerator.temperature": 15.2
     }
   },
+  "130316-propulsion": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130316",
+    "description": "Temperature",
+    "fields": {
+      "Instance": "0",
+      "Source": "Exhaust Gas Temperature",
+      "Actual Temperature": "300"
+    },
+    "testExpectConvertedValues": {
+      "propulsion.exhaust.temperature": 300
+    }
+  },
   "130312-userDefined129": {
     "notInSpec": true,
     "timestamp": "2015-01-15-16:15:19.628Z",
