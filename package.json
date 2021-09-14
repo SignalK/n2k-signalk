@@ -1,6 +1,6 @@
 {
   "name": "@signalk/n2k-signalk",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "NMEA 2000 to SignalK conversion library",
   "main": "n2kMapper.js",
   "scripts": {
@@ -23,9 +23,9 @@
   "repository": "https://github.com/SignalK/n2k-signalk",
   "dependencies": {
     "@canboat/canboatjs": "^1.13.1",
-    "JSONStream": "~1.3.0",
     "debug": "^4.0.0",
     "int64-buffer": "^0.99.1007",
+    "JSONStream": "~1.3.0",
     "lodash": "^4.17.11",
     "through": ">=2.2.7 <3"
   },
@@ -36,7 +36,7 @@
     "baconjs": "^1.0.1",
     "chai": "~4.1.0",
     "chai-things": "0.2",
-    "mocha": "^7.1.0",
+    "mocha": "^7.2.0",
     "prettier-standard": "^16.0.0",
     "tv4": "latest"
   }
