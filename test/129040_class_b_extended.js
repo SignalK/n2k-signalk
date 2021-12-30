@@ -1,4 +1,5 @@
 var chai = require('chai')
+const { assertSensorClass } = require('./ais_utils')
 chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
@@ -15,6 +16,8 @@ describe('129040 AIS Class B Extended Position Repeat', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230939100')
     delta.updates[0].values[0].path.should.equal('')
     delta.updates[0].values[0].value.name.should.equal('RESCUE RAUTAUOMA')
+    assertSensorClass(delta, 'B')
+    
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('design.length.value.overall', 16.0)
     tree.should.have.nested.property('design.aisShipType.value.id', 51)
@@ -37,6 +40,10 @@ describe('129040 AIS Class B Extended Position Repeat', function () {
     tree.should.have.nested.property('sensors.ais.fromBow.value', 9.0)
     tree.should.have.nested.property('sensors.ais.fromCenter.value', 0)
     delete tree.design.aisShipType
+
+    //TODO remove when sensors.ais.class is in schema
+    delete tree.sensors.ais
+
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })

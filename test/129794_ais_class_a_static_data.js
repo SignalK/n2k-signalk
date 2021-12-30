@@ -32,6 +32,7 @@
  */
 
 const chai = require('chai')
+const { assertSensorClass } = require('./ais_utils')
 const expect = chai.expect
 chai.Should()
 chai.use(require('chai-things'))
@@ -47,7 +48,7 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:356307000')
-    delta.updates[0].values.find(pathValue => pathValue.path === 'sensors.ais.class').value.should.equal('A')
+    assertSensorClass(delta, 'A')
 
     const valuesWithEmptyPath = delta.updates[0].values.filter(pathValue => pathValue.path === '')
     valuesWithEmptyPath.length.should.equal(3)

@@ -5,6 +5,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 var mapper = require('./testMapper')
+const { assertSensorClass } = require('./ais_utils')
 
 describe('129039 Class B Update', function () {
   it('complete self sentence converts', function () {
@@ -23,10 +24,15 @@ describe('129039 Class B Update', function () {
     tree.navigation.position.value.latitude.should.equal(60.03951)
     tree.should.have.nested.property('navigation.headingTrue')
     tree.should.have.nested.property('navigation.headingTrue.value', 153.0)
+
+    //TODO remove when sensors.ais.class is in schema
+    delete tree.sensors.ais
+
     tree.should.be.validSignalKVesselIgnoringIdentity
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
     assert.equal(delta.context, 'vessels.urn:mrn:imo:mmsi:230035780')
+    assertSensorClass(delta, 'B')
   })
 
   it('complete other sentence converts', function () {
@@ -43,9 +49,14 @@ describe('129039 Class B Update', function () {
     tree.should.have.nested.property('navigation.speedOverGround.value', 2.88)
     tree.navigation.position.value.longitude.should.equal(-76.1882515)
     tree.navigation.position.value.latitude.should.equal(39.1087383)
+
+    //TODO remove when sensors.ais.class is in schema
+    delete tree.sensors.ais
+
     tree.should.be.validSignalKVesselIgnoringIdentity
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:235087238')
+    assertSensorClass(delta, 'B')
   })
 })

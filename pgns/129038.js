@@ -56,6 +56,12 @@ module.exports = [
   },
   {
     context: getMmsiContext
+  },
+  {
+    node: 'sensors.ais.class',
+    value: function (n2k) {
+      return 'A'
+    }
   }
 ]
 

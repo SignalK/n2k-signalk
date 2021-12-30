@@ -1,4 +1,5 @@
 var chai = require('chai')
+const { assertSensorClass } = require('./ais_utils')
 chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
@@ -35,7 +36,7 @@ describe('129793 AIS UTC and Date Report (Base Station)', function () {
     console.log(JSON.stringify(delta, null, 2))
     delta.updates.length.should.equal(1)
     const values = delta.updates[0].values
-    values.length.should.equal(2)
+    values.length.should.equal(3)
     values[0].path.should.equal('navigation.position')
     values[0].value.should.deep.equal({
       longitude: 4.5183933,
@@ -46,5 +47,6 @@ describe('129793 AIS UTC and Date Report (Base Station)', function () {
       mmsi: '2442103'
     })
     delta.context.should.equal('shore.basestations.urn:mrn:imo:mmsi:2442103')
+    assertSensorClass(delta, 'BASE')
   })
 })
