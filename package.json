@@ -39,5 +39,9 @@
     "mocha": "^7.1.0",
     "prettier-standard": "^16.0.0",
     "tv4": "latest"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
   }
 }
