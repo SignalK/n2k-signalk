@@ -1,4 +1,5 @@
 var chai = require('chai')
+const { assertSensorClass } = require('./ais_utils')
 chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
@@ -26,10 +27,15 @@ describe('129038 Class A Update', function () {
     tree.should.have.nested.property('navigation.headingTrue.value', 153.0)
     tree.should.have.nested.property('navigation.state')
     tree.should.have.nested.property('navigation.state.value', 'motoring')
+
+    //TODO remove when sensors.ais.class is in schema
+    delete tree.sensors.ais
+
     tree.should.be.validSignalKVesselIgnoringIdentity
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230982000')
+    assertSensorClass(delta, 'A')
   })
 
   it('special maneuver converts', function () {
