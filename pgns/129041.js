@@ -90,6 +90,12 @@ module.exports = [
     context: function (n2k) {
       return n2k.fields['User ID'] ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] : undefined
     }
+  },
+  {
+    node: 'sensors.ais.class',
+    value: function (n2k) {
+      return 'ATON'
+    }
   }
 ]
 
