@@ -504,5 +504,22 @@
     "testExpectConvertedValues": {
       "generic.temperatures.userDefined129.0.temperature": 15.2
     }
+  },
+  "130312-userDefined-with-space": {
+    "notInSpec": true,
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130312",
+    "description": "Temperature",
+    "fields": {
+      "Instance": "0",
+      "Source": "Source with a space",
+      "Actual Temperature": "15.2"
+    },
+    "testExpectConvertedValues": {
+      "generic.temperatures.userDefinedSource_with_a_space.0.temperature": 15.2
+    }
   }
 }
