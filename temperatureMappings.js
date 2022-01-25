@@ -39,6 +39,11 @@ module.exports = {
     path: 'tanks.baitWell.default.temperature',
     pathWithIndex: 'tanks.baitWell.<index>.temperature'
   },
+  'Refrigeration Temperature': {
+    path: 'environment.inside.refrigerator.temperature'
+  },
+  //leave old misspelled version in place just in case
+  //https://github.com/canboat/canboat/issues/234
   'Refridgeration Temperature': {
     path: 'environment.inside.refrigerator.temperature'
   },
