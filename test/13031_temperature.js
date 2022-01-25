@@ -29,7 +29,7 @@ describe('Temperature: ', function () {
           )
           expectedValueFound.length.should.equal(
             1,
-            `Expected value ${expectedValuePath} not found.`
+            `Expected value ${expectedValuePath} not found in ${JSON.stringify(delta, null, 2)}`
           )
           expectedValueFound[0].value.should.equal(
             testCase['testExpectConvertedValues'][expectedValuePath],
