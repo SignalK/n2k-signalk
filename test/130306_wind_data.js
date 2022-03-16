@@ -80,10 +80,10 @@ describe('130306 Wind Data', function () {
       4.82
     )
     tree.should.have.nested.property(
-      'environment.wind.directionGround.value',
+      'environment.wind.directionTrue.value',
       218.6
     )
-    //tree.should.be.validSignalKVesselIgnoringIdentity
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('Magnetic Ground sentence converts', function () {
