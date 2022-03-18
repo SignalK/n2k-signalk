@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha",
     "create-release": "github-create-release --owner signalk --repository n2k-signalk",
-    "release": "git tag -d v$npm_package_version ; git tag v$npm_package_version && git push --tags && git push && npm run create-release && npm publish",
+    "release": "echo 'use npm version to tag, then npm run create-release and GH action will publish the release'",
     "format": "prettier-standard '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'"
   },
   "keywords": [
