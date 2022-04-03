@@ -50,6 +50,10 @@ module.exports = [
     }
   },
   {
+    node: 'communication.callsignVhf',
+    source: 'Callsign'
+  },
+  {
     node: 'design.beam',
     source: 'Beam'
   },

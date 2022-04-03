@@ -26,6 +26,10 @@ module.exports = [
     source: 'Beam'
   },
   {
+    node: 'communication.callsignVhf',
+    source: 'Callsign'
+  },
+  {
     node: 'sensors.ais.fromBow',
     source: 'Position reference from Bow'
   },
