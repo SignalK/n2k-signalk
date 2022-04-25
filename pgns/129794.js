@@ -20,7 +20,7 @@ module.exports = [
   },
   {
     node: 'navigation.destination.commonName',
-    source: 'Destination'
+    value: n2k => n2k.fields['Destination']
   },
   {
     node: 'design.draft',
