@@ -186,6 +186,14 @@ var toDelta = function (n2k, state, customPgns = {}) {
           result.context = mapping.context(n2k, src_state)
         }
       })
+      if ( result.context ) {
+        //filter out invalid mmsi
+        let last = result.context.lastIndexOf(':')
+        if ( last != -1 && result.context.slice(last+1).length < 9 ) {
+          result.updates = []
+        }
+      }
+
       if (theMappings.length === 1 && theMappings[0].instance) {
         result.updates[0].source.instance = theMappings[0].instance(n2k)
       }
