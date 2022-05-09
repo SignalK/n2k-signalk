@@ -1,3 +1,4 @@
+const padUserID = require('../mmsi-context').padUserID
 
 module.exports = [
   {
@@ -27,13 +28,13 @@ module.exports = [
     filter: n2k => n2k.fields['User ID'],
     value: function (n2k) {
       return {
-        mmsi: n2k.fields['User ID'].toString()
+        mmsi: padUserID(n2k)
       }
     }
   },
   {
     context: function (n2k) {
-      return typeof n2k.fields['User ID'] !== 'undefined' ? 'sar.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] : undefined
+      return typeof n2k.fields['User ID'] !== 'undefined' ? 'sar.urn:mrn:imo:mmsi:' + padUserID(n2k) : undefined
     }
   },
   {

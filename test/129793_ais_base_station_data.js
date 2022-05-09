@@ -33,7 +33,6 @@ describe('129793 AIS UTC and Date Report (Base Station)', function () {
       }
     }
     const delta = mapper.toDelta(msg)
-    console.log(JSON.stringify(delta, null, 2))
     delta.updates.length.should.equal(1)
     const values = delta.updates[0].values
     values.length.should.equal(3)
@@ -44,9 +43,9 @@ describe('129793 AIS UTC and Date Report (Base Station)', function () {
     })
     values[1].path.should.equal('')
     values[1].value.should.deep.equal({
-      mmsi: '2442103'
+      mmsi: '002442103'
     })
-    delta.context.should.equal('shore.basestations.urn:mrn:imo:mmsi:2442103')
+    delta.context.should.equal('shore.basestations.urn:mrn:imo:mmsi:002442103')
     assertSensorClass(delta, 'BASE')
   })
 })

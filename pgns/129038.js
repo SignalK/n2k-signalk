@@ -1,4 +1,4 @@
-const getMmsiContext = require('../mmsi-context')
+const getMmsiContext = require('../mmsi-context').getMmsiContext
 
 module.exports = [
   {
