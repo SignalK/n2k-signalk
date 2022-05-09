@@ -1,4 +1,4 @@
-const getMmsiContext = require('../mmsi-context')
+const getMmsiContext = require('../mmsi-context').getMmsiContext
 const getFromStarboard = require('../aisFromStarboard')
 const schema = require('@signalk/signalk-schema')
 

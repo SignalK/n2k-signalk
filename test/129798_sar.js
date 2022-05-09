@@ -13,7 +13,7 @@ describe('129798 AIS SAR Aircraft Position Report', function () {
     )
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
-    delta.context.should.equal('sar.urn:mrn:imo:mmsi:100046')
+    delta.context.should.equal('sar.urn:mrn:imo:mmsi:000100046')
     assertSensorClass(delta, 'SAR')
     var tree = mapper.toNested(msg)
     tree.navigation.position.value.longitude.should.equal(-75.8338099)

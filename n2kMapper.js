@@ -190,6 +190,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
         //filter out invalid mmsi
         let last = result.context.lastIndexOf(':')
         if ( last != -1 && result.context.slice(last+1).length < 9 ) {
+          console.log('BAD: ' + result.context)
           result.updates = []
         }
       }
