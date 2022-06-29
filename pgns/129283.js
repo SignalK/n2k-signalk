@@ -4,9 +4,7 @@ module.exports = [
   {
     node: function (n2k, state) {
       return (
-        'navigation.course' +
-        state.lastCourseCalculationType +
-        '.crossTrackError'
+        'navigation.course.calcValues.crossTrackError'
       )
     },
     filter: function (n2k, state) {
