@@ -1,16 +1,20 @@
-// need to check what happens when True heading is configured in the AP
+// PGN 65359 Seatalk: Pilot Heading
 module.exports = [
     {
-      node: 'navigation.headingtrue',
+      node: 'navigation.headingTrue',
       filter: function(n2k) {
-        return n2k.fields['Heading True']
+        return (
+          n2k.description === 'Seatalk: Pilot Heading' &&
+          typeof n2k.fields['Heading True'] !== 'undefined'
+        )
       },
       source: 'Heading True'
     },
     {
       node: 'navigation.headingMagnetic',
       filter: function(n2k) {
-        return n2k.fields['Heading Magnetic']
+        return n2k.description === 'Seatalk: Pilot Heading' &&
+        typeof n2k.fields['Heading Magnetic'] !== 'undefined'
       },
       source: 'Heading Magnetic'
     }

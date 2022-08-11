@@ -1,20 +1,35 @@
 
 module.exports =  [
   {
+    // filters for SmartPilot behind Seatalk-STNG-Converter
+    filter: function(n2k) {
+      return (
+        n2k.description === 'Seatalk1: Pilot Mode' &&
+        n2k.fields['Manufacturer Code'] === 'Raymarine' &&
+        typeof n2k.fields['Pilot Mode'] !== 'undefined' &&
+        typeof n2k.fields['Sub Mode'] !== 'undefined'
+      )
+    },
     node: 'steering.autopilot.state',
     value: function(n2k) {
       var mode = Number(n2k.fields['Pilot Mode']);
       var subMode = Number(n2k.fields['Sub Mode']);
-      if ( mode == 0 && subMode == 0 )
+      if ( (mode == 0 || mode == 64 || mode == 68 || mode == 72) && subMode == 0 ) {
         return 'standby';
-      else if ( mode == 70 && subMode == 0 )  // is sub mode 1 True wind & mode 0 apparent wind?
+      }
+      else if ( mode == 70 && ( subMode == 0 || subMode == 4 || subMode == 8 || subMode ==12 ) ) { // submodes: 0=on course,  4=off course pt/stb, 8=wind shift, submode 12 tbd 
         return 'wind';
-      else if ( (mode == 74 || mode == 129) && subMode == 1 ) // not yet validated
+      }
+      else if ( (mode == 74  && subMode == 0 ) {
         return 'route';
-      else if ( mode == 66 && subMode == 0 )
+      }
+      else if ( mode == 66 && ( subMode == 0 || subMode == 4 ) ) { //subMode 4 means offcourse
         return 'auto';
-      else  // mode 68 or 64 are valide
-        return 'standby';
+      }
+      else {
+        console.log('n2k-signalk 126720.js undefined AP state found. n2k data: ' + JSON.stringify(n2k))
+        return;
+      }
     }
-  }
+  },
 ]
