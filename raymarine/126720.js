@@ -1,3 +1,4 @@
+const debug = require('debug')('n2k-signalk-126720')
 
 module.exports =  [
   {
@@ -27,7 +28,7 @@ module.exports =  [
         return 'auto';
       }
       else {
-        console.log('Unknown PGN 126720 AP state found.')
+        debug('Unknown PGN 126720 AP state found - Mode: ' + mode + ', SubMode: ' + subMode)
         return;
       }
     }
