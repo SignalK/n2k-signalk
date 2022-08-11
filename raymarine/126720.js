@@ -27,7 +27,7 @@ module.exports =  [
         return 'auto';
       }
       else {
-        console.log('n2k-signalk 126720.js undefined AP state found. n2k data: ' + JSON.stringify(n2k))
+        console.log('Unknown PGN 126720 AP state found.')
         return;
       }
     }
