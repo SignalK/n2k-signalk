@@ -21,7 +21,7 @@ module.exports =  [
       else if ( mode == 70 && ( subMode == 0 || subMode == 4 || subMode == 8 || subMode ==12 ) ) { // submodes: 0=on course,  4=off course pt/stb, 8=wind shift, submode 12 tbd 
         return 'wind';
       }
-      else if ( (mode == 74  && subMode == 0 ) {
+      else if (mode == 74  && subMode == 0 ) {
         return 'route';
       }
       else if ( mode == 66 && ( subMode == 0 || subMode == 4 ) ) { //subMode 4 means offcourse
