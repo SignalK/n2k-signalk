@@ -80,7 +80,8 @@ describe('129038 Class A Update', function () {
       "description": "AIS Class A Position Report",
       "timestamp": "2022-05-09T13:38:38.917Z"
     }
-    mapper.toDelta(msg, {}).updates.length.should.equal(0)
+    const deltaType = typeof mapper.toDelta(msg, {})
+    deltaType.should.equal('undefined')
   })
 })
 
