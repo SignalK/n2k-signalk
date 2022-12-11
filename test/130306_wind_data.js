@@ -98,4 +98,21 @@ describe('130306 Wind Data', function () {
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+
+  it('Cetrek sentence converts', function () {
+    var tree = require('./testMapper').toNested(
+      JSON.parse(
+        '{"prio":5,"src":75,"dst":255,"pgn":130306,"timestamp":"2022-12-10T15:58:34.529Z","fields":{"Wind Speed":1.54,"Wind Angle":2.3545},"description":"Wind Data"}'
+      )
+    )
+    tree.should.have.nested.property(
+      'environment.wind.speedApparent.value',
+      1.54
+    )
+    tree.should.have.nested.property(
+      'environment.wind.angleApparent.value',
+      2.3545
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
+  })
 })
