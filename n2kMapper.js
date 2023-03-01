@@ -274,23 +274,26 @@ var toValuesArray = function (theMappings, n2k, state) {
               typeof theMapping.node === 'function'
                 ? theMapping.node(n2k, state)
                 : theMapping.node
-            var value =
-              typeof theMapping.source === 'function'
-                ? theMapping.source(n2k, state)
-                : getValue(n2k, theMapping, state)
-            var allowNull =
-              typeof theMapping.allowNull !== 'undefined' &&
-              theMapping.allowNull
-            if (!(value == null) || allowNull) {
-              // null or undefined
-              updates.push({
-                path: path,
-                value: value
-              })
+            if ( path !== null ) {
+              var value =
+                  typeof theMapping.source === 'function'
+                  ? theMapping.source(n2k, state)
+                  : getValue(n2k, theMapping, state)
+              var allowNull =
+                  typeof theMapping.allowNull !== 'undefined' &&
+                  theMapping.allowNull
+              if (!(value == null) || allowNull) {
+                // null or undefined
+                updates.push({
+                  path: path,
+                  value: value
+                })
+              }
             }
           }
         } catch (ex) {
-          process.stderr.write(ex + ' ' + JSON.stringify(n2k))
+          process.stderr.write(JSON.stringify(n2k))
+          console.error(ex)
         }
         return updates
       }, [])
