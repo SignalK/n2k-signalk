@@ -7,7 +7,7 @@ describe('130306 Wind Data', function () {
   it('Apparent sentence converts positive', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"0.872665","Reference":"Apparent"}}'
+        '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":6.22,"Wind Angle":0.8727,"Reference":"Apparent"}}'
       )
     )
     tree.should.have.nested.property(
@@ -16,7 +16,7 @@ describe('130306 Wind Data', function () {
     )
     tree.should.have.nested.property(
       'environment.wind.angleApparent.value',
-      0.872665
+      0.8727
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
@@ -24,7 +24,7 @@ describe('130306 Wind Data', function () {
   it('Apparent sentence converts positive gt 180', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"3.31613","Reference":"Apparent"}}'
+        '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":6.22,"Wind Angle":3.3,"Reference":"Apparent"}}'
       )
     )
     tree.should.have.nested.property(
@@ -33,7 +33,7 @@ describe('130306 Wind Data', function () {
     )
     tree.should.have.nested.property(
       'environment.wind.angleApparent.value',
-      -2.9670553071795864
+      -2.9831853071795864
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
@@ -41,7 +41,7 @@ describe('130306 Wind Data', function () {
   it('Apparent sentence converts negative', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":"6.22","Wind Angle":"-0.872665","Reference":"Apparent"}}'
+        '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"67","Wind Speed":6.22,"Wind Angle":4.8726,"Reference":"Apparent"}}'
       )
     )
     tree.should.have.nested.property(
@@ -50,7 +50,7 @@ describe('130306 Wind Data', function () {
     )
     tree.should.have.nested.property(
       'environment.wind.angleApparent.value',
-      -0.872665
+      -1.410585307179586
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
@@ -58,13 +58,13 @@ describe('130306 Wind Data', function () {
   it('True Boat sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"68","Wind Speed":"4.89","Wind Angle":"86.0","Reference":"True (boat referenced)"}}'
+        '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"1","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"68","Wind Speed":4.89,"Wind Angle":0.9948,"Reference":"True (boat referenced)"}}'
       )
     )
     tree.should.have.nested.property('environment.wind.speedTrue.value', 4.89)
     tree.should.have.nested.property(
       'environment.wind.angleTrueWater.value',
-      86
+      0.9948
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
@@ -72,7 +72,7 @@ describe('130306 Wind Data', function () {
   it('True Ground sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"3","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"94","Wind Speed":"4.82","Wind Angle":"218.6","Reference":"True (ground referenced to North)"}}'
+        '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"3","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"94","Wind Speed":4.82,"Wind Angle":0.9948,"Reference":"True (ground referenced to North)"}}'
       )
     )
     tree.should.have.nested.property(
@@ -81,7 +81,7 @@ describe('130306 Wind Data', function () {
     )
     tree.should.have.nested.property(
       'environment.wind.directionTrue.value',
-      218.6
+      0.9948
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
@@ -89,12 +89,12 @@ describe('130306 Wind Data', function () {
   it('Magnetic Ground sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"3","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"94","Wind Speed":"4.82","Wind Angle":"218.6","Reference":"Magnetic (ground referenced to Magnetic North)"}}'
+        '{"timestamp":"2013-10-08-15:47:28.264Z","prio":"2","src":"3","dst":"255","pgn":"130306","description":"Wind Data","fields":{"SID":"94","Wind Speed":4.82,"Wind Angle":0.9948,"Reference":"Magnetic (ground referenced to Magnetic North)"}}'
       )
     )
     tree.should.have.nested.property(
       'environment.wind.directionMagnetic.value',
-      218.6
+      0.9948
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })

@@ -82,7 +82,7 @@ describe('Maretron AC PGNs work', function () {
   it('65030 Generator Average Basic AC Quantities', function () {
     var tree = toNested(
       JSON.parse(
-        '{"canId":217974465,"prio":3,"src":193,"dst":255,"pgn":65030,"direction":"R","time":"18:58:11.835","fields":{"Line-Line AC RMS Voltage":1,"Line-Neutral AC RMS Voltage":1,"AC Frequency":60.0078125,"AC RMS Current":0},"description":"Generator Average Basic AC Quantities","timestamp":"2020-03-28T18:58:12.477Z"}'
+        '{"canId":217974465,"prio":3,"src":193,"dst":255,"pgn":65030,"direction":"R","time":"18:58:11.835","fields":{"Line-Line AC RMS Voltage":1,"Line-Neutral AC RMS Voltage":1,"AC Frequency":60.008,"AC RMS Current":0},"description":"Generator Average Basic AC Quantities","timestamp":"2020-03-28T18:58:12.477Z"}'
       ),
       n2kMapper.state
     )
@@ -96,7 +96,7 @@ describe('Maretron AC PGNs work', function () {
     )
     tree.should.have.nested.property(
       'electrical.generators.16.average.frequency.value',
-      60.0078125
+      60.008
     )
     tree.should.have.nested.property(
       'electrical.generators.16.average.current.value',
