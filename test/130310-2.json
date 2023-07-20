@@ -498,7 +498,7 @@
     "fields": {
       "Instance": "0",
       "Source": "Exhaust Gas Temperature",
-      "Actual Temperature": "300"
+      "Temperature": "300"
     },
     "testExpectConvertedValues": {
       "propulsion.exhaust.temperature": 300
