@@ -13,18 +13,18 @@ module.exports =  [
     },
     node: 'steering.autopilot.state',
     value: function(n2k) {
-      var mode = Number(n2k.fields['Pilot Mode']);
+      var mode = n2k.fields['Pilot Mode'];
       var subMode = Number(n2k.fields['Sub Mode']);
-      if ( (mode == 0 || mode == 64 || mode == 68 || mode == 72) && subMode == 0 ) {
+      if ( (mode == 0 || mode == 'Standby' || mode == 68 || mode == 72) && subMode == 0 ) {
         return 'standby';
       }
-      else if ( mode == 70 && ( subMode == 0 || subMode == 4 || subMode == 8 || subMode ==12 ) ) { // submodes: 0=on course,  4=off course pt/stb, 8=wind shift, submode 12 tbd 
+      else if ( mode == 'Wind' && ( subMode == 0 || subMode == 4 || subMode == 8 || subMode ==12 ) ) { // submodes: 0=on course,  4=off course pt/stb, 8=wind shift, submode 12 tbd 
         return 'wind';
       }
-      else if (mode == 74  && subMode == 0 ) {
+      else if (mode == 'Track'  && subMode == 0 ) {
         return 'route';
       }
-      else if ( mode == 66 && ( subMode == 0 || subMode == 4 ) ) { //subMode 4 means offcourse
+      else if ( mode == 'Auto' && ( subMode == 0 || subMode == 4 ) ) { //subMode 4 means offcourse
         return 'auto';
       }
       else {

@@ -9,7 +9,7 @@ describe('Meta data works', function () {
   it('Address Claim', (done) => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('uniqueId', '76223')
+      meta.should.have.property('uniqueId', 76223)
       meta.should.have.property('manufacturerName', 'Fusion Electronics')
       meta.should.have.property('deviceFunction', 130)
       meta.should.have.property('deviceClass', 'Entertainment')
@@ -20,7 +20,7 @@ describe('Meta data works', function () {
       meta.should.have.property('deviceInstance', 0)
       done()
     })
-    n2kMapper.toDelta({"prio":6,"pgn":60928,"dst":255,"src":12,"timestamp":"2019-05-31T11:46:58.594Z","fields":{"Unique Number":"76223","Manufacturer Code":"Fusion Electronics","Device Instance Lower":0,"Device Instance Upper":0,"Device Function":130,"Reserved1":"0","Device Class":"Entertainment","System Instance":0,"Industry Group":"Marine","Reserved2":"1"},"description":"ISO Address Claim"})
+    n2kMapper.toDelta({"prio":6,"pgn":60928,"dst":255,"src":12,"timestamp":"2019-05-31T11:46:58.594Z","fields":{"Unique Number":76223,"Manufacturer Code":"Fusion Electronics","Device Instance Lower":0,"Device Instance Upper":0,"Device Function":130, "Spare": 0,"Device Class":"Entertainment","System Instance":0,"Industry Group":"Marine","Arbitrary address capable":1},"description":"ISO Address Claim"})
   })
 
   it('Configuration Information', (done) => {

@@ -34,12 +34,12 @@ var value = {
   "dataSourceInstance": 0,
   "dataSourceIndex-Source": 0,
   "occurrence": 1,
-  "temporarySilenceStatus": "Not Temporary Silence",
-  "acknowledgeStatus": "Not Acknowledged",
-  "escalationStatus": "Not Escalated",
-  "temporarySilenceSupport": "Supported",
-  "acknowledgeSupport": "Supported",
-  "escalationSupport": "Not Supported",
+  "temporarySilenceStatus": "No",
+  "acknowledgeStatus": "No",
+  "escalationStatus": "No",
+  "temporarySilenceSupport": "Yes",
+  "acknowledgeSupport": "Yes",
+  "escalationSupport": "No",
   "acknowledgeSourceNetworkIDNAME": 1233993542451364400,
   "triggerCondition": "Auto",
   "thresholdStatus": "Threshold Exceeded",
@@ -50,7 +50,7 @@ var value = {
 describe('126983 Alert', function() {
   it('alert without silence or ackknowledgement', function() {
     var msg = JSON.parse(
-      '{"canId":166725416,"prio":2,"src":40,"dst":255,"pgn":126983,"direction":"R","time":"15:48:36.090","fields":{"Alert Type":"Warning","Alert Category":"Navigational","Alert System":20,"Alert ID":23480,"Data Source Network ID NAME":6458553273545042000,"Data Source Instance":0,"Data Source Index-Source":0,"Alert Occurrence Number":1,"Temporary Silence Status":"Not Temporary Silence","Acknowledge Status":"Not Acknowledged","Escalation Status":"Not Escalated","Temporary Silence Support":"Supported","Acknowledge Support":"Supported","Escalation Support":"Not Supported","Acknowledge Source Network ID NAME":1233993542451364400,"Trigger Condition":"Auto","Threshold Status":"Threshold Exceeded","Alert Priority":187,"Alert State":"Active"},"description":"Alert","timestamp":"2020-03-03T15:48:36.494Z"}'
+      '{"canId":166725416,"prio":2,"src":40,"dst":255,"pgn":126983,"direction":"R","time":"15:48:36.090","fields":{"Alert Type":"Warning","Alert Category":"Navigational","Alert System":20,"Alert ID":23480,"Data Source Network ID NAME":6458553273545042000,"Data Source Instance":0,"Data Source Index-Source":0,"Alert Occurrence Number":1,"Temporary Silence Status":"Not Temporary Silence","Acknowledge Status":"Not Acknowledged","Escalation Status":"Not Escalated","Temporary Silence Support":"Yes","Acknowledge Support":"Yes","Escalation Support":"Not Supported","Acknowledge Source Network ID NAME":1233993542451364400,"Trigger Condition":"Auto","Threshold Status":"Threshold Exceeded","Alert Priority":187,"Alert State":"Active"},"description":"Alert","timestamp":"2020-03-03T15:48:36.494Z"}'
     )
     var tree = mapper.toNested(msg, state)
     tree.should.have.nested.property('notifications.nmea.warning.navigational.20.23480.value')
@@ -64,10 +64,10 @@ describe('126983 Alert', function() {
   it('alert with temporary silence', function() {
     //method should be empty for this test
     value.method = []
-    value.temporarySilenceStatus = 'Temporary Silence'
+    value.temporarySilenceStatus = 'Yes'
 
     var msg = JSON.parse(
-      '{"canId":166725416,"prio":2,"src":40,"dst":255,"pgn":126983,"direction":"R","time":"15:48:36.090","fields":{"Alert Type":"Warning","Alert Category":"Navigational","Alert System":20,"Alert ID":23480,"Data Source Network ID NAME":6458553273545042000,"Data Source Instance":0,"Data Source Index-Source":0,"Alert Occurrence Number":1,"Temporary Silence Status":"Temporary Silence","Acknowledge Status":"Not Acknowledged","Escalation Status":"Not Escalated","Temporary Silence Support":"Supported","Acknowledge Support":"Supported","Escalation Support":"Not Supported","Acknowledge Source Network ID NAME":1233993542451364400,"Trigger Condition":"Auto","Threshold Status":"Threshold Exceeded","Alert Priority":187,"Alert State":"Active"},"description":"Alert","timestamp":"2020-03-03T15:48:36.494Z"}'
+      '{"canId":166725416,"prio":2,"src":40,"dst":255,"pgn":126983,"direction":"R","time":"15:48:36.090","fields":{"Alert Type":"Warning","Alert Category":"Navigational","Alert System":20,"Alert ID":23480,"Data Source Network ID NAME":6458553273545042000,"Data Source Instance":0,"Data Source Index-Source":0,"Alert Occurrence Number":1,"Temporary Silence Status":"Yes","Acknowledge Status":"Not Acknowledged","Escalation Status":"Not Escalated","Temporary Silence Support":"Yes","Acknowledge Support":"Yes","Escalation Support":"Not Supported","Acknowledge Source Network ID NAME":1233993542451364400,"Trigger Condition":"Auto","Threshold Status":"Threshold Exceeded","Alert Priority":187,"Alert State":"Active"},"description":"Alert","timestamp":"2020-03-03T15:48:36.494Z"}'
     )
     var tree = mapper.toNested(msg, state)
     tree.should.have.nested.property('notifications.nmea.warning.navigational.20.23480.value')
@@ -79,11 +79,11 @@ describe('126983 Alert', function() {
   })
 
   it('alert with acknowledgement', function() {
-    value.temporarySilenceStatus = 'Not Temporary Silence'
-    value.acknowledgeStatus = 'Acknowledged'
+    value.temporarySilenceStatus = 'No'
+    value.acknowledgeStatus = 'Yes'
 
     var msg = JSON.parse(
-      '{"canId":166725416,"prio":2,"src":40,"dst":255,"pgn":126983,"direction":"R","time":"15:48:36.090","fields":{"Alert Type":"Warning","Alert Category":"Navigational","Alert System":20,"Alert ID":23480,"Data Source Network ID NAME":6458553273545042000,"Data Source Instance":0,"Data Source Index-Source":0,"Alert Occurrence Number":1,"Temporary Silence Status":"Not Temporary Silence","Acknowledge Status":"Acknowledged","Escalation Status":"Not Escalated","Temporary Silence Support":"Supported","Acknowledge Support":"Supported","Escalation Support":"Not Supported","Acknowledge Source Network ID NAME":1233993542451364400,"Trigger Condition":"Auto","Threshold Status":"Threshold Exceeded","Alert Priority":187,"Alert State":"Active"},"description":"Alert","timestamp":"2020-03-03T15:48:36.494Z"}'
+      '{"canId":166725416,"prio":2,"src":40,"dst":255,"pgn":126983,"direction":"R","time":"15:48:36.090","fields":{"Alert Type":"Warning","Alert Category":"Navigational","Alert System":20,"Alert ID":23480,"Data Source Network ID NAME":6458553273545042000,"Data Source Instance":0,"Data Source Index-Source":0,"Alert Occurrence Number":1,"Temporary Silence Status":"No","Acknowledge Status":"Yes","Escalation Status":"Not Escalated","Temporary Silence Support":"Yes","Acknowledge Support":"Yes","Escalation Support":"Not Supported","Acknowledge Source Network ID NAME":1233993542451364400,"Trigger Condition":"Auto","Threshold Status":"Threshold Exceeded","Alert Priority":187,"Alert State":"Active"},"description":"Alert","timestamp":"2020-03-03T15:48:36.494Z"}'
     )
     var tree = mapper.toNested(msg, state)
     tree.should.have.nested.property('notifications.nmea.warning.navigational.20.23480.value')

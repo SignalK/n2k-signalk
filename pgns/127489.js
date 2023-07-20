@@ -1,5 +1,5 @@
 const util = require('util')
-const { chooseField, skEngineId, skEngineTitle } = require('../utils.js')
+const { chooseField, skEngineId, skEngineTitle, timeToSeconds } = require('../utils.js')
 
 module.exports = [
   {
@@ -33,9 +33,11 @@ module.exports = [
     }
   },
   {
-    source: 'Total Engine hours',
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.runTime'
+    },
+    value: function(n2k) {
+      return timeToSeconds(n2k.fields['Total Engine hours'])
     }
   },
   {
@@ -58,7 +60,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.engineLoad'
     },
     value: function (n2k) {
-      var percent = Number(n2k.fields['Percent Engine Load'])
+      var percent = Number(n2k.fields['Engine Load'])
       return isNaN(percent) ? null : percent / 100.0
     }
   },
@@ -67,7 +69,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.engineTorque'
     },
     value: function (n2k) {
-      var percent = Number(n2k.fields['Percent Engine Torque'])
+      var percent = Number(n2k.fields['Engine Torque'])
       return isNaN(percent) ? null : percent / 100.0
     }
   },

@@ -16,9 +16,9 @@ describe('127750 converter status', function () {
           'Connection Number': 1,
           'Operating State': 'Absorption',
           'Temperature State': 'Warning',
-          'Overload State': 'Overload',
-          'Low DC Voltage State': 'DC voltage too low',
-          'Ripple State': 'Ripple Too High'
+          'Overload State': 'Error',
+          'Low DC Voltage State': 'Error',
+          'Ripple State': 'Error'
         }
       }
     )
@@ -32,15 +32,15 @@ describe('127750 converter status', function () {
     )
     tree.should.have.nested.property(
       'electrical.converter.10.1.overloadState.value',
-      'overload'
+      'error'
     )
     tree.should.have.nested.property(
       'electrical.converter.10.1.lowDCVoltageState.value',
-      'dc voltage too low'
+      'error'
     )
     tree.should.have.nested.property(
       'electrical.converter.10.1.rippleState.value',
-      'ripple too high'
+      'error'
     )
   })
 

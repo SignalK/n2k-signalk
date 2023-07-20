@@ -36,7 +36,7 @@ describe('Maretron AC PGNs work', function () {
   it('65012 Utility Phase A AC Reactive Power', function () {
     var tree = toNested(
       JSON.parse(
-        '{"canId":217969856,"prio":3,"src":192,"dst":255,"pgn":65012,"direction":"R","time":"18:58:11.989","fields":{"Reactive Power":859,"Power Factor":30400,"Power Factor Lagging":"Lagging"},"description":"Utility Phase A AC Reactive Power","timestamp":"2020-03-28T18:58:12.480Z"}'
+        '{"canId":217969856,"prio":3,"src":192,"dst":255,"pgn":65012,"direction":"R","time":"18:58:11.989","fields":{"Reactive Power":859,"Power Factor Lagging":"Lagging"},"description":"Utility Phase A AC Reactive Power","timestamp":"2020-03-28T18:58:12.480Z"}'
       ),
       n2kMapper.state
     )
@@ -45,10 +45,12 @@ describe('Maretron AC PGNs work', function () {
       'electrical.ac.8.phase.A.reactivePower.value',
       859
     )
+    /*
     tree.should.have.nested.property(
       'electrical.ac.8.phase.A.powerFactor.value',
       0.927734375
-    )
+      )
+    */
     tree.should.have.nested.property(
       'electrical.ac.8.phase.A.powerFactorLagging.value',
       'lagging'

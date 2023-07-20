@@ -9,7 +9,7 @@ function generatePGNs (json) {
 describe('127506 dc detailed status', function () {
   it('complete sentence converts', function () {
     generatePGNs(
-      '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"DC Instance":1,"State of Charge":60,"State of Health":99,"Time Remaining": 600, "Ripple Voltage": 10.9, "SID":0}}'
+      '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"DC Instance":1,"State of Charge":60,"State of Health":99,"Time Remaining": "00:30:00", "Ripple Voltage": 10.9, "SID":0}}'
     ).forEach(pgn => {
       var tree = require('./testMapper').toNested(JSON.parse(pgn))
       tree.should.have.nested.property(
@@ -22,7 +22,7 @@ describe('127506 dc detailed status', function () {
       )
       tree.should.have.nested.property(
         'electrical.batteries.1.capacity.timeRemaining.value',
-        36000
+        1800
       )
       // tree.should.have.nested.property('electrical.batteries.1.voltage.ripple.value', 10.9);
       tree.should.be.validSignalKVesselIgnoringIdentity
