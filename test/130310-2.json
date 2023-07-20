@@ -501,7 +501,7 @@
       "Actual Temperature": "300"
     },
     "testExpectConvertedValues": {
-      "propulsion.exhaust.temperature": 300
+      "propulsion.0.exhaustTemperature": 300
     }
   },
   "130312-userDefined129": {

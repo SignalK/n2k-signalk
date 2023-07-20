@@ -66,7 +66,7 @@ module.exports = {
     path: 'environment.inside.freezer.temperature'
   },
   'Exhaust Gas Temperature': {
-    path: 'propulsion.exhaustTemperature',
+    path: 'propulsion.0.exhaustTemperature',
     pathWithIndex: 'propulsion.<index>.exhaustTemperature'
   }
 }
