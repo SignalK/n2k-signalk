@@ -56,6 +56,11 @@ describe('Temperature: ', function () {
       'urn:mrn:imo:mmsi:230099999'
     )
     _.forOwn(temperatureMappings, function (mapping, key) {
+
+      let path = mapping.pathWithIndex ?
+          mapping.pathWithIndex.replace('<index>','0')
+          : mapping.path
+      
       var delta = {
         context: 'vessels.urn:mrn:imo:mmsi:230099999',
         updates: [
@@ -70,7 +75,7 @@ describe('Temperature: ', function () {
             timestamp: '2016-10-18T15:52:48.152Z',
             values: [
               {
-                path: mapping.path,
+                path,
                 value: 0
               }
             ]
