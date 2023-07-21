@@ -10,7 +10,7 @@ describe('127505 fuel', function () {
         '{"timestamp":"2015-01-15-16:15:30.984Z","prio":"6","src":"17","dst":"255","pgn":"127505","description":"Fluid Level","fields":{"Instance":"0","Type":"Fuel","Level":99}}'
       )
     )
-    tree.should.have.nested.property('tanks.fuel.0.currentLevel.value', .99)
+    tree.should.have.nested.property('tanks.fuel.0.currentLevel.value', 0.99)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
   it('level and capacity', function () {
