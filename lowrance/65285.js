@@ -6,8 +6,13 @@ module.exports = [
     node: function (n2k) {
       var temperatureMapping =
         temperatureMappings[n2k.fields['Temperature Source']]
-      if (temperatureMapping && temperatureMapping.path) {
-        return temperatureMapping.path
+
+      if (temperatureMappings) {
+        if (temperatureMapping.pathWithIndex) {
+          return temperatureMapping.pathWithIndex.replace('<index>', 'default')
+        } else if (temperatureMapping.path) {
+          return temperatureMapping.path
+        }
       }
     },
     instance: function (n2k) {

@@ -4,7 +4,7 @@ function instance (n2k) {
   return n2k.fields['Instance']
 }
 
-function prefix(n2k) {
+function prefix (n2k) {
   return `electrical.ac.${instance(n2k)}.${acPhase(n2k)}`
 }
 
@@ -62,5 +62,5 @@ module.exports = [
     node: function (n2k) {
       return `${prefix(n2k)}.powerFactor`
     }
-  },
+  }
 ]

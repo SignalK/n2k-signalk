@@ -36,7 +36,9 @@ module.exports = [
   },
   {
     node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.trip.fuelRate.instantaneousEconomy'
+      return (
+        'propulsion.' + skEngineId(n2k) + '.trip.fuelRate.instantaneousEconomy'
+      )
     },
     value: function (n2k) {
       return n2k.fields['Instantaneous Fuel Economy'] / 1000
@@ -44,5 +46,5 @@ module.exports = [
     filter: function (n2k) {
       return typeof n2k.fields['Instantaneous Fuel Economy'] !== 'undefined'
     }
-  },
+  }
 ]

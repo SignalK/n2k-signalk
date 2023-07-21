@@ -1,5 +1,10 @@
 const util = require('util')
-const { chooseField, skEngineId, skEngineTitle, timeToSeconds } = require('../utils.js')
+const {
+  chooseField,
+  skEngineId,
+  skEngineTitle,
+  timeToSeconds
+} = require('../utils.js')
 
 module.exports = [
   {
@@ -36,7 +41,7 @@ module.exports = [
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.runTime'
     },
-    value: function(n2k) {
+    value: function (n2k) {
       return timeToSeconds(n2k.fields['Total Engine hours'])
     }
   },

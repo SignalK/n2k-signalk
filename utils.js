@@ -25,31 +25,29 @@ function skEngineTitle (n2k) {
   }
 }
 
-function acPhase(n2k) {
+function acPhase (n2k) {
   const line = n2k.fields['Line']
-  if ( !line ) {
+  if (!line) {
     return 'A'
   } else {
-    switch ( line ) {
-    case 'Line 1':
-      return 'A'
-    case 'Line 2':
-      return 'B'
-    case 'Line 3':
-      return 'C'
-    default:
-      return 'A'
+    switch (line) {
+      case 'Line 1':
+        return 'A'
+      case 'Line 2':
+        return 'B'
+      case 'Line 3':
+        return 'C'
+      default:
+        return 'A'
     }
   }
 }
 
-function timeToSeconds(time) {
+function timeToSeconds (time) {
   if (typeof time !== 'undefined') {
     let split = time.split(':')
-    if ( split.length === 3 ) {
-      return Number(split[0]) * 3600
-        + Number(split[1]) * 60
-        + Number(split[2])
+    if (split.length === 3) {
+      return Number(split[0]) * 3600 + Number(split[1]) * 60 + Number(split[2])
     }
   }
   return null

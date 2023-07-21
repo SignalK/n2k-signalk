@@ -6,7 +6,8 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 describe('127508 battery voltage', function () {
   it('complete sentence converts', function () {
     const pgns = [
-      '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127508,"description":"Battery Status","fields":{"Instance":1,"Voltage":13.11,"Current":5.6,"Temperature": 299, "SID":0}}']
+      '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127508,"description":"Battery Status","fields":{"Instance":1,"Voltage":13.11,"Current":5.6,"Temperature": 299, "SID":0}}'
+    ]
     pgns.forEach(pgn => {
       var tree = require('./testMapper').toNested(JSON.parse(pgn))
       tree.should.have.nested.property(

@@ -6,7 +6,6 @@ const { FromPgn, pgnToActisenseSerialFormat } = canboatjs
 const Parser = canboatjs.FromPgn
 const parser = new FromPgn()
 
-
 /*
   By default we take the input canboat json and convert to actisense format,
   back to conboat json and then do the n2k conversion.
@@ -15,19 +14,19 @@ const parser = new FromPgn()
   Set the env variable NO_CANBOATJS=true to skip the back and forth conversion.
 */
 
-n2kMapper.toNested = function(n2k, state) {
-  if ( !process.env.NO_CANBOATJS ) {
+n2kMapper.toNested = function (n2k, state) {
+  if (!process.env.NO_CANBOATJS) {
     return n2kMapper.doubleConvertWithCanboat(n2k, state)
   } else {
     return n2kMapper.n2kToNested(n2k, state)
   }
 }
-  
+
 n2kMapper.doubleConvertWithCanboat = function (n2k, state) {
   var actisense = pgnToActisenseSerialFormat(n2k)
   var parsed = parser.parseString(actisense)
   parsed.src = n2k.src
-  if ( n2k.timestamp ) {
+  if (n2k.timestamp) {
     parsed.timestamp = n2k.timestamp
   }
   var delta = n2kMapper.toDelta(parsed, state)
@@ -38,7 +37,7 @@ n2kMapper.doubleConvertWithCanboat = function (n2k, state) {
   return signalkSchema.deltaToFull(delta)[contextParts[0]][contextParts[1]]
 }
 
-n2kMapper.n2kToNested = function(n2k, state) {
+n2kMapper.n2kToNested = function (n2k, state) {
   var delta = n2kMapper.toDelta(n2k, state)
   if (!delta.context) {
     delta.context = 'vessels.' + signalkSchema.fakeMmsiId

@@ -17,7 +17,7 @@ module.exports = [
     node: 'navigation.destination.commonName'
   },
   {
-    filter: (n2k) => n2k.fields.Longitude && n2k.fields.Latitude,
+    filter: n2k => n2k.fields.Longitude && n2k.fields.Latitude,
     value: function (n2k) {
       return {
         longitude: Number(n2k.fields.Longitude),
