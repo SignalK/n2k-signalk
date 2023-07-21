@@ -3,7 +3,10 @@ module.exports = [
     source: 'Wind Speed',
     node: 'environment.wind.speedApparent',
     filter: function (n2k) {
-      return n2k.fields['Reference'] === 'Apparent' || n2k.fields['Reference'] === undefined
+      return (
+        n2k.fields['Reference'] === 'Apparent' ||
+        n2k.fields['Reference'] === undefined
+      )
     }
   },
   {
@@ -23,7 +26,10 @@ module.exports = [
   {
     node: 'environment.wind.angleApparent',
     filter: function (n2k) {
-      return n2k.fields['Reference'] === 'Apparent' || n2k.fields['Reference'] === undefined
+      return (
+        n2k.fields['Reference'] === 'Apparent' ||
+        n2k.fields['Reference'] === undefined
+      )
     },
     value: function (n2k) {
       var angle = Number(n2k.fields['Wind Angle'])

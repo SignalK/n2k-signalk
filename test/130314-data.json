@@ -19,10 +19,10 @@
     "pgn": "130314",
     "description": "Actual Pressure",
     "fields": {
-      "SID":0,
-      "Instance":0,
-      "Source":"Atmospheric",
-      "Pressure":100578
+      "SID": 0,
+      "Instance": 0,
+      "Source": "Atmospheric",
+      "Pressure": 100578
     },
     "testExpectConvertedValues": {
       "environment.outside.pressure": 100578
@@ -36,10 +36,10 @@
     "pgn": "130314",
     "description": "Actual Pressure",
     "fields": {
-      "SID":0,
-      "Instance":2,
-      "Source":"Water",
-      "Pressure":180911.6
+      "SID": 0,
+      "Instance": 2,
+      "Source": "Water",
+      "Pressure": 180911.6
     },
     "testExpectConvertedValues": {
       "water.2.pressure": 180911.6
@@ -53,10 +53,10 @@
     "pgn": "130314",
     "description": "Actual Pressure",
     "fields": {
-      "SID":0,
-      "Instance":2,
-      "Source":"Steam",
-      "Pressure":180911.6
+      "SID": 0,
+      "Instance": 2,
+      "Source": "Steam",
+      "Pressure": 180911.6
     },
     "testExpectConvertedValues": {
       "steam.2.pressure": 180911.6
@@ -70,10 +70,10 @@
     "pgn": "130314",
     "description": "Actual Pressure",
     "fields": {
-      "SID":0,
-      "Instance":2,
-      "Source":"Compressed Air",
-      "Pressure":180911.6
+      "SID": 0,
+      "Instance": 2,
+      "Source": "Compressed Air",
+      "Pressure": 180911.6
     },
     "testExpectConvertedValues": {
       "compressedAir.2.pressure": 180911.6
@@ -87,10 +87,10 @@
     "pgn": "130314",
     "description": "Actual Pressure",
     "fields": {
-      "SID":0,
-      "Instance":2,
-      "Source":"Hydraulic",
-      "Pressure":180911.6
+      "SID": 0,
+      "Instance": 2,
+      "Source": "Hydraulic",
+      "Pressure": 180911.6
     },
     "testExpectConvertedValues": {
       "hydraulic.2.pressure": 180911.6

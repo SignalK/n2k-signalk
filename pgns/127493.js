@@ -63,15 +63,15 @@ function generateMappingsForStatus (field, notifications) {
         return typeof n2k.fields[field] !== 'undefined'
       },
       value: function (n2k, state) {
-        const val  = n2k.fields[field]
+        const val = n2k.fields[field]
         let on = false
 
-        if ( typeof val === 'number' ) {
-          on = val & (1<<index)
+        if (typeof val === 'number') {
+          on = val & (1 << index)
         } else {
           on = n2k.fields[field].indexOf(notif.analyzerText) != -1
         }
-        
+
         if (on) {
           return {
             state: 'alarm',

@@ -16,7 +16,9 @@ module.exports = [
           return temperatureMapping.path
         }
       } else {
-        return `generic.temperatures.userDefined${n2k.fields['Source'].toString().replace(/\ /g, '_')}.${n2k.fields['Instance']}.temperature`
+        return `generic.temperatures.userDefined${n2k.fields['Source']
+          .toString()
+          .replace(/\ /g, '_')}.${n2k.fields['Instance']}.temperature`
       }
     },
     instance: function (n2k) {

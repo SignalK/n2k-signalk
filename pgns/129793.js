@@ -29,7 +29,9 @@ module.exports = [
   },
   {
     context: function (n2k) {
-      return typeof n2k.fields['User ID'] !== 'undefined' ? 'shore.basestations.urn:mrn:imo:mmsi:' + padUserID(n2k) : undefined
+      return typeof n2k.fields['User ID'] !== 'undefined'
+        ? 'shore.basestations.urn:mrn:imo:mmsi:' + padUserID(n2k)
+        : undefined
     }
   },
   {

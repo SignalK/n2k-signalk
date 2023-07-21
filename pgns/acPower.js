@@ -1,7 +1,5 @@
-
-module.exports = (phase) => {
-  
-  function prefix(n2k) {
+module.exports = phase => {
+  function prefix (n2k) {
     return `electrical.ac.${n2k.src}.${n2k.fields['Connection Number']}.${phase}`
   }
 

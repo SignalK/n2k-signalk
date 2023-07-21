@@ -1,5 +1,4 @@
-
-function prefix(n2k) {
+function prefix (n2k) {
   return `electrical.converter.${n2k.src}.${n2k.fields['Connection Number']}`
 }
 

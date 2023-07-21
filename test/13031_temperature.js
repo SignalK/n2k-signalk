@@ -7,7 +7,7 @@ var _ = require('lodash')
 
 describe('Temperature: ', function () {
   var n2kMapper = require('./testMapper')
-  var full = new (require('@signalk/signalk-schema')).FullSignalK(
+  var full = new (require('@signalk/signalk-schema').FullSignalK)(
     'urn:mrn:imo:mmsi:230099999'
   )
 
@@ -29,20 +29,20 @@ describe('Temperature: ', function () {
           )
           expectedValueFound.length.should.equal(
             1,
-            `Expected value ${expectedValuePath} not found in ${JSON.stringify(delta, null, 2)}`
+            `Expected value ${expectedValuePath} not found in ${JSON.stringify(
+              delta,
+              null,
+              2
+            )}`
           )
           expectedValueFound[0].value.should.equal(
             testCase['testExpectConvertedValues'][expectedValuePath],
-            `Value ${expectedValuePath} incorrectly converted to ${
-              expectedValueFound[0].value
-            } - expected ${
-              testCase['testExpectConvertedValues'][expectedValuePath]
-            }`
+            `Value ${expectedValuePath} incorrectly converted to ${expectedValueFound[0].value} - expected ${testCase['testExpectConvertedValues'][expectedValuePath]}`
           )
         }
       )
 
-      if(!testCase.notInSpec || testCase.notInSpec == false){
+      if (!testCase.notInSpec || testCase.notInSpec == false) {
         var fullDoc = full.retrieve()
         fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999'
         fullDoc.should.be.validSignalK
@@ -52,15 +52,14 @@ describe('Temperature: ', function () {
 
   it('all 130312 mappings are valid', function () {
     var temperatureMappings = require('../temperatureMappings')
-    var full = new (require('@signalk/signalk-schema')).FullSignalK(
+    var full = new (require('@signalk/signalk-schema').FullSignalK)(
       'urn:mrn:imo:mmsi:230099999'
     )
     _.forOwn(temperatureMappings, function (mapping, key) {
+      let path = mapping.pathWithIndex
+        ? mapping.pathWithIndex.replace('<index>', '0')
+        : mapping.path
 
-      let path = mapping.pathWithIndex ?
-          mapping.pathWithIndex.replace('<index>','0')
-          : mapping.path
-      
       var delta = {
         context: 'vessels.urn:mrn:imo:mmsi:230099999',
         updates: [
