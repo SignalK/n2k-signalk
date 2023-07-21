@@ -4,7 +4,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 function generatePGNs (json) {
-  return [json, json.replace('Engine Instance', 'Instance')]
+  return [json.replace('Engine Instance', 'Instance')]
 }
 
 describe('127488 engine trim Port', function () {

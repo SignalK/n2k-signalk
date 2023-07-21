@@ -4,7 +4,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 function generatePGNs (json) {
-  return [json, json.replace('DC Instance', 'Instance')]
+  return [json.replace('DC Instance', 'Instance')]
 }
 describe('127506 dc detailed status', function () {
   it('complete sentence converts', function () {

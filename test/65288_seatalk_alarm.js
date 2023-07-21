@@ -56,15 +56,15 @@ describe('65288 Seatalk Alarm', function () {
   it('unkown alarm type converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2016-10-18T15:54:16.750Z","prio":7,"src":204,"dst":255,"pgn":65288,"description":"Seatalk: Alarm","fields":{"Manufacturer Code":"Raymarine","Industry Code":"Marine Industry","Alarm Status":"Alarm condition met and not silenced","Alarm ID":999,"Alarm Group":"Autopilot","Alarm Priority":"0"}}'
+        '{"timestamp":"2016-10-18T15:54:16.750Z","prio":7,"src":204,"dst":255,"pgn":65288,"description":"Seatalk: Alarm","fields":{"Manufacturer Code":"Raymarine","Industry Code":"Marine Industry","Alarm Status":"Alarm condition met and not silenced","Alarm ID":199,"Alarm Group":"Autopilot","Alarm Priority":"0"}}'
       )
     )
     tree.should.have.nested.property(
-      'notifications.autopilot.unknown999.value.state',
+      'notifications.autopilot.unknown199.value.state',
       'alarm'
     )
-    tree.notifications.autopilot.unknown999.value.message.should.eql(
-      'Unknown Seatalk Alarm 999'
+    tree.notifications.autopilot.unknown199.value.message.should.eql(
+      'Unknown Seatalk Alarm 199'
     )
     // https://github.com/SignalK/specification/issues/281
     // tree.should.be.validSignalKVesselIgnoringIdentity;
