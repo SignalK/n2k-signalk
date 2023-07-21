@@ -17,7 +17,7 @@ describe('129040 AIS Class B Extended Position Repeat', function () {
     delta.updates[0].values[0].path.should.equal('')
     delta.updates[0].values[0].value.name.should.equal('RESCUE RAUTAUOMA')
     assertSensorClass(delta, 'B')
-    
+
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('design.length.value.overall', 16.0)
     tree.should.have.nested.property('design.aisShipType.value.id', 51)

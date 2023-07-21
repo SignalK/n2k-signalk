@@ -7,7 +7,7 @@ var _ = require('lodash')
 
 describe('Pressure: ', function () {
   var n2kMapper = require('./testMapper')
-  var full = new (require('@signalk/signalk-schema')).FullSignalK(
+  var full = new (require('@signalk/signalk-schema').FullSignalK)(
     'urn:mrn:imo:mmsi:230099999'
   )
 
@@ -33,11 +33,7 @@ describe('Pressure: ', function () {
           )
           expectedValueFound[0].value.should.equal(
             testCase['testExpectConvertedValues'][expectedValuePath],
-            `Value ${expectedValuePath} incorrectly converted to ${
-              expectedValueFound[0].value
-            } - expected ${
-              testCase['testExpectConvertedValues'][expectedValuePath]
-            }`
+            `Value ${expectedValuePath} incorrectly converted to ${expectedValueFound[0].value} - expected ${testCase['testExpectConvertedValues'][expectedValuePath]}`
           )
         }
       )
@@ -50,7 +46,7 @@ describe('Pressure: ', function () {
 
   it('all 130314 mappings are valid', function () {
     var pressureMappings = require('../pressureMappings')
-    var full = new (require('@signalk/signalk-schema')).FullSignalK(
+    var full = new (require('@signalk/signalk-schema').FullSignalK)(
       'urn:mrn:imo:mmsi:230099999'
     )
     _.forOwn(pressureMappings, function (mapping, key) {

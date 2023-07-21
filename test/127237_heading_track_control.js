@@ -13,7 +13,10 @@ describe('127237 Heading/Track Control ', function () {
       'timestamp',
       '2021-07-13T07:00:01.412Z'
     )
-    tree.steering.autopilot.target.headingMagnetic.should.have.property('value', 3.2115)
+    tree.steering.autopilot.target.headingMagnetic.should.have.property(
+      'value',
+      3.2115
+    )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })

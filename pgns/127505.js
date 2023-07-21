@@ -28,7 +28,7 @@ module.exports = [
       var value = Number(n2k.fields['Capacity'])
       return value / 1000
     },
-    filter: (n2k) => {
+    filter: n2k => {
       return typeof n2k.fields['Capacity'] !== 'undefined'
     }
   }

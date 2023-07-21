@@ -49,10 +49,7 @@ describe('127488 engine boost 2', function () {
     ).forEach(pgn => {
       var tree = require('./testMapper').toNested(JSON.parse(pgn))
       tree.should.have.nested.property('propulsion.2.boostPressure')
-      tree.should.have.nested.property(
-        'propulsion.2.boostPressure.value',
-        129
-      )
+      tree.should.have.nested.property('propulsion.2.boostPressure.value', 129)
       tree.should.be.validSignalKVesselIgnoringIdentity
     })
   })

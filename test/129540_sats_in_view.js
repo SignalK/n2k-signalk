@@ -18,7 +18,7 @@ describe('129540 satellites in view', function () {
       id: 2,
       SNR: 43,
       azimuth: 1.5358,
-      elevation: 0.9424,
+      elevation: 0.9424
     })
   })
 })
