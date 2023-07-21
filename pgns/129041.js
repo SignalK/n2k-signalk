@@ -13,7 +13,7 @@ module.exports = [
     }
   },
   {
-    filter: (n2k) => n2k.fields.Longitude && n2k.fields.Latitude,
+    filter: n2k => n2k.fields.Longitude && n2k.fields.Latitude,
     value: function (n2k) {
       return {
         longitude: Number(n2k.fields.Longitude),
@@ -66,14 +66,14 @@ module.exports = [
   {
     node: 'virtual',
     value: function (n2k) {
-      const flag  = n2k.fields['Virtual AtoN Flag']
+      const flag = n2k.fields['Virtual AtoN Flag']
       return typeof flag != 'undefined' ? flag === 'Yes' : undefined
     }
   },
   {
     node: 'offPosition',
     value: function (n2k) {
-      const flag  = n2k.fields['Off Position Indicator']
+      const flag = n2k.fields['Off Position Indicator']
       return typeof flag != 'undefined' ? flag === 'Yes' : undefined
     }
   },
@@ -88,7 +88,9 @@ module.exports = [
   },
   {
     context: function (n2k) {
-      return n2k.fields['User ID'] ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID'] : undefined
+      return n2k.fields['User ID']
+        ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
+        : undefined
     }
   },
   {

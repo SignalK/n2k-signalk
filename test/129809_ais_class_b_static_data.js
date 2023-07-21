@@ -13,8 +13,12 @@ describe('129809 Class B static data', function () {
     var delta = mapper.toDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230044160')
-    delta.updates[0].values.find(pathValue => pathValue.path === '').value.name.should.equal('LAGUNA')
-    delta.updates[0].values.find(pathValue => pathValue.path === 'sensors.ais.class').value.should.equal('B')
+    delta.updates[0].values
+      .find(pathValue => pathValue.path === '')
+      .value.name.should.equal('LAGUNA')
+    delta.updates[0].values
+      .find(pathValue => pathValue.path === 'sensors.ais.class')
+      .value.should.equal('B')
     var tree = mapper.toNested(msg)
     //TODO enable when sensors.ais.class is in the schema
     //tree.should.be.validSignalKVesselIgnoringIdentity

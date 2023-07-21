@@ -10,14 +10,14 @@
 {"8": "Fuel"}
 */
 module.exports = {
-  'Atmospheric': {
+  Atmospheric: {
     path: 'environment.outside.pressure'
   },
-  'Water': {
+  Water: {
     path: 'water.default.pressure',
     pathWithIndex: 'water.<index>.pressure'
   },
-  'Steam': {
+  Steam: {
     path: 'steam.default.pressure',
     pathWithIndex: 'steam.<index>.pressure'
   },
@@ -25,23 +25,23 @@ module.exports = {
     path: 'compressedAir.default.pressure',
     pathWithIndex: 'compressedAir.<index>.pressure'
   },
-  'Hydraulic': {
+  Hydraulic: {
     path: 'hydraulic.default.pressure',
     pathWithIndex: 'hydraulic.<index>.pressure'
   },
-  'Filter': {
+  Filter: {
     path: 'filter.default.pressure',
     pathWithIndex: 'filter.<index>.pressure'
   },
-  'AltimeterSetting': {
+  AltimeterSetting: {
     path: 'altimetersetting.default.pressure',
     pathWithIndex: 'altimetersetting.<index>.pressure'
   },
-  'Oil': {
+  Oil: {
     path: 'oil.default.pressure',
     pathWithIndex: 'oil.<index>.pressure'
   },
-  'Fuel': {
+  Fuel: {
     path: 'fuel.default.pressure',
     pathWithIndex: 'fuel.<index>.pressure'
   }

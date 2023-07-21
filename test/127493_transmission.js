@@ -49,7 +49,7 @@ describe('127493 transmission parameters Port', function () {
 
       //temporarily until the specification is fixed
       delete tree.propulsion.port.transmission.gear
-      
+
       tree.should.be.validSignalKVesselIgnoringIdentity
     })
   })
@@ -98,7 +98,7 @@ describe('127493 transmission parameters Port', function () {
 
       //temporarily until the specification is fixed
       delete tree.propulsion.port.transmission.gear
-      
+
       tree.should.be.validSignalKVesselIgnoringIdentity
     })
   })

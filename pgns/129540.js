@@ -8,21 +8,21 @@ module.exports = [
             PRN: id,
             Elevation: elevation,
             Azimuth: azimuth,
-            SNR,
+            SNR
           } = satInfo
           acc.push({
             id,
             elevation,
             azimuth,
-            SNR,
+            SNR
           })
         }
         return acc
       }, [])
       return {
         count: satellites.length,
-        satellites,
+        satellites
       }
-    },
-  },
+    }
+  }
 ]

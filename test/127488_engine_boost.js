@@ -36,11 +36,9 @@ describe('127488 engine boost 2', function () {
     var tree = require('./testMapper').toNested(JSON.parse(
       '{"timestamp":"2015-01-15-16:16:56.749Z","prio":"2","src":"17","dst":"255","pgn":"127488","description":"Engine Parameters, Rapid Update","fields":{"Instance":2,"Speed":3190, "Boost Pressure": 393000}}'
     ))
+    
     tree.should.have.nested.property('propulsion.2.boostPressure')
-    tree.should.have.nested.property(
-      'propulsion.2.boostPressure.value',
-        393000
-    )
+    tree.should.have.nested.property('propulsion.2.boostPressure.value', 393000)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })

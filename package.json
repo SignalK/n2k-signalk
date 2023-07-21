@@ -5,7 +5,8 @@
   "main": "n2kMapper.js",
   "scripts": {
     "test": "mocha",
-    "format": "prettier-standard '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'"
+    "format": "prettier-standard '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'",
+    "ci-format": "prettier-standard --check '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'"
   },
   "keywords": [
     "nmea",

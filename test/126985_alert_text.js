@@ -2,7 +2,7 @@ var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
-var expect = chai.expect;
+var expect = chai.expect
 
 const mapper = require('./testMapper')
 
@@ -17,7 +17,17 @@ describe('126985 alert text', function () {
       state
     )
 
-    var text = {"40":{"alerts":{"23480":{"languageId":"English (US)","locationTextDescription": "","textDescription":"TEST: Temperature over 0"}}}}
+    var text = {
+      '40': {
+        alerts: {
+          '23480': {
+            languageId: 'English (US)',
+            locationTextDescription: '',
+            textDescription: 'TEST: Temperature over 0'
+          }
+        }
+      }
+    }
     expect(state).to.deep.include(text)
   })
 })

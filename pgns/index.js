@@ -10,6 +10,8 @@ module.exports = {
   127258: require('./127258.js'),
   127488: require('./127488.js'),
   127489: require('./127489.js'),
+  127503: require('./127503.js'),
+  127504: require('./127504.js'),
   127505: require('./127505.js'),
   127506: require('./127506.js'),
   127508: require('./127508.js'),

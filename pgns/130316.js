@@ -22,6 +22,6 @@ module.exports = [
     instance: function (n2k) {
       return chooseField(n2k, 'Temperature Instance', 'Instance') + ''
     },
-    source: 'Actual Temperature'
+    source: 'Temperature'
   }
 ]
