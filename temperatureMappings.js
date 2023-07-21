@@ -32,11 +32,9 @@ module.exports = {
     path: 'environment.inside.mainCabin.temperature'
   },
   'Live Well Temperature': {
-    path: 'tanks.liveWell.default.temperature',
     pathWithIndex: 'tanks.liveWell.<index>.temperature'
   },
   'Bait Well Temperature': {
-    path: 'tanks.baitWell.default.temperature',
     pathWithIndex: 'tanks.baitWell.<index>.temperature'
   },
   'Refrigeration Temperature': {
@@ -66,7 +64,6 @@ module.exports = {
     path: 'environment.inside.freezer.temperature'
   },
   'Exhaust Gas Temperature': {
-    path: 'propulsion.0.exhaustTemperature',
     pathWithIndex: 'propulsion.<index>.exhaustTemperature'
   }
 }
