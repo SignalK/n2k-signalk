@@ -125,7 +125,7 @@ module.exports = [
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.playbackState'} ,
     value: function(n2k) {
       var val = n2k.fields['Transport']
-      return val == 'Paused' ? 'Paused' : 'Playing'
+      return val == 'Paused' || val == 'Stop' ? 'Paused' : 'Playing'
     },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' }
   }, {
