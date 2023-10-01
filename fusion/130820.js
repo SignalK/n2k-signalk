@@ -1,4 +1,4 @@
-
+const { timeToSeconds } = require('../utils.js')
 var currentFusionSource = null
 var fusionSources = {}
 
@@ -26,13 +26,19 @@ module.exports = [
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.name'} ,
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Title'  && n2k.fields.Track != 0  && currentFusionSource != null  }	
   }, {
-    source: 'Progress',
+    //source: 'Progress',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.elapsedTime'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Progress' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Progress' && currentFusionSource != null },
+    value: function(n2k) {
+      return timeToSeconds(n2k.fields['Progress'])
+    }
   }, {
-    source: 'Track Length',
+    //source: 'Length',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.length'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' && currentFusionSource != null },
+    value: function(n2k) {
+      return timeToSeconds(n2k.fields['Length'])
+    }
   }, {
     source: 'Artist',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.artistName'} ,
@@ -125,35 +131,35 @@ module.exports = [
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.playbackState'} ,
     value: function(n2k) {
       var val = n2k.fields['Transport']
-      return val == 'Paused' ? 'Paused' : 'Playing'
+      return val == 'Paused' || val == 'Stop' ? 'Paused' : 'Playing'
     },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' }
   }, {
     node: 'entertainment.device.fusion1.output.zone1.isMuted',
     value: function(n2k) {
       var val = n2k.fields['Mute']
-      return val == 'Muted' ? true : false
+      return val == 'Mute On' ? true : false
     },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
   }, {
     node: 'entertainment.device.fusion1.output.zone2.isMuted',
     value: function(n2k) {
       var val = n2k.fields['Mute']
-      return val == 'Muted' ? true : false
+      return val == 'Mute On' ? true : false
     },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
   }, {
     node: 'entertainment.device.fusion1.output.zone3.isMuted',
     value: function(n2k) {
       var val = n2k.fields['Mute']
-      return val == 'Muted' ? true : false
+      return val == 'Mute On' ? true : false
     },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
   }, {
     node: 'entertainment.device.fusion1.output.zone4.isMuted',
     value: function(n2k) {
       var val = n2k.fields['Mute']
-      return val == 'Muted' ? true : false
+      return val == 'Mute On' ? true : false
     },
     filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
     

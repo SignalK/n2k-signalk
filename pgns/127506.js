@@ -1,4 +1,4 @@
-const { chooseField } = require('../utils.js')
+const { chooseField, timeToSeconds } = require('../utils.js')
 
 function instance (n2k) {
   return chooseField(n2k, 'DC Instance', 'Instance')
@@ -25,14 +25,7 @@ module.exports = [
   {
     allowNull: true,
     value: function (n2k) {
-      var val = n2k.fields['Time Remaining']
-      var res
-      if (typeof val !== 'undefined') {
-        res = val * 60 // convert to seconds
-      } else {
-        res = null
-      }
-      return res
+      return timeToSeconds(n2k.fields['Time Remaining'])
     },
     node: function (n2k) {
       return 'electrical.batteries.' + instance(n2k) + '.capacity.timeRemaining'

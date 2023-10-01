@@ -43,9 +43,20 @@ function acPhase (n2k) {
   }
 }
 
+function timeToSeconds (time) {
+  if (typeof time !== 'undefined' && time !== null) {
+    let split = time.split(':')
+    if (split.length === 3) {
+      return Number(split[0]) * 3600 + Number(split[1]) * 60 + Number(split[2])
+    }
+  }
+  return null
+}
+
 module.exports = {
   chooseField,
   skEngineId,
   skEngineTitle,
-  acPhase
+  acPhase,
+  timeToSeconds
 }

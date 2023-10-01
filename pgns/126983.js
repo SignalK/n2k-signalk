@@ -78,8 +78,8 @@ module.exports = [
 
       //if the alert is silenced or acknowledged then dont alert in SK
       if (
-        n2k.fields['Temporary Silence Status'] == 'Temporary Silence' ||
-        n2k.fields['Acknowledge Status'] == 'Acknowledged'
+        n2k.fields['Temporary Silence Status'] == 'Yes' ||
+        n2k.fields['Acknowledge Status'] == 'Yes'
       ) {
         value.method = []
       }
