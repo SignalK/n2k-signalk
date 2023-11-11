@@ -1,66 +1,42 @@
-const { acPhase } = require('../utils.js')
-
 function instance (n2k) {
   return n2k.fields['Instance']
 }
 
-function prefix (n2k) {
-  return `electrical.inverters.${instance(n2k)}.${acPhase(n2k)}`
+function acPhase (lineData) {
+  const phaseMap = { 0: 'A', 1: 'B', 2: 'C' }
+  return phaseMap[lineData.Line] ?? 'A'
+}
+
+function prefix (n2k, lineData) {
+  return `electrical.inverters.${instance(n2k)}.${acPhase(lineData)}`
 }
 
 module.exports = [
-  {
-    source: 'Waveform',
-    node: function (n2k) {
-      return `${prefix(n2k)}.waveform`
+  function (n2k, stage) {
+    const fields = {
+      Waveform: 'waveform',
+      Voltage: 'voltage',
+      Current: 'current',
+      Frequency: 'frequency',
+      'Breaker Size': 'breakerSize',
+      'Real Power': 'realPower',
+      'Reactive Power': 'reactivePower',
+      'Power Factor': 'powerFactor'
     }
-  },
-  {
-    source: 'Voltage',
-    node: function (n2k) {
-      return `${prefix(n2k)}.voltage`
-    }
-  },
-  {
-    source: 'Current',
-    node: function (n2k) {
-      return `${prefix(n2k)}.current`
-    }
-  },
-  {
-    source: 'Frequency',
-    node: function (n2k) {
-      return `${prefix(n2k)}.frequency`
-    }
-  },
-  {
-    source: 'Frequency',
-    node: function (n2k) {
-      return `${prefix(n2k)}.frequency`
-    }
-  },
-  {
-    source: 'Breaker Size',
-    node: function (n2k) {
-      return `${prefix(n2k)}.breakerSize`
-    }
-  },
-  {
-    source: 'Real Power',
-    node: function (n2k) {
-      return `${prefix(n2k)}.realPower`
-    }
-  },
-  {
-    source: 'Reactive Power',
-    node: function (n2k) {
-      return `${prefix(n2k)}.reactivePower`
-    }
-  },
-  {
-    source: 'Power Factor',
-    node: function (n2k) {
-      return `${prefix(n2k)}.powerFactor`
-    }
+    return n2k.fields.list
+      ? n2k.fields.list.reduce((updates, lineData) => {
+          const pathPrefix = prefix(n2k, lineData)
+          Object.keys(fields).reduce((fieldUpdates, fieldName) => {
+            if (typeof lineData[fieldName] !== 'undefined') {
+              updates.push({
+                path: `${pathPrefix}.${fields[fieldName]}`,
+                value: lineData[fieldName]
+              })
+            }
+            return updates
+          }, updates)
+          return updates
+        }, [])
+      : []
   }
 ]
