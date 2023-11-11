@@ -16,9 +16,16 @@ module.exports = [
   {
     node: function (n2k, state) {
       return (
-        'navigation.course' +
-        calculationType(n2k, state) +
-        '.bearingTrack' +
+        'navigation.course.calcValues.calcMethod' +
+        calculationType(n2k, state)
+      )
+    },
+    source: 'Calculation Type'
+  },
+  {
+    node: function (n2k, state) {
+      return (
+        'navigation.course.calcValues.bearingTrack' +
         n2k.fields['Course/Bearing reference']
       )
     },
@@ -27,9 +34,7 @@ module.exports = [
   {
     node: function (n2k, state) {
       return (
-        'navigation.course' +
-        calculationType(n2k, state) +
-        '.nextPoint.distance'
+        'navigation.course.calcValues.distance'
       )
     },
     source: 'Distance to Waypoint'
@@ -37,9 +42,7 @@ module.exports = [
   {
     node: function (n2k, state) {
       return (
-        'navigation.course' +
-        calculationType(n2k, state) +
-        '.nextPoint.velocityMadeGood'
+        'navigation.course.calcValues.velocityMadeGood'
       )
     },
     source: 'Waypoint Closing Velocity'
@@ -47,9 +50,7 @@ module.exports = [
   {
     node: function (n2k, state) {
       return (
-        'navigation.course' +
-        calculationType(n2k, state) +
-        '.nextPoint.bearing' +
+        'navigation.course.calcValues.bearing' +
         n2k.fields['Course/Bearing reference']
       )
     },
@@ -58,9 +59,7 @@ module.exports = [
   {
     node: function (n2k, state) {
       return (
-        'navigation.course' +
-        calculationType(n2k, state) +
-        '.nextPoint.position'
+        'navigation.course.nextPoint.position'
       )
     },
     value: function (n2k) {
@@ -72,7 +71,7 @@ module.exports = [
   },
   {
     node: function (n2k) {
-      return 'navigation.course' + calculationType(n2k) + '.nextPoint.timeToGo'
+      return 'navigation.course.calcValues.timeToGo'
     },
     filter: function (n2k) {
       return n2k.fields['ETA Date'] && n2k.fields['ETA Time']
