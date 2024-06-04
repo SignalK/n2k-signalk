@@ -1,6 +1,38 @@
 const debug = require('debug')('n2k-signalk-126720')
+const camelCase = require('camelcase')
 
 module.exports = [
+  {
+    // Display Brightness
+    filter: function (n2k) {
+      return (
+        n2k.description === 'Seatalk1: Display Brightness' &&
+          n2k.fields['Manufacturer Code'] === 'Raymarine' &&
+          n2k.fields['Group'] !== 'undefined'
+      )
+    },
+    node: (n2k) => { return `electrical.displays.raymarine.${camelCase(n2k.fields['Group'])}.brightness` },
+    allowNull: true,
+    value: (n2k) => {
+      let val = n2k.fields['Brightness']
+      return val !== 'undefined' ? val / 100.0 : null
+    }
+  },
+  {
+    // Display Color
+    filter: function (n2k) {
+      return (
+        n2k.description === 'Seatalk1: Display Color' &&
+          n2k.fields['Manufacturer Code'] === 'Raymarine' &&
+          n2k.fields['Group'] !== 'undefined'
+      )
+    },
+    node: (n2k) => { return `electrical.displays.raymarine.${camelCase(n2k.fields['Group'])}.color` },
+    allowNull: true,
+    value: (n2k) => {
+      return camelCase(n2k.fields['Color'])
+    }
+  },
   {
     // filters for SmartPilot behind Seatalk-STNG-Converter
     filter: function (n2k) {
