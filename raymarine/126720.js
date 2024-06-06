@@ -8,7 +8,7 @@ module.exports = [
       return (
         n2k.description === 'Seatalk1: Display Brightness' &&
         n2k.fields['Manufacturer Code'] === 'Raymarine' &&
-        n2k.fields['Group'] !== 'undefined'
+        n2k.fields['Group'] !== undefined
       )
     },
     node: n2k => {
@@ -19,7 +19,7 @@ module.exports = [
     allowNull: true,
     value: n2k => {
       let val = n2k.fields['Brightness']
-      return val !== 'undefined' ? val / 100.0 : null
+      return val !== undefined ? val / 100.0 : null
     }
   },
   {
@@ -28,7 +28,7 @@ module.exports = [
       return (
         n2k.description === 'Seatalk1: Display Color' &&
         n2k.fields['Manufacturer Code'] === 'Raymarine' &&
-        n2k.fields['Group'] !== 'undefined'
+        n2k.fields['Group'] !== undefined
       )
     },
     node: n2k => {
@@ -47,8 +47,8 @@ module.exports = [
       return (
         n2k.description === 'Seatalk1: Pilot Mode' &&
         n2k.fields['Manufacturer Code'] === 'Raymarine' &&
-        typeof n2k.fields['Pilot Mode'] !== 'undefined' &&
-        typeof n2k.fields['Sub Mode'] !== 'undefined'
+        typeof n2k.fields['Pilot Mode'] !== undefined &&
+        typeof n2k.fields['Sub Mode'] !== undefined
       )
     },
     node: 'steering.autopilot.state',
