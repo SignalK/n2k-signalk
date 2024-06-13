@@ -14,8 +14,10 @@ module.exports = [
     node: 'navigation.headingTrue',
     filter: function (n2k) {
       return (
-        n2k.fields['Reference'] === 'True' &&
-        typeof n2k.fields['Heading'] !== 'undefined'
+        typeof n2k.fields['Heading'] !== 'undefined' && (
+          n2k.fields['Reference'] === 'True' ||
+          typeof n2k.fields['Reference'] === 'undefined'
+        )
       )
     }
   },
