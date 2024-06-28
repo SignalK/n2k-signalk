@@ -234,7 +234,7 @@ function generateMappingsForStatus (field, notifications) {
         } else {
           return {
             state: 'normal',
-            method: ['visual'],
+            method: [],
             message:
               util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
           }
