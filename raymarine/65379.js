@@ -3,17 +3,18 @@ module.exports = [
     node: 'steering.autopilot.state',
     value: function (n2k) {
       var mode = n2k.fields['Pilot Mode']
-      if ( typeof mode === 'string' ) {
-        if ( mode === "Standby" )
-        {
+      if (typeof mode === 'string') {
+        if (mode === 'Standby') {
           return 'standby'
-        } else if ( mode === "Auto, compass commanded" ) {
+        } else if (mode === 'Auto, compass commanded') {
           return 'auto'
-        } else if ( mode === "Vane, Wind Mode" ) {
+        } else if (mode === 'Vane, Wind Mode') {
           return 'wind'
-        } else if ( mode === "Track Mode" ) {
+        } else if (mode === 'Track Mode') {
           return 'route'
-        } else if ( mode ===  "No Drift, COG referenced (In track, course changes)" ) {
+        } else if (
+          mode === 'No Drift, COG referenced (In track, course changes)'
+        ) {
           return 'route'
         }
       } else {
