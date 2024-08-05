@@ -1,3 +1,9 @@
+const debug = require('debug')('n2k-signalk-129029')
+
+function pad2 (number) {
+  return number < 10 ? '0' + number : number
+}
+
 module.exports = [
   {
     value: function (n2k) {
@@ -13,6 +19,21 @@ module.exports = [
   },
   {
     value: function (n2k) {
+      // Check if the year is less than 2024
+      let [year, month, day] = n2k.fields.Date.split('.').map(Number)
+      if (year < 2020) {
+        // Create a date object from the extracted values
+        let date = new Date(Date.UTC(year, month - 1, day))
+
+        // Add 7168 days to the date
+        date.setDate(date.getDate() + 7168)
+
+        // Update the value with the new date
+        n2k.fields.Date = `${date.getUTCFullYear()}.${pad2(
+          date.getUTCMonth() + 1
+        )}.${pad2(date.getUTCDate())}`
+      }
+
       return `${n2k.fields.Date.replace(/\./g, '-')}T${n2k.fields.Time}Z`
     },
     filter: n2k =>
