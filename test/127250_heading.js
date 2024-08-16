@@ -52,4 +52,17 @@ describe('127250 Heading', function () {
     )
     // tree.should.be.validSignalKVesselIgnoringIdentity
   })
+
+  it('Cetrek sentence converts', function () {
+    var tree = require('./testMapper').toNested(
+      JSON.parse(
+        '{"canId":233902663,"prio":3,"src":71,"dst":255,"pgn":127250,"timestamp":"2022-12-11T14:48:31.783Z","fields":{"Heading":6.2657},"description":"Vessel Heading"}'
+      )
+    )
+    tree.should.have.with.nested.property(
+      'navigation.headingTrue.value',
+      6.2657
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
+  })
 })
