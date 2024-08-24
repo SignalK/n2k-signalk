@@ -12,31 +12,31 @@ describe('129284 Navigation Data', function () {
     )
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.bearingTrackTrue.value',
+      'navigation.course.calcValues.bearingTrackTrue.value',
       2.6435
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.velocityMadeGood.value',
+      'navigation.course.calcValues.velocityMadeGood.value',
       0.06
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.distance.value',
+      'navigation.course.calcValues.distance.value',
       1910.38
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.bearingTrue.value',
+      'navigation.course.calcValues.bearingTrue.value',
       2.7651
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.position.value.latitude',
+      'navigation.course.nextPoint.position.value.latitude',
       60.1366607
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.position.value.longitude',
+      'navigation.course.nextPoint.position.value.longitude',
       24.9068518
     )
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.nextPoint.timeToGo.value',
+      'navigation.course.calcValues.timeToGo.value',
       31360.412
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
