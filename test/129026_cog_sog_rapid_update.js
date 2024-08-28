@@ -7,13 +7,13 @@ describe('129026 COG & SOG, Rapid Update', function () {
   it('complete sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2014-08-15-18:00:10.005Z","prio":"2","src":"160","dst":"255","pgn":"129026","description":"COG & SOG, Rapid Update","fields":{"COG Reference":"True","COG":"206.1","SOG":"3.65"}}'
+        '{"timestamp":"2014-08-15-18:00:10.005Z","prio":"2","src":"160","dst":"255","pgn":"129026","description":"COG & SOG, Rapid Update","fields":{"COG Reference":"True","COG":2.9384,"SOG":3.65}}'
       )
     )
     tree.should.have.nested.property('navigation.courseOverGroundTrue')
     tree.should.have.nested.property(
       'navigation.courseOverGroundTrue.value',
-      206.1
+      2.9384
     )
     tree.should.have.nested.property('navigation.speedOverGround')
     tree.should.have.nested.property('navigation.speedOverGround.value', 3.65)

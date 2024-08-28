@@ -5,8 +5,13 @@ module.exports = [
     node: function (n2k) {
       var temperatureMapping =
         temperatureMappings[n2k.fields['Temperature Source']]
-      if (temperatureMapping && temperatureMapping.path) {
-        return temperatureMapping.path
+
+      if (temperatureMapping) {
+        if (temperatureMapping.pathWithIndex) {
+          return temperatureMapping.pathWithIndex.replace('<index>', 'default')
+        } else if (temperatureMapping.path) {
+          return temperatureMapping.path
+        }
       }
     },
     source: 'Temperature'
@@ -15,7 +20,9 @@ module.exports = [
     node: function (n2k) {
       return (
         'environment.' +
-        (n2k.fields['Humidity Source'] === 'Inside' ? 'inside.relativeHumidity' : 'outside.humidity') 
+        (n2k.fields['Humidity Source'] === 'Inside'
+          ? 'inside.relativeHumidity'
+          : 'outside.humidity')
       )
     },
     filter: function (n2k) {

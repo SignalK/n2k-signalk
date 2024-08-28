@@ -1,4 +1,4 @@
-const getMmsiContext = require('../mmsi-context')
+const getMmsiContext = require('../mmsi-context').getMmsiContext
 const getFromStarboard = require('../aisFromStarboard')
 const getShipType = require('../aisShipTypeMapping')
 
@@ -20,7 +20,7 @@ module.exports = [
   },
   {
     node: 'navigation.destination.commonName',
-    source: 'Destination'
+    value: n2k => n2k.fields['Destination']
   },
   {
     node: 'design.draft',
