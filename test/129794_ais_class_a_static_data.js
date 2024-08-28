@@ -91,7 +91,7 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     )
     tree.should.have.nested.property('sensors.ais.fromBow.value', 147.0)
     tree.should.have.nested.property('sensors.ais.fromCenter.value', 8)
-    tree.should.have.nested.property('communication.callsignVhf', '3FJJ4')
+    tree.should.have.nested.property('communication.callsignVhf.value', '3FJJ4')
     delete tree.design.aisShipType
     //TODO enable when sensors.ais.class is in the schema
     //tree.should.be.validSignalKVesselIgnoringIdentity
