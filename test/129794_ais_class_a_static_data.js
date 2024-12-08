@@ -53,12 +53,20 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     const valuesWithEmptyPath = delta.updates[0].values.filter(
       pathValue => pathValue.path === ''
     )
-    valuesWithEmptyPath.length.should.equal(3)
+    valuesWithEmptyPath.length.should.equal(4)
     expect(valuesWithEmptyPath).to.have.deep.members([
       {
         path: '',
         value: {
           name: 'SILVER GWEN'
+        }
+      },
+      {
+        path: '',
+        value: {
+          communication: {
+            callsignVhf: '3FJJ4'
+          }
         }
       },
       {
@@ -91,7 +99,6 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     )
     tree.should.have.nested.property('sensors.ais.fromBow.value', 147.0)
     tree.should.have.nested.property('sensors.ais.fromCenter.value', 8)
-    tree.should.have.nested.property('communication.callsignVhf.value', '3FJJ4')
     delete tree.design.aisShipType
     //TODO enable when sensors.ais.class is in the schema
     //tree.should.be.validSignalKVesselIgnoringIdentity
