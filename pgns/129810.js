@@ -26,8 +26,13 @@ module.exports = [
     source: 'Beam'
   },
   {
-    node: 'communication.callsignVhf',
-    source: 'Callsign'
+    node: '',
+    filter: n2k => n2k.fields['Callsign'],
+    value: n2k => ({
+      communication: {
+        callsignVhf: n2k.fields['Callsign']
+      }
+    })
   },
   {
     node: 'sensors.ais.fromBow',
