@@ -63,11 +63,13 @@ module.exports = [
         '.nextPoint.position'
       )
     },
+    allowNull: true,
     value: function (n2k) {
-      return {
+      const p = {
         longitude: Number(n2k.fields['Destination Longitude']),
         latitude: Number(n2k.fields['Destination Latitude'])
       }
+      return isNaN(p.latitude) || isNaN(p.longitude) ? null : p
     }
   },
   {
