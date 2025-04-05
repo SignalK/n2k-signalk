@@ -105,11 +105,9 @@ N2kMapper.prototype.toDelta = function (n2k) {
   if (metaPGNs[n2k.pgn]) {
     const meta = metaPGNs[n2k.pgn](n2k)
     if (!this.state[n2k.src]) {
-      this.state[n2k.src] = {}
-    }
-
-    if (!this.state[n2k.src].metaPGNsReceived) {
-      this.state[n2k.src].metaPGNsReceived = {}
+      this.state[n2k.src] = {
+        metaPGNsReceived: {}
+      }
     }
 
     if (n2k.pgn === 60928) {
@@ -127,7 +125,9 @@ N2kMapper.prototype.toDelta = function (n2k) {
           this.state[n2k.src].canName,
           canName
         )
-        this.state[n2k.src] = {}
+        this.state[n2k.src] = {
+          metaPGNsReceived: {}
+        }
         this.requestMetaData(n2k.src, 126996).then(() => {
           return this.requestMetaData(n2k.src, 126998)
         })
