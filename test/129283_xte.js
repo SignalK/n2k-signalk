@@ -23,7 +23,7 @@ describe('129283 cross track error', function () {
     )
 
     tree.should.have.nested.property(
-      'navigation.courseGreatCircle.crossTrackError.value',
+      'navigation.course.calcValues.crossTrackError.value',
       -5.63
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
@@ -37,7 +37,7 @@ describe('129283 cross track error', function () {
       {}
     )
     tree.should.not.have.nested.property(
-      'navigation.courseGreatCircle.crossTrackError.value'
+      'navigation.course.calcValues.crossTrackError.value'
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
@@ -50,7 +50,7 @@ describe('129283 cross track error', function () {
       null
     )
     tree.should.not.have.nested.property(
-      'navigation.courseGreatCircle.crossTrackError.value'
+      'navigation.course.calcValues.crossTrackError.value'
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })

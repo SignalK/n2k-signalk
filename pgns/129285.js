@@ -3,11 +3,11 @@ const _ = require('lodash')
 
 module.exports = [
   {
-    node: 'navigation.currentRoute.name',
+    node: 'navigation.course.activeRoute.name',
     source: 'Route Name'
   },
   {
-    node: 'navigation.currentRoute.waypoints',
+    node: 'navigation.course.activeRoute.waypoints',
     filter: n2k => {
       return !_.isUndefined(n2k.fields.list)
     },
