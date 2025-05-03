@@ -17,9 +17,7 @@ module.exports = [
       }
 
       var path =
-        n2k.fields.alarmGroup.toLowerCase().replace(/ /g, '') +
-        '.' +
-        alarmName
+        n2k.fields.alarmGroup.toLowerCase().replace(/ /g, '') + '.' + alarmName
       return 'notifications.' + path
     },
     value: function (n2k) {

@@ -26,16 +26,16 @@ describe('Meta data works', function () {
       src: 12,
       timestamp: '2019-05-31T11:46:58.594Z',
       fields: {
-        'uniqueNumber': 76223,
-        'manufacturerCode': 'Fusion Electronics',
-        'deviceInstanceLower': 0,
-        'deviceInstanceUpper': 0,
-        'deviceFunction': 130,
+        uniqueNumber: 76223,
+        manufacturerCode: 'Fusion Electronics',
+        deviceInstanceLower: 0,
+        deviceInstanceUpper: 0,
+        deviceFunction: 130,
         Spare: 0,
-        'deviceClass': 'Entertainment',
-        'systemInstance': 0,
-        'industryGroup': 'Marine',
-        'arbitraryAddressCapable': 1
+        deviceClass: 'Entertainment',
+        systemInstance: 0,
+        industryGroup: 'Marine',
+        arbitraryAddressCapable: 1
       },
       description: 'ISO Address Claim'
     })
@@ -56,9 +56,9 @@ describe('Meta data works', function () {
       src: 12,
       timestamp: '2019-05-31T11:56:11.266Z',
       fields: {
-        'installationDescription1': 'UD-650',
-        'installationDescription2': 'FUSION',
-        'installationDescription3': 'Fusion Electronics Ltd'
+        installationDescription1: 'UD-650',
+        installationDescription2: 'FUSION',
+        installationDescription3: 'Fusion Electronics Ltd'
       },
       description: 'Configuration Information'
     })
@@ -84,14 +84,14 @@ describe('Meta data works', function () {
       src: 12,
       timestamp: '2019-05-31T11:53:13.922Z',
       fields: {
-        'nmea2000Version': 1301,
-        'productCode': 3115,
-        'modelId': 'UD-650',
-        'softwareVersionCode': '2.0.265',
-        'modelVersion': 'FUSION-LINK-1.0',
-        'modelSerialCode': '76223',
-        'certificationLevel': 1,
-        'loadEquivalency': 1
+        nmea2000Version: 1301,
+        productCode: 3115,
+        modelId: 'UD-650',
+        softwareVersionCode: '2.0.265',
+        modelVersion: 'FUSION-LINK-1.0',
+        modelSerialCode: '76223',
+        certificationLevel: 1,
+        loadEquivalency: 1
       },
       description: 'Product Information'
     })

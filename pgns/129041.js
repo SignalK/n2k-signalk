@@ -58,8 +58,7 @@ module.exports = [
     value: getFromStarboard,
     filter: function (n2k) {
       return (
-        n2k.fields.positionReferenceFromStarboard &&
-        n2k.fields.beamDiameter
+        n2k.fields.positionReferenceFromStarboard && n2k.fields.beamDiameter
       )
     }
   },

@@ -4,7 +4,7 @@ const signalkSchema = require('@signalk/signalk-schema')
 const canboatjs = require('@canboat/canboatjs')
 const { FromPgn, pgnToActisenseSerialFormat } = canboatjs
 const Parser = canboatjs.FromPgn
-const parser = new FromPgn({useCamel: true})
+const parser = new FromPgn({ useCamel: true })
 
 /*
   By default we take the input canboat json and convert to actisense format,

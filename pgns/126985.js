@@ -9,8 +9,7 @@ module.exports = [
         var text = {
           languageId: n2k.fields.languageId,
           textDescription: n2k.fields.alertTextDescription,
-          locationTextDescription:
-            n2k.fields.alertLocationTextDescription || ''
+          locationTextDescription: n2k.fields.alertLocationTextDescription || ''
         }
         //store the alert text in state for use with PGN 126983
         if (!state.alerts) {

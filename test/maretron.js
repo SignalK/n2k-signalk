@@ -16,13 +16,13 @@ describe('Maretron AC PGNs work', function () {
     src: 192,
     timestamp: '2019-05-31T11:46:58.594Z',
     fields: {
-      'uniqueNumber': '76223',
-      'deviceInstanceLower': 0,
-      'deviceInstanceUpper': 1,
-      'deviceFunction': 130,
+      uniqueNumber: '76223',
+      deviceInstanceLower: 0,
+      deviceInstanceUpper: 1,
+      deviceFunction: 130,
       Reserved1: '0',
-      'systemInstance': 0,
-      'industryGroup': 'Marine',
+      systemInstance: 0,
+      industryGroup: 'Marine',
       Reserved2: '1'
     },
     description: 'ISO Address Claim'
@@ -35,13 +35,13 @@ describe('Maretron AC PGNs work', function () {
     src: 193,
     timestamp: '2019-05-31T11:46:58.594Z',
     fields: {
-      'uniqueNumber': '76223',
-      'deviceInstanceLower': 0,
-      'deviceInstanceUpper': 2,
-      'deviceFunction': 130,
+      uniqueNumber: '76223',
+      deviceInstanceLower: 0,
+      deviceInstanceUpper: 2,
+      deviceFunction: 130,
       Reserved1: '0',
-      'systemInstance': 0,
-      'industryGroup': 'Marine',
+      systemInstance: 0,
+      industryGroup: 'Marine',
       Reserved2: '1'
     },
     description: 'ISO Address Claim'
@@ -54,13 +54,13 @@ describe('Maretron AC PGNs work', function () {
     src: 194,
     timestamp: '2019-05-31T11:46:58.594Z',
     fields: {
-      'uniqueNumber': '76223',
-      'deviceInstanceLower': 0,
-      'deviceInstanceUpper': 3,
-      'deviceFunction': 130,
+      uniqueNumber: '76223',
+      deviceInstanceLower: 0,
+      deviceInstanceUpper: 3,
+      deviceFunction: 130,
       Reserved1: '0',
-      'systemInstance': 0,
-      'industryGroup': 'Marine',
+      systemInstance: 0,
+      industryGroup: 'Marine',
       Reserved2: '1'
     },
     description: 'ISO Address Claim'
@@ -120,9 +120,9 @@ describe('Maretron AC PGNs work', function () {
     direction: 'R',
     time: '18:58:11.940',
     fields: {
-      'reactivePower': 37888,
-      'powerFactor': 30517,
-      'powerFactorLagging': 'Leading'
+      reactivePower: 37888,
+      powerFactor: 30517,
+      powerFactorLagging: 'Leading'
     },
     description: 'Utility Phase B AC Reactive Power',
     timestamp: '2020-03-28T18:58:12.480Z'

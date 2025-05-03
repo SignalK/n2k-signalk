@@ -219,7 +219,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
         result.updates[0].source.instance = theMappings[0].instance(n2k)
       }
     }
-    
+
     return result
   } catch (ex) {
     console.error(ex)
@@ -370,8 +370,7 @@ const metaPGNs = {
       deviceInstanceUpper: n2k.fields.deviceInstanceUpper,
       systemInstance: n2k.fields.systemInstance,
       deviceInstance:
-        (n2k.fields.deviceInstanceUpper << 3) |
-        n2k.fields.deviceInstanceLower
+        (n2k.fields.deviceInstanceUpper << 3) | n2k.fields.deviceInstanceLower
     }
   },
   126998: n2k => {

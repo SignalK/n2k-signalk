@@ -3,8 +3,7 @@ const pressureMappings = require('../pressureMappings')
 module.exports = [
   {
     node: function (n2k) {
-      var pressureMapping =
-        pressureMappings[n2k.fields.source]
+      var pressureMapping = pressureMappings[n2k.fields.source]
       if (pressureMapping) {
         if (pressureMapping.pathWithIndex) {
           return pressureMapping.pathWithIndex.replace(

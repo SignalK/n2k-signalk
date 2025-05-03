@@ -4,8 +4,7 @@ module.exports = [
   {
     source: 'actualTemperature',
     node: function (n2k) {
-      var temperatureMapping =
-        temperatureMappings[n2k.fields.temperatureSource]
+      var temperatureMapping = temperatureMappings[n2k.fields.temperatureSource]
 
       if (temperatureMappings) {
         if (temperatureMapping.pathWithIndex) {

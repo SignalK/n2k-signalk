@@ -77,10 +77,7 @@ module.exports = [
     },
     value: function (n2k) {
       var dateStr =
-        n2k.fields.etaDate.replace(/\./g, '-') +
-        'T' +
-        n2k.fields.etaTime +
-        'Z'
+        n2k.fields.etaDate.replace(/\./g, '-') + 'T' + n2k.fields.etaTime + 'Z'
       var eta = new Date(dateStr)
       var now = new Date(n2k.timestamp)
       return (eta.getTime() - now.getTime()) / 1000

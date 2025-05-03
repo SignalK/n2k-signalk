@@ -3,8 +3,7 @@ const temperatureMappings = require('../temperatureMappings')
 module.exports = [
   {
     node: function (n2k) {
-      var temperatureMapping =
-        temperatureMappings[n2k.fields.source]
+      var temperatureMapping = temperatureMappings[n2k.fields.source]
       if (temperatureMapping) {
         if (temperatureMapping.pathWithIndex) {
           return temperatureMapping.pathWithIndex.replace(

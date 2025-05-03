@@ -14,7 +14,6 @@ describe('Unknown pgn', function () {
   })
 })
 
-
 describe('No fields in pgn message', function () {
   it('does not throw any errors', function () {
     //  missing User Id
@@ -24,12 +23,10 @@ describe('No fields in pgn message', function () {
       prio: '6',
       src: '43',
       dst: '255',
-      pgn: 128267,
+      pgn: 128267
     }
-    
 
     var delta = mapper.toDelta(msg)
     assert.equal(delta.updates[0].values.length, 0)
   })
 })
-

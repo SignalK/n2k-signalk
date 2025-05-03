@@ -7,18 +7,14 @@ module.exports = [
     source: 'offset',
     node: 'environment.depth.surfaceToTransducer',
     filter: function (n2k) {
-      return (
-        typeof n2k.fields.offset !== 'undefined' && n2k.fields.offset > 0
-      )
+      return typeof n2k.fields.offset !== 'undefined' && n2k.fields.offset > 0
     }
   },
   {
     source: 'offset',
     node: 'environment.depth.transducerToKeel',
     filter: function (n2k) {
-      return (
-        typeof n2k.fields.offset !== 'undefined' && n2k.fields.offset < 0
-      )
+      return typeof n2k.fields.offset !== 'undefined' && n2k.fields.offset < 0
     }
   },
   {

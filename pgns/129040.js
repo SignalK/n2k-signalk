@@ -68,9 +68,7 @@ module.exports = [
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
     filter: function (n2k) {
-      return (
-        n2k.fields.positionReferenceFromStarboard && n2k.fields.beam
-      )
+      return n2k.fields.positionReferenceFromStarboard && n2k.fields.beam
     }
   },
   {
