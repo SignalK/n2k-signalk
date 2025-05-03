@@ -8,7 +8,7 @@ module.exports = (type, phase) => {
   
   return [
     { 
-      source: 'Reactive Power',
+      source: 'reactivePower',
       node: function (n2k, state) {
         return `${prefix(n2k, state)}.reactivePower`
       },
@@ -21,12 +21,12 @@ module.exports = (type, phase) => {
         return `${prefix(n2k, state)}.powerFactor`
       },
       value: (n2k, state) => {
-      const val = n2k.fields['Power Factor']
+      const val = n2k.fields.powerFactor
         set(state, `maretron.${prefix(n2k, state)}.powerFactor`, val)
         return val / 32768
       },
       filter: (n2k, state) => {
-        return n2k.fields['Power Factor'] != null &&
+        return n2k.fields.powerFactor != null &&
           state.deviceInstance != null
       }
     },
@@ -35,10 +35,10 @@ module.exports = (type, phase) => {
         return `${prefix(n2k, state)}.powerFactorLagging`
       },
       value: (n2k) => {
-        return n2k.fields['Power Factor Lagging'].toLowerCase()
+        return n2k.fields.powerFactorLagging.toLowerCase()
       },
       filter: (n2k, state) => {
-        return n2k.fields['Power Factor Lagging'] != null &&
+        return n2k.fields.powerFactorLagging != null &&
           state.deviceInstance != null
       }
     },

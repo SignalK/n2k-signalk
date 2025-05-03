@@ -4,7 +4,7 @@ module.exports = [
   {
     node: function (n2k) {
       var temperatureMapping =
-        temperatureMappings[n2k.fields['Temperature Source']]
+        temperatureMappings[n2k.fields.temperatureSource]
 
       if (temperatureMapping) {
         if (temperatureMapping.pathWithIndex) {
@@ -14,32 +14,32 @@ module.exports = [
         }
       }
     },
-    source: 'Temperature'
+    source: 'temperature'
   },
   {
     node: function (n2k) {
       return (
         'environment.' +
-        (n2k.fields['Humidity Source'] === 'Inside'
+        (n2k.fields.humiditySource === 'Inside'
           ? 'inside.relativeHumidity'
           : 'outside.humidity')
       )
     },
     filter: function (n2k) {
-      return typeof n2k.fields['Humidity'] !== 'undefined'
+      return typeof n2k.fields.humidity !== 'undefined'
     },
     value: function (n2k) {
-      var ratio100 = Number(n2k.fields['Humidity'])
+      var ratio100 = Number(n2k.fields.humidity)
       return ratio100 / 100
     }
   },
   {
     node: 'environment.outside.pressure',
     filter: function (n2k) {
-      return n2k.fields['Atmospheric Pressure']
+      return n2k.fields.atmosphericPressure
     },
     value: function (n2k) {
-      return Number(n2k.fields['Atmospheric Pressure'])
+      return Number(n2k.fields.atmosphericPressure)
     }
   }
 ]

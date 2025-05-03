@@ -5,19 +5,19 @@ const schema = require('@signalk/signalk-schema')
 module.exports = [
   {
     node: '',
-    filter: n2k => n2k.fields['AtoN Name'],
+    filter: n2k => n2k.fields.atonName,
     value: function (n2k) {
       return {
-        name: n2k.fields['AtoN Name']
+        name: n2k.fields.atonName
       }
     }
   },
   {
-    filter: n2k => n2k.fields.Longitude && n2k.fields.Latitude,
+    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
     value: function (n2k) {
       return {
-        longitude: Number(n2k.fields.Longitude),
-        latitude: Number(n2k.fields.Latitude)
+        longitude: Number(n2k.fields.longitude),
+        latitude: Number(n2k.fields.latitude)
       }
     },
     node: 'navigation.position'
@@ -25,16 +25,16 @@ module.exports = [
   {
     node: 'design.length',
     value: function (n2k) {
-      return { overall: Number(n2k.fields['Length/Diameter']) }
+      return { overall: Number(n2k.fields.lengthDiameter) }
     },
     filter: function (n2k) {
-      return n2k.fields['Length/Diameter']
+      return n2k.fields.lengthDiameter
     }
   },
   {
     node: 'atonType',
     value: function (n2k) {
-      const num = nameMapping[n2k.fields['AtoN Type']]
+      const num = nameMapping[n2k.fields.atonType]
       if (typeof num !== 'undefined' && (name = schema.getAtonTypeName(num))) {
         return {
           id: num,
@@ -47,49 +47,49 @@ module.exports = [
   },
   {
     node: 'design.beam',
-    source: 'Beam/Diameter'
+    source: 'beamDiameter'
   },
   {
     node: 'sensors.ais.fromBow',
-    source: 'Position reference from Bow'
+    source: 'positionReferenceFromBow'
   },
   {
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
     filter: function (n2k) {
       return (
-        n2k.fields['Position reference from Starboard'] &&
-        n2k.fields['Beam/Diameter']
+        n2k.fields.positionReferenceFromStarboard &&
+        n2k.fields.beamDiameter
       )
     }
   },
   {
     node: 'virtual',
     value: function (n2k) {
-      const flag = n2k.fields['Virtual AtoN Flag']
+      const flag = n2k.fields.virtualAtonFlag
       return typeof flag != 'undefined' ? flag === 'Yes' : undefined
     }
   },
   {
     node: 'offPosition',
     value: function (n2k) {
-      const flag = n2k.fields['Off Position Indicator']
+      const flag = n2k.fields.offPositionIndicator
       return typeof flag != 'undefined' ? flag === 'Yes' : undefined
     }
   },
   {
     node: '',
-    filter: n2k => n2k.fields['User ID'],
+    filter: n2k => n2k.fields.userId,
     value: function (n2k) {
       return {
-        mmsi: n2k.fields['User ID'].toString()
+        mmsi: n2k.fields.userId.toString()
       }
     }
   },
   {
     context: function (n2k) {
-      return n2k.fields['User ID']
-        ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields['User ID']
+      return n2k.fields.userId
+        ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields.userId
         : undefined
     }
   },

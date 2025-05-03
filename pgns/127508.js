@@ -1,24 +1,24 @@
 const { chooseField } = require('../utils.js')
 
 function instance (n2k) {
-  return chooseField(n2k, 'Battery Instance', 'Instance')
+  return n2k.fields.instance
 }
 
 module.exports = [
   {
-    source: 'Voltage',
+    source: 'voltage',
     node: function (n2k) {
       return 'electrical.batteries.' + instance(n2k) + '.voltage'
     }
   },
   {
-    source: 'Current',
+    source: 'current',
     node: function (n2k) {
       return 'electrical.batteries.' + instance(n2k) + '.current'
     }
   },
   {
-    source: 'Temperature',
+    source: 'temperature',
     node: function (n2k) {
       return 'electrical.batteries.' + instance(n2k) + '.temperature'
     }

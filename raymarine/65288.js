@@ -2,13 +2,13 @@ module.exports = [
   {
     filter: function (n2k) {
       return (
-        n2k.fields['Manufacturer Code'] === 'Raymarine' &&
-        typeof n2k.fields['Alarm Group'] !== 'undefined' &&
-        typeof n2k.fields['Alarm Status'] !== 'undefined'
+        n2k.fields.manufacturerCode === 'Raymarine' &&
+        typeof n2k.fields.alarmGroup !== 'undefined' &&
+        typeof n2k.fields.alarmStatus !== 'undefined'
       )
     },
     node: function (n2k) {
-      var alarmName = n2k.fields['Alarm ID']
+      var alarmName = n2k.fields.alarmId
 
       if (typeof alarmName === 'string') {
         alarmName = alarmName.replace(/ /g, '')
@@ -17,13 +17,13 @@ module.exports = [
       }
 
       var path =
-        n2k.fields['Alarm Group'].toLowerCase().replace(/ /g, '') +
+        n2k.fields.alarmGroup.toLowerCase().replace(/ /g, '') +
         '.' +
         alarmName
       return 'notifications.' + path
     },
     value: function (n2k) {
-      var state = n2k.fields['Alarm Status']
+      var state = n2k.fields.alarmStatus
 
       var method = ['visual']
 
@@ -37,7 +37,7 @@ module.exports = [
         state = 'alarm'
       }
 
-      var alarmName = n2k.fields['Alarm ID']
+      var alarmName = n2k.fields.alarmId
 
       if (typeof alarmName !== 'string') {
         alarmName = `Unknown Seatalk Alarm ${alarmName}`

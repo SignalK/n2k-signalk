@@ -6,53 +6,53 @@ module.exports = [
   {
     node: 'design.length',
     value: function (n2k) {
-      return { overall: Number(n2k.fields.Length) }
+      return { overall: Number(n2k.fields.length) }
     },
     filter: function (n2k) {
-      return n2k.fields['Length']
+      return n2k.fields.length
     }
   },
   {
     node: 'design.aisShipType',
     value: function (n2k) {
-      return getShipType(n2k.fields['Type of ship'])
+      return getShipType(n2k.fields.typeOfShip)
     },
     filter: function (n2k) {
-      return n2k.fields['Type of ship']
+      return n2k.fields.typeOfShip
     }
   },
   {
     node: 'design.beam',
-    source: 'Beam'
+    source: 'beam'
   },
   {
     node: '',
-    filter: n2k => n2k.fields['Callsign'],
+    filter: n2k => n2k.fields.callsign,
     value: n2k => ({
       communication: {
-        callsignVhf: n2k.fields['Callsign']
+        callsignVhf: n2k.fields.callsign
       }
     })
   },
   {
     node: 'sensors.ais.fromBow',
-    source: 'Position reference from Bow'
+    source: 'positionReferenceFromBow'
   },
   {
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
     filter: function (n2k) {
       return (
-        n2k.fields['Position reference from Starboard'] && n2k.fields['Beam']
+        n2k.fields.positionReferenceFromStarboard && n2k.fields.beam
       )
     }
   },
   {
     node: '',
-    filter: n2k => n2k.fields['User ID'],
+    filter: n2k => n2k.fields.userId,
     value: function (n2k) {
       return {
-        mmsi: n2k.fields['User ID'].toString()
+        mmsi: n2k.fields.userId.toString()
       }
     }
   },

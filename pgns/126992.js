@@ -1,12 +1,12 @@
 module.exports = [
   {
     value: function (n2k) {
-      return n2k.fields.Date.replace(/\./g, '-') + 'T' + n2k.fields.Time + 'Z'
+      return n2k.fields.date.replace(/\./g, '-') + 'T' + n2k.fields.time + 'Z'
     },
     filter: function (n2k) {
       return (
-        typeof n2k.fields['Date'] !== 'undefined' &&
-        typeof n2k.fields['Time'] !== 'undefined'
+        typeof n2k.fields.date !== 'undefined' &&
+        typeof n2k.fields.time !== 'undefined'
       )
     },
     node: 'navigation.datetime'

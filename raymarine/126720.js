@@ -7,18 +7,18 @@ module.exports = [
     filter: function (n2k) {
       return (
         n2k.description === 'Seatalk1: Display Brightness' &&
-        n2k.fields['Manufacturer Code'] === 'Raymarine' &&
-        n2k.fields['Group'] !== undefined
+        n2k.fields.manufacturerCode === 'Raymarine' &&
+        n2k.fields.group !== undefined
       )
     },
     node: n2k => {
       return `electrical.displays.raymarine.${camelCase(
-        n2k.fields['Group']
+        n2k.fields.group
       )}.brightness`
     },
     allowNull: true,
     value: n2k => {
-      let val = n2k.fields['Brightness']
+      let val = n2k.fields.brightness
       return val !== undefined ? val / 100.0 : null
     }
   },
@@ -27,18 +27,18 @@ module.exports = [
     filter: function (n2k) {
       return (
         n2k.description === 'Seatalk1: Display Color' &&
-        n2k.fields['Manufacturer Code'] === 'Raymarine' &&
-        n2k.fields['Group'] !== undefined
+        n2k.fields.manufacturerCode === 'Raymarine' &&
+        n2k.fields.group !== undefined
       )
     },
     node: n2k => {
       return `electrical.displays.raymarine.${camelCase(
-        n2k.fields['Group']
+        n2k.fields.group
       )}.color`
     },
     allowNull: true,
     value: n2k => {
-      return camelCase(n2k.fields['Color'])
+      return camelCase(n2k.fields.color)
     }
   },
   {
@@ -46,15 +46,15 @@ module.exports = [
     filter: function (n2k) {
       return (
         n2k.description === 'Seatalk1: Pilot Mode' &&
-        n2k.fields['Manufacturer Code'] === 'Raymarine' &&
-        typeof n2k.fields['Pilot Mode'] !== undefined &&
-        typeof n2k.fields['Sub Mode'] !== undefined
+        n2k.fields.manufacturerCode === 'Raymarine' &&
+        typeof n2k.fields.pilotMode !== undefined &&
+        typeof n2k.fields.subMode !== undefined
       )
     },
     node: 'steering.autopilot.state',
     value: function (n2k) {
-      var mode = n2k.fields['Pilot Mode']
-      var subMode = Number(n2k.fields['Sub Mode'])
+      var mode = n2k.fields.pilotMode
+      var subMode = Number(n2k.fields.subMode)
       if (
         (mode == 0 || mode == 'Standby' || mode == 68 || mode == 72) &&
         subMode == 0

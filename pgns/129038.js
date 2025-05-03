@@ -2,55 +2,55 @@ const getMmsiContext = require('../mmsi-context').getMmsiContext
 
 module.exports = [
   {
-    source: 'SOG',
+    source: 'sog',
     node: 'navigation.speedOverGround'
   },
   {
-    source: 'COG',
+    source: 'cog',
     node: 'navigation.courseOverGroundTrue'
   },
   {
-    filter: n2k => n2k.fields.Longitude && n2k.fields.Latitude,
+    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
     value: function (n2k) {
       return {
-        longitude: Number(n2k.fields.Longitude),
-        latitude: Number(n2k.fields.Latitude)
+        longitude: Number(n2k.fields.longitude),
+        latitude: Number(n2k.fields.latitude)
       }
     },
     node: 'navigation.position'
   },
   {
-    source: 'Rate of Turn',
+    source: 'rateOfTurn',
     node: 'navigation.rateOfTurn'
   },
   {
-    source: 'Heading',
+    source: 'heading',
     node: 'navigation.headingTrue'
   },
   {
     node: 'navigation.state',
     value: function (n2k) {
-      return stateMapping[n2k.fields['Nav Status']]
+      return stateMapping[n2k.fields.navStatus]
     },
     filter: function (n2k) {
-      return n2k.fields['Nav Status']
+      return n2k.fields.navStatus
     }
   },
   {
     node: 'navigation.specialManeuver',
     value: function (n2k) {
-      return specialManeuverMapping[n2k.fields['Special Maneuver Indicator']]
+      return specialManeuverMapping[n2k.fields.specialManeuverIndicator]
     },
     filter: function (n2k) {
-      return n2k.fields['Special Maneuver Indicator']
+      return n2k.fields.specialManeuverIndicator
     }
   },
   {
     node: '',
-    filter: n2k => n2k.fields['User ID'],
+    filter: n2k => n2k.fields.userId,
     value: function (n2k) {
       return {
-        mmsi: n2k.fields['User ID'].toString()
+        mmsi: n2k.fields.userId.toString()
       }
     }
   },

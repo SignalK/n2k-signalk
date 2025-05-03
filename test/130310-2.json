@@ -29,12 +29,12 @@
     "description": "Environmental Parameters",
     "fields": {
       "SID": "154",
-      "Outside Ambient Air Temperature": "7.76",
-      "Atmospheric Pressure": "1018"
+      "Outside Ambient Air Temperature": 7.76,
+      "Atmospheric Pressure": 101800
     },
     "testExpectConvertedValues": {
       "environment.outside.temperature": 7.76,
-      "environment.outside.pressure": 1018
+      "environment.outside.pressure": 101800
     }
   },
   "130310-water-temperature": {

@@ -190,6 +190,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
         }
       ]
     }
+
     if (src_state && src_state.canName) {
       result.updates[0].source.canName = src_state.canName
     }
@@ -218,6 +219,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
         result.updates[0].source.instance = theMappings[0].instance(n2k)
       }
     }
+    
     return result
   } catch (ex) {
     console.error(ex)
@@ -310,6 +312,7 @@ var toValuesArray = function (theMappings, n2k, state) {
           }
         } catch (ex) {
           process.stderr.write(ex + ' ' + JSON.stringify(n2k))
+          console.error(ex)
         }
         return updates
       }, [])
@@ -359,36 +362,36 @@ function addAsNested (pathValue, source, timestamp, result) {
 const metaPGNs = {
   60928: n2k => {
     return {
-      uniqueId: n2k.fields['Unique Number'],
-      manufacturerName: n2k.fields['Manufacturer Code'],
-      deviceFunction: n2k.fields['Device Function'],
-      deviceClass: n2k.fields['Device Class'],
-      deviceInstanceLower: n2k.fields['Device Instance Lower'],
-      deviceInstanceUpper: n2k.fields['Device Instance Upper'],
-      systemInstance: n2k.fields['System Instance'],
+      uniqueId: n2k.fields.uniqueNumber,
+      manufacturerName: n2k.fields.manufacturerCode,
+      deviceFunction: n2k.fields.deviceFunction,
+      deviceClass: n2k.fields.deviceClass,
+      deviceInstanceLower: n2k.fields.deviceInstanceLower,
+      deviceInstanceUpper: n2k.fields.deviceInstanceUpper,
+      systemInstance: n2k.fields.systemInstance,
       deviceInstance:
-        (n2k.fields['Device Instance Upper'] << 3) |
-        n2k.fields['Device Instance Lower']
+        (n2k.fields.deviceInstanceUpper << 3) |
+        n2k.fields.deviceInstanceLower
     }
   },
   126998: n2k => {
     return {
-      installationNote1: n2k.fields['Installation Description #1'],
-      installationNote2: n2k.fields['Installation Description #2'],
-      installationNote3: n2k.fields['Installation Description #3'],
-      manufacturerInfo: n2k.fields['Manufacturer Information']
+      installationNote1: n2k.fields.installationDescription1,
+      installationNote2: n2k.fields.installationDescription2,
+      installationNote3: n2k.fields.installationDescription3,
+      manufacturerInfo: n2k.fields.manufacturerInformation
     }
   },
   126996: n2k => {
     return {
-      productName: n2k.fields['Model ID'],
-      hardwareVersion: n2k.fields['Model Version'],
-      softwareVersion: n2k.fields['Software Version Code'],
-      productID: n2k.fields['Product Code'],
-      serialNumber: n2k.fields['Model Serial Code'],
-      nmea2000Version: n2k.fields['NMEA 2000 Version'],
-      certificationLevel: n2k.fields['Certification Level'],
-      loadEquivalency: n2k.fields['Load Equivalency']
+      productName: n2k.fields.modelId,
+      hardwareVersion: n2k.fields.modelVersion,
+      softwareVersion: n2k.fields.softwareVersionCode,
+      productID: n2k.fields.productCode,
+      serialNumber: n2k.fields.modelSerialCode,
+      nmea2000Version: n2k.fields.nmea2000Version,
+      certificationLevel: n2k.fields.certificationLevel,
+      loadEquivalency: n2k.fields.loadEquivalency
     }
   }
 }

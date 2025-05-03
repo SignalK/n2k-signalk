@@ -58,7 +58,7 @@ describe('126983 Alert', function () {
       tree.notifications.nmea.warning.navigational[20][23480].value
     ).to.deep.include(value)
 
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
   })
 
@@ -79,7 +79,7 @@ describe('126983 Alert', function () {
       tree.notifications.nmea.warning.navigational[20][23480].value
     ).to.deep.include(value)
 
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
   })
 
@@ -99,7 +99,7 @@ describe('126983 Alert', function () {
       tree.notifications.nmea.warning.navigational[20][23480].value
     ).to.deep.include(value)
 
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
   })
 })
