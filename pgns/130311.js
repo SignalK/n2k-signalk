@@ -14,6 +14,9 @@ module.exports = [
         }
       }
     },
+    filter: function (n2k) {
+      return n2k.fields.temperatureSource !== undefined
+    },
     source: 'temperature'
   },
   {
