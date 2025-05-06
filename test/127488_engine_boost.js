@@ -10,6 +10,7 @@ describe('127488 engine boost Port', function () {
         '{"timestamp":"2015-01-15-16:16:56.749Z","prio":"2","src":"17","dst":"255","pgn":"127488","description":"Engine Parameters, Rapid Update","fields":{"Instance":"Single Engine or Dual Engine Port","Speed":3190, "Boost Pressure": 393000}}'
       )
     )
+    console.log(tree)
     tree.should.have.nested.property('propulsion.port.boostPressure')
     tree.should.have.nested.property(
       'propulsion.port.boostPressure.value',

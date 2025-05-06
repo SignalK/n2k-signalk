@@ -32,7 +32,7 @@ describe('129793 AIS UTC and Date Report (Base Station)', function () {
         Spare: '0'
       }
     }
-    const delta = mapper.toDelta(msg)
+    const delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
     const values = delta.updates[0].values
     values.length.should.equal(3)

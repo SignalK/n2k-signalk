@@ -29,7 +29,7 @@ describe('129039 Class B Update', function () {
     delete tree.sensors.ais
 
     tree.should.be.validSignalKVesselIgnoringIdentity
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
     assert.equal(delta.context, 'vessels.urn:mrn:imo:mmsi:230035780')
     assertSensorClass(delta, 'B')
@@ -54,7 +54,7 @@ describe('129039 Class B Update', function () {
     delete tree.sensors.ais
 
     tree.should.be.validSignalKVesselIgnoringIdentity
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:235087238')
     assertSensorClass(delta, 'B')

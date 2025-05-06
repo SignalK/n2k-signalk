@@ -5,12 +5,11 @@ module.exports = [
   {
     filter: function (n2k, state) {
       if (typeof state !== 'undefined') {
-        var alertId = n2k.fields['Alert ID']
+        var alertId = n2k.fields.alertId
         var text = {
-          languageId: n2k.fields['Language ID'],
-          textDescription: n2k.fields['Alert Text Description'],
-          locationTextDescription:
-            n2k.fields['Alert Location Text Description'] || ''
+          languageId: n2k.fields.languageId,
+          textDescription: n2k.fields.alertTextDescription,
+          locationTextDescription: n2k.fields.alertLocationTextDescription || ''
         }
         //store the alert text in state for use with PGN 126983
         if (!state.alerts) {
@@ -22,6 +21,6 @@ module.exports = [
       }
       return false
     },
-    source: 'Alert Text'
+    source: 'alertText'
   }
 ]

@@ -8,13 +8,13 @@ const {
 
 module.exports = [
   {
-    source: 'Temperature',
+    source: 'temperature',
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.temperature'
     }
   },
   {
-    source: 'Alternator Potential',
+    source: 'alternatorPotential',
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage'
     }
@@ -24,7 +24,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.fuel.rate'
     },
     value: function (n2k) {
-      var lph = Number(n2k.fields['Fuel Rate'])
+      var lph = Number(n2k.fields.fuelRate)
       return isNaN(lph) ? null : lph / 3600000
     }
   },
@@ -33,7 +33,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.oilPressure'
     },
     value: function (n2k) {
-      var kpa = Number(n2k.fields['Oil pressure'])
+      var kpa = Number(n2k.fields.oilPressure)
       return isNaN(kpa) ? null : kpa
     }
   },
@@ -42,11 +42,11 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.runTime'
     },
     value: function (n2k) {
-      return timeToSeconds(n2k.fields['Total Engine hours'])
+      return timeToSeconds(n2k.fields.totalEngineHours)
     }
   },
   {
-    source: 'Oil temperature',
+    source: 'oilTemperature',
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.oilTemperature'
     }
@@ -56,7 +56,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.coolantPressure'
     },
     value: function (n2k) {
-      var kpa = Number(n2k.fields['Coolant Pressure'])
+      var kpa = Number(n2k.fields.coolantPressure)
       return isNaN(kpa) ? null : kpa * 1000.0
     }
   },
@@ -65,7 +65,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.engineLoad'
     },
     value: function (n2k) {
-      var percent = Number(n2k.fields['Engine Load'])
+      var percent = Number(n2k.fields.engineLoad)
       return isNaN(percent) ? null : percent / 100.0
     }
   },
@@ -74,7 +74,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.engineTorque'
     },
     value: function (n2k) {
-      var percent = Number(n2k.fields['Engine Torque'])
+      var percent = Number(n2k.fields.engineTorque)
       return isNaN(percent) ? null : percent / 100.0
     }
   },
@@ -83,7 +83,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure'
     },
     value: function (n2k) {
-      var kpa = Number(n2k.fields['Fuel Pressure'])
+      var kpa = Number(n2k.fields.fuelPressure)
       return isNaN(kpa) ? null : kpa * 1000.0
     }
   }
@@ -245,5 +245,5 @@ function generateMappingsForStatus (field, notifications) {
   })
 }
 
-generateMappingsForStatus('Discrete Status 1', status1Notifications)
-generateMappingsForStatus('Discrete Status 2', status2Notifications)
+generateMappingsForStatus('discreteStatus1', status1Notifications)
+generateMappingsForStatus('discreteStatus2', status2Notifications)

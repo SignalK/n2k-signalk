@@ -8,7 +8,7 @@ function chooseField (n2k, field1, field2) {
 }
 
 function skEngineId (n2k) {
-  let id = chooseField(n2k, 'Engine Instance', 'Instance')
+  let id = n2k.fields.instance
   if (typeof id === 'number') {
     return id
   } else {
@@ -26,7 +26,7 @@ function skEngineTitle (n2k) {
 }
 
 function acPhase (n2k) {
-  const line = n2k.fields['Line']
+  const line = n2k.fields.line
   if (!line) {
     return 'A'
   } else {

@@ -4,204 +4,204 @@ var fusionSources = {}
 
 module.exports = [
   {
-    source: 'Name',
+    source: 'name',
     node: 'entertainment.device.fusion1.name',
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Unit Name' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Unit Name' }
   }, {
     node: 'entertainment.device.fusion1.state',
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Power' },
+    filter: function(n2k) { return n2k.fields.messageId == 'Power' },
     value: function(n2k) {
-      return n2k.fields['State'] === 'On' ? 'on' : 'off'
+      return n2k.fields.state === 'On' ? 'on' : 'off'
     }
   }, {
-    source: 'Artist',
+    source: 'artist',
     node: function (n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.artistName' },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Artist' && n2k.fields.Artist != 0 && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Artist' && n2k.fields.artist != 0 && currentFusionSource != null }
   }, {
-    source: 'Album',
+    source: 'album',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.albumName'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Album'  && n2k.fields.Album != 0 && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Album'  && n2k.fields.album != 0 && currentFusionSource != null }
   }, {
-    source: 'Track',
+    source: 'track',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.name'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Title'  && n2k.fields.Track != 0  && currentFusionSource != null  }	
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Title'  && n2k.fields.track != 0  && currentFusionSource != null  }	
   }, {
     //source: 'Progress',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.elapsedTime'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Progress' && currentFusionSource != null },
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Progress' && currentFusionSource != null },
     value: function(n2k) {
-      return timeToSeconds(n2k.fields['Progress'])
+      return timeToSeconds(n2k.fields.progress)
     }
   }, {
     //source: 'Length',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.length'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' && currentFusionSource != null },
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Info' && currentFusionSource != null },
     value: function(n2k) {
-      return timeToSeconds(n2k.fields['Length'])
+      return timeToSeconds(n2k.fields.length)
     }
   }, {
-    source: 'Artist',
+    source: 'artist',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.artistName'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Artist' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'SiriusXM Artist' && currentFusionSource != null }
   }, {
-    source: 'Title',
+    source: 'title',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.name'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Title' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'SiriusXM Title' && currentFusionSource != null }
   }, {
-    source: 'Channel',
+    source: 'channel',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.tuner.stationName'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Channel' && currentFusionSource != null  }
+    filter: function(n2k) { return n2k.fields.messageId == 'SiriusXM Channel' && currentFusionSource != null  }
   }, {
-    source: 'Genre',
+    source: 'genre',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.genre'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'SiriusXM Genre' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'SiriusXM Genre' && currentFusionSource != null }
   }, {
-    source: 'Track #',
+    source: 'track',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.number'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Info' && currentFusionSource != null }
   }, {
-    source: 'Track Count',
+    source: 'trackCount',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.track.totalTracks'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Info' && currentFusionSource != null }
   }, {
     node: 'entertainment.device.fusion1.output.zone1.volume.master',
-    source: 'Zone 1',
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    source: 'zone1',
+    filter: function(n2k) { return n2k.fields.messageId == 'Volume' }
   }, {
     node: 'entertainment.device.fusion1.output.zone2.volume.master',
-    source: 'Zone 2',
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    source: 'zone2',
+    filter: function(n2k) { return n2k.fields.messageId == 'Volume' }
   }, {
     node: 'entertainment.device.fusion1.output.zone3.volume.master',
-    source: 'Zone 3',
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    source: 'zone3',
+    filter: function(n2k) { return n2k.fields.messageId == 'Volume' }
   }, {
     node: 'entertainment.device.fusion1.output.zone4.volume.master',
-    source: 'Zone 4',
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Volume' }
+    source: 'zone4',
+    filter: function(n2k) { return n2k.fields.messageId == 'Volume' }
   }, {
-    node: function (n2k) { return 'entertainment.device.fusion1.output.zone' + (Number(n2k.fields.Number)+1) + '.name' },
+    node: function (n2k) { return 'entertainment.device.fusion1.output.zone' + (Number(n2k.fields.number)+1) + '.name' },
 
-    source: 'Name',
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Zone Name' }
+    source: 'name',
+    filter: function(n2k) { return n2k.fields.messageId == 'Zone Name' }
 
 
    }, {
     node: 'entertainment.device.fusion1.output.zone1.source',
      value: function(n2k) {
-       currentFusionSource = n2k.fields['Current Source ID']
-       return 'entertainment.device.fusion1.avsource.source' + n2k.fields['Current Source ID']
+       currentFusionSource = n2k.fields.currentSourceId
+       return 'entertainment.device.fusion1.avsource.source' + n2k.fields.currentSourceId
      },
-     filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+     filter: function(n2k) { return n2k.fields.messageId == 'Source' }
    }, {
     node: 'entertainment.device.fusion1.output.zone2.source',
      value: function(n2k) {
-       return 'entertainment.device.fusion1.avsource.source' + n2k.fields['Current Source ID']
+       return 'entertainment.device.fusion1.avsource.source' + n2k.fields.currentSourceId
      },
-     filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+     filter: function(n2k) { return n2k.fields.messageId == 'Source' }
    }, {
      node: 'entertainment.device.fusion1.output.zone3.source',
      value: function(n2k) {
-       return 'entertainment.device.fusion1.avsource.source' + n2k.fields['Current Source ID']
+       return 'entertainment.device.fusion1.avsource.source' + n2k.fields.currentSourceId
      },
-     filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+     filter: function(n2k) { return n2k.fields.messageId == 'Source' }
    }, {
      node: 'entertainment.device.fusion1.output.zone4.source',
      value: function(n2k) {
-       return 'entertainment.device.fusion1.avsource.source' + n2k.fields['Current Source ID']
+       return 'entertainment.device.fusion1.avsource.source' + n2k.fields.currentSourceId
      },
-     filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+     filter: function(n2k) { return n2k.fields.messageId == 'Source' }
   }, {
-    node: function (n2k) { return 'entertainment.device.fusion1.avsource.source' + n2k.fields['Source ID'] + '.name' },
+    node: function (n2k) { return 'entertainment.device.fusion1.avsource.source' + n2k.fields.sourceId + '.name' },
     value: function(n2k) {
-      fusionSources[n2k.fields['Source ID']] = n2k.fields.Source
-      return n2k.fields.Source
+      fusionSources[n2k.fields.sourceId] = n2k.fields.source
+      return n2k.fields.source
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Source' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Source' }
     
   }, {
-    source: 'AM/FM',
+    source: 'amFm',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.tuner.mode'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'AM/FM Station' && currentFusionSource != null}
+    filter: function(n2k) { return n2k.fields.messageId == 'AM/FM Station' && currentFusionSource != null}
   }, {
-    source: 'Frequency',
+    source: 'frequency',
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.tuner.frequency'} ,
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'AM/FM Station' && currentFusionSource != null }
+    filter: function(n2k) { return n2k.fields.messageId == 'AM/FM Station' && currentFusionSource != null }
   }, {
     node: function(n2k) { return 'entertainment.device.fusion1.avsource.source' + currentFusionSource + '.playbackState'} ,
     value: function(n2k) {
-      var val = n2k.fields['Transport']
+      var val = n2k.fields.transport
       return val == 'Paused' || val == 'Stop' ? 'Paused' : 'Playing'
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Track Info' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Track Info' }
   }, {
     node: 'entertainment.device.fusion1.output.zone1.isMuted',
     value: function(n2k) {
-      var val = n2k.fields['Mute']
+      var val = n2k.fields.mute
       return val == 'Mute On' ? true : false
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Mute' }
   }, {
     node: 'entertainment.device.fusion1.output.zone2.isMuted',
     value: function(n2k) {
-      var val = n2k.fields['Mute']
+      var val = n2k.fields.mute
       return val == 'Mute On' ? true : false
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Mute' }
   }, {
     node: 'entertainment.device.fusion1.output.zone3.isMuted',
     value: function(n2k) {
-      var val = n2k.fields['Mute']
+      var val = n2k.fields.mute
       return val == 'Mute On' ? true : false
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Mute' }
   }, {
     node: 'entertainment.device.fusion1.output.zone4.isMuted',
     value: function(n2k) {
-      var val = n2k.fields['Mute']
+      var val = n2k.fields.mute
       return val == 'Mute On' ? true : false
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Mute' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Mute' }
     
   }, {
     node: 'entertainment.device.fusion1.output.zone1.equalizer',
     value: function(n2k) {
       return {
-	bass: Number(n2k.fields.Bass),
-	mid: Number(n2k.fields.Mid),
-	treble: Number(n2k.fields.Treble)
+	bass: Number(n2k.fields.bass),
+	mid: Number(n2k.fields.mid),
+	treble: Number(n2k.fields.treble)
       }
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Tone' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Tone' }
   }, {
     node: 'entertainment.device.fusion1.output.zone2.equalizer',
     value: function(n2k) {
       return {
-	bass: Number(n2k.fields.Bass),
-	mid: Number(n2k.fields.Mid),
-	treble: Number(n2k.fields.Treble)
+	bass: Number(n2k.fields.bass),
+	mid: Number(n2k.fields.mid),
+	treble: Number(n2k.fields.treble)
       }
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Tone' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Tone' }
   }, {
     node: 'entertainment.device.fusion1.output.zone3.equalizer',
     value: function(n2k) {
       return {
-	bass: Number(n2k.fields.Bass),
-	mid: Number(n2k.fields.Mid),
-	treble: Number(n2k.fields.Treble)
+	bass: Number(n2k.fields.bass),
+	mid: Number(n2k.fields.mid),
+	treble: Number(n2k.fields.treble)
       }
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Tone' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Tone' }
   }, {
     node: 'entertainment.device.fusion1.output.zone4.equalizer',
     value: function(n2k) {
       return {
-	bass: Number(n2k.fields.Bass),
-	mid: Number(n2k.fields.Mid),
-	treble: Number(n2k.fields.Treble)
+	bass: Number(n2k.fields.bass),
+	mid: Number(n2k.fields.mid),
+	treble: Number(n2k.fields.treble)
       }
     },
-    filter: function(n2k) { return n2k.fields['Message ID'] == 'Tone' }
+    filter: function(n2k) { return n2k.fields.messageId == 'Tone' }
   }
 ]

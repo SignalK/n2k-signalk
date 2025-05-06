@@ -1,6 +1,6 @@
 module.exports = [
   {
-    source: 'Rate',
+    source: 'rate',
     node: 'navigation.rateOfTurn'
   }
 ]

@@ -4,7 +4,7 @@ const _ = require('lodash')
 module.exports = [
   {
     node: 'navigation.currentRoute.name',
-    source: 'Route Name'
+    source: 'routeName'
   },
   {
     node: 'navigation.currentRoute.waypoints',
@@ -15,11 +15,11 @@ module.exports = [
       var idx = 0
       return n2k.fields.list.map(wp => {
         return {
-          name: wp['WP Name'],
+          name: wp.wpName,
           position: {
             value: {
-              latitude: wp['WP Latitude'],
-              longitude: wp['WP Longitude']
+              latitude: wp.wpLatitude,
+              longitude: wp.wpLongitude
             }
           }
         }

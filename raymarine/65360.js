@@ -2,15 +2,15 @@ module.exports = [
   {
     node: 'steering.autopilot.target.headingTrue',
     filter: function (n2k) {
-      return n2k.fields['Target Heading True']
+      return n2k.fields.targetHeadingTrue
     },
-    source: 'Target Heading True'
+    source: 'targetHeadingTrue'
   },
   {
     node: 'steering.autopilot.target.headingMagnetic',
     filter: function (n2k) {
-      return n2k.fields['Target Heading Magnetic']
+      return n2k.fields.targetHeadingMagnetic
     },
-    source: 'Target Heading Magnetic'
+    source: 'targetHeadingMagnetic'
   }
 ]
