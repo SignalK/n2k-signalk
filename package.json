@@ -21,7 +21,7 @@
   "license": "Apache-2.0",
   "repository": "https://github.com/SignalK/n2k-signalk",
   "dependencies": {
-    "@canboat/canboatjs": "^3.0.0-beta.2",
+    "@canboat/canboatjs": "^3.0.0-beta.4",
     "camelcase": "^6.2.0",
     "debug": "^4.0.0",
     "int64-buffer": "^0.99.1007",
