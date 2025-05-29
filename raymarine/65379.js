@@ -2,7 +2,7 @@ module.exports = [
   {
     node: 'steering.autopilot.state',
     value: function (n2k) {
-      var mode = n2k.fields['Pilot Mode']
+      var mode = n2k.fields.pilotMode
       if (typeof mode === 'string') {
         if (mode === 'Standby') {
           return 'standby'
@@ -18,8 +18,8 @@ module.exports = [
           return 'route'
         }
       } else {
-        mode = Number(n2k.fields['Pilot Mode'])
-        var subMode = Number(n2k.fields['Sub Mode'])
+        mode = Number(n2k.fields.pilotMode)
+        var subMode = Number(n2k.fields.subMode)
         if (mode == 0 && subMode == 0) return 'standby'
         else if (mode == 0 && subMode == 1) return 'wind'
         else if ((mode == 128 || mode == 129) && subMode == 1) return 'route'

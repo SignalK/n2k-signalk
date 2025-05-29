@@ -1,13 +1,13 @@
 module.exports = [
   {
-    source: 'Heading-To-Steer (Course)',
+    source: 'headingToSteerCourse',
     node: function (n2k) {
       const reference =
-        n2k.fields['Heading Reference'] === 'Magnetic' ? 'Magnetic' : 'True'
+        n2k.fields.headingReference === 'Magnetic' ? 'Magnetic' : 'True'
       return `steering.autopilot.target.heading${reference}`
     },
     filter: function (n2k) {
-      return typeof n2k.fields['Heading-To-Steer (Course)'] !== 'undefined'
+      return typeof n2k.fields.headingToSteerCourse !== 'undefined'
     }
   }
 ]

@@ -1,29 +1,27 @@
 const temperatureMappings = require('../temperatureMappings')
-const { chooseField } = require('../utils.js')
 
 module.exports = [
   {
     node: function (n2k) {
-      var temperatureMapping =
-        temperatureMappings[chooseField(n2k, 'Temperature Source', 'Source')]
+      var temperatureMapping = temperatureMappings[n2k.fields.source]
       if (temperatureMapping) {
         if (temperatureMapping.pathWithIndex) {
           return temperatureMapping.pathWithIndex.replace(
             '<index>',
-            n2k.fields['Instance']
+            n2k.fields.instance
           )
         } else if (temperatureMapping.path) {
           return temperatureMapping.path
         }
       } else {
-        return `generic.temperatures.userDefined${n2k.fields['Source']
+        return `generic.temperatures.userDefined${n2k.fields.source
           .toString()
-          .replace(/\ /g, '_')}.${n2k.fields['Instance']}.temperature`
+          .replace(/\ /g, '_')}.${n2k.fields.instance}.temperature`
       }
     },
     instance: function (n2k) {
-      return chooseField(n2k, 'Temperature Instance', 'Instance') + ''
+      return n2k.fields.instance + ''
     },
-    source: 'Actual Temperature'
+    source: 'actualTemperature'
   }
 ]

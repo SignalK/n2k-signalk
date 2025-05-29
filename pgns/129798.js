@@ -2,22 +2,22 @@ const padUserID = require('../mmsi-context').padUserID
 
 module.exports = [
   {
-    source: 'SOG',
+    source: 'sog',
     node: 'navigation.speedOverGround'
   },
   {
-    source: 'COG',
+    source: 'cog',
     node: 'navigation.courseOverGroundTrue'
   },
   {
-    filter: n2k => n2k.fields.Longitude && n2k.fields.Latitude,
+    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
     value: function (n2k) {
       var res = {
-        longitude: Number(n2k.fields.Longitude),
-        latitude: Number(n2k.fields.Latitude)
+        longitude: Number(n2k.fields.longitude),
+        latitude: Number(n2k.fields.latitude)
       }
-      if (typeof n2k.fields.Altitude !== 'undefined') {
-        res.altitude = Number(n2k.fields.Altitude)
+      if (typeof n2k.fields.altitude !== 'undefined') {
+        res.altitude = Number(n2k.fields.altitude)
       }
       return res
     },
@@ -25,7 +25,7 @@ module.exports = [
   },
   {
     node: '',
-    filter: n2k => n2k.fields['User ID'],
+    filter: n2k => n2k.fields.userId,
     value: function (n2k) {
       return {
         mmsi: padUserID(n2k)
@@ -34,7 +34,7 @@ module.exports = [
   },
   {
     context: function (n2k) {
-      return typeof n2k.fields['User ID'] !== 'undefined'
+      return typeof n2k.fields.userId !== 'undefined'
         ? 'sar.urn:mrn:imo:mmsi:' + padUserID(n2k)
         : undefined
     }

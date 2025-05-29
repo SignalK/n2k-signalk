@@ -1,6 +1,6 @@
 module.exports = [
   {
-    source: 'Variation',
+    source: 'variation',
     node: 'navigation.magneticVariation'
   }
 ]

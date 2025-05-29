@@ -2,56 +2,56 @@ module.exports = [
   {
     value: function (n2k) {
       return {
-        longitude: Number(n2k.fields.Longitude),
-        latitude: Number(n2k.fields.Latitude)
+        longitude: Number(n2k.fields.longitude),
+        latitude: Number(n2k.fields.latitude)
       }
     },
     filter: n2k =>
-      typeof n2k.fields.Longitude !== 'undefined' &&
-      typeof n2k.fields.Latitude !== 'undefined',
+      typeof n2k.fields.longitude !== 'undefined' &&
+      typeof n2k.fields.latitude !== 'undefined',
     node: 'navigation.position'
   },
   {
     value: function (n2k) {
-      return `${n2k.fields.Date.replace(/\./g, '-')}T${n2k.fields.Time}Z`
+      return `${n2k.fields.date.replace(/\./g, '-')}T${n2k.fields.time}Z`
     },
     filter: n2k =>
-      typeof n2k.fields.Date !== 'undefined' &&
-      typeof n2k.fields.Time !== 'undefined',
+      typeof n2k.fields.date !== 'undefined' &&
+      typeof n2k.fields.time !== 'undefined',
     node: 'navigation.datetime'
   },
   {
-    source: 'Altitude',
+    source: 'altitude',
     node: 'navigation.gnss.antennaAltitude'
   },
   {
-    source: 'Number of SVs',
+    source: 'numberOfSvs',
     node: 'navigation.gnss.satellites'
   },
   {
-    source: 'HDOP',
+    source: 'hdop',
     node: 'navigation.gnss.horizontalDilution'
   },
   {
-    source: 'PDOP',
+    source: 'pdop',
     node: 'navigation.gnss.positionDilution'
   },
   {
-    source: 'Geoidal Separation',
+    source: 'geoidalSeparation',
     node: 'navigation.gnss.geoidalSeparation'
   },
   {
-    source: 'Age of DGNSS Corrections',
+    source: 'ageOfDgnssCorrections',
     node: 'navigation.gnss.differentialAge'
   },
   {
-    source: 'Reference Station ID',
+    source: 'referenceStationId',
     node: 'navigation.gnss.differentialReference'
   },
   {
     node: 'navigation.gnss.type',
     value: function (n2k) {
-      var type = n2k.fields['GNSS type']
+      var type = n2k.fields.gnssType
       var mapped = typeMap[type]
       return mapped || type
     }
@@ -59,7 +59,7 @@ module.exports = [
   {
     node: 'navigation.gnss.methodQuality',
     value: function (n2k) {
-      var method = n2k.fields['Method']
+      var method = n2k.fields.method
       var mapped = methodQualityMap[method]
       return mapped || method
     }
@@ -67,7 +67,7 @@ module.exports = [
   {
     node: 'navigation.gnss.integrity',
     value: function (n2k) {
-      var integrity = n2k.fields['Integrity']
+      var integrity = n2k.fields.integrity
       var mapped = integrityMap[integrity]
       return mapped || integrity
     }

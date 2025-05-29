@@ -32,7 +32,7 @@ describe('129038 Class A Update', function () {
     delete tree.sensors.ais
 
     tree.should.be.validSignalKVesselIgnoringIdentity
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230982000')
     assertSensorClass(delta, 'A')
@@ -48,7 +48,7 @@ describe('129038 Class A Update', function () {
       'navigation.specialManeuver.value',
       'engaged'
     )
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230982000')
   })
@@ -83,7 +83,7 @@ describe('129038 Class A Update', function () {
       description: 'AIS Class A Position Report',
       timestamp: '2022-05-09T13:38:38.917Z'
     }
-    const deltaType = typeof mapper.toDelta(msg, {})
+    const deltaType = typeof mapper.testToDelta(msg, {})
     deltaType.should.equal('undefined')
   })
 })

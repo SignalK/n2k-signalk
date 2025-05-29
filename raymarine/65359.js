@@ -5,19 +5,19 @@ module.exports = [
     filter: function (n2k) {
       return (
         n2k.description === 'Seatalk: Pilot Heading' &&
-        typeof n2k.fields['Heading True'] !== 'undefined'
+        typeof n2k.fields.headingTrue !== 'undefined'
       )
     },
-    source: 'Heading True'
+    source: 'headingTrue'
   },
   {
     node: 'navigation.headingMagnetic',
     filter: function (n2k) {
       return (
         n2k.description === 'Seatalk: Pilot Heading' &&
-        typeof n2k.fields['Heading Magnetic'] !== 'undefined'
+        typeof n2k.fields.headingMagnetic !== 'undefined'
       )
     },
-    source: 'Heading Magnetic'
+    source: 'headingMagnetic'
   }
 ]
