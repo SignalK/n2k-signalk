@@ -7,7 +7,7 @@ module.exports = function(type, phase) {
   
   return [
     {
-      source: 'Real Power',
+      source: 'realPower',
       node: function (n2k, state) {
         return `${prefix(n2k, state)}.realPower`
       },
@@ -21,10 +21,10 @@ module.exports = function(type, phase) {
       },
       value: (n2k, state) => {
         const pf = get(state, `maretron.${prefix(n2k, state)}.powerFactor`)
-        return n2k.fields['Apparent Power'] * pf
+        return n2k.fields.apparentPower * pf
       },
       filter: (n2k, state) => {
-        return n2k.fields['Apparent Power'] != null &&
+        return n2k.fields.apparentPower != null &&
           get(state, `maretron.${prefix(n2k, state)}.powerFactor`) != null &&
           state.deviceInstance != null
       }

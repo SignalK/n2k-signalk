@@ -5,44 +5,44 @@ module.exports = [
   {
     filter: function (n2k) {
       return (
-        n2k.fields['Manufacturer Code'] === 'Simrad' &&
-          n2k.fields['Display Group'] !== 'undefined' &&
-          n2k.fields['Key'] === 'Backlight level'
+        n2k.fields.manufacturerCode === 'Simrad' &&
+          n2k.fields.displayGroup !== 'undefined' &&
+          n2k.fields.key === 'Backlight level'
       )
     },
-    node: (n2k) => { return `electrical.displays.navico.${camelCase(n2k.fields['Display Group'])}.brightness` },
+    node: (n2k) => { return `electrical.displays.navico.${camelCase(n2k.fields.displayGroup)}.brightness` },
     allowNull: true,
     value: (n2k) => {
-      let val = n2k.fields['Value']
+      let val = n2k.fields.value
       return val !== 'undefined' ? val / 100.0 : null
     }
   },
   {
     filter: function (n2k) {
       return (
-        n2k.fields['Manufacturer Code'] === 'Simrad' &&
-          n2k.fields['Display Group'] !== 'undefined' &&
-          n2k.fields['Key'] === 'Night mode'
+        n2k.fields.manufacturerCode === 'Simrad' &&
+          n2k.fields.displayGroup !== 'undefined' &&
+          n2k.fields.key === 'Night mode'
       )
     },
-    node: (n2k) => { return `electrical.displays.navico.${camelCase(n2k.fields['Display Group'])}.nightMode.state` },
+    node: (n2k) => { return `electrical.displays.navico.${camelCase(n2k.fields.displayGroup)}.nightMode.state` },
     allowNull: true,
     value: (n2k) => {
-      return n2k.fields['Value'] === 4 ? 1 : 0
+      return n2k.fields.value === 4 ? 1 : 0
     }
   },
   {
     filter: function (n2k) {
       return (
-        n2k.fields['Manufacturer Code'] === 'Simrad' &&
-          n2k.fields['Display Group'] !== 'undefined' &&
-          n2k.fields['Key'] === 'Night mode color'
+        n2k.fields.manufacturerCode === 'Simrad' &&
+          n2k.fields.displayGroup !== 'undefined' &&
+          n2k.fields.key === 'Night mode color'
       )
     },
-    node: (n2k) => { return `electrical.displays.navico.${camelCase(n2k.fields['Display Group'])}.nightModeColor` },
+    node: (n2k) => { return `electrical.displays.navico.${camelCase(n2k.fields.displayGroup)}.nightModeColor` },
     allowNull: true,
     value: (n2k) => {
-      let val = nightModeColorMapping[n2k.fields['Value']]
+      let val = nightModeColorMapping[n2k.fields.value]
       return val ? val : 'unknown'
     }
   },

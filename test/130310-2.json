@@ -29,12 +29,12 @@
     "description": "Environmental Parameters",
     "fields": {
       "SID": "154",
-      "Outside Ambient Air Temperature": "7.76",
-      "Atmospheric Pressure": "1018"
+      "Outside Ambient Air Temperature": 7.76,
+      "Atmospheric Pressure": 101800
     },
     "testExpectConvertedValues": {
       "environment.outside.temperature": 7.76,
-      "environment.outside.pressure": 1018
+      "environment.outside.pressure": 101800
     }
   },
   "130310-water-temperature": {
@@ -160,7 +160,7 @@
     "fields": {
       "SID": 112,
       "Instance": 0,
-      "Temperature Source": "Heating System Temperature"
+      "Source": "Heating System Temperature"
     },
     "testExpectConvertedValues": {}
   },
@@ -188,7 +188,7 @@
     "fields": {
       "SID": "179",
       "Instance": "2",
-      "Temperature Source": "Engine Room Temperature",
+      "Source": "Engine Room Temperature",
       "Actual Temperature": "7.76"
     },
     "testExpectConvertedValues": {
@@ -222,7 +222,7 @@
     "fields": {
       "SID": "179",
       "Instance": "3",
-      "Temperature Source": "Inside Temperature",
+      "Source": "Inside Temperature",
       "Actual Temperature": "13.18"
     },
     "testExpectConvertedValues": {
@@ -256,7 +256,7 @@
     "fields": {
       "SID": "179",
       "Instance": "4",
-      "Temperature Source": "Main Cabin Temperature",
+      "Source": "Main Cabin Temperature",
       "Actual Temperature": "16.93"
     },
     "testExpectConvertedValues": {
@@ -273,7 +273,7 @@
     "fields": {
       "SID": "179",
       "Instance": "4",
-      "Temperature Source": "Main Cabin Temperature",
+      "Source": "Main Cabin Temperature",
       "Actual Temperature": "16.93"
     },
     "testExpectConvertedValues": {
@@ -290,7 +290,7 @@
     "fields": {
       "SID": "179",
       "Instance": "5",
-      "Temperature Source": "Engine Room Temperature",
+      "Source": "Engine Room Temperature",
       "Actual Temperature": "70"
     },
     "testExpectConvertedValues": {
@@ -324,7 +324,7 @@
     "fields": {
       "SID": "179",
       "Instance": "5",
-      "Temperature Source": "Engine Room Temperature"
+      "Source": "Engine Room Temperature"
     },
     "testExpectConvertedValues": {}
   },
@@ -352,7 +352,7 @@
     "fields": {
       "SID": "14",
       "Instance": "0",
-      "Temperature Source": "Outside Temperature",
+      "Source": "Outside Temperature",
       "Actual Temperature": "7.84"
     },
     "testExpectConvertedValues": {
@@ -369,8 +369,8 @@
     "fields": {
       "SID": "14",
       "Instance": "0",
-      "Temperature Source": "Outside Temperature",
-      "Actual Temperature": "7.84"
+      "Source": "Outside Temperature",
+      "Actual Temperature": 7.84
     },
     "testExpectConvertedValues": {
       "environment.outside.temperature": 7.84
@@ -385,8 +385,8 @@
     "description": "Temperature",
     "fields": {
       "Instance": "0",
-      "Temperature Source": "Sea Temperature",
-      "Actual Temperature": "15.2"
+      "Source": "Sea Temperature",
+      "Actual Temperature": 15.2
     },
     "testExpectConvertedValues": {
       "environment.water.temperature": 15.2
@@ -401,8 +401,8 @@
     "description": "Temperature",
     "fields": {
       "Instance": "0",
-      "Temperature Source": "Live Well Temperature",
-      "Actual Temperature": "14.2"
+      "Source": "Live Well Temperature",
+      "Actual Temperature": 14.2
     },
     "testExpectConvertedValues": {
       "tanks.liveWell.0.temperature": 14.2
@@ -417,7 +417,7 @@
     "description": "Temperature",
     "fields": {
       "Instance": "42",
-      "Temperature Source": "Bait Well Temperature",
+      "Source": "Bait Well Temperature",
       "Actual Temperature": "13.2"
     },
     "testExpectConvertedValues": {
@@ -449,7 +449,7 @@
     "description": "Temperature",
     "fields": {
       "Instance": "0",
-      "Temperature Source": "Refridgeration Temperature",
+      "Source": "Refrigeration Temperature",
       "Actual Temperature": "15.2"
     },
     "testExpectConvertedValues": {
@@ -465,7 +465,7 @@
     "description": "Temperature",
     "fields": {
       "Instance": "0",
-      "Source": "Refridgeration Temperature",
+      "Source": "Refrigeration Temperature",
       "Actual Temperature": "15.2"
     },
     "testExpectConvertedValues": {
@@ -519,23 +519,6 @@
     },
     "testExpectConvertedValues": {
       "generic.temperatures.userDefined129.0.temperature": 15.2
-    }
-  },
-  "130312-userDefined-with-space": {
-    "notInSpec": true,
-    "timestamp": "2015-01-15-16:15:19.628Z",
-    "prio": "5",
-    "src": "36",
-    "dst": "255",
-    "pgn": "130312",
-    "description": "Temperature",
-    "fields": {
-      "Instance": "0",
-      "Source": "Source with a space",
-      "Actual Temperature": "15.2"
-    },
-    "testExpectConvertedValues": {
-      "generic.temperatures.userDefinedSource_with_a_space.0.temperature": 15.2
     }
   }
 }

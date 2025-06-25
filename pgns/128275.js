@@ -1,10 +1,10 @@
 module.exports = [
   {
-    source: 'Trip Log',
+    source: 'tripLog',
     node: 'navigation.trip.log'
   },
   {
-    source: 'Log',
+    source: 'log',
     node: 'navigation.log'
   }
 ]

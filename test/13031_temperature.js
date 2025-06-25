@@ -16,7 +16,7 @@ describe('Temperature: ', function () {
     it(`Converts ${testCaseName}`, () => {
       const testCase = testCases[testCaseName]
 
-      var delta = n2kMapper.toDelta(testCase)
+      var delta = n2kMapper.testToDelta(testCase)
       delta.context = 'vessels.urn:mrn:imo:mmsi:230099999'
       delta.updates[0].source.label = 'aLabel'
       full.addDelta(delta)

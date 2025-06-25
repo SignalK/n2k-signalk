@@ -1,10 +1,10 @@
 function instance (n2k) {
-  return n2k.fields['Instance']
+  return n2k.fields['instance']
 }
 
 function acPhase (lineData) {
   const phaseMap = { 0: 'A', 1: 'B', 2: 'C' }
-  return phaseMap[lineData.Line] ?? 'A'
+  return phaseMap[lineData.line] ?? 'A'
 }
 
 function prefix (n2k, lineData) {
@@ -14,14 +14,14 @@ function prefix (n2k, lineData) {
 module.exports = [
   function (n2k, stage) {
     const fields = {
-      Acceptability: 'acceptability',
-      Voltage: 'voltage',
-      Current: 'current',
-      Frequency: 'frequency',
-      'Breaker Size': 'breakerSize',
-      'Real Power': 'realPower',
-      'Reactive Power': 'reactivePower',
-      'Power Factor': 'powerFactor'
+      acceptability: 'acceptability',
+      voltage: 'voltage',
+      current: 'current',
+      frequency: 'frequency',
+      breakerSize: 'breakerSize',
+      realPower: 'realPower',
+      reactivePower: 'reactivePower',
+      powerFactor: 'powerFactor'
     }
     return n2k.fields.list
       ? n2k.fields.list.reduce((updates, lineData) => {

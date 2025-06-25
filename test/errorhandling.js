@@ -23,9 +23,10 @@ describe('No fields in pgn message', function () {
       prio: '6',
       src: '43',
       dst: '255',
-      pgn: '129794',
-      description: 'AIS Class A Static and Voyage Related Data'
+      pgn: 128267
     }
-    mapper.toDelta(msg).updates.length.should.equal(0)
+
+    var delta = mapper.toDelta(msg)
+    assert.equal(delta.updates[0].values.length, 0)
   })
 })
