@@ -105,16 +105,12 @@ N2kMapper.prototype.toDelta = function (n2k) {
   if (metaPGNs[n2k.pgn]) {
     const meta = metaPGNs[n2k.pgn](n2k)
     if (!this.state[n2k.src]) {
-      this.state[n2k.src] = {
-        metaPGNsReceived: {}
-      }
+      this.state[n2k.src] = {}
     }
 
     if (n2k.pgn === 60928) {
       const canName = new Uint64LE(toPgn(n2k)).toString(16)
-      if (!this.state[n2k.src]) {
-        this.state[n2k.src] = {}
-      } else if (
+      if (
         this.state[n2k.src].canName &&
         this.state[n2k.src].canName != canName
       ) {
@@ -125,9 +121,7 @@ N2kMapper.prototype.toDelta = function (n2k) {
           this.state[n2k.src].canName,
           canName
         )
-        this.state[n2k.src] = {
-          metaPGNsReceived: {}
-        }
+        this.state[n2k.src] = {}
         this.requestMetaData(n2k.src, 126996).then(() => {
           return this.requestMetaData(n2k.src, 126998)
         })
@@ -135,6 +129,10 @@ N2kMapper.prototype.toDelta = function (n2k) {
       this.state[n2k.src].deviceInstance = meta.deviceInstance
       meta.canName = canName
       this.state[n2k.src].canName = canName
+    }
+
+    if (!this.state[n2k.src].metaPGNsReceived) {
+      this.state[n2k.src].metaPGNsReceived = {}
     }
 
     this.state[n2k.src].metaPGNsReceived[n2k.pgn] = Date.now()
