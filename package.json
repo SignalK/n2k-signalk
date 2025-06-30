@@ -2,11 +2,14 @@
   "name": "@signalk/n2k-signalk",
   "version": "4.0.1",
   "description": "NMEA 2000 to SignalK conversion library",
-  "main": "n2kMapper.js",
+  "main": "dist/n2kMapper.js",
   "scripts": {
     "test": "mocha",
     "format": "prettier-standard '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'",
-    "ci-format": "prettier-standard --check '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'"
+    "ci-format": "prettier-standard --check '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'",
+    "build": "tsc -b --pretty false",
+    "watch": "tsc --watch --pretty false",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "nmea",
@@ -22,6 +25,7 @@
   "repository": "https://github.com/SignalK/n2k-signalk",
   "dependencies": {
     "@canboat/canboatjs": "^3.0.0",
+    "@canboat/pgns": "^6.0.2",
     "camelcase": "^6.2.0",
     "debug": "^4.0.0",
     "int64-buffer": "^0.99.1007",
@@ -32,12 +36,14 @@
   "devDependencies": {
     "@signalk/server-api": "^1.39.0",
     "@signalk/signalk-schema": "1.3.1",
+    "@tsconfig/node20": "^20.1.6",
     "baconjs": "^1.0.1",
     "chai": "~4.1.0",
     "chai-things": "0.2",
     "mocha": "^7.1.0",
     "prettier-standard": "^16.0.0",
-    "tv4": "latest"
+    "tv4": "latest",
+    "typescript": "^5.8.3"
   },
   "prettier": {
     "semi": false,

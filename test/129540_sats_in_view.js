@@ -3,7 +3,7 @@ chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
-const { toDelta } = require('../n2kMapper')
+const { toDelta } = require('../dist/n2kMapper')
 
 describe('129540 satellites in view', function () {
   it('converts', () => {

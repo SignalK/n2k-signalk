@@ -1,0 +1,28 @@
+{
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "${configDir}/dist",
+    "rootDir": "${configDir}",
+    "allowJs": true,
+    "typeRoots": ["./node_modules/@types"],
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "noEmit": false
+  },
+  "ts-node": {
+    "files": true
+  },
+  "include": [
+    "*.js",
+    "./pgns/**/*",
+    "./actisense/**/*",
+    "./digitalyacht/**/*",
+    "./fusion/**/*",
+    "./lowrance/**/*",
+    "./maretron/**/*",
+    "./raymarine/**/*",
+    "./simrad/**/*"
+  ],
+}

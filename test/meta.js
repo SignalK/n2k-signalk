@@ -2,7 +2,7 @@ const chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
 
-const N2kMapper = require('../n2kMapper').N2kMapper
+const N2kMapper = require('../dist/n2kMapper').N2kMapper
 
 describe('Meta data works', function () {
   it('Address Claim', done => {

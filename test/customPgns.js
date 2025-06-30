@@ -1,4 +1,4 @@
-const N2kMapper = require('../n2kMapper').N2kMapper
+const N2kMapper = require('../dist/n2kMapper').N2kMapper
 const EventEmitter = require('events')
 const signalkSchema = require('@signalk/signalk-schema')
 const PropertyValues = require('@signalk/server-api').PropertyValues
