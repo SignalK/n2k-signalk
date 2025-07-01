@@ -4,7 +4,7 @@ import {
   PGN_126720_Raymarine__0X81F0__0X84,
   ManufacturerCode,
   SeatalkPilotMode
-} from '@canboat/pgns'
+} from '@canboat/ts-pgns'
 
 const debug = require('debug')('n2k-signalk-126720')
 import camelCase from 'camelcase'
@@ -21,7 +21,7 @@ module.exports = [
     },
     node: (n2k:PGN_126720_Raymarine__0X0C8C) => {
       return `electrical.displays.raymarine.${camelCase(
-        n2k.fields.group!
+        n2k.fields.group!.toString()
       )}.brightness`
     },
     allowNull: true,
@@ -42,12 +42,12 @@ module.exports = [
     },
     node: (n2k:PGN_126720_Raymarine__0X0C8C_Color) => {
       return `electrical.displays.raymarine.${camelCase(
-        n2k.fields.group!
+        n2k.fields.group!.toString()
       )}.color`
     },
     allowNull: true,
     value: (n2k:PGN_126720_Raymarine__0X0C8C_Color) => {
-      return camelCase(n2k.fields.color!)
+      return camelCase(n2k.fields.color!.toString())
     }
   },
   {
@@ -63,10 +63,13 @@ module.exports = [
     node: 'steering.autopilot.state',
     value: function (n2k:PGN_126720_Raymarine__0X81F0__0X84) {
       var mode = n2k.fields.pilotMode
-      var modeNumber = (n2k.fields.pilotMode as unknown) as number
       var subMode = Number(n2k.fields.subMode)
+
+      if ( n2k.fields.pilotMode == 10 ) {
+      }
+      
       if (
-        (modeNumber == 0 || mode == SeatalkPilotMode.Standby || modeNumber == 68 || modeNumber == 72) &&
+        (mode == 0 || mode == SeatalkPilotMode.Standby || mode == 68 || mode == 72) &&
         subMode == 0
       ) {
         return 'standby'

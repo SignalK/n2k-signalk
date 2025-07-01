@@ -1,4 +1,4 @@
-import { PGN_127237, DirectionReference } from '@canboat/pgns'
+import { PGN_127237, DirectionReference } from '@canboat/ts-pgns'
 
 module.exports = [
   {

@@ -3,13 +3,13 @@ import {
   ManufacturerCode,
   SeatalkAlarmStatus,
   SeatalkAlarmId
-} from '@canboat/pgns'
+} from '@canboat/ts-pgns'
 
 module.exports = [
   {
     filter: function (n2k: PGN_65288) {
       return (
-        n2k.fields.manufacturerCode === 'Raymarine' &&
+        n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
         typeof n2k.fields.alarmGroup !== 'undefined' &&
         typeof n2k.fields.alarmStatus !== 'undefined'
       )
@@ -23,7 +23,7 @@ module.exports = [
         alarmName = `unknown${n2k.fields.alarmId}`
       }
 
-      var alarmGroup:string = n2k.fields.alarmGroup !== undefined ?  n2k.fields.alarmGroup : "unknownGroup"
+      var alarmGroup:string = n2k.fields.alarmGroup !== undefined ?  n2k.fields.alarmGroup.toString() : "unknownGroup"
 
       var path =
         alarmGroup.toLowerCase().replace(/ /g, '') + '.' + alarmName

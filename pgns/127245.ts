@@ -1,4 +1,4 @@
-import { PGN_127245 } from '@canboat/pgns'
+import { PGN_127245 } from '@canboat/ts-pgns'
 
 module.exports = [
   {

@@ -1,4 +1,4 @@
-import { PGN_129041, AtonType } from '@canboat/pgns'
+import { PGN_129041, AtonType } from '@canboat/ts-pgns'
 
 import { getMmsiContext } from '../mmsi-context'
 import getFromStarboard from '../aisFromStarboard'
