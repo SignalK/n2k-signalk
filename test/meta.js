@@ -8,15 +8,15 @@ describe('Meta data works', function () {
   it('Address Claim', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('uniqueId', 76223)
-      meta.should.have.property('manufacturerName', 'Fusion Electronics')
+      console.log(meta)
+      meta.should.have.property('uniqueNumber', 76223)
+      meta.should.have.property('manufacturerCode', 'Fusion Electronics')
       meta.should.have.property('deviceFunction', 130)
       meta.should.have.property('deviceClass', 'Entertainment')
       meta.should.have.property('deviceInstanceLower', 0)
       meta.should.have.property('deviceInstanceUpper', 0)
       meta.should.have.property('systemInstance', 0)
       meta.should.have.property('canName', 'c0fa8200346129bf')
-      meta.should.have.property('deviceInstance', 0)
       done()
     })
     n2kMapper.toDelta({
@@ -44,9 +44,10 @@ describe('Meta data works', function () {
   it('Configuration Information', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('installationNote1', 'UD-650')
-      meta.should.have.property('installationNote2', 'FUSION')
-      meta.should.have.property('installationNote3', 'Fusion Electronics Ltd')
+      console.log(meta)
+      meta.should.have.property('installationDescription1', 'UD-650')
+      meta.should.have.property('installationDescription2', 'FUSION')
+      meta.should.have.property('installationDescription3', 'Fusion Electronics Ltd')
       done()
     })
     n2kMapper.toDelta({
@@ -67,11 +68,12 @@ describe('Meta data works', function () {
   it('Product Information', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('productName', 'UD-650')
-      meta.should.have.property('hardwareVersion', 'FUSION-LINK-1.0')
-      meta.should.have.property('softwareVersion', '2.0.265')
-      meta.should.have.property('productID', 3115)
-      meta.should.have.property('serialNumber', '76223')
+      console.log(meta)
+      meta.should.have.property('modelId', 'UD-650')
+      meta.should.have.property('modelVersion', 'FUSION-LINK-1.0')
+      meta.should.have.property('softwareVersionCode', '2.0.265')
+      meta.should.have.property('productCode', 3115)
+      meta.should.have.property('modelSerialCode', '76223')
       meta.should.have.property('nmea2000Version', 1301)
       meta.should.have.property('certificationLevel', 1)
       meta.should.have.property('loadEquivalency', 1)

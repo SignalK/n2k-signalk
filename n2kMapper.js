@@ -358,7 +358,13 @@ function addAsNested (pathValue, source, timestamp, result) {
 }
 
 const metaPGNs = {
-  60928: n2k => n2k.fields,
+  60928: n2k => {
+    return {
+      ...n2k.fields,
+      deviceInstance:
+      (n2k.fields.deviceInstanceUpper << 3) | n2k.fields.deviceInstanceLower
+    }
+  },
   126998: n2k => n2k.fields,
   126996: n2k => n2k.fields
 }
