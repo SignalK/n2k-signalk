@@ -18,6 +18,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
+    - run: npm build
     - run: npm run ci-format
     - run: npm test
       env:
