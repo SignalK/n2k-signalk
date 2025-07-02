@@ -358,39 +358,9 @@ function addAsNested (pathValue, source, timestamp, result) {
 }
 
 const metaPGNs = {
-  60928: n2k => {
-    return {
-      uniqueId: n2k.fields.uniqueNumber,
-      manufacturerName: n2k.fields.manufacturerCode,
-      deviceFunction: n2k.fields.deviceFunction,
-      deviceClass: n2k.fields.deviceClass,
-      deviceInstanceLower: n2k.fields.deviceInstanceLower,
-      deviceInstanceUpper: n2k.fields.deviceInstanceUpper,
-      systemInstance: n2k.fields.systemInstance,
-      deviceInstance:
-        (n2k.fields.deviceInstanceUpper << 3) | n2k.fields.deviceInstanceLower
-    }
-  },
-  126998: n2k => {
-    return {
-      installationNote1: n2k.fields.installationDescription1,
-      installationNote2: n2k.fields.installationDescription2,
-      installationNote3: n2k.fields.installationDescription3,
-      manufacturerInfo: n2k.fields.manufacturerInformation
-    }
-  },
-  126996: n2k => {
-    return {
-      productName: n2k.fields.modelId,
-      hardwareVersion: n2k.fields.modelVersion,
-      softwareVersion: n2k.fields.softwareVersionCode,
-      productID: n2k.fields.productCode,
-      serialNumber: n2k.fields.modelSerialCode,
-      nmea2000Version: n2k.fields.nmea2000Version,
-      certificationLevel: n2k.fields.certificationLevel,
-      loadEquivalency: n2k.fields.loadEquivalency
-    }
-  }
+  60928: n2k =>  n2k.fields,
+  126998: n2k => n2k.fields,
+  126996: n2k => n2k.fields
 }
 
 exports.N2kMapper = N2kMapper
