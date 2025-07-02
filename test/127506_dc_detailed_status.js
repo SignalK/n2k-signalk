@@ -32,7 +32,7 @@ describe('127506 dc detailed status', function () {
     generatePGNs(
       '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"instance":1,"SID":0}}'
     ).forEach(pgn => {
-      var delta = require('./testMapper').toDelta(JSON.parse(pgn))
+      var delta = require('./testMapper').testToDelta(JSON.parse(pgn))
       tree = require('./testMapper').toNested(JSON.parse(pgn))
 
       delta.updates[0].values[0].should.have.property(
