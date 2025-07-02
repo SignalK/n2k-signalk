@@ -8,7 +8,6 @@ describe('Meta data works', function () {
   it('Address Claim', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      console.log(meta)
       meta.should.have.property('uniqueNumber', 76223)
       meta.should.have.property('manufacturerCode', 'Fusion Electronics')
       meta.should.have.property('deviceFunction', 130)
@@ -44,7 +43,6 @@ describe('Meta data works', function () {
   it('Configuration Information', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      console.log(meta)
       meta.should.have.property('installationDescription1', 'UD-650')
       meta.should.have.property('installationDescription2', 'FUSION')
       meta.should.have.property(
@@ -71,7 +69,6 @@ describe('Meta data works', function () {
   it('Product Information', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      console.log(meta)
       meta.should.have.property('modelId', 'UD-650')
       meta.should.have.property('modelVersion', 'FUSION-LINK-1.0')
       meta.should.have.property('softwareVersionCode', '2.0.265')
