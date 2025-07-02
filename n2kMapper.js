@@ -362,7 +362,7 @@ const metaPGNs = {
     return {
       ...n2k.fields,
       deviceInstance:
-      (n2k.fields.deviceInstanceUpper << 3) | n2k.fields.deviceInstanceLower
+        (n2k.fields.deviceInstanceUpper << 3) | n2k.fields.deviceInstanceLower
     }
   },
   126998: n2k => n2k.fields,

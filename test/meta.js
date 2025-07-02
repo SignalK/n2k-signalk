@@ -47,7 +47,10 @@ describe('Meta data works', function () {
       console.log(meta)
       meta.should.have.property('installationDescription1', 'UD-650')
       meta.should.have.property('installationDescription2', 'FUSION')
-      meta.should.have.property('installationDescription3', 'Fusion Electronics Ltd')
+      meta.should.have.property(
+        'installationDescription3',
+        'Fusion Electronics Ltd'
+      )
       done()
     })
     n2kMapper.toDelta({
