@@ -1,7 +1,7 @@
 import {
-  PGN_126720_Raymarine__0X0C8C,
-  PGN_126720_Raymarine__0X0C8C_Color,
-  PGN_126720_Raymarine__0X81F0__0X84,
+  PGN_126720_Seatalk1DisplayBrightness,
+  PGN_126720_Seatalk1DisplayColor,
+  PGN_126720_Seatalk1PilotMode,
   ManufacturerCode,
   SeatalkPilotMode
 } from '@canboat/ts-pgns'
@@ -12,27 +12,27 @@ import camelCase from 'camelcase'
 module.exports = [
   {
     // Display Brightness
-    filter: function (n2k:PGN_126720_Raymarine__0X0C8C) {
+    filter: function (n2k:PGN_126720_Seatalk1DisplayBrightness) {
       return (
         n2k.description === 'Seatalk1: Display Brightness' &&
         n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
         n2k.fields.group !== undefined
       )
     },
-    node: (n2k:PGN_126720_Raymarine__0X0C8C) => {
+    node: (n2k:PGN_126720_Seatalk1DisplayBrightness) => {
       return `electrical.displays.raymarine.${camelCase(
         n2k.fields.group!.toString()
       )}.brightness`
     },
     allowNull: true,
-    value: (n2k:PGN_126720_Raymarine__0X0C8C) => {
+    value: (n2k:PGN_126720_Seatalk1DisplayBrightness) => {
       let val = n2k.fields.brightness
       return val !== undefined ? val / 100.0 : null
     }
   },
   {
     // Display Color
-    filter: function (n2k:PGN_126720_Raymarine__0X0C8C_Color) {
+    filter: function (n2k:PGN_126720_Seatalk1DisplayColor) {
       return (
         n2k.description === 'Seatalk1: Display Color' &&
         n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
@@ -40,19 +40,19 @@ module.exports = [
         n2k.fields.color !== undefined
       )
     },
-    node: (n2k:PGN_126720_Raymarine__0X0C8C_Color) => {
+    node: (n2k:PGN_126720_Seatalk1DisplayColor) => {
       return `electrical.displays.raymarine.${camelCase(
         n2k.fields.group!.toString()
       )}.color`
     },
     allowNull: true,
-    value: (n2k:PGN_126720_Raymarine__0X0C8C_Color) => {
+    value: (n2k:PGN_126720_Seatalk1DisplayColor) => {
       return camelCase(n2k.fields.color!.toString())
     }
   },
   {
     // filters for SmartPilot behind Seatalk-STNG-Converter
-    filter: function (n2k:PGN_126720_Raymarine__0X81F0__0X84) {
+    filter: function (n2k:PGN_126720_Seatalk1PilotMode) {
       return (
         n2k.description === 'Seatalk1: Pilot Mode' &&
         n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
@@ -61,7 +61,7 @@ module.exports = [
       )
     },
     node: 'steering.autopilot.state',
-    value: function (n2k:PGN_126720_Raymarine__0X81F0__0X84) {
+    value: function (n2k:PGN_126720_Seatalk1PilotMode) {
       var mode = n2k.fields.pilotMode
       var subMode = Number(n2k.fields.subMode)
 
