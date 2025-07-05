@@ -4,20 +4,19 @@ import { getMmsiContext } from '../mmsi-context'
 import getFromStarboard from '../aisFromStarboard'
 const schema = require('@signalk/signalk-schema')
 
-
 module.exports = [
   {
     node: '',
-    filter: (n2k:PGN_129041) => n2k.fields.atonName,
-    value: function (n2k:PGN_129041) {
+    filter: (n2k: PGN_129041) => n2k.fields.atonName,
+    value: function (n2k: PGN_129041) {
       return {
         name: n2k.fields.atonName
       }
     }
   },
   {
-    filter: (n2k:PGN_129041) => n2k.fields.longitude && n2k.fields.latitude,
-    value: function (n2k:PGN_129041) {
+    filter: (n2k: PGN_129041) => n2k.fields.longitude && n2k.fields.latitude,
+    value: function (n2k: PGN_129041) {
       return {
         longitude: Number(n2k.fields.longitude),
         latitude: Number(n2k.fields.latitude)
@@ -27,22 +26,22 @@ module.exports = [
   },
   {
     node: 'design.length',
-    value: function (n2k:PGN_129041) {
+    value: function (n2k: PGN_129041) {
       return { overall: Number(n2k.fields.lengthDiameter) }
     },
-    filter: function (n2k:PGN_129041) {
+    filter: function (n2k: PGN_129041) {
       return n2k.fields.lengthDiameter
     }
   },
   {
     node: 'atonType',
-    value: function (n2k:PGN_129041) {
-      let num:number|undefined = undefined
-      if ( n2k.fields.atonType ) {
+    value: function (n2k: PGN_129041) {
+      let num: number | undefined = undefined
+      if (n2k.fields.atonType) {
         num = nameMapping[n2k.fields.atonType]
       }
       const name = schema.getAtonTypeName(num)
-      if (typeof num !== 'undefined' && name !== undefined ) {
+      if (typeof num !== 'undefined' && name !== undefined) {
         return {
           id: num,
           name: name
@@ -63,7 +62,7 @@ module.exports = [
   {
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
-    filter: function (n2k:PGN_129041) {
+    filter: function (n2k: PGN_129041) {
       return (
         n2k.fields.positionReferenceFromStarboardEdge && n2k.fields.beamDiameter
       )
@@ -71,29 +70,29 @@ module.exports = [
   },
   {
     node: 'virtual',
-    value: function (n2k:PGN_129041) {
+    value: function (n2k: PGN_129041) {
       const flag = n2k.fields.virtualAtonFlag
       return typeof flag != 'undefined' ? flag === 'Yes' : undefined
     }
   },
   {
     node: 'offPosition',
-    value: function (n2k:PGN_129041) {
+    value: function (n2k: PGN_129041) {
       const flag = n2k.fields.offPositionIndicator
       return typeof flag != 'undefined' ? flag === 'Yes' : undefined
     }
   },
   {
     node: '',
-    filter: (n2k:PGN_129041) => n2k.fields.userId,
-    value: function (n2k:PGN_129041) {
+    filter: (n2k: PGN_129041) => n2k.fields.userId,
+    value: function (n2k: PGN_129041) {
       return {
         mmsi: n2k.fields.userId.toString()
       }
     }
   },
   {
-    context: function (n2k:PGN_129041) {
+    context: function (n2k: PGN_129041) {
       return n2k.fields.userId
         ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields.userId
         : undefined
@@ -101,13 +100,13 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k:PGN_129041) {
+    value: function (n2k: PGN_129041) {
       return 'ATON'
     }
   }
 ]
 
-const nameMapping : {[key:string]: number} = {
+const nameMapping: { [key: string]: number } = {
   [AtonType.DefaultTypeOfAtoNNotSpecified]: 0,
   [AtonType.ReferencePoint]: 1,
   [AtonType.Racon]: 2,

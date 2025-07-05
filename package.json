@@ -5,7 +5,7 @@
   "main": "dist/n2kMapper.js",
   "scripts": {
     "test": "mocha",
-    "format": "prettier-standard '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'",
+    "format": "prettier-standard '*.js*' 'pgns/**/*.[j,t]s' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*' 'fusion/**/*.ts*'",
     "ci-format": "prettier-standard --check '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'",
     "build": "tsc -b --pretty false",
     "watch": "tsc --watch --pretty false",
