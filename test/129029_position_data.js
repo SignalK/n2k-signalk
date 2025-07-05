@@ -33,7 +33,7 @@ describe('129029 Position Data ', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
   it('no position in input produces no position output', function () {
-    var delta = require('./testMapper').toDelta(invalidDataMsg)
+    var delta = require('./testMapper').testToDelta(invalidDataMsg)
     delta.updates[0].values.should.not.contain.a.thing.with.property(
       'path',
       'navigation.position'

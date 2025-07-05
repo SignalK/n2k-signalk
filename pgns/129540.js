@@ -5,10 +5,10 @@ module.exports = [
       const satellites = n2k.fields.list.reduce((acc, satInfo) => {
         if (Object.keys(satInfo).length >= 4) {
           const {
-            PRN: id,
-            Elevation: elevation,
-            Azimuth: azimuth,
-            SNR
+            prn: id,
+            elevation: elevation,
+            azimuth: azimuth,
+            snr: SNR
           } = satInfo
           acc.push({
             id,

@@ -3,7 +3,7 @@ module.exports = {
   126985: require('./126985.js'),
   126992: require('./126992.js'),
   127237: require('./127237.js'),
-  127245: require('./127245.js'),
+  127245: require('./127245'),
   127250: require('./127250.js'),
   127251: require('./127251.js'),
   127257: require('./127257.js'),

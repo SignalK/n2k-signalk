@@ -1,4 +1,4 @@
-const n2kMapper = require('../n2kMapper')
+const n2kMapper = require('../dist/n2kMapper')
 const signalkSchema = require('@signalk/signalk-schema')
 
 const canboatjs = require('@canboat/canboatjs')
