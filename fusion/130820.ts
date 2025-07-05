@@ -42,7 +42,6 @@ module.exports = [
     node: 'entertainment.device.fusion1.name',
 
     filter: (n2k: PGN_130820_FusionDeviceName) => n2k.isMatch()
-//      isFusionMessage(n2k, FusionMessageId.UnitName)
   },
   {
     node: 'entertainment.device.fusion1.state',
