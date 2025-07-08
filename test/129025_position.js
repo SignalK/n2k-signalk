@@ -26,7 +26,7 @@ describe('129025 Position, rapid update ', function () {
   })
 
   it('complete sentence produces valid delta', function () {
-    var delta = require('./testMapper').toDelta(msg)
+    var delta = require('./testMapper').testToDelta(msg)
     delta.should.be.validSignalKDelta
   })
 

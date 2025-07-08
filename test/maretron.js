@@ -3,7 +3,7 @@ chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
-const N2kMapper = require('../n2kMapper').N2kMapper
+const N2kMapper = require('../dist/n2kMapper').N2kMapper
 const toNested = require('./testMapper').toNested
 
 describe('Maretron AC PGNs work', function () {
