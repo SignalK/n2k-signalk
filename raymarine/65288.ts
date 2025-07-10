@@ -1,5 +1,5 @@
 import {
-  PGN_65288,
+  PGN_65288_SeatalkAlarm,
   ManufacturerCode,
   SeatalkAlarmStatus,
   SeatalkAlarmId
@@ -7,14 +7,14 @@ import {
 
 module.exports = [
   {
-    filter: function (n2k: PGN_65288) {
+    filter: function (n2k: PGN_65288_SeatalkAlarm) {
       return (
         n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
         typeof n2k.fields.alarmGroup !== 'undefined' &&
         typeof n2k.fields.alarmStatus !== 'undefined'
       )
     },
-    node: function (n2k: PGN_65288) {
+    node: function (n2k: PGN_65288_SeatalkAlarm) {
       var alarmName: string
 
       if (typeof n2k.fields.alarmId === 'string') {
@@ -29,7 +29,7 @@ module.exports = [
         alarmGroup.toLowerCase().replace(/ /g, '') + '.' + alarmName
       return 'notifications.' + path
     },
-    value: function (n2k: PGN_65288) {
+    value: function (n2k: PGN_65288_SeatalkAlarm) {
       var state = n2k.fields.alarmStatus
 
       var method = ['visual']
