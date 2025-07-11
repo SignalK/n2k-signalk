@@ -17,10 +17,11 @@ import {
   PGN_130820_FusionSource,
   PGN_130820_FusionMute,
   PGN_130820_FusionEq,
+  PGN_130820_FusionTuner,
   FusionPlayStatus,
-  FusionMessageId,
   ManufacturerCode,
-  FusionPowerState
+  FusionPowerState,
+  FusionStatusMessageId
 } from '@canboat/ts-pgns'
 let currentFusionSource: number | null = null
 const fusionSources: { [key: string]: string } = {}
@@ -41,13 +42,14 @@ module.exports = [
 
     node: 'entertainment.device.fusion1.name',
 
-    filter: (n2k: PGN_130820_FusionDeviceName) => n2k.isMatch()
+    filter: (n2k: PGN_130820_FusionPowerState) =>
+      isFusionMessage(n2k, FusionStatusMessageId.UnitName),
   },
   {
     node: 'entertainment.device.fusion1.state',
 
     filter: (n2k: PGN_130820_FusionPowerState) =>
-      isFusionMessage(n2k, FusionMessageId.Power),
+      isFusionMessage(n2k, FusionStatusMessageId.Power),
 
     value: (n2k: PGN_130820_FusionPowerState) => {
       return n2k.fields.state === FusionPowerState.On ? 'on' : 'off'
@@ -62,7 +64,7 @@ module.exports = [
       '.track.artistName',
 
     filter: (n2k: PGN_130820_FusionArtistName) =>
-      isFusionMessage(n2k, FusionMessageId.TrackArtist) &&
+      isFusionMessage(n2k, FusionStatusMessageId.TrackArtist) &&
       n2k.fields.artist != undefined &&
       currentFusionSource != null
   },
@@ -75,7 +77,7 @@ module.exports = [
       '.track.albumName',
 
     filter: (n2k: PGN_130820_FusionAlbumName) =>
-      isFusionMessage(n2k, FusionMessageId.TrackAlbum) &&
+      isFusionMessage(n2k, FusionStatusMessageId.TrackAlbum) &&
       n2k.fields.album != undefined &&
       currentFusionSource != null
   },
@@ -88,7 +90,7 @@ module.exports = [
       '.track.name',
 
     filter: (n2k: PGN_130820_FusionTrackName) =>
-      isFusionMessage(n2k, FusionMessageId.TrackTitle) &&
+      isFusionMessage(n2k, FusionStatusMessageId.TrackTitle) &&
       n2k.fields.track != undefined &&
       currentFusionSource != null
   },
@@ -99,7 +101,7 @@ module.exports = [
       '.track.elapsedTime',
 
     filter: (n2k: PGN_130820_FusionTrackPosition) =>
-      isFusionMessage(n2k, FusionMessageId.TrackProgress) &&
+      isFusionMessage(n2k, FusionStatusMessageId.TrackProgress) &&
       currentFusionSource != null,
 
     value: (n2k: PGN_130820_FusionTrackPosition) =>
@@ -112,7 +114,7 @@ module.exports = [
       '.track.length',
 
     filter: (n2k: PGN_130820_FusionMedia) =>
-      isFusionMessage(n2k, FusionMessageId.TrackInfo) &&
+      isFusionMessage(n2k, FusionStatusMessageId.TrackInfo) &&
       currentFusionSource != null,
 
     value: (n2k: PGN_130820_FusionMedia) => timeToSeconds(n2k.fields.length)
@@ -126,7 +128,7 @@ module.exports = [
       '.track.artistName',
 
     filter: (n2k: PGN_130820_FusionSiriusxmArtist) =>
-      isFusionMessage(n2k, FusionMessageId.SiriusXmArtist) &&
+      isFusionMessage(n2k, FusionStatusMessageId.SiriusXmArtist) &&
       currentFusionSource != null
   },
   {
@@ -138,7 +140,7 @@ module.exports = [
       '.track.name',
 
     filter: (n2k: PGN_130820_FusionSiriusxmTitle) =>
-      isFusionMessage(n2k, FusionMessageId.SiriusXmTitle) &&
+      isFusionMessage(n2k, FusionStatusMessageId.SiriusXmTitle) &&
       currentFusionSource != null
   },
   {
@@ -150,7 +152,7 @@ module.exports = [
       '.tuner.stationName',
 
     filter: (n2k: PGN_130820_FusionSiriusxmChannel) =>
-      isFusionMessage(n2k, FusionMessageId.SiriusXmChannel) &&
+      isFusionMessage(n2k, FusionStatusMessageId.SiriusXmChannel) &&
       currentFusionSource != null
   },
   {
@@ -162,7 +164,7 @@ module.exports = [
       '.track.genre',
 
     filter: (n2k: any) =>
-      isFusionMessage(n2k, FusionMessageId.SiriusXmGenre) &&
+      isFusionMessage(n2k, FusionStatusMessageId.SiriusXmGenre) &&
       currentFusionSource != null
   },
   {
@@ -174,7 +176,7 @@ module.exports = [
       '.track.number',
 
     filter: (n2k: PGN_130820_FusionMedia) =>
-      isFusionMessage(n2k, FusionMessageId.TrackInfo) &&
+      isFusionMessage(n2k, FusionStatusMessageId.TrackInfo) &&
       currentFusionSource != null
   },
   {
@@ -186,7 +188,7 @@ module.exports = [
       '.track.totalTracks',
 
     filter: (n2k: PGN_130820_FusionMedia) =>
-      isFusionMessage(n2k, FusionMessageId.TrackInfo) &&
+      isFusionMessage(n2k, FusionStatusMessageId.TrackInfo) &&
       currentFusionSource != null
   },
   {
@@ -194,28 +196,28 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionVolumes) => n2k.fields.zone1,
 
-    filter: (n2k: any) => isFusionMessage(n2k, FusionMessageId.Volume)
+    filter: (n2k: any) => isFusionMessage(n2k, FusionStatusMessageId.Volume)
   },
   {
     node: 'entertainment.device.fusion1.output.zone2.volume.master',
 
     value: (n2k: PGN_130820_FusionVolumes) => n2k.fields.zone2,
 
-    filter: (n2k: any) => isFusionMessage(n2k, FusionMessageId.Volume)
+    filter: (n2k: any) => isFusionMessage(n2k, FusionStatusMessageId.Volume)
   },
   {
     node: 'entertainment.device.fusion1.output.zone3.volume.master',
 
     value: (n2k: PGN_130820_FusionVolumes) => n2k.fields.zone3,
 
-    filter: (n2k: any) => isFusionMessage(n2k, FusionMessageId.Volume)
+    filter: (n2k: any) => isFusionMessage(n2k, FusionStatusMessageId.Volume)
   },
   {
     node: 'entertainment.device.fusion1.output.zone4.volume.master',
 
     value: (n2k: PGN_130820_FusionVolumes) => n2k.fields.zone4,
 
-    filter: (n2k: any) => isFusionMessage(n2k, FusionMessageId.Volume)
+    filter: (n2k: any) => isFusionMessage(n2k, FusionStatusMessageId.Volume)
   },
   {
     node: (n2k: PGN_130820_FusionZoneName) =>
@@ -225,13 +227,13 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionZoneName) => n2k.fields.name,
 
-    filter: (n2k: any) => isFusionMessage(n2k, FusionMessageId.ZoneName)
+    filter: (n2k: any) => isFusionMessage(n2k, FusionStatusMessageId.ZoneName)
   },
   {
     node: 'entertainment.device.fusion1.output.zone1.source',
 
     value: (n2k: PGN_130820_FusionSource) => {
-      if (n2k.fields.currentSourceId) {
+      if (n2k.fields.currentSourceId !== undefined) {
         currentFusionSource = n2k.fields.currentSourceId
         return (
           'entertainment.device.fusion1.avsource.source' +
@@ -241,7 +243,7 @@ module.exports = [
     },
 
     filter: (n2k: PGN_130820_FusionSource) =>
-      isFusionMessage(n2k, FusionMessageId.Source)
+      isFusionMessage(n2k, FusionStatusMessageId.Source)
   },
   {
     node: 'entertainment.device.fusion1.output.zone2.source',
@@ -251,7 +253,7 @@ module.exports = [
       n2k.fields.currentSourceId,
 
     filter: (n2k: PGN_130820_FusionSource) =>
-      isFusionMessage(n2k, FusionMessageId.Source)
+      isFusionMessage(n2k, FusionStatusMessageId.Source)
   },
   {
     node: 'entertainment.device.fusion1.output.zone3.source',
@@ -261,7 +263,7 @@ module.exports = [
       n2k.fields.currentSourceId,
 
     filter: (n2k: PGN_130820_FusionSource) =>
-      isFusionMessage(n2k, FusionMessageId.Source)
+      isFusionMessage(n2k, FusionStatusMessageId.Source)
   },
   {
     node: 'entertainment.device.fusion1.output.zone4.source',
@@ -271,7 +273,7 @@ module.exports = [
       n2k.fields.currentSourceId,
 
     filter: (n2k: PGN_130820_FusionSource) =>
-      isFusionMessage(n2k, FusionMessageId.Source)
+      isFusionMessage(n2k, FusionStatusMessageId.Source)
   },
   {
     node: (n2k: PGN_130820_FusionSource) =>
@@ -283,42 +285,53 @@ module.exports = [
       fusionSources[n2k.fields.sourceId!] = n2k.fields.source!
       return n2k.fields.source
     },
+
     filter: (n2k: PGN_130820_FusionSource) =>
-      isFusionMessage(n2k, FusionMessageId.Source)
-  },
-  /*
-    FIXME??
-  {
-    source: 'amFm',
-    node: (n2k: any) {
-      return (
-        'entertainment.device.fusion1.avsource.source' +
-        currentFusionSource +
-        '.tuner.mode'
-      )
-    },
-    filter: function (n2k: any) {
-      return (
-        n2k.fields.messageId == 'AM/FM Station' && currentFusionSource != null
-      )
-    }
+      isFusionMessage(n2k, FusionStatusMessageId.Source)
   },
   {
-    source: 'frequency',
-    node: function (n2k: any) {
-      return (
-        'entertainment.device.fusion1.avsource.source' +
-        currentFusionSource +
-        '.tuner.frequency'
-      )
+    node: (n2k: PGN_130820_FusionTuner) =>
+      'entertainment.device.fusion1.avsource.source' +
+      currentFusionSource +
+      '.tuner.frequency',
+
+    value: (n2k: PGN_130820_FusionTuner) => {
+      if (n2k.fields.sourceId == 'AM') {
+        return n2k.fields.frequency! / 1000
+      } else {
+        return n2k.fields.frequency! / 1000000
+      }
     },
-    filter: function (n2k: any) {
-      return (
-        n2k.fields.messageId == 'AM/FM Station' && currentFusionSource != null
-      )
-    }
-    },
-    */
+    filter: (n2k: PGN_130820_FusionTuner) =>
+      isFusionMessage(n2k, FusionStatusMessageId.Tuner) &&
+      currentFusionSource != null &&
+      n2k.fields.frequency !== undefined
+  },
+  {
+    node: (n2k: PGN_130820_FusionTuner) =>
+      'entertainment.device.fusion1.avsource.source' +
+      currentFusionSource +
+      '.tuner.signalStrength',
+
+    value: (n2k: PGN_130820_FusionTuner) => n2k.fields.signalStrength,
+
+    filter: (n2k: PGN_130820_FusionSource) =>
+      isFusionMessage(n2k, FusionStatusMessageId.Tuner) &&
+      currentFusionSource != null
+  },
+  {
+    node: (n2k: PGN_130820_FusionTuner) =>
+      'entertainment.device.fusion1.avsource.source' +
+      currentFusionSource +
+      '.track.name',
+
+    value: (n2k: PGN_130820_FusionTuner) =>
+      n2k.fields.track && n2k.fields.track.length > 0 ? n2k.fields.track : null,
+
+    filter: (n2k: PGN_130820_FusionSource) =>
+      isFusionMessage(n2k, FusionStatusMessageId.Tuner) &&
+      currentFusionSource != null
+  },
   {
     node: (n2k: PGN_130820_FusionMedia) =>
       'entertainment.device.fusion1.avsource.source' +
@@ -332,7 +345,7 @@ module.exports = [
         : 'Playing'
     },
     filter: function (n2k: any) {
-      return isFusionMessage(n2k, FusionMessageId.TrackInfo)
+      return isFusionMessage(n2k, FusionStatusMessageId.TrackInfo)
     }
   },
   {
@@ -341,7 +354,7 @@ module.exports = [
     value: (n2k: PGN_130820_FusionMute) => isMuted(n2k),
 
     filter: function (n2k: PGN_130820_FusionMute) {
-      return isFusionMessage(n2k, FusionMessageId.Mute)
+      return isFusionMessage(n2k, FusionStatusMessageId.Mute)
     }
   },
   {
@@ -350,7 +363,7 @@ module.exports = [
     value: (n2k: PGN_130820_FusionMute) => isMuted(n2k),
 
     filter: function (n2k: any) {
-      return isFusionMessage(n2k, FusionMessageId.Mute)
+      return isFusionMessage(n2k, FusionStatusMessageId.Mute)
     }
   },
   {
@@ -359,7 +372,7 @@ module.exports = [
     value: (n2k: PGN_130820_FusionMute) => isMuted(n2k),
 
     filter: function (n2k: any) {
-      return isFusionMessage(n2k, FusionMessageId.Mute)
+      return isFusionMessage(n2k, FusionStatusMessageId.Mute)
     }
   },
   {
@@ -368,7 +381,7 @@ module.exports = [
     value: (n2k: PGN_130820_FusionMute) => isMuted(n2k),
 
     filter: function (n2k: any) {
-      return isFusionMessage(n2k, FusionMessageId.Mute)
+      return isFusionMessage(n2k, FusionStatusMessageId.Mute)
     }
   },
   {
@@ -383,7 +396,7 @@ module.exports = [
     },
 
     filter: function (n2k: PGN_130820_FusionEq) {
-      return isFusionMessage(n2k, FusionMessageId.Tone)
+      return isFusionMessage(n2k, FusionStatusMessageId.Tone)
     }
   },
   {
@@ -398,7 +411,7 @@ module.exports = [
     },
 
     filter: function (n2k: PGN_130820_FusionEq) {
-      return isFusionMessage(n2k, FusionMessageId.Tone)
+      return isFusionMessage(n2k, FusionStatusMessageId.Tone)
     }
   },
   {
@@ -413,7 +426,7 @@ module.exports = [
     },
 
     filter: function (n2k: PGN_130820_FusionEq) {
-      return isFusionMessage(n2k, FusionMessageId.Tone)
+      return isFusionMessage(n2k, FusionStatusMessageId.Tone)
     }
   },
   {
@@ -428,7 +441,7 @@ module.exports = [
     },
 
     filter: function (n2k: PGN_130820_FusionEq) {
-      return isFusionMessage(n2k, FusionMessageId.Tone)
+      return isFusionMessage(n2k, FusionStatusMessageId.Tone)
     }
   }
 ]
