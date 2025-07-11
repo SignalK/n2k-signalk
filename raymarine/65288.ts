@@ -7,9 +7,10 @@ import {
 
 module.exports = [
   {
+    pgnClass: PGN_65288_SeatalkAlarm,
+    
     filter: function (n2k: PGN_65288_SeatalkAlarm) {
       return (
-        n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
         typeof n2k.fields.alarmGroup !== 'undefined' &&
         typeof n2k.fields.alarmStatus !== 'undefined'
       )
