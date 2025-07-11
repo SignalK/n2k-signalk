@@ -43,7 +43,7 @@ module.exports = [
     node: 'entertainment.device.fusion1.name',
 
     filter: (n2k: PGN_130820_FusionPowerState) =>
-      isFusionMessage(n2k, FusionStatusMessageId.UnitName),
+      isFusionMessage(n2k, FusionStatusMessageId.UnitName)
   },
   {
     node: 'entertainment.device.fusion1.state',
