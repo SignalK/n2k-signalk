@@ -32,7 +32,7 @@ module.exports = [
   },
   {
     // Display Color
-    pgnClass: PGN_126720_Seatalk1DisplayBrightness,
+    pgnClass: PGN_126720_Seatalk1DisplayColor,
     
     filter: function (n2k:PGN_126720_Seatalk1DisplayColor) {
       return (
