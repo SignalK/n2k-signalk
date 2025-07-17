@@ -3,6 +3,7 @@ var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
 const toPgn = require('@canboat/canboatjs').toPgn
 const Uint64LE = require('int64-buffer').Uint64LE
+const PGN = require('@canboat/ts-pgns').PGN
 
 require('util').inherits(N2kMapper, EventEmitter)
 
@@ -275,10 +276,17 @@ var toValuesArray = function (theMappings, n2k, state) {
     return theMappings
       .filter(function (theMapping) {
         try {
-          return (
-            typeof theMapping.filter === 'undefined' ||
-            theMapping.filter(n2k, state)
-          )
+          if (theMapping.pgnClass) {
+            return (
+              theMapping.pgnClass.isMatch(n2k) &&
+              (theMapping.filter === undefined || theMapping.filter(n2k, state))
+            )
+          } else {
+            return (
+              typeof theMapping.filter === 'undefined' ||
+              theMapping.filter(n2k, state)
+            )
+          }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k)
           return false

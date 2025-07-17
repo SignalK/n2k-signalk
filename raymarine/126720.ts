@@ -12,10 +12,10 @@ import camelCase from 'camelcase'
 module.exports = [
   {
     // Display Brightness
+    pgnClass: PGN_126720_Seatalk1DisplayBrightness,
+    
     filter: function (n2k:PGN_126720_Seatalk1DisplayBrightness) {
       return (
-        n2k.description === 'Seatalk1: Display Brightness' &&
-        n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
         n2k.fields.group !== undefined
       )
     },
@@ -32,10 +32,10 @@ module.exports = [
   },
   {
     // Display Color
+    pgnClass: PGN_126720_Seatalk1DisplayColor,
+    
     filter: function (n2k:PGN_126720_Seatalk1DisplayColor) {
       return (
-        n2k.description === 'Seatalk1: Display Color' &&
-        n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
         n2k.fields.group !== undefined &&
         n2k.fields.color !== undefined
       )
@@ -51,11 +51,11 @@ module.exports = [
     }
   },
   {
+    pgnClass: PGN_126720_Seatalk1PilotMode,
+    
     // filters for SmartPilot behind Seatalk-STNG-Converter
     filter: function (n2k:PGN_126720_Seatalk1PilotMode) {
       return (
-        n2k.description === 'Seatalk1: Pilot Mode' &&
-        n2k.fields.manufacturerCode === ManufacturerCode.Raymarine &&
         typeof n2k.fields.pilotMode !== undefined &&
         typeof n2k.fields.subMode !== undefined
       )
