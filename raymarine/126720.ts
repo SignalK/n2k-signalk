@@ -2,8 +2,9 @@ import {
   PGN_126720_Seatalk1DisplayBrightness,
   PGN_126720_Seatalk1DisplayColor,
   PGN_126720_Seatalk1PilotMode,
-  ManufacturerCode,
-  SeatalkPilotMode
+  PGN_126720_Seatalk1HullType,
+  SeatalkPilotMode,
+  SeatalkPilotHullType
 } from '@canboat/ts-pgns'
 
 const debug = require('debug')('n2k-signalk-126720')
@@ -111,6 +112,29 @@ module.exports = [
         return
       }
         */
+    }
+  },
+  {
+    pgnClass: PGN_126720_Seatalk1HullType,
+
+    node: 'steering.autopilot.hullType',
+    value: function (n2k: PGN_126720_Seatalk1HullType) {
+      switch (n2k.fields.hullType) {
+        case SeatalkPilotHullType.Power:
+          return 'power'
+        case SeatalkPilotHullType.Sail:
+          return 'sail'
+        case SeatalkPilotHullType.SailCatamaran:
+          return 'sailCatamaran'
+        case SeatalkPilotHullType.SailslowTurn:
+          return 'sailSlowTurn'
+        case SeatalkPilotHullType.PowerfastTurn:
+          return 'powerFastTurn'
+        case SeatalkPilotHullType.PowerslowTurn:
+          return 'powerSlowTurn'
+        default:
+          return 'unknown'
+      }
     }
   }
 ]
