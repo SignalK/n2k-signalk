@@ -114,7 +114,6 @@ module.exports = [
         */
     }
   },
-  /*
   {
     pgnClass: PGN_126720_Seatalk1PilotHullType,
 
@@ -137,5 +136,5 @@ module.exports = [
           return 'unknown'
       }
     }
-  }*/
+  }
 ]
