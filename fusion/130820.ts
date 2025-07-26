@@ -333,7 +333,9 @@ module.exports = [
         n2k.fields.flags == FusionPlayStatus.Stopped
         ? 'Paused'
         : 'Playing'
-    }
+    },
+
+    filter: (n2k: PGN_130820_FusionSource) => currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionMute,
