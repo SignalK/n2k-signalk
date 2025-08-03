@@ -3,8 +3,10 @@ import {
   PGN_126720_Seatalk1DisplayColor,
   PGN_126720_Seatalk1PilotMode,
   PGN_126720_Seatalk1PilotHullType,
+  PGN_126720_SeatalkPilotAutoTurn,
   SeatalkPilotMode,
-  SeatalkPilotHullType
+  SeatalkPilotHullType,
+  YesNo
 } from '@canboat/ts-pgns'
 
 const debug = require('debug')('n2k-signalk-126720')
@@ -135,6 +137,14 @@ module.exports = [
         default:
           return 'unknown'
       }
+    }
+  },
+  {
+    pgnClass: PGN_126720_SeatalkPilotAutoTurn,
+
+    node: 'steering.autopilot.autoTurn.state',
+    value: function (n2k: PGN_126720_SeatalkPilotAutoTurn) {
+      return n2k.fields.enabled === YesNo.Yes ? 1 : 0
     }
   }
 ]
