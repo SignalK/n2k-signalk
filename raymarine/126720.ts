@@ -144,7 +144,7 @@ module.exports = [
 
     node: 'steering.autopilot.autoTurn.state',
     value: function (n2k: PGN_126720_SeatalkPilotAutoTurn) {
-      return n2k.fields.enabled === YesNo.Yes ? 1 : 0
+      return n2k.fields.enabled === YesNo.Yes ? true : false
     }
   }
 ]
