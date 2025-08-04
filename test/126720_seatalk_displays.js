@@ -2,6 +2,8 @@ var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
+const assert = require('assert')
+const signalkSchema = require('@signalk/signalk-schema')
 
 describe('126720 Seatalk Displays', function () {
   it('birghtness converts', function () {
@@ -14,6 +16,12 @@ describe('126720 Seatalk Displays', function () {
       'electrical.displays.raymarine.helm1.brightness.value',
       0.5
     )
+
+    const meta = signalkSchema.getMetadata(
+      'vessels.self.electrical.displays.raymarine.helm1.brightness'
+    )
+    assert.notEqual(meta, undefined)
+    meta.should.have.property('units', 'ratio') 
   })
 
   it('display color converts', function () {

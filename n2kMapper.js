@@ -172,6 +172,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
       }
       src_state = state[n2k_src]
     }
+    var [values, meta] = toValuesArray(theMappings, n2k, src_state)
     var result = {
       updates: [
         {
@@ -185,9 +186,13 @@ var toDelta = function (n2k, state, customPgns = {}) {
             n2k.timestamp.substring(0, 10) +
             'T' +
             n2k.timestamp.substring(11, n2k.timestamp.length),
-          values: toValuesArray(theMappings, n2k, src_state)
+          values
         }
       ]
+    }
+
+    if (meta.length > 0) {
+      result.updates[0].meta = meta
     }
 
     if (src_state && src_state.canName) {
@@ -273,7 +278,9 @@ function reduceMapping (updates, theMapping) {
 
 var toValuesArray = function (theMappings, n2k, state) {
   if (n2k.fields && typeof theMappings !== 'undefined') {
-    return theMappings
+    var metas = []
+
+    return [theMappings
       .filter(function (theMapping) {
         try {
           if (theMapping.pgnClass) {
@@ -301,6 +308,16 @@ var toValuesArray = function (theMappings, n2k, state) {
               typeof theMapping.node === 'function'
                 ? theMapping.node(n2k, state)
                 : theMapping.node
+
+            var meta = theMapping.meta !== undefined && theMapping.meta 
+
+            if (meta) {
+              metas.push({
+                path: path,
+                value: meta
+              })
+            }
+
             var value =
               typeof theMapping.source === 'function'
                 ? theMapping.source(n2k, state)
@@ -325,8 +342,9 @@ var toValuesArray = function (theMappings, n2k, state) {
       .filter(function (x) {
         return x != undefined
       })
+      , metas]
   }
-  return []
+  return [ [], [] ]
 }
 
 var addToTree = function (pathValue, source, tree) {
