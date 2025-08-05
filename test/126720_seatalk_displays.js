@@ -21,7 +21,7 @@ describe('126720 Seatalk Displays', function () {
       'vessels.self.electrical.displays.raymarine.helm1.brightness'
     )
     assert.notEqual(meta, undefined)
-    meta.should.have.property('units', 'ratio') 
+    meta.should.have.property('units', 'ratio')
   })
 
   it('display color converts', function () {
