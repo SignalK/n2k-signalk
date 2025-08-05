@@ -172,6 +172,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
       }
       src_state = state[n2k_src]
     }
+    var [values, meta] = toValuesArray(theMappings, n2k, src_state)
     var result = {
       updates: [
         {
@@ -185,9 +186,13 @@ var toDelta = function (n2k, state, customPgns = {}) {
             n2k.timestamp.substring(0, 10) +
             'T' +
             n2k.timestamp.substring(11, n2k.timestamp.length),
-          values: toValuesArray(theMappings, n2k, src_state)
+          values
         }
       ]
+    }
+
+    if (meta.length > 0) {
+      result.updates[0].meta = meta
     }
 
     if (src_state && src_state.canName) {
@@ -273,60 +278,76 @@ function reduceMapping (updates, theMapping) {
 
 var toValuesArray = function (theMappings, n2k, state) {
   if (n2k.fields && typeof theMappings !== 'undefined') {
-    return theMappings
-      .filter(function (theMapping) {
-        try {
-          if (theMapping.pgnClass) {
-            return (
-              theMapping.pgnClass.isMatch(n2k) &&
-              (theMapping.filter === undefined || theMapping.filter(n2k, state))
-            )
-          } else {
-            return (
-              typeof theMapping.filter === 'undefined' ||
-              theMapping.filter(n2k, state)
-            )
-          }
-        } catch (ex) {
-          process.stderr.write(ex + ' ' + n2k)
-          return false
-        }
-      })
-      .reduce((updates, theMapping) => {
-        try {
-          if (typeof theMapping === 'function') {
-            Array.prototype.push.apply(updates, theMapping(n2k, state))
-          } else {
-            var path =
-              typeof theMapping.node === 'function'
-                ? theMapping.node(n2k, state)
-                : theMapping.node
-            var value =
-              typeof theMapping.source === 'function'
-                ? theMapping.source(n2k, state)
-                : getValue(n2k, theMapping, state)
-            var allowNull =
-              typeof theMapping.allowNull !== 'undefined' &&
-              theMapping.allowNull
-            if (!(value == null) || allowNull) {
-              // null or undefined
-              updates.push({
-                path: path,
-                value: value
-              })
+    var metas = []
+
+    return [
+      theMappings
+        .filter(function (theMapping) {
+          try {
+            if (theMapping.pgnClass) {
+              return (
+                theMapping.pgnClass.isMatch(n2k) &&
+                (theMapping.filter === undefined ||
+                  theMapping.filter(n2k, state))
+              )
+            } else {
+              return (
+                typeof theMapping.filter === 'undefined' ||
+                theMapping.filter(n2k, state)
+              )
             }
+          } catch (ex) {
+            process.stderr.write(ex + ' ' + n2k)
+            return false
           }
-        } catch (ex) {
-          process.stderr.write(ex + ' ' + JSON.stringify(n2k))
-          console.error(ex)
-        }
-        return updates
-      }, [])
-      .filter(function (x) {
-        return x != undefined
-      })
+        })
+        .reduce((updates, theMapping) => {
+          try {
+            if (typeof theMapping === 'function') {
+              Array.prototype.push.apply(updates, theMapping(n2k, state))
+            } else {
+              var path =
+                typeof theMapping.node === 'function'
+                  ? theMapping.node(n2k, state)
+                  : theMapping.node
+
+              var meta = theMapping.meta !== undefined && theMapping.meta
+
+              if (meta) {
+                metas.push({
+                  path: path,
+                  value: meta
+                })
+              }
+
+              var value =
+                typeof theMapping.source === 'function'
+                  ? theMapping.source(n2k, state)
+                  : getValue(n2k, theMapping, state)
+              var allowNull =
+                typeof theMapping.allowNull !== 'undefined' &&
+                theMapping.allowNull
+              if (!(value == null) || allowNull) {
+                // null or undefined
+                updates.push({
+                  path: path,
+                  value: value
+                })
+              }
+            }
+          } catch (ex) {
+            process.stderr.write(ex + ' ' + JSON.stringify(n2k))
+            console.error(ex)
+          }
+          return updates
+        }, [])
+        .filter(function (x) {
+          return x != undefined
+        }),
+      metas
+    ]
   }
-  return []
+  return [[], []]
 }
 
 var addToTree = function (pathValue, source, tree) {

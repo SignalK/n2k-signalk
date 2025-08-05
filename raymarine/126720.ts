@@ -31,7 +31,8 @@ module.exports = [
     value: (n2k:PGN_126720_Seatalk1DisplayBrightness) => {
       let val = n2k.fields.brightness
       return val !== undefined ? val / 100.0 : null
-    }
+    },
+    meta: { units: 'ratio' }
   },
   {
     // Display Color
@@ -145,6 +146,7 @@ module.exports = [
     node: 'steering.autopilot.autoTurn.state',
     value: function (n2k: PGN_126720_SeatalkPilotAutoTurn) {
       return n2k.fields.enabled === YesNo.Yes ? true : false
-    }
+    },
+    meta: { units: 'bool' },
   }
 ]
