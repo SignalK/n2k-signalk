@@ -17,7 +17,12 @@ module.exports = [
     }
   },
   {
-    source: 'stateOfHealth',
+    value: function (n2k) {
+      return n2k.fields.stateOfHealth / 100
+    },
+    filter: function (n2k) {
+      return typeof n2k.fields.stateOfHealth !== 'undefined'
+    },
     node: function (n2k) {
       return 'electrical.batteries.' + instance(n2k) + '.capacity.stateOfHealth'
     }
