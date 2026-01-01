@@ -19,7 +19,6 @@ jobs:
 
     - name: Install and build 
       run: |
-        npm install -g npm@latest-7
         npm cache clean -f
         npm install
         npm ci && npm cache clean --force
@@ -27,6 +26,7 @@ jobs:
 
     - name: Publish 
       run: |
+        npm install -g npm@latest-7
         if [[ "$tag" == *beta* ]];
           then
             npm publish --tag beta
