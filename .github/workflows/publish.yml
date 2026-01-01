@@ -15,12 +15,11 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version: '22.x'
+        registry-url: 'https://registry.npmjs.org'
 
     - name: Install and build 
       run: |
-        npm cache clean -f
         npm install
-        npm ci && npm cache clean --force
         npm run build
 
     - name: Publish 
@@ -28,7 +27,7 @@ jobs:
         npm install -g npm@latest-7
         if [[ "$tag" == *beta* ]];
           then
-            npm publish --tag beta
+            npm publish --provenance --access public --tag beta
           else
-            npm publish
+            npm publish --provenance --access public
         fi
