@@ -25,7 +25,7 @@ module.exports = [
     node: function (n2k, state) {
       var alertType = n2k.fields.alertType.replace(/ /g, '').toLowerCase()
 
-      var alertCategory = n2k.fields.alertCategory.toLowerCase()
+      var alertCategory = (n2k.fields.alertCategory || '').toLowerCase()
 
       var path =
         'notifications.nmea.' +
