@@ -95,7 +95,7 @@ module.exports = [
     context: function (n2k: PGN_129041) {
       return n2k.fields.userId
         ? 'atons.urn:mrn:imo:mmsi:' + n2k.fields.userId
-        : undefined
+        : 'atons.unknown'
     }
   },
   {
