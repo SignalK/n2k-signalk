@@ -25,7 +25,6 @@ module.exports = [
   {
     node: 'navigation.destination.eta',
     value: function (n2k) {
-      console.debug('etaDate', n2k.fields.etaDate)
       if (typeof n2k.fields.etaDate === 'string') {
         const datePart = n2k.fields.etaDate.replace(/\./g, '-');
         const timePart = String(n2k.fields.etaTime);
