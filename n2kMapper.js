@@ -51,6 +51,12 @@ N2kMapper.prototype.n2kOutIsAvailable = function (listener, event) {
 }
 
 N2kMapper.prototype.requestMetaData = function (dst, pgn) {
+  if (!this.n2kListener) {
+    debug(
+      `skipping request for pgn ${pgn} from src ${dst}: n2k output not available yet`
+    )
+    return Promise.resolve()
+  }
   const reqPgn = {
     pgn: 59904,
     dst: dst,
