@@ -92,7 +92,12 @@ module.exports = [
       )
     },
     filter: function (n2k, state) {
-      return hasState(state) && hasWaypoints(n2k, 3)
+      return (
+        hasState(state) &&
+        hasWaypoints(n2k, 3) &&
+        !_.isUndefined(n2k.fields.list[2].wpLatitude) &&
+        !_.isUndefined(n2k.fields.list[2].wpLongitude)
+      )
     },
     value: function (n2k) {
       return {
