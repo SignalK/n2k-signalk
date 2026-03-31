@@ -11,12 +11,9 @@ module.exports = [
       )
     },
     filter: function (n2k, state) {
-      return (
-        typeof state === 'object' &&
-        typeof state.lastCourseCalculationType !== 'undefined'
-      )
+      return hasState(state)
     },
-    source: 'routeName'
+    source: 'routeName',
   },
   {
     node: function (n2k, state) {
@@ -27,16 +24,11 @@ module.exports = [
       )
     },
     filter: function (n2k, state) {
-      return (
-        typeof state === 'object' &&
-        typeof state.lastCourseCalculationType !== 'undefined' &&
-        !_.isUndefined(n2k.fields.list) &&
-        n2k.fields.list.length > 0
-      )
+      return hasState(state) && hasWaypoints(n2k, 1)
     },
     value: function (n2k) {
       return n2k.fields.list[0].wpName
-    }
+    },
   },
   {
     node: function (n2k, state) {
@@ -47,19 +39,14 @@ module.exports = [
       )
     },
     filter: function (n2k, state) {
-      return (
-        typeof state === 'object' &&
-        typeof state.lastCourseCalculationType !== 'undefined' &&
-        !_.isUndefined(n2k.fields.list) &&
-        n2k.fields.list.length > 0
-      )
+      return hasState(state) && hasWaypoints(n2k, 1)
     },
     value: function (n2k) {
       return {
         latitude: n2k.fields.list[0].wpLatitude,
-        longitude: n2k.fields.list[0].wpLongitude
+        longitude: n2k.fields.list[0].wpLongitude,
       }
-    }
+    },
   },
   {
     node: function (n2k, state) {
@@ -70,16 +57,11 @@ module.exports = [
       )
     },
     filter: function (n2k, state) {
-      return (
-        typeof state === 'object' &&
-        typeof state.lastCourseCalculationType !== 'undefined' &&
-        !_.isUndefined(n2k.fields.list) &&
-        n2k.fields.list.length > 1
-      )
+      return hasState(state) && hasWaypoints(n2k, 2)
     },
     value: function (n2k) {
       return n2k.fields.list[1].wpName
-    }
+    },
   },
   {
     node: function (n2k, state) {
@@ -91,17 +73,15 @@ module.exports = [
     },
     filter: function (n2k, state) {
       return (
-        typeof state === 'object' &&
-        typeof state.lastCourseCalculationType !== 'undefined' &&
-        !_.isUndefined(n2k.fields.list) &&
-        n2k.fields.list.length > 2 &&
+        hasState(state) &&
+        hasWaypoints(n2k, 3) &&
         !_.isUndefined(n2k.fields.list[2].wpLatitude) &&
         !_.isUndefined(n2k.fields.list[2].wpLongitude)
       )
     },
     value: function (n2k) {
       return n2k.fields.list[2].wpName
-    }
+    },
   },
   {
     node: function (n2k, state) {
@@ -112,18 +92,24 @@ module.exports = [
       )
     },
     filter: function (n2k, state) {
-      return (
-        typeof state === 'object' &&
-        typeof state.lastCourseCalculationType !== 'undefined' &&
-        !_.isUndefined(n2k.fields.list) &&
-        n2k.fields.list.length > 2
-      )
+      return hasState(state) && hasWaypoints(n2k, 3)
     },
     value: function (n2k) {
       return {
         latitude: n2k.fields.list[2].wpLatitude,
-        longitude: n2k.fields.list[2].wpLongitude
+        longitude: n2k.fields.list[2].wpLongitude,
       }
-    }
-  }
+    },
+  },
 ]
+
+function hasState(state) {
+  return (
+    typeof state === 'object' &&
+    typeof state.lastCourseCalculationType !== 'undefined'
+  )
+}
+
+function hasWaypoints(n2k, min) {
+  return !_.isUndefined(n2k.fields.list) && n2k.fields.list.length >= min
+}
