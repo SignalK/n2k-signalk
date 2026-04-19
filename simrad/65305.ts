@@ -5,7 +5,7 @@ import {
 
 const modeMap: { [key: string]: SimnetApModeBitfield } = {
   'standby': SimnetApModeBitfield.Standby,
-  'auto': SimnetApModeBitfield.NoDrift,
+  'nodrift': SimnetApModeBitfield.NoDrift,
   'heading': SimnetApModeBitfield.Heading,
   'wind': SimnetApModeBitfield.Wind,
   'route': SimnetApModeBitfield.Nav
