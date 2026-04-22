@@ -13,7 +13,7 @@ module.exports = [
     filter: function (n2k, state) {
       return hasState(state)
     },
-    source: 'routeName',
+    source: 'routeName'
   },
   {
     node: function (n2k, state) {
@@ -28,7 +28,7 @@ module.exports = [
     },
     value: function (n2k) {
       return n2k.fields.list[0].wpName
-    },
+    }
   },
   {
     node: function (n2k, state) {
@@ -44,9 +44,9 @@ module.exports = [
     value: function (n2k) {
       return {
         latitude: n2k.fields.list[0].wpLatitude,
-        longitude: n2k.fields.list[0].wpLongitude,
+        longitude: n2k.fields.list[0].wpLongitude
       }
-    },
+    }
   },
   {
     node: function (n2k, state) {
@@ -61,7 +61,7 @@ module.exports = [
     },
     value: function (n2k) {
       return n2k.fields.list[1].wpName
-    },
+    }
   },
   {
     node: function (n2k, state) {
@@ -81,7 +81,7 @@ module.exports = [
     },
     value: function (n2k) {
       return n2k.fields.list[2].wpName
-    },
+    }
   },
   {
     node: function (n2k, state) {
@@ -102,19 +102,19 @@ module.exports = [
     value: function (n2k) {
       return {
         latitude: n2k.fields.list[2].wpLatitude,
-        longitude: n2k.fields.list[2].wpLongitude,
+        longitude: n2k.fields.list[2].wpLongitude
       }
-    },
-  },
+    }
+  }
 ]
 
-function hasState(state) {
+function hasState (state) {
   return (
     typeof state === 'object' &&
     typeof state.lastCourseCalculationType !== 'undefined'
   )
 }
 
-function hasWaypoints(n2k, min) {
+function hasWaypoints (n2k, min) {
   return !_.isUndefined(n2k.fields.list) && n2k.fields.list.length >= min
 }
