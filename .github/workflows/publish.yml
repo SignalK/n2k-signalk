@@ -2,6 +2,9 @@ name: Publish to npm
 on:
   release:
     types: [created]
+  repository_dispatch:
+    types: [trigger-workflow]
+  workflow_dispatch:
 
 permissions:
   id-token: write  # Required for OIDC
@@ -21,6 +24,10 @@ jobs:
       run: |
         npm install
         npm run build
+
+    - name: Set tag variable
+      id: vars
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
 
     - name: Publish 
       run: |
