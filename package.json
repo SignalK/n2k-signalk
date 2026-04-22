@@ -9,6 +9,7 @@
     "ci-format": "prettier-standard --check '*.js*' 'pgns/**/*.js' 'test/**/*.js*' 'lowrance/**/*.js*' 'raymarine/**/*.js*'",
     "build": "tsc -b --pretty false",
     "watch": "tsc --watch --pretty false",
+    "prepare": "npm run build",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
