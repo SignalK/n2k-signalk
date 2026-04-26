@@ -17,7 +17,9 @@ module.exports = [
         }
         state.alerts[alertId] = text
 
-        debug('set alert state text: ' + JSON.stringify(text))
+        if (debug.enabled) {
+          debug('set alert state text: ' + JSON.stringify(text))
+        }
       }
       return false
     },
