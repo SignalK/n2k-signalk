@@ -6,10 +6,7 @@ module.exports = [
       const mapping = humidityMappings[n2k.fields.source]
       if (mapping) {
         if (mapping.pathWithIndex) {
-          return mapping.pathWithIndex.replace(
-            '<index>',
-            n2k.fields.instance
-          )
+          return mapping.pathWithIndex.replace('<index>', n2k.fields.instance)
         }
         if (mapping.path) {
           return mapping.path
