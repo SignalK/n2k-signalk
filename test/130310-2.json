@@ -83,7 +83,9 @@
       "Temperature Source": "Inside Temperature",
       "Temperature": 13.51
     },
-    "testExpectConvertedValues": { "environment.inside.temperature": 13.51 }
+    "testExpectConvertedValues": {
+      "environment.inside.default.temperature": 13.51
+    }
   },
   "130311-engineroom": {
     "timestamp": "2015-01-15-16:25:14.120Z",
@@ -226,7 +228,7 @@
       "Actual Temperature": "13.18"
     },
     "testExpectConvertedValues": {
-      "environment.inside.temperature": 13.18
+      "environment.inside.3.temperature": 13.18
     }
   },
   "130312-insidetemp-new": {
@@ -243,7 +245,7 @@
       "Actual Temperature": "13.18"
     },
     "testExpectConvertedValues": {
-      "environment.inside.temperature": 13.18
+      "environment.inside.3.temperature": 13.18
     }
   },
   "130312-maincabin": {
@@ -502,6 +504,89 @@
     },
     "testExpectConvertedValues": {
       "propulsion.0.exhaustTemperature": 300
+    }
+  },
+  "130316-inside-instance0": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130316",
+    "description": "Temperature",
+    "fields": {
+      "Instance": "0",
+      "Source": "Inside Temperature",
+      "Temperature": "295.15"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.0.temperature": 295.15
+    }
+  },
+  "130316-inside-instance1": {
+    "timestamp": "2015-01-15-16:15:19.628Z",
+    "prio": "5",
+    "src": "36",
+    "dst": "255",
+    "pgn": "130316",
+    "description": "Temperature",
+    "fields": {
+      "Instance": "1",
+      "Source": "Inside Temperature",
+      "Temperature": "298.15"
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.1.temperature": 298.15
+    }
+  },
+  "130313-humidity-inside-instance0": {
+    "timestamp": "2015-01-15-16:25:14.118Z",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130313,
+    "description": "Humidity",
+    "fields": {
+      "SID": 1,
+      "Instance": "0",
+      "Source": "Inside",
+      "Actual Humidity": 45
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.0.relativeHumidity": 0.45
+    }
+  },
+  "130313-humidity-inside-instance1": {
+    "timestamp": "2015-01-15-16:25:14.118Z",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130313,
+    "description": "Humidity",
+    "fields": {
+      "SID": 1,
+      "Instance": "1",
+      "Source": "Inside",
+      "Actual Humidity": 38
+    },
+    "testExpectConvertedValues": {
+      "environment.inside.1.relativeHumidity": 0.38
+    }
+  },
+  "130313-humidity-outside": {
+    "timestamp": "2015-01-15-16:25:14.118Z",
+    "prio": 5,
+    "src": 41,
+    "dst": 255,
+    "pgn": 130313,
+    "description": "Humidity",
+    "fields": {
+      "SID": 1,
+      "Instance": "0",
+      "Source": "Outside",
+      "Actual Humidity": 60
+    },
+    "testExpectConvertedValues": {
+      "environment.outside.humidity": 0.6
     }
   },
   "130312-userDefined129": {
