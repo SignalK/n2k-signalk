@@ -4,6 +4,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 var debug = require('debug')('n2k-signalk:test:130312')
 var _ = require('lodash')
+var assert = require('assert')
 
 describe('Temperature: ', function () {
   var n2kMapper = require('./testMapper')
@@ -48,6 +49,22 @@ describe('Temperature: ', function () {
         fullDoc.should.be.validSignalK
       }
     })
+  })
+
+  it('does not throw for PGN 130312 with empty fields (Lowrance HDS-8 / SA=3)', function () {
+    // Hardware such as Lowrance HDS-8 (SA=3) can broadcast Temperature PGNs
+    // with no data fields. Empty Temperature PGNs are valid on the NMEA 2000
+    // bus. The handler must not throw when fields is {}.
+    var delta = n2kMapper.toDelta({
+      timestamp: '2024-01-01T00:00:00.000Z',
+      prio: 5,
+      src: 3,
+      dst: 255,
+      pgn: 130312,
+      description: 'Temperature',
+      fields: {}
+    })
+    assert.equal(delta.updates[0].values.length, 0)
   })
 
   it('all 130312 mappings are valid', function () {
