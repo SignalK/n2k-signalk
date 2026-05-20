@@ -88,8 +88,17 @@ module.exports = [
       return value
     },
     filter: function (n2k, state) {
+      // Some devices emit non-standard alertType values (e.g. 4) that
+      // canboatjs cannot resolve via the ALERT_TYPE enum. In that case
+      // the value falls through as a raw integer and the path/value
+      // builders above blow up on `.replace` / `alertTypes.filter[0].sk`.
+      // Only accept frames where alertType matches one of the four
+      // values defined in the canboat ALERT_TYPE enum.
       return (
-        n2k.fields.alertType &&
+        typeof n2k.fields.alertType === 'string' &&
+        alertTypes.some(function (a) {
+          return a.nmea === n2k.fields.alertType
+        }) &&
         typeof state === 'object' &&
         state.alerts &&
         state.alerts[n2k.fields.alertId]
