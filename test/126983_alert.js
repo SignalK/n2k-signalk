@@ -102,4 +102,39 @@ describe('126983 Alert', function () {
     var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
   })
+
+  it('skips alerts with non-standard (integer) alertType without throwing', function () {
+    // Some devices emit alertType values outside the canboat ALERT_TYPE
+    // enum (1,2,5,8). canboatjs returns the raw integer in that case;
+    // previously the mapper crashed in node() and value() trying to call
+    // .replace on a number. The filter should drop these frames cleanly.
+    var msg = {
+      canId: 166725504,
+      prio: 2,
+      src: 128,
+      pgn: 126983,
+      dst: 255,
+      fields: {
+        alertType: 4,
+        alertCategory: 6,
+        alertSystem: 4
+      },
+      description: 'Alert',
+      id: 'alert',
+      timestamp: '2024-01-01T00:00:00.000Z'
+    }
+    // The harness does a canboatjs round-trip via pgnToActisenseSerialFormat,
+    // which would normalize away the broken value, so we bypass it.
+    var saved = process.env.NO_CANBOATJS
+    process.env.NO_CANBOATJS = 'true'
+    try {
+      var delta = mapper.toDelta(msg, {})
+      // No throw, and the mapper should emit zero values for an unknown
+      // alertType (the empty update wrapper itself is still constructed).
+      delta.updates[0].values.length.should.equal(0)
+    } finally {
+      if (saved === undefined) delete process.env.NO_CANBOATJS
+      else process.env.NO_CANBOATJS = saved
+    }
+  })
 })
