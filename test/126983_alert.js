@@ -103,11 +103,19 @@ describe('126983 Alert', function () {
     delta.updates.length.should.equal(1)
   })
 
-  it('skips alerts with non-standard (integer) alertType without throwing', function () {
-    // Some devices emit alertType values outside the canboat ALERT_TYPE
-    // enum (1,2,5,8). canboatjs returns the raw integer in that case;
-    // previously the mapper crashed in node() and value() trying to call
-    // .replace on a number. The filter should drop these frames cleanly.
+  it("maps non-standard alertType to 'alert' state without throwing", function () {
+    var alertId = 9999
+    var nonStandardState = {
+      '128': {
+        alerts: {
+          [alertId]: {
+            languageId: 'English (US)',
+            locationTextDescription: '',
+            textDescription: 'TEST: non-standard alertType'
+          }
+        }
+      }
+    }
     var msg = {
       canId: 166725504,
       prio: 2,
@@ -117,7 +125,8 @@ describe('126983 Alert', function () {
       fields: {
         alertType: 4,
         alertCategory: 6,
-        alertSystem: 4
+        alertSystem: 4,
+        alertId: alertId
       },
       description: 'Alert',
       id: 'alert',
@@ -128,10 +137,17 @@ describe('126983 Alert', function () {
     var saved = process.env.NO_CANBOATJS
     process.env.NO_CANBOATJS = 'true'
     try {
-      var delta = mapper.toDelta(msg, {})
-      // No throw, and the mapper should emit zero values for an unknown
-      // alertType (the empty update wrapper itself is still constructed).
-      delta.updates[0].values.length.should.equal(0)
+      var delta = mapper.toDelta(msg, nonStandardState)
+      delta.updates[0].values.length.should.equal(1)
+      var v = delta.updates[0].values[0]
+      v.value.state.should.equal('alert')
+      // Raw alertType from the device is preserved verbatim in the value
+      // object, consistent with how every other field is exposed.
+      v.value.alertType.should.equal(4)
+      // Non-string alertCategory degrades to an empty path segment rather
+      // than crashing on .toLowerCase().
+      v.path.should.contain('.caution..')
+      v.path.should.equal('notifications.nmea.caution..4.' + alertId)
     } finally {
       if (saved === undefined) delete process.env.NO_CANBOATJS
       else process.env.NO_CANBOATJS = saved

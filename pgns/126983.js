@@ -20,12 +20,30 @@ const alertTypes = [
   }
 ]
 
+// Devices in the wild emit non-spec ALERT_TYPE values (e.g. 4) that
+// canboatjs returns as raw integers. Default those to Caution → 'alert'
+// so the notification still surfaces at the lowest severity.
+const defaultAlertType = alertTypes[alertTypes.length - 1]
+
+function resolveAlertType (rawAlertType) {
+  if (typeof rawAlertType === 'string') {
+    for (var i = 0; i < alertTypes.length; i++) {
+      if (alertTypes[i].nmea === rawAlertType) return alertTypes[i]
+    }
+  }
+  return defaultAlertType
+}
+
 module.exports = [
   {
     node: function (n2k, state) {
-      var alertType = n2k.fields.alertType.replace(/ /g, '').toLowerCase()
+      var resolved = resolveAlertType(n2k.fields.alertType)
+      var alertType = resolved.nmea.replace(/ /g, '').toLowerCase()
 
-      var alertCategory = (n2k.fields.alertCategory || '').toLowerCase()
+      var alertCategory =
+        typeof n2k.fields.alertCategory === 'string'
+          ? n2k.fields.alertCategory.toLowerCase()
+          : ''
 
       var path =
         'notifications.nmea.' +
@@ -43,15 +61,13 @@ module.exports = [
     value: function (n2k, state) {
       debug('126983 value')
 
-      var skstate = alertTypes.filter(
-        alertType => alertType.nmea === n2k.fields.alertType
-      )
-      debug('126983 skstate: ' + skstate[0].sk)
+      var resolved = resolveAlertType(n2k.fields.alertType)
+      debug('126983 skstate: ' + resolved.sk)
 
       var alertId = n2k.fields.alertId
 
       var value = {
-        state: skstate[0].sk,
+        state: resolved.sk,
         method: ['visual', 'sound'],
         message: state.alerts[alertId].textDescription,
         alertType: n2k.fields.alertType,
@@ -88,17 +104,9 @@ module.exports = [
       return value
     },
     filter: function (n2k, state) {
-      // Some devices emit non-standard alertType values (e.g. 4) that
-      // canboatjs cannot resolve via the ALERT_TYPE enum. In that case
-      // the value falls through as a raw integer and the path/value
-      // builders above blow up on `.replace` / `alertTypes.filter[0].sk`.
-      // Only accept frames where alertType matches one of the four
-      // values defined in the canboat ALERT_TYPE enum.
       return (
-        typeof n2k.fields.alertType === 'string' &&
-        alertTypes.some(function (a) {
-          return a.nmea === n2k.fields.alertType
-        }) &&
+        n2k.fields.alertType !== undefined &&
+        n2k.fields.alertType !== null &&
         typeof state === 'object' &&
         state.alerts &&
         state.alerts[n2k.fields.alertId]
