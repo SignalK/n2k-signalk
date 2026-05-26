@@ -63,7 +63,6 @@ module.exports = [
     },
     allowNull: true,
     value: function (n2k) {
-
       return {
         longitude: Number(n2k.fields.destinationLongitude),
         latitude: Number(n2k.fields.destinationLatitude)
