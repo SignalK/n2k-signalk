@@ -3,6 +3,7 @@ var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
 const toPgn = require('@canboat/canboatjs').toPgn
 const Uint64LE = require('int64-buffer').Uint64LE
+const PGN = require('@canboat/ts-pgns').PGN
 
 require('util').inherits(N2kMapper, EventEmitter)
 
@@ -50,6 +51,12 @@ N2kMapper.prototype.n2kOutIsAvailable = function (listener, event) {
 }
 
 N2kMapper.prototype.requestMetaData = function (dst, pgn) {
+  if (!this.n2kListener) {
+    debug(
+      `skipping request for pgn ${pgn} from src ${dst}: n2k output not available yet`
+    )
+    return Promise.resolve()
+  }
   const reqPgn = {
     pgn: 59904,
     dst: dst,
@@ -108,15 +115,9 @@ N2kMapper.prototype.toDelta = function (n2k) {
       this.state[n2k.src] = {}
     }
 
-    if (!this.state[n2k.src].metaPGNsReceived) {
-      this.state[n2k.src].metaPGNsReceived = {}
-    }
-
     if (n2k.pgn === 60928) {
       const canName = new Uint64LE(toPgn(n2k)).toString(16)
-      if (!this.state[n2k.src]) {
-        this.state[n2k.src] = {}
-      } else if (
+      if (
         this.state[n2k.src].canName &&
         this.state[n2k.src].canName != canName
       ) {
@@ -135,6 +136,10 @@ N2kMapper.prototype.toDelta = function (n2k) {
       this.state[n2k.src].deviceInstance = meta.deviceInstance
       meta.canName = canName
       this.state[n2k.src].canName = canName
+    }
+
+    if (!this.state[n2k.src].metaPGNsReceived) {
+      this.state[n2k.src].metaPGNsReceived = {}
     }
 
     this.state[n2k.src].metaPGNsReceived[n2k.pgn] = Date.now()
@@ -190,6 +195,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
         }
       ]
     }
+
     if (src_state && src_state.canName) {
       result.updates[0].source.canName = src_state.canName
     }
@@ -218,6 +224,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
         result.updates[0].source.instance = theMappings[0].instance(n2k)
       }
     }
+
     return result
   } catch (ex) {
     console.error(ex)
@@ -275,10 +282,17 @@ var toValuesArray = function (theMappings, n2k, state) {
     return theMappings
       .filter(function (theMapping) {
         try {
-          return (
-            typeof theMapping.filter === 'undefined' ||
-            theMapping.filter(n2k, state)
-          )
+          if (theMapping.pgnClass) {
+            return (
+              theMapping.pgnClass.isMatch(n2k) &&
+              (theMapping.filter === undefined || theMapping.filter(n2k, state))
+            )
+          } else {
+            return (
+              typeof theMapping.filter === 'undefined' ||
+              theMapping.filter(n2k, state)
+            )
+          }
         } catch (ex) {
           process.stderr.write(ex + ' ' + n2k)
           return false
@@ -310,6 +324,7 @@ var toValuesArray = function (theMappings, n2k, state) {
           }
         } catch (ex) {
           process.stderr.write(ex + ' ' + JSON.stringify(n2k))
+          console.error(ex)
         }
         return updates
       }, [])
@@ -359,38 +374,13 @@ function addAsNested (pathValue, source, timestamp, result) {
 const metaPGNs = {
   60928: n2k => {
     return {
-      uniqueId: n2k.fields['Unique Number'],
-      manufacturerName: n2k.fields['Manufacturer Code'],
-      deviceFunction: n2k.fields['Device Function'],
-      deviceClass: n2k.fields['Device Class'],
-      deviceInstanceLower: n2k.fields['Device Instance Lower'],
-      deviceInstanceUpper: n2k.fields['Device Instance Upper'],
-      systemInstance: n2k.fields['System Instance'],
+      ...n2k.fields,
       deviceInstance:
-        (n2k.fields['Device Instance Upper'] << 3) |
-        n2k.fields['Device Instance Lower']
+        (n2k.fields.deviceInstanceUpper << 3) | n2k.fields.deviceInstanceLower
     }
   },
-  126998: n2k => {
-    return {
-      installationNote1: n2k.fields['Installation Description #1'],
-      installationNote2: n2k.fields['Installation Description #2'],
-      installationNote3: n2k.fields['Installation Description #3'],
-      manufacturerInfo: n2k.fields['Manufacturer Information']
-    }
-  },
-  126996: n2k => {
-    return {
-      productName: n2k.fields['Model ID'],
-      hardwareVersion: n2k.fields['Model Version'],
-      softwareVersion: n2k.fields['Software Version Code'],
-      productID: n2k.fields['Product Code'],
-      serialNumber: n2k.fields['Model Serial Code'],
-      nmea2000Version: n2k.fields['NMEA 2000 Version'],
-      certificationLevel: n2k.fields['Certification Level'],
-      loadEquivalency: n2k.fields['Load Equivalency']
-    }
-  }
+  126998: n2k => n2k.fields,
+  126996: n2k => n2k.fields
 }
 
 exports.N2kMapper = N2kMapper

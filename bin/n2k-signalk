@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var n2kMapper = require('../n2kMapper.js');
+var n2kMapper = require('../dist/n2kMapper.js');
 var JSONStream = require('JSONStream');
 
 process.stdin.setEncoding('utf8');

@@ -1,14 +1,14 @@
 function prefix (n2k) {
-  return `electrical.dc.${n2k.src}.${n2k.fields['Connection Number']}`
+  return `electrical.dc.${n2k.src}.${n2k.fields.connectionNumber}`
 }
 
 module.exports = [
   {
-    source: 'DC Voltage',
+    source: 'dcVoltage',
     node: n2k => prefix(n2k) + '.voltage'
   },
   {
-    source: 'DC Current',
+    source: 'dcCurrent',
     node: n2k => prefix(n2k) + '.current'
   }
 ]

@@ -40,7 +40,7 @@ describe('129284 Navigation Data', function () {
       31360.412
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
   })
 })

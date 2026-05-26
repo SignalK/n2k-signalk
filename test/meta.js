@@ -2,21 +2,20 @@ const chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
 
-const N2kMapper = require('../n2kMapper').N2kMapper
+const N2kMapper = require('../dist/n2kMapper').N2kMapper
 
 describe('Meta data works', function () {
   it('Address Claim', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('uniqueId', 76223)
-      meta.should.have.property('manufacturerName', 'Fusion Electronics')
+      meta.should.have.property('uniqueNumber', 76223)
+      meta.should.have.property('manufacturerCode', 'Fusion Electronics')
       meta.should.have.property('deviceFunction', 130)
       meta.should.have.property('deviceClass', 'Entertainment')
       meta.should.have.property('deviceInstanceLower', 0)
       meta.should.have.property('deviceInstanceUpper', 0)
       meta.should.have.property('systemInstance', 0)
       meta.should.have.property('canName', 'c0fa8200346129bf')
-      meta.should.have.property('deviceInstance', 0)
       done()
     })
     n2kMapper.toDelta({
@@ -26,16 +25,16 @@ describe('Meta data works', function () {
       src: 12,
       timestamp: '2019-05-31T11:46:58.594Z',
       fields: {
-        'Unique Number': 76223,
-        'Manufacturer Code': 'Fusion Electronics',
-        'Device Instance Lower': 0,
-        'Device Instance Upper': 0,
-        'Device Function': 130,
+        uniqueNumber: 76223,
+        manufacturerCode: 'Fusion Electronics',
+        deviceInstanceLower: 0,
+        deviceInstanceUpper: 0,
+        deviceFunction: 130,
         Spare: 0,
-        'Device Class': 'Entertainment',
-        'System Instance': 0,
-        'Industry Group': 'Marine',
-        'Arbitrary address capable': 1
+        deviceClass: 'Entertainment',
+        systemInstance: 0,
+        industryGroup: 'Marine',
+        arbitraryAddressCapable: 1
       },
       description: 'ISO Address Claim'
     })
@@ -44,9 +43,12 @@ describe('Meta data works', function () {
   it('Configuration Information', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('installationNote1', 'UD-650')
-      meta.should.have.property('installationNote2', 'FUSION')
-      meta.should.have.property('installationNote3', 'Fusion Electronics Ltd')
+      meta.should.have.property('installationDescription1', 'UD-650')
+      meta.should.have.property('installationDescription2', 'FUSION')
+      meta.should.have.property(
+        'installationDescription3',
+        'Fusion Electronics Ltd'
+      )
       done()
     })
     n2kMapper.toDelta({
@@ -56,9 +58,9 @@ describe('Meta data works', function () {
       src: 12,
       timestamp: '2019-05-31T11:56:11.266Z',
       fields: {
-        'Installation Description #1': 'UD-650',
-        'Installation Description #2': 'FUSION',
-        'Installation Description #3': 'Fusion Electronics Ltd'
+        installationDescription1: 'UD-650',
+        installationDescription2: 'FUSION',
+        installationDescription3: 'Fusion Electronics Ltd'
       },
       description: 'Configuration Information'
     })
@@ -67,11 +69,11 @@ describe('Meta data works', function () {
   it('Product Information', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('productName', 'UD-650')
-      meta.should.have.property('hardwareVersion', 'FUSION-LINK-1.0')
-      meta.should.have.property('softwareVersion', '2.0.265')
-      meta.should.have.property('productID', 3115)
-      meta.should.have.property('serialNumber', '76223')
+      meta.should.have.property('modelId', 'UD-650')
+      meta.should.have.property('modelVersion', 'FUSION-LINK-1.0')
+      meta.should.have.property('softwareVersionCode', '2.0.265')
+      meta.should.have.property('productCode', 3115)
+      meta.should.have.property('modelSerialCode', '76223')
       meta.should.have.property('nmea2000Version', 1301)
       meta.should.have.property('certificationLevel', 1)
       meta.should.have.property('loadEquivalency', 1)
@@ -84,14 +86,14 @@ describe('Meta data works', function () {
       src: 12,
       timestamp: '2019-05-31T11:53:13.922Z',
       fields: {
-        'NMEA 2000 Version': 1301,
-        'Product Code': 3115,
-        'Model ID': 'UD-650',
-        'Software Version Code': '2.0.265',
-        'Model Version': 'FUSION-LINK-1.0',
-        'Model Serial Code': '76223',
-        'Certification Level': 1,
-        'Load Equivalency': 1
+        nmea2000Version: 1301,
+        productCode: 3115,
+        modelId: 'UD-650',
+        softwareVersionCode: '2.0.265',
+        modelVersion: 'FUSION-LINK-1.0',
+        modelSerialCode: '76223',
+        certificationLevel: 1,
+        loadEquivalency: 1
       },
       description: 'Product Information'
     })

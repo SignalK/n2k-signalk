@@ -1,23 +1,23 @@
 module.exports = [
   {
-    source: 'Speed Water Referenced',
+    source: 'speedWaterReferenced',
     node: 'navigation.speedThroughWater',
     filter: function (n2k) {
-      return typeof n2k.fields['Speed Water Referenced'] !== 'undefined'
+      return typeof n2k.fields.speedWaterReferenced !== 'undefined'
     }
   },
   {
-    source: 'Speed Ground Referenced',
+    source: 'speedGroundReferenced',
     node: 'navigation.speedOverGround',
     filter: function (n2k) {
-      return n2k.fields['Speed Ground Referenced']
+      return n2k.fields.speedGroundReferenced
     }
   },
   {
-    source: 'Speed Water Referenced Type',
+    source: 'speedWaterReferencedType',
     node: 'navigation.speedThroughWaterReferenceType',
     filter: function (n2k) {
-      return n2k.fields['Speed Water Referenced Type']
+      return n2k.fields.speedWaterReferencedType
     }
   }
 ]

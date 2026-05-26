@@ -11,13 +11,13 @@ module.exports = [
     },
     filter: function (n2k, state) {
       return (
-        n2k.fields['Navigation Terminated'] &&
-        n2k.fields['Navigation Terminated'] === 'No' &&
-        typeof n2k.fields['XTE'] !== 'undefined' &&
+        n2k.fields.navigationTerminated &&
+        n2k.fields.navigationTerminated === 'No' &&
+        typeof n2k.fields.xte !== 'undefined' &&
         typeof state === 'object' &&
         typeof state.lastCourseCalculationType !== 'undefined'
       )
     },
-    source: 'XTE'
+    source: 'xte'
   }
 ]

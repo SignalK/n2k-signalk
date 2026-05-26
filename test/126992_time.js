@@ -1,6 +1,7 @@
 var chai = require('chai')
 chai.Should()
 chai.use(require('chai-things'))
+chai.use(require('@signalk/signalk-schema').chaiModule)
 
 describe('126992 system time', function () {
   it('complete sentence converts', function () {

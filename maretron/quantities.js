@@ -6,7 +6,7 @@ module.exports = (type, phase) => {
 
   return [
     {
-      source: 'Line-Line AC RMS Voltage',
+      source: 'lineLineAcRmsVoltage',
       node: function (n2k, state) {
         return `${prefix(n2k, state)}.lineLineVoltage`
       },
@@ -15,7 +15,7 @@ module.exports = (type, phase) => {
       }
     },
     {
-      source: 'Line-Neutral AC RMS Voltage',
+      source: 'lineNeutralAcRmsVoltage',
       node: function (n2k, state) {
         return `${prefix(n2k, state)}.lineNeutralVoltage`
       },
@@ -24,7 +24,7 @@ module.exports = (type, phase) => {
       }
     },
     {
-      source: 'AC Frequency',
+      source: 'acFrequency',
       node: function (n2k, state) {
         return `${prefix(n2k, state)}.frequency`
       },
@@ -33,7 +33,7 @@ module.exports = (type, phase) => {
       }
     },
     {
-      source: 'AC RMS Current',
+      source: 'acRmsCurrent',
       node: function (n2k, state) {
         return `${prefix(n2k, state)}.current`
       },

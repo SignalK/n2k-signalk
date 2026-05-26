@@ -3,13 +3,13 @@ const { chooseField, skEngineId, skEngineTitle } = require('../utils.js')
 
 module.exports = [
   {
-    source: 'Oil temperature',
+    source: 'oilTemperature',
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.transmission.oilTemperature'
     }
   },
   {
-    source: 'Transmission Gear',
+    source: 'transmissionGear',
     node: function (n2k) {
       return 'propulsion.' + skEngineId(n2k) + '.transmission.gear'
     }
@@ -19,7 +19,7 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.transmission.oilPressure'
     },
     value: function (n2k) {
-      var kpa = Number(n2k.fields['Oil pressure'])
+      var kpa = Number(n2k.fields.oilPressure)
       return isNaN(kpa) ? null : kpa
     }
   }
@@ -92,4 +92,4 @@ function generateMappingsForStatus (field, notifications) {
   })
 }
 
-generateMappingsForStatus('Discrete Status 1', status1Notifications)
+generateMappingsForStatus('discreteStatus1', status1Notifications)

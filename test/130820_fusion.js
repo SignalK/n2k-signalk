@@ -10,6 +10,10 @@ describe('130820 Fusion Stereo', function () {
         '{"timestamp":"2016-11-26T20:40:00.895Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Unit Name","fields":{"Manufacturer Code":"Fusion Electronics","Industry Code":"Marine Industry","Message ID":"Unit Name","A":128,"Name":"Fusion"}}'
       )
     )
+    tree.should.have.nested.property(
+      'entertainment.device.fusion1.name.value',
+      'Fusion'
+    )
     // tree.should.be.validSignalKVesselIgnoringIdentity;
   })
 

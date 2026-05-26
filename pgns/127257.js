@@ -2,9 +2,9 @@ module.exports = [
   {
     value: function (n2k) {
       return {
-        yaw: Number(n2k.fields.Yaw),
-        pitch: Number(n2k.fields.Pitch),
-        roll: Number(n2k.fields.Roll)
+        yaw: Number(n2k.fields.yaw),
+        pitch: Number(n2k.fields.pitch),
+        roll: Number(n2k.fields.roll)
       }
     },
     node: 'navigation.attitude'

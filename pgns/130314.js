@@ -1,16 +1,14 @@
 const pressureMappings = require('../pressureMappings')
-const { chooseField } = require('../utils.js')
 
 module.exports = [
   {
     node: function (n2k) {
-      var pressureMapping =
-        pressureMappings[chooseField(n2k, 'Pressure Source', 'Source')]
+      var pressureMapping = pressureMappings[n2k.fields.source]
       if (pressureMapping) {
         if (pressureMapping.pathWithIndex) {
           return pressureMapping.pathWithIndex.replace(
             '<index>',
-            n2k.fields['Instance']
+            n2k.fields.instance
           )
         } else if (pressureMapping.path) {
           return pressureMapping.path
@@ -18,8 +16,8 @@ module.exports = [
       }
     },
     instance: function (n2k) {
-      return chooseField(n2k, 'Pressure Instance', 'Instance') + ''
+      return n2k.fields.instance + ''
     },
-    source: 'Pressure'
+    source: 'pressure'
   }
 ]

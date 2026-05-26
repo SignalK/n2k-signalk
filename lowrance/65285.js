@@ -2,10 +2,9 @@ const temperatureMappings = require('../temperatureMappings')
 
 module.exports = [
   {
-    source: 'Actual Temperature',
+    source: 'actualTemperature',
     node: function (n2k) {
-      var temperatureMapping =
-        temperatureMappings[n2k.fields['Temperature Source']]
+      var temperatureMapping = temperatureMappings[n2k.fields.temperatureSource]
 
       if (temperatureMappings) {
         if (temperatureMapping.pathWithIndex) {
@@ -16,10 +15,10 @@ module.exports = [
       }
     },
     instance: function (n2k) {
-      return n2k.fields['Temperature Instance'] + ''
+      return n2k.fields.temperatureInstance + ''
     },
     filter: function (n2k) {
-      return n2k.fields['Actual Temperature']
+      return n2k.fields.actualTemperature
     }
   }
 ]

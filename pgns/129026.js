@@ -1,20 +1,20 @@
 module.exports = [
   {
-    source: 'SOG',
+    source: 'sog',
     node: 'navigation.speedOverGround'
   },
   {
-    source: 'COG',
+    source: 'cog',
     node: 'navigation.courseOverGroundTrue',
     filter: function (n2k) {
-      return n2k.fields['COG Reference'] === 'True'
+      return n2k.fields.cogReference === 'True'
     }
   },
   {
-    source: 'COG',
+    source: 'cog',
     node: 'navigation.courseOverGroundMagnetic',
     filter: function (n2k) {
-      return n2k.fields['COG Reference'] === 'Magnetic'
+      return n2k.fields.cogReference === 'Magnetic'
     }
   }
 ]

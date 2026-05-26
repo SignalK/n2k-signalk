@@ -1,27 +1,27 @@
 module.exports = [
   {
-    source: 'Outside Ambient Air Temperature',
+    source: 'outsideAmbientAirTemperature',
     node: 'environment.outside.temperature',
     filter: function (n2k) {
-      return n2k.fields['Outside Ambient Air Temperature']
+      return n2k.fields.outsideAmbientAirTemperature
     }
   },
   {
     node: 'environment.outside.pressure',
     filter: function (n2k) {
-      return n2k.fields['Atmospheric Pressure']
+      return n2k.fields.atmosphericPressure
     },
     value: function (n2k) {
-      return Number(n2k.fields['Atmospheric Pressure'])
+      return Number(n2k.fields.atmosphericPressure)
     }
   },
   {
     node: 'environment.water.temperature',
     filter: function (n2k) {
-      return n2k.fields['Water Temperature']
+      return n2k.fields.waterTemperature
     },
     value: function (n2k) {
-      return Number(n2k.fields['Water Temperature'])
+      return Number(n2k.fields.waterTemperature)
     }
   }
 ]

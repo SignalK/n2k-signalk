@@ -1,8 +1,8 @@
 const schema = require('@signalk/signalk-schema')
-const { lookupEnumerationValue } = require('@canboat/canboatjs')
+const { getEnumerationValue } = require('@canboat/ts-pgns')
 
 module.exports = function (type) {
-  const num = lookupEnumerationValue('SHIP_TYPE', type)
+  const num = getEnumerationValue('SHIP_TYPE', type)
   var name
   if (typeof num !== 'undefined' && (name = schema.getAISShipTypeName(num))) {
     return {

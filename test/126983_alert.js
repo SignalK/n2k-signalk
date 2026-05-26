@@ -58,7 +58,7 @@ describe('126983 Alert', function () {
       tree.notifications.nmea.warning.navigational[20][23480].value
     ).to.deep.include(value)
 
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
   })
 
@@ -79,7 +79,7 @@ describe('126983 Alert', function () {
       tree.notifications.nmea.warning.navigational[20][23480].value
     ).to.deep.include(value)
 
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
   })
 
@@ -99,7 +99,58 @@ describe('126983 Alert', function () {
       tree.notifications.nmea.warning.navigational[20][23480].value
     ).to.deep.include(value)
 
-    var delta = mapper.toDelta(msg)
+    var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
+  })
+
+  it("maps non-standard alertType to 'alert' state without throwing", function () {
+    var alertId = 9999
+    var nonStandardState = {
+      '128': {
+        alerts: {
+          [alertId]: {
+            languageId: 'English (US)',
+            locationTextDescription: '',
+            textDescription: 'TEST: non-standard alertType'
+          }
+        }
+      }
+    }
+    var msg = {
+      canId: 166725504,
+      prio: 2,
+      src: 128,
+      pgn: 126983,
+      dst: 255,
+      fields: {
+        alertType: 4,
+        alertCategory: 6,
+        alertSystem: 4,
+        alertId: alertId
+      },
+      description: 'Alert',
+      id: 'alert',
+      timestamp: '2024-01-01T00:00:00.000Z'
+    }
+    // The harness does a canboatjs round-trip via pgnToActisenseSerialFormat,
+    // which would normalize away the broken value, so we bypass it.
+    var saved = process.env.NO_CANBOATJS
+    process.env.NO_CANBOATJS = 'true'
+    try {
+      var delta = mapper.toDelta(msg, nonStandardState)
+      delta.updates[0].values.length.should.equal(1)
+      var v = delta.updates[0].values[0]
+      v.value.state.should.equal('alert')
+      // Raw alertType from the device is preserved verbatim in the value
+      // object, consistent with how every other field is exposed.
+      v.value.alertType.should.equal(4)
+      // Non-string alertCategory degrades to an empty path segment rather
+      // than crashing on .toLowerCase().
+      v.path.should.contain('.caution..')
+      v.path.should.equal('notifications.nmea.caution..4.' + alertId)
+    } finally {
+      if (saved === undefined) delete process.env.NO_CANBOATJS
+      else process.env.NO_CANBOATJS = saved
+    }
   })
 })

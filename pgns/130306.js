@@ -1,63 +1,63 @@
 module.exports = [
   {
-    source: 'Wind Speed',
+    source: 'windSpeed',
     node: 'environment.wind.speedApparent',
     filter: function (n2k) {
       return (
-        n2k.fields['Reference'] === 'Apparent' ||
-        n2k.fields['Reference'] === undefined ||
-        n2k.fields['Reference'] === null
+        n2k.fields.reference === 'Apparent' ||
+        n2k.fields.reference === undefined ||
+        n2k.fields.reference === null
       )
     }
   },
   {
-    source: 'Wind Speed',
+    source: 'windSpeed',
     node: 'environment.wind.speedTrue',
     filter: function (n2k) {
-      return n2k.fields['Reference'] === 'True (boat referenced)'
+      return n2k.fields.reference === 'True (boat referenced)'
     }
   },
   {
-    source: 'Wind Speed',
+    source: 'windSpeed',
     node: 'environment.wind.speedOverGround',
     filter: function (n2k) {
-      return n2k.fields['Reference'] === 'True (ground referenced to North)'
+      return n2k.fields.reference === 'True (ground referenced to North)'
     }
   },
   {
     node: 'environment.wind.angleApparent',
     filter: function (n2k) {
       return (
-        n2k.fields['Reference'] === 'Apparent' ||
-        n2k.fields['Reference'] === undefined ||
-        n2k.fields['Reference'] === null
+        n2k.fields.reference === 'Apparent' ||
+        n2k.fields.reference === undefined ||
+        n2k.fields.reference === null
       )
     },
     value: function (n2k) {
-      var angle = Number(n2k.fields['Wind Angle'])
+      var angle = Number(n2k.fields.windAngle)
       return angle <= Math.PI ? angle : angle - Math.PI * 2
     }
   },
   {
-    source: 'Wind Angle',
+    source: 'windAngle',
     node: 'environment.wind.angleTrueWater',
     filter: function (n2k) {
-      return n2k.fields['Reference'] === 'True (boat referenced)'
+      return n2k.fields.reference === 'True (boat referenced)'
     }
   },
   {
-    source: 'Wind Angle',
+    source: 'windAngle',
     node: 'environment.wind.directionTrue',
     filter: function (n2k) {
-      return n2k.fields['Reference'] === 'True (ground referenced to North)'
+      return n2k.fields.reference === 'True (ground referenced to North)'
     }
   },
   {
-    source: 'Wind Angle',
+    source: 'windAngle',
     node: 'environment.wind.directionMagnetic',
     filter: function (n2k) {
       return (
-        n2k.fields['Reference'] ===
+        n2k.fields.reference ===
         'Magnetic (ground referenced to Magnetic North)'
       )
     }

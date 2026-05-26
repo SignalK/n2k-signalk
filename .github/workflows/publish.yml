@@ -2,15 +2,40 @@ name: Publish to npm
 on:
   release:
     types: [created]
+  repository_dispatch:
+    types: [trigger-workflow]
+  workflow_dispatch:
+
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
+    - uses: actions/checkout@v6
+    - uses: actions/setup-node@v6
       with:
-        node-version: '16.x'
+        node-version: '24.x'
         registry-url: 'https://registry.npmjs.org'
-    - run: npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Install and build 
+      run: |
+        npm install
+        npm run build
+
+    - name: Set tag variable
+      id: vars
+      run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+
+    - name: Publish 
+      run: |
+        npm install -g npm@latest
+        npm --version
+        if [[ "${{ steps.vars.outputs.tag }}" == *beta* ]];
+          then
+            npm publish --provenance --access public --tag beta
+          else
+            npm publish --provenance --access public
+        fi
