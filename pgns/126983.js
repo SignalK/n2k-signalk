@@ -99,7 +99,9 @@ module.exports = [
       ) {
         value.method = []
       }
-      debug('126983 value: ' + JSON.stringify(value, null, 2))
+      if (debug.enabled) {
+        debug('126983 value: ' + JSON.stringify(value, null, 2))
+      }
 
       return value
     },
