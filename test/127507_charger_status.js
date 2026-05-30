@@ -26,28 +26,28 @@ describe('127507 charger status', function () {
           chargeMode: 'Standalone',
           enabled: 'On',
           equalizationPending: 'Off',
-          equalizationTimeRemaining: '01:00:00',
-        },
+          equalizationTimeRemaining: '01:00:00'
+        }
       })
       tree.should.have.nested.property(
         'electrical.chargers.0.operatingState.value',
-        'absorption',
+        'absorption'
       )
       tree.should.have.nested.property(
         'electrical.chargers.0.chargeMode.value',
-        'standalone',
+        'standalone'
       )
       tree.should.have.nested.property(
         'electrical.chargers.0.enabled.value',
-        true,
+        true
       )
       tree.should.have.nested.property(
         'electrical.chargers.0.equalizationPending.value',
-        false,
+        false
       )
       tree.should.have.nested.property(
         'electrical.chargers.0.equalizationTimeRemaining.value',
-        3600,
+        3600
       )
     } finally {
       if (saved === undefined) delete process.env.NO_CANBOATJS
@@ -73,16 +73,16 @@ describe('127507 charger status', function () {
           operatingState: 'Float',
           chargeMode: 'Standalone',
           enabled: 'On',
-          equalizationPending: 'Off',
-        },
+          equalizationPending: 'Off'
+        }
       })
       tree.should.have.nested.property(
         'electrical.chargers.2.operatingState.value',
-        'float',
+        'float'
       )
       tree.should.have.nested.property(
         'electrical.chargers.2.enabled.value',
-        true,
+        true
       )
     } finally {
       if (saved === undefined) delete process.env.NO_CANBOATJS
