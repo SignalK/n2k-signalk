@@ -27,28 +27,28 @@ describe('127511 inverter configuration status', function () {
           inverterMode: 'Standalone',
           loadSenseEnableDisable: 'On',
           loadSensePowerThreshold: 50,
-          loadSenseInterval: 5.0,
-        },
+          loadSenseInterval: 5.0
+        }
       })
       tree.should.have.nested.property(
         'electrical.inverters.0.enabled.value',
-        true,
+        true
       )
       tree.should.have.nested.property(
         'electrical.inverters.0.inverterMode.value',
-        'standalone',
+        'standalone'
       )
       tree.should.have.nested.property(
         'electrical.inverters.0.loadSenseEnabled.value',
-        true,
+        true
       )
       tree.should.have.nested.property(
         'electrical.inverters.0.loadSensePowerThreshold.value',
-        50,
+        50
       )
       tree.should.have.nested.property(
         'electrical.inverters.0.loadSenseInterval.value',
-        5.0,
+        5.0
       )
     } finally {
       if (saved === undefined) delete process.env.NO_CANBOATJS
@@ -76,20 +76,20 @@ describe('127511 inverter configuration status', function () {
           inverterMode: 'Parallel Master',
           loadSenseEnableDisable: 'Off',
           loadSensePowerThreshold: 0,
-          loadSenseInterval: 0,
-        },
+          loadSenseInterval: 0
+        }
       })
       tree.should.have.nested.property(
         'electrical.inverters.1.enabled.value',
-        false,
+        false
       )
       tree.should.have.nested.property(
         'electrical.inverters.1.inverterMode.value',
-        'parallel master',
+        'parallel master'
       )
       tree.should.have.nested.property(
         'electrical.inverters.1.loadSenseEnabled.value',
-        false,
+        false
       )
     } finally {
       if (saved === undefined) delete process.env.NO_CANBOATJS
