@@ -14,6 +14,20 @@
 {"12": "Heat Index Temperature"},
 {"13": "Freezer Temperature"},
 {"14": "Exhaust Gas Temperature"}]},
+
+Each PGN 130312/130316 reading carries an Instance number alongside
+the Source enum. Without the instance in the path, multiple sensors
+of the same Source category collapse onto one Signal K path that the
+priority engine cannot disambiguate.
+
+`environment.inside.*` is a zoneObject pattern in the Signal K schema
+that accepts arbitrary subkeys, so unscoped Inside sensors are
+indexed (`environment.inside.<index>.temperature`). Other parents
+(`outside`, `water`) have fixed schemas that don't accept dynamic
+subkeys; sensors there share the bare path and disambiguation relies
+on the priority engine's `$source` matching. Categories that already
+map to a named zone (Engine Room, Main Cabin, Freezer, Refrigeration,
+Heating Sys) keep the bare zone path.
 */
 module.exports = {
   'Sea Temperature': {
@@ -23,7 +37,7 @@ module.exports = {
     path: 'environment.outside.temperature'
   },
   'Inside Temperature': {
-    path: 'environment.inside.temperature'
+    pathWithIndex: 'environment.inside.<index>.temperature'
   },
   'Engine Room Temperature': {
     path: 'environment.inside.engineRoom.temperature'
