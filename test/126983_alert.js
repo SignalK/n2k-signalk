@@ -12,7 +12,7 @@ var state = {
     alerts: {
       '23480': {
         languageId: 'English (US)',
-        locationTextDescription: '',
+        locationTextDescription: 'Engine Room',
         textDescription: 'TEST: Temperature over 0'
       }
     }
@@ -23,6 +23,7 @@ var value = {
   state: 'warn',
   method: ['visual', 'sound'],
   message: 'TEST: Temperature over 0',
+  location: 'Engine Room',
   alertType: 'Warning',
   alertCategory: 'Navigational',
   alertSystem: 20,
@@ -152,5 +153,28 @@ describe('126983 Alert', function () {
       if (saved === undefined) delete process.env.NO_CANBOATJS
       else process.env.NO_CANBOATJS = saved
     }
+  })
+
+  it('defaults location to empty string when no location text is present', function () {
+    var noLocationState = {
+      '40': {
+        alerts: {
+          '23480': {
+            languageId: 'English (US)',
+            locationTextDescription: '',
+            textDescription: 'TEST: Temperature over 0'
+          }
+        }
+      }
+    }
+
+    var msg = JSON.parse(
+      '{"canId":166725416,"prio":2,"src":40,"dst":255,"pgn":126983,"direction":"R","time":"15:48:36.090","fields":{"Alert Type":"Warning","Alert Category":"Navigational","Alert System":20,"Alert ID":23480,"Data Source Network ID NAME":6458553273545042000,"Data Source Instance":0,"Data Source Index-Source":0,"Alert Occurrence Number":1,"Temporary Silence Status":"Not Temporary Silence","Acknowledge Status":"Not Acknowledged","Escalation Status":"Not Escalated","Temporary Silence Support":"Yes","Acknowledge Support":"Yes","Escalation Support":"Not Supported","Acknowledge Source Network ID NAME":1233993542451364400,"Trigger Condition":"Auto","Threshold Status":"Threshold Exceeded","Alert Priority":187,"Alert State":"Active"},"description":"Alert","timestamp":"2020-03-03T15:48:36.494Z"}'
+    )
+    var tree = mapper.toNested(msg, noLocationState)
+
+    tree.notifications.nmea.warning.navigational[20][23480].value.location.should.equal(
+      ''
+    )
   })
 })

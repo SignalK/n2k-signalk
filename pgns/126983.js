@@ -70,6 +70,7 @@ module.exports = [
         state: resolved.sk,
         method: ['visual', 'sound'],
         message: state.alerts[alertId].textDescription,
+        location: state.alerts[alertId].locationTextDescription || '',
         alertType: n2k.fields.alertType,
         alertCategory: n2k.fields.alertCategory,
         alertSystem: n2k.fields.alertSystem,
