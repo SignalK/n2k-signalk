@@ -16,12 +16,12 @@ describe('127489 engine parameters Port', function () {
     tree.should.have.nested.property('propulsion.port.coolantPressure')
     tree.should.have.nested.property(
       'propulsion.port.coolantPressure.value',
-      38900000
+      38900
     )
     tree.should.have.nested.property('propulsion.port.fuel.pressure')
     tree.should.have.nested.property(
       'propulsion.port.fuel.pressure.value',
-      504000000
+      504000
     )
 
     tree.should.have.nested.property('propulsion.port.temperature')
@@ -121,12 +121,12 @@ describe('127489 engine parameters Starboard', function () {
     tree.should.have.nested.property('propulsion.starboard.coolantPressure')
     tree.should.have.nested.property(
       'propulsion.starboard.coolantPressure.value',
-      38900000
+      38900
     )
     tree.should.have.nested.property('propulsion.starboard.fuel.pressure')
     tree.should.have.nested.property(
       'propulsion.starboard.fuel.pressure.value',
-      504000000
+      504000
     )
 
     tree.should.have.nested.property('propulsion.starboard.temperature')
@@ -278,12 +278,12 @@ describe('127489 engine parameters 2', function () {
     tree.should.have.nested.property('propulsion.2.coolantPressure')
     tree.should.have.nested.property(
       'propulsion.2.coolantPressure.value',
-      38900000
+      38900
     )
     tree.should.have.nested.property('propulsion.2.fuel.pressure')
     tree.should.have.nested.property(
       'propulsion.2.fuel.pressure.value',
-      28000000
+      28000
     )
 
     tree.should.have.nested.property('propulsion.2.temperature')
