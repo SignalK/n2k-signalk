@@ -39,10 +39,13 @@ module.exports = [
     }
   },
   {
-    source: 'windAngle',
     node: 'environment.wind.angleTrueWater',
     filter: function (n2k) {
       return n2k.fields.reference === 'True (boat referenced)'
+    },
+    value: function (n2k) {
+      var angle = Number(n2k.fields.windAngle)
+      return angle <= Math.PI ? angle : angle - Math.PI * 2
     }
   },
   {
