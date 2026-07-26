@@ -56,8 +56,8 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.coolantPressure'
     },
     value: function (n2k) {
-      var kpa = Number(n2k.fields.coolantPressure)
-      return isNaN(kpa) ? null : kpa * 1000.0
+      var pa = Number(n2k.fields.coolantPressure)
+      return isNaN(pa) ? null : pa
     }
   },
   {
@@ -83,8 +83,8 @@ module.exports = [
       return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure'
     },
     value: function (n2k) {
-      var kpa = Number(n2k.fields.fuelPressure)
-      return isNaN(kpa) ? null : kpa * 1000.0
+      var pa = Number(n2k.fields.fuelPressure)
+      return isNaN(pa) ? null : pa
     }
   }
 ]
