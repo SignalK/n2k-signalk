@@ -281,10 +281,7 @@ describe('127489 engine parameters 2', function () {
       38900
     )
     tree.should.have.nested.property('propulsion.2.fuel.pressure')
-    tree.should.have.nested.property(
-      'propulsion.2.fuel.pressure.value',
-      28000
-    )
+    tree.should.have.nested.property('propulsion.2.fuel.pressure.value', 28000)
 
     tree.should.have.nested.property('propulsion.2.temperature')
     tree.should.have.nested.property('propulsion.2.temperature.value', 29.85)
