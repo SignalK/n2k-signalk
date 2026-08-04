@@ -40,6 +40,38 @@ describe('Meta data works', function () {
     })
   })
 
+  it('Address Claim with unavailable instance fields', done => {
+    // Captured from a live Maretron device (wire bytes
+    // 01,51,36,11,01,6e,28,cf): the decoder suppresses fields at
+    // their unavailable sentinel — systemInstance 15 here — so they
+    // are absent from the object and must re-encode as all-ones in
+    // the canName, exactly as re-encoding the claim would.
+    const n2kMapper = new N2kMapper()
+    n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
+      meta.should.have.property('canName', 'cf286e0111365101')
+      done()
+    })
+    n2kMapper.toDelta({
+      prio: 6,
+      pgn: 60928,
+      dst: 255,
+      src: 24,
+      timestamp: '2026-08-04T16:08:51.503Z',
+      fields: {
+        uniqueNumber: 1462529,
+        manufacturerCode: 'Maretron',
+        deviceInstanceLower: 1,
+        deviceInstanceUpper: 0,
+        deviceFunction: 110,
+        spare: 0,
+        deviceClass: 'Safety systems',
+        industryGroup: 'Marine Industry',
+        arbitraryAddressCapable: 'Yes'
+      },
+      description: 'ISO Address Claim'
+    })
+  })
+
   it('Configuration Information', done => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
