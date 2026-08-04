@@ -1,11 +1,70 @@
 const EventEmitter = require('events').EventEmitter
 var through = require('through')
 var debug = require('debug')('signalk:n2k-signalk')
-const toPgn = require('@canboat/canboatjs').toPgn
-const Uint64LE = require('int64-buffer').Uint64LE
-const PGN = require('@canboat/ts-pgns').PGN
+const {
+  PGN,
+  ManufacturerCodeValues,
+  IndustryCodeValues,
+  DeviceClassValues
+} = require('@canboat/ts-pgns')
 
 require('util').inherits(N2kMapper, EventEmitter)
+
+// Resolve one NAME field to its numeric code, masked to its width. A
+// lookup field arrives as the name the decoder resolves ('Furuno',
+// 'Marine Industry', 'Yes') or, when the value is missing from the
+// lookup table, as the raw number. A field the decoder suppressed as
+// unavailable (e.g. systemInstance 15) is absent from the object and
+// must re-encode as its all-ones sentinel — real devices on the bus
+// transmit claims with unavailable instance fields.
+function nameField (value, mask, table) {
+  if (value === undefined || value === null) return mask
+  if (typeof value === 'number') return value & mask
+  if (table && Object.prototype.hasOwnProperty.call(table, value)) {
+    return table[value] & mask
+  }
+  const n = Number(value)
+  return (Number.isNaN(n) ? mask : n) & mask
+}
+
+// canName is the device's 8-byte NAME — the wire payload of its ISO
+// Address Claim (PGN 60928, ISO 11783-5 layout) — rendered as hex.
+// Packing the bytes straight from the decoded fields replaces the
+// former round-trip through canboatjs' encoder, which was this
+// mapper's only encode-side dependency.
+function canNameFromClaim (fields) {
+  const manufacturer = nameField(
+    fields.manufacturerCode,
+    0x7ff,
+    ManufacturerCodeValues
+  )
+  const industry = nameField(fields.industryGroup, 0x07, IndustryCodeValues)
+  const deviceClass = nameField(fields.deviceClass, 0x7f, DeviceClassValues)
+  const arbitrary = nameField(fields.arbitraryAddressCapable, 0x01, {
+    Yes: 1,
+    No: 0
+  })
+  // Bytes 0-3: unique number (21 bits) then manufacturer (11 bits).
+  // 0x200000 = 2^21 — a plain shift would overflow into the sign bit
+  // of JavaScript's 32-bit shift semantics for manufacturer >= 1024.
+  const lo = nameField(fields.uniqueNumber, 0x1fffff) + manufacturer * 0x200000
+  const b4 =
+    nameField(fields.deviceInstanceLower, 0x07) |
+    (nameField(fields.deviceInstanceUpper, 0x1f) << 3)
+  // canboatjs' encoder matched the field by schema name as well as by
+  // camel id, so existing callers pass either 'spare' or 'Spare'.
+  const spare = fields.spare !== undefined ? fields.spare : fields.Spare
+  const b6 = nameField(spare, 0x01) | (deviceClass << 1)
+  const b7 =
+    nameField(fields.systemInstance, 0x0f) | (industry << 4) | (arbitrary << 7)
+  const name =
+    BigInt(lo) |
+    (BigInt(b4) << 32n) |
+    (BigInt(nameField(fields.deviceFunction, 0xff)) << 40n) |
+    (BigInt(b6) << 48n) |
+    (BigInt(b7) << 56n)
+  return name.toString(16)
+}
 
 var n2kMappings = {}
 Object.assign(n2kMappings, require('./pgns'))
@@ -116,7 +175,7 @@ N2kMapper.prototype.toDelta = function (n2k) {
     }
 
     if (n2k.pgn === 60928) {
-      const canName = new Uint64LE(toPgn(n2k)).toString(16)
+      const canName = canNameFromClaim(n2k.fields)
       if (
         this.state[n2k.src].canName &&
         this.state[n2k.src].canName != canName
