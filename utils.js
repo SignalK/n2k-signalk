@@ -16,6 +16,13 @@ function skEngineId (n2k) {
   }
 }
 
+function skJ1939EngineId (n2k) {
+  // J1939 PGNs carry no engine-instance field; on a J1939 bus the
+  // source address is the engine identity (engine #1 claims 0x00,
+  // engine #2 0x01, ...).
+  return n2k.src
+}
+
 function skEngineTitle (n2k) {
   var engine = skEngineId(n2k)
   if (typeof engine === 'number') {
@@ -56,6 +63,7 @@ function timeToSeconds (time) {
 module.exports = {
   chooseField,
   skEngineId,
+  skJ1939EngineId,
   skEngineTitle,
   acPhase,
   timeToSeconds

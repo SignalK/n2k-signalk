@@ -1,4 +1,9 @@
 module.exports = {
+  // J1939 (canboat's J1939 schema flavor; the j1939-wasm connection)
+  61444: require('./61444.js'),
+  65226: require('./65226.js'),
+  65262: require('./65262.js'),
+  65270: require('./65270.js'),
   126983: require('./126983.js'),
   126985: require('./126985.js'),
   126992: require('./126992.js'),
