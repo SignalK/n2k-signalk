@@ -43,6 +43,10 @@ function acPhase (n2k) {
   }
 }
 
+function percentToRatio (percent) {
+  return typeof percent === 'number' ? percent / 100 : undefined
+}
+
 function timeToSeconds (time) {
   if (typeof time !== 'undefined' && time !== null) {
     let split = time.split(':')
@@ -58,5 +62,6 @@ module.exports = {
   skEngineId,
   skEngineTitle,
   acPhase,
+  percentToRatio,
   timeToSeconds
 }
