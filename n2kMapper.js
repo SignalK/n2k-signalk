@@ -7,6 +7,11 @@ const {
   IndustryCodeValues,
   DeviceClassValues
 } = require('@canboat/ts-pgns')
+const {
+  instanceGroups,
+  classifyInstance,
+  defaultPrefix
+} = require('./instanceGroups')
 
 require('util').inherits(N2kMapper, EventEmitter)
 
@@ -461,6 +466,9 @@ const metaPGNs = {
 
 exports.N2kMapper = N2kMapper
 exports.toDelta = toDelta
+exports.instanceGroups = instanceGroups
+exports.classifyInstance = classifyInstance
+exports.defaultPrefix = defaultPrefix
 exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
     // toDelta returns nothing for a report it drops (an AIS report without a
