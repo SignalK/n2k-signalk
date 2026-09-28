@@ -4,6 +4,7 @@ var debug = require('debug')('signalk:n2k-signalk')
 const toPgn = require('@canboat/canboatjs').toPgn
 const Uint64LE = require('int64-buffer').Uint64LE
 const PGN = require('@canboat/ts-pgns').PGN
+const instanceGroups = require('./instanceGroups')
 
 require('util').inherits(N2kMapper, EventEmitter)
 
@@ -385,6 +386,9 @@ const metaPGNs = {
 
 exports.N2kMapper = N2kMapper
 exports.toDelta = toDelta
+exports.instanceGroups = require('./instanceGroups').instanceGroups
+exports.classifyInstance = require('./instanceGroups').classifyInstance
+exports.defaultPrefix = require('./instanceGroups').defaultPrefix
 exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
     this.queue(exports.toDelta(data, state))
