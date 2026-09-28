@@ -47,3 +47,37 @@ See [bin/demo.js](https://github.com/SignalK/n2k-signalk/blob/master/bin/demo.js
 You can add custom n2k mappings via the [Signal K Server plugin mechanism](https://github.com/SignalK/signalk-server/blob/master/SERVERPLUGINS.md). A plugin can register custom mappings by emitting `pgn-to-signalk` PropertyValues with a value that is a map with the pgn number has the key and the n2k mappings as the value.
 
 See [signalk-over-n2k](https://github.com/SignalK/signalk-over-n2k) for an example.
+
+
+### Instance Paths
+
+PGNs that carry an instance number (engines, batteries, chargers, inverters, tanks, AC and DC connections, temperature, humidity and pressure sensors) write their data under a prefix built from that instance, such as `propulsion.port` or `electrical.batteries.3`.
+
+Pass `instancePrefixResolver` to replace that prefix:
+
+```js
+const { N2kMapper } = require('@signalk/n2k-signalk')
+
+const mapper = new N2kMapper({
+  instancePrefixResolver: ({ group, discriminator, instance, src, canName }) =>
+    group === 'engine' && instance === 0 ? 'propulsion.main' : undefined
+})
+```
+
+The resolver is called with:
+
+- `group`: the instance group id, e.g. `engine`, `battery`, `tank`, `temperature`, `dcConnection`
+- `discriminator`: the numeric tank type or sensor source code, `undefined` for groups without one
+- `instance`: the numeric instance code; an absent instance is its "no data" code (255, or 15 for tanks)
+- `src`: the source address of the frame
+- `canName`: the source's CAN name, `undefined` until its PGN 60928 has been seen
+
+A non-empty string replaces the prefix, notifications included; anything else keeps the default. For temperature, humidity and pressure the prefix is the full leaf path, e.g. `environment.inside.engineRoom.temperature`. Engine alarm messages name a remapped engine by the prefix's last segment. The resolver is called once per frame and every path of that frame uses its result, so it should be pure. If it throws, the mapper catches the exception, drops that path's value and writes the error to stderr; the next path of the frame calls the resolver again.
+
+The mapper reads `instancePrefixResolver` from its options object on every frame, so setting or deleting it on that object takes effect on the next frame.
+
+The group vocabulary is exported so callers can build and validate rules without duplicating it:
+
+- `instanceGroups`: one entry per group with its `id`, `pgns`, `instanceField`, `maxInstance`, `singleLeaf`, `discriminatorField` and `discriminatorCodes`
+- `classifyInstance(n2k)`: `{ group, discriminator, instance }` for a decoded frame, or `undefined`
+- `defaultPrefix(group, discriminator, instance, src, pgn?)`: the prefix written without a resolver

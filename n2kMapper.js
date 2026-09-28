@@ -158,11 +158,27 @@ N2kMapper.prototype.toDelta = function (n2k) {
         })
       }
     }
-    return toDelta(n2k, this.state, this.customPgns)
+    return toDelta(
+      n2k,
+      this.state,
+      this.customPgns,
+      this.options.instancePrefixResolver
+    )
   }
 }
 
-var toDelta = function (n2k, state, customPgns = {}) {
+/**
+ * @typedef {import('./instanceGroups').InstancePrefixContext} InstancePrefixContext
+ * @typedef {import('./instanceGroups').InstancePrefixResolver} InstancePrefixResolver
+ */
+
+/**
+ * @param {any} n2k
+ * @param {any} state
+ * @param {object} [customPgns]
+ * @param {InstancePrefixResolver} [instancePrefixResolver]
+ */
+var toDelta = function (n2k, state, customPgns = {}, instancePrefixResolver) {
   try {
     var theMappings, customMappings
 
@@ -178,6 +194,11 @@ var toDelta = function (n2k, state, customPgns = {}) {
         state[n2k_src] = {}
       }
       src_state = state[n2k_src]
+      if (instancePrefixResolver || src_state[instanceGroups.RESOLVER]) {
+        src_state[instanceGroups.RESOLVER] =
+          instancePrefixResolver &&
+          instanceGroups.resolverBinding(instancePrefixResolver)
+      }
     }
     var result = {
       updates: [

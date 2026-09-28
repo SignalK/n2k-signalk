@@ -16,7 +16,7 @@ const {
   lookupEnumerationName,
   lookupEnumerationValue
 } = require('@canboat/canboatjs')
-const { skEngineId } = require('./utils.js')
+const { skEngineId, skEngineTitle } = require('./utils.js')
 const temperatureMappings = require('./temperatureMappings')
 const humidityMappings = require('./humidityMappings')
 const pressureMappings = require('./pressureMappings')
@@ -45,6 +45,25 @@ const pressureMappings = require('./pressureMappings')
  *
  * @typedef {{ pgn: number | string, src: number | string,
  *   fields?: Record<string, unknown> }} N2kFrame
+ *
+ * @typedef {object} InstancePrefixContext
+ * @property {InstanceGroupId} group
+ * @property {number | undefined} discriminator Numeric tank type or sensor
+ *   source code; undefined for groups without a discriminator.
+ * @property {number} instance Numeric instance code; an absent instance is
+ *   its "no data" code.
+ * @property {number | string} src Source address of the frame.
+ * @property {string | undefined} canName Undefined until the source's PGN
+ *   60928 has been seen.
+ */
+
+/**
+ * Replaces the prefix a frame's instance is written under. A non-empty string
+ * replaces it; anything else keeps the default.
+ *
+ * @callback InstancePrefixResolver
+ * @param {InstancePrefixContext} context
+ * @returns {string | null | undefined | void}
  */
 
 // canboatjs omits a field holding its "no data" value; codes represent the
@@ -330,6 +349,57 @@ function classifyInstance (n2k) {
   return { group: spec.id, discriminator, instance }
 }
 
+// Key of the resolver binding on the per-source state. A symbol keeps it out
+// of Object.keys and JSON of the state. toDelta stores a fresh binding per
+// frame, so a result cached on it never outlives the frame.
+const RESOLVER = Symbol('instancePrefixResolver')
+
+/**
+ * The binding toDelta stores on the per-source state for one frame.
+ *
+ * @param {InstancePrefixResolver} resolver
+ */
+function resolverBinding (resolver) {
+  return { resolver, frame: undefined, prefix: undefined }
+}
+
+function resolve (resolver, n2k, state) {
+  const classification = classifyInstance(n2k)
+  if (!classification) {
+    return undefined
+  }
+  const prefix = resolver({
+    group: classification.group,
+    discriminator: classification.discriminator,
+    instance: classification.instance,
+    src: n2k.src,
+    canName: state.canName
+  })
+  return typeof prefix === 'string' && prefix !== '' ? prefix : undefined
+}
+
+/**
+ * The prefix the source state's resolver returns for this frame, or undefined
+ * when there is no resolver, the frame has no instance or the resolver
+ * returns nothing. Every mapping of a frame asks; the resolver runs once.
+ *
+ * @param {N2kFrame} n2k
+ * @param {object | undefined} state
+ * @returns {string | undefined}
+ */
+function resolvedPrefix (n2k, state) {
+  const binding = state && state[RESOLVER]
+  if (!binding) {
+    return undefined
+  }
+  if (binding.frame !== n2k) {
+    const prefix = resolve(binding.resolver, n2k, state)
+    binding.frame = n2k
+    binding.prefix = prefix
+  }
+  return binding.prefix
+}
+
 /**
  * The prefix a PGN module writes this frame's instance under. state is the
  * per-source state node() receives.
@@ -339,7 +409,27 @@ function classifyInstance (n2k) {
  * @returns {string | null | undefined}
  */
 function instancePrefix (n2k, state) {
-  return PGN_INDEX.get(Number(n2k.pgn)).prefix(n2k)
+  const resolved = resolvedPrefix(n2k, state)
+  return resolved !== undefined
+    ? resolved
+    : PGN_INDEX.get(Number(n2k.pgn)).prefix(n2k)
+}
+
+/**
+ * The engine's name in alarm messages: the last segment of the resolved
+ * prefix, so a remapped engine is not called "Port", or the default title.
+ *
+ * @param {N2kFrame} n2k
+ * @param {object | undefined} state
+ * @returns {string | number}
+ */
+function engineTitle (n2k, state) {
+  const resolved = resolvedPrefix(n2k, state)
+  if (resolved === undefined) {
+    return skEngineTitle(n2k)
+  }
+  const name = resolved.slice(resolved.lastIndexOf('.') + 1)
+  return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
 function discriminatorCodes (spec) {
@@ -374,5 +464,8 @@ module.exports = {
   instanceGroups,
   classifyInstance,
   defaultPrefix,
-  instancePrefix
+  instancePrefix,
+  engineTitle,
+  RESOLVER,
+  resolverBinding
 }
