@@ -1,15 +1,13 @@
-function prefix (n2k) {
-  return 'electrical.inverters.' + n2k.fields.instance
-}
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
-    node: n2k => prefix(n2k) + '.operatingState',
+    node: (n2k, state) => instancePrefix(n2k, state) + '.operatingState',
     value: n2k => n2k.fields.operatingState.toLowerCase(),
     filter: n2k => typeof n2k.fields.operatingState === 'string'
   },
   {
-    node: n2k => prefix(n2k) + '.enabled',
+    node: (n2k, state) => instancePrefix(n2k, state) + '.enabled',
     value: n2k => n2k.fields.inverterEnable === 'On',
     filter: n2k => typeof n2k.fields.inverterEnable === 'string'
   }

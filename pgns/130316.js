@@ -1,22 +1,8 @@
-const temperatureMappings = require('../temperatureMappings')
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
-    node: function (n2k) {
-      var temperatureMapping = temperatureMappings[n2k.fields.source]
-      if (temperatureMapping) {
-        if (temperatureMapping.pathWithIndex) {
-          return temperatureMapping.pathWithIndex.replace(
-            '<index>',
-            n2k.fields.instance
-          )
-        } else if (temperatureMapping.path) {
-          return temperatureMapping.path
-        }
-      } else {
-        return `generic.temperatures.userDefined${n2k.fields.source}.${n2k.fields.instance}.temperature`
-      }
-    },
+    node: instancePrefix,
     instance: function (n2k) {
       return n2k.fields.instance + ''
     },

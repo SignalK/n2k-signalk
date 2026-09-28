@@ -1,14 +1,12 @@
-function prefix (n2k) {
-  return `electrical.dc.${n2k.src}.${n2k.fields.connectionNumber}`
-}
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
     source: 'dcVoltage',
-    node: n2k => prefix(n2k) + '.voltage'
+    node: (n2k, state) => instancePrefix(n2k, state) + '.voltage'
   },
   {
     source: 'dcCurrent',
-    node: n2k => prefix(n2k) + '.current'
+    node: (n2k, state) => instancePrefix(n2k, state) + '.current'
   }
 ]
