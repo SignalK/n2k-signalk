@@ -1,9 +1,9 @@
-const { skEngineId } = require('../utils.js')
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.trip.fuelUsed'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.trip.fuelUsed'
     },
     value: function (n2k) {
       return n2k.fields.tripFuelUsed / 1000
@@ -13,8 +13,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.trip.fuelRate.average'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.trip.fuelRate.average'
     },
     value: function (n2k) {
       return n2k.fields.fuelRateAverage / 1000
@@ -24,8 +24,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.trip.fuelRate.economy'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.trip.fuelRate.economy'
     },
     value: function (n2k) {
       return n2k.fields.fuelRateEconomy / 1000
@@ -35,10 +35,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return (
-        'propulsion.' + skEngineId(n2k) + '.trip.fuelRate.instantaneousEconomy'
-      )
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.trip.fuelRate.instantaneousEconomy'
     },
     value: function (n2k) {
       return n2k.fields.instantaneousFuelEconomy / 1000

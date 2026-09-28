@@ -1,8 +1,5 @@
 const { chooseField, timeToSeconds } = require('../utils.js')
-
-function instance (n2k) {
-  return n2k.fields.instance
-}
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
@@ -12,8 +9,8 @@ module.exports = [
     filter: function (n2k) {
       return typeof n2k.fields.stateOfCharge !== 'undefined'
     },
-    node: function (n2k) {
-      return 'electrical.batteries.' + instance(n2k) + '.capacity.stateOfCharge'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.capacity.stateOfCharge'
     }
   },
   {
@@ -23,8 +20,8 @@ module.exports = [
     filter: function (n2k) {
       return typeof n2k.fields.stateOfHealth !== 'undefined'
     },
-    node: function (n2k) {
-      return 'electrical.batteries.' + instance(n2k) + '.capacity.stateOfHealth'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.capacity.stateOfHealth'
     }
   },
   {
@@ -32,8 +29,8 @@ module.exports = [
     value: function (n2k) {
       return timeToSeconds(n2k.fields.timeRemaining)
     },
-    node: function (n2k) {
-      return 'electrical.batteries.' + instance(n2k) + '.capacity.timeRemaining'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.capacity.timeRemaining'
     }
   } /*, {
     source: 'Ripple Voltage',

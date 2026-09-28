@@ -1,20 +1,8 @@
-const pressureMappings = require('../pressureMappings')
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
-    node: function (n2k) {
-      var pressureMapping = pressureMappings[n2k.fields.source]
-      if (pressureMapping) {
-        if (pressureMapping.pathWithIndex) {
-          return pressureMapping.pathWithIndex.replace(
-            '<index>',
-            n2k.fields.instance
-          )
-        } else if (pressureMapping.path) {
-          return pressureMapping.path
-        }
-      }
-    },
+    node: instancePrefix,
     instance: function (n2k) {
       return n2k.fields.instance + ''
     },

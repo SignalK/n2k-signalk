@@ -1,13 +1,9 @@
+const { instancePrefix } = require('../instanceGroups')
+
 module.exports = [
   {
-    node: function (n2k) {
-      return (
-        'tanks.' +
-        tankMappings[n2k.fields.type] +
-        '.' +
-        n2k.fields.instance +
-        '.currentLevel'
-      )
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.currentLevel'
     },
     value: function (n2k) {
       var ratio100 = Number(n2k.fields.level)
@@ -15,14 +11,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return (
-        'tanks.' +
-        tankMappings[n2k.fields.type] +
-        '.' +
-        n2k.fields.instance +
-        '.capacity'
-      )
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.capacity'
     },
     value: function (n2k) {
       var value = Number(n2k.fields.capacity)
@@ -33,12 +23,3 @@ module.exports = [
     }
   }
 ]
-
-var tankMappings = {
-  Fuel: 'fuel',
-  Water: 'freshWater',
-  'Gray water': 'wasteWater',
-  'Live well': 'liveWell',
-  Oil: 'lubrication',
-  'Black water': 'blackWater'
-}

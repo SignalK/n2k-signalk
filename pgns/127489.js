@@ -1,27 +1,23 @@
 const util = require('util')
-const {
-  chooseField,
-  skEngineId,
-  skEngineTitle,
-  timeToSeconds
-} = require('../utils.js')
+const { chooseField, skEngineTitle, timeToSeconds } = require('../utils.js')
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
     source: 'temperature',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.temperature'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.temperature'
     }
   },
   {
     source: 'alternatorPotential',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.alternatorVoltage'
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.fuel.rate'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.fuel.rate'
     },
     value: function (n2k) {
       var lph = Number(n2k.fields.fuelRate)
@@ -29,8 +25,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.oilPressure'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.oilPressure'
     },
     value: function (n2k) {
       var kpa = Number(n2k.fields.oilPressure)
@@ -38,8 +34,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.runTime'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.runTime'
     },
     value: function (n2k) {
       return timeToSeconds(n2k.fields.totalEngineHours)
@@ -47,13 +43,13 @@ module.exports = [
   },
   {
     source: 'oilTemperature',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.oilTemperature'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.oilTemperature'
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.coolantPressure'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.coolantPressure'
     },
     value: function (n2k) {
       var kpa = Number(n2k.fields.coolantPressure)
@@ -61,8 +57,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.engineLoad'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.engineLoad'
     },
     value: function (n2k) {
       var percent = Number(n2k.fields.engineLoad)
@@ -70,8 +66,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.engineTorque'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.engineTorque'
     },
     value: function (n2k) {
       var percent = Number(n2k.fields.engineTorque)
@@ -79,8 +75,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.fuel.pressure'
     },
     value: function (n2k) {
       var kpa = Number(n2k.fields.fuelPressure)
@@ -91,82 +87,82 @@ module.exports = [
 
 var status1Notifications = [
   {
-    node: 'notifications.propulsion.%s.checkEngine',
+    node: 'notifications.%s.checkEngine',
     message: 'Check %s Engine',
     analyzerText: 'Check Engine'
   },
   {
-    node: 'notifications.propulsion.%s.overTemperature',
+    node: 'notifications.%s.overTemperature',
     message: '%s Engine Over Temperature',
     analyzerText: 'Over Temperature'
   },
   {
-    node: 'notifications.propulsion.%s.lowOilPressure',
+    node: 'notifications.%s.lowOilPressure',
     message: '%s Engine Low Oil Pressure',
     analyzerText: 'Low Oil Pressure'
   },
   {
-    node: 'notifications.propulsion.%s.lowOilLevel',
+    node: 'notifications.%s.lowOilLevel',
     message: '%s Engine Low Oil Level',
     analyzerText: 'Low Oil Level'
   },
   {
-    node: 'notifications.propulsion.%s.lowFuelPressure',
+    node: 'notifications.%s.lowFuelPressure',
     message: '%s Engine Low Fuel Pressure',
     analyzerText: 'Low Fuel Pressure'
   },
   {
-    node: 'notifications.propulsion.%s.lowSystemVoltage',
+    node: 'notifications.%s.lowSystemVoltage',
     message: '%s Low System Voltage',
     analyzerText: 'Low System Voltage'
   },
   {
-    node: 'notifications.propulsion.%s.lowCoolantLevel',
+    node: 'notifications.%s.lowCoolantLevel',
     message: '%s Engine Low Coolant Level',
     analyzerText: 'Low Coolant Level'
   },
   {
-    node: 'notifications.propulsion.%s.waterFlow',
+    node: 'notifications.%s.waterFlow',
     message: '%s Engine Water Flow',
     analyzerText: 'Water Flow'
   },
   {
-    node: 'notifications.propulsion.%s.waterInFuel',
+    node: 'notifications.%s.waterInFuel',
     message: '%s Water in Fuel',
     analyzerText: 'Water In Fuel'
   },
   {
-    node: 'notifications.propulsion.%s.chargeIndicator',
+    node: 'notifications.%s.chargeIndicator',
     message: '%s Engine Charge Indicator',
     analyzerText: 'Charge Indicator'
   },
   {
-    node: 'notifications.propulsion.%s.preheatIndicator',
+    node: 'notifications.%s.preheatIndicator',
     message: '%s Preheat Indicator',
     analyzerText: 'Preheat Indicator'
   },
   {
-    node: 'notifications.propulsion.%s.highBoostPressure',
+    node: 'notifications.%s.highBoostPressure',
     message: '%s Engine High Boost Pressure',
     analyzerText: 'High Boost Pressure'
   },
   {
-    node: 'notifications.propulsion.%s.revLimitExceeded',
+    node: 'notifications.%s.revLimitExceeded',
     message: '%s Engine Rev Limit Exceeded',
     analyzerText: 'Rev Limit Exceeded'
   },
   {
-    node: 'notifications.propulsion.%s.eGRSystem',
+    node: 'notifications.%s.eGRSystem',
     message: '%s Engine EGR System',
     analyzerText: 'EGR System'
   },
   {
-    node: 'notifications.propulsion.%s.throttlePositionSensor',
+    node: 'notifications.%s.throttlePositionSensor',
     message: '%s Engine Throttle Position Sensor',
     analyzerText: 'Throttle Position Sensor'
   },
   {
-    node: 'notifications.propulsion.%s.emergencyStopMode',
+    node: 'notifications.%s.emergencyStopMode',
     message: '%s Engine Emergency Stop Mode',
     analyzerText: 'Emergency Stop'
   }
@@ -174,42 +170,42 @@ var status1Notifications = [
 
 var status2Notifications = [
   {
-    node: 'notifications.propulsion.%s.warningLevel1',
+    node: 'notifications.%s.warningLevel1',
     message: '%s Engine Warning Level 1',
     analyzerText: 'Warning Level 1'
   },
   {
-    node: 'notifications.propulsion.%s.warningLevel2',
+    node: 'notifications.%s.warningLevel2',
     message: '%s Engine Warning Level 2',
     analyzerText: 'Warning Level 2'
   },
   {
-    node: 'notifications.propulsion.%s.powerReduction',
+    node: 'notifications.%s.powerReduction',
     message: '%s Engine Power Reduction',
     analyzerText: 'Power Reduction'
   },
   {
-    node: 'notifications.propulsion.%s.maintenanceNeeded',
+    node: 'notifications.%s.maintenanceNeeded',
     message: '%s Engine Maintenance Needed',
     analyzerText: 'Maintenance Needed'
   },
   {
-    node: 'notifications.propulsion.%s.commError',
+    node: 'notifications.%s.commError',
     message: '%s Engine Comm Error',
     analyzerText: 'Engine Comm Error'
   },
   {
-    node: 'notifications.propulsion.%s.subOrSecondaryThrottle',
+    node: 'notifications.%s.subOrSecondaryThrottle',
     message: '%s Engine Sub or Secondary Throttle',
     analyzerText: 'Sub or Secondary Throttle'
   },
   {
-    node: 'notifications.propulsion.%s.neutralStartProtect',
+    node: 'notifications.%s.neutralStartProtect',
     message: '%s Neutral Start Protect',
     analyzerText: 'Neutral Start Protect'
   },
   {
-    node: 'notifications.propulsion.%s.shuttingDown',
+    node: 'notifications.%s.shuttingDown',
     message: '%s Engine Shutting Down',
     analyzerText: 'Engine Shutting Down'
   }
@@ -218,8 +214,8 @@ var status2Notifications = [
 function generateMappingsForStatus (field, notifications) {
   notifications.forEach((notif, index) => {
     var mapping = {
-      node: function (n2k) {
-        return util.format(notif.node, skEngineId(n2k))
+      node: function (n2k, state) {
+        return util.format(notif.node, instancePrefix(n2k, state))
       },
       filter: function (n2k) {
         return typeof n2k.fields[field] !== 'undefined'

@@ -1,9 +1,10 @@
-const { chooseField, skEngineId } = require('../utils.js')
+const { chooseField } = require('../utils.js')
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.revolutions'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.revolutions'
     },
     value: function (n2k) {
       var rpm = Number(n2k.fields.speed)
@@ -11,8 +12,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.drive.trimState'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.drive.trimState'
     },
     value: function (n2k) {
       var trimPos = Number(n2k.fields.tiltTrim)
@@ -28,8 +29,8 @@ module.exports = [
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.boostPressure'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.boostPressure'
     },
     source: 'boostPressure'
   }
