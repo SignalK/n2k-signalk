@@ -1,7 +1,8 @@
 import { PGN_127513 } from '@canboat/ts-pgns'
+const { instancePrefix } = require('../instanceGroups')
 
-const battery = (path: string) => (n2k: PGN_127513) =>
-  `electrical.batteries.${n2k.fields.instance}.${path}`
+const battery = (path: string) => (n2k: PGN_127513, state: any) =>
+  `${instancePrefix(n2k, state)}.${path}`
 
 const lower = (field: keyof PGN_127513['fields']) => ({
   value: (n2k: PGN_127513) => String(n2k.fields[field]).toLowerCase(),

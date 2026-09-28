@@ -1,26 +1,23 @@
 const { chooseField } = require('../utils.js')
-
-function instance (n2k) {
-  return n2k.fields.instance
-}
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
     source: 'voltage',
-    node: function (n2k) {
-      return 'electrical.batteries.' + instance(n2k) + '.voltage'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.voltage'
     }
   },
   {
     source: 'current',
-    node: function (n2k) {
-      return 'electrical.batteries.' + instance(n2k) + '.current'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.current'
     }
   },
   {
     source: 'temperature',
-    node: function (n2k) {
-      return 'electrical.batteries.' + instance(n2k) + '.temperature'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.temperature'
     }
   }
 ]
