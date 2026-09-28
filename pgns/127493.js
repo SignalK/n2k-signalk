@@ -1,6 +1,5 @@
 const util = require('util')
-const { skEngineTitle } = require('../utils.js')
-const { instancePrefix } = require('../instanceGroups')
+const { instancePrefix, engineTitle } = require('../instanceGroups')
 
 module.exports = [
   {
@@ -77,14 +76,14 @@ function generateMappingsForStatus (field, notifications) {
           return {
             state: 'alarm',
             method: ['visual', 'sound'],
-            message: util.format(notif.message, skEngineTitle(n2k))
+            message: util.format(notif.message, engineTitle(n2k, state))
           }
         } else {
           return {
             state: 'normal',
             method: ['visual'],
             message:
-              util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
+              util.format(notif.message, engineTitle(n2k, state)) + ' is Normal'
           }
         }
       }
