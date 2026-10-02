@@ -206,11 +206,20 @@ var toDelta = function (n2k, state, customPgns = {}) {
       typeof theMappings !== 'undefined' &&
       typeof theMappings !== 'function'
     ) {
+      let hasContext = false
       theMappings.forEach(function (mapping) {
         if (typeof mapping.context === 'function') {
+          hasContext = true
           result.context = mapping.context(n2k, src_state)
         }
       })
+      // An AIS report without an MMSI belongs to no vessel. canboat and
+      // canboatjs report MMSI 0 -- which no station holds -- as not
+      // available, so the field is simply absent: drop the report, as a
+      // malformed MMSI is dropped below.
+      if (hasContext && !result.context) {
+        return
+      }
       if (result.context) {
         //filter out invalid mmsi
         let last = result.context.lastIndexOf(':')

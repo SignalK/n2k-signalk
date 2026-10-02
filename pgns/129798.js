@@ -34,9 +34,9 @@ module.exports = [
   },
   {
     context: function (n2k) {
-      return typeof n2k.fields.userId !== 'undefined'
+      return n2k.fields.userId != null
         ? 'sar.urn:mrn:imo:mmsi:' + padUserID(n2k)
-        : 'sar.unknown'
+        : undefined
     }
   },
   {
