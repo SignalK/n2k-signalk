@@ -218,7 +218,9 @@ module.exports = [
 
     node: (n2k: PGN_130820_FusionZoneName) =>
       'entertainment.device.fusion1.output.zone' +
-      (n2k.fields.number + 1) +
+      // canboat 8 renamed this field from number to zone (still zero-based);
+      // accept either so both canboatjs generations map.
+      (((n2k.fields as any).zone ?? n2k.fields.number) + 1) +
       '.name',
 
     value: (n2k: PGN_130820_FusionZoneName) => n2k.fields.name
