@@ -16,6 +16,7 @@ Object.assign(n2kMappings, require('./maretron'))
 Object.assign(n2kMappings, require('./actisense'))
 Object.assign(n2kMappings, require('./digitalyacht'))
 Object.assign(n2kMappings, require('./simrad'))
+Object.assign(n2kMappings, require('./navico'))
 
 function N2kMapper (options) {
   this.state = {}
