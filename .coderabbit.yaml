@@ -29,7 +29,7 @@ reviews:
       instructions: |
         ## Contribution guidelines compliance
         Check that the PR follows the contribution guidelines in CONTRIBUTING.md:
-        code formatted with prettier-standard (`npm run format`), and additions
+        code formatted with Prettier (`npm run format`), and additions
         covered by tests using sample data captured from real equipment.
 
         ## Echo comments
