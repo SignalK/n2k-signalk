@@ -396,6 +396,11 @@ exports.N2kMapper = N2kMapper
 exports.toDelta = toDelta
 exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
-    this.queue(exports.toDelta(data, state))
+    // toDelta returns nothing for a report it drops (an AIS report without a
+    // valid MMSI, for one); queueing undefined would still emit a 'data' event.
+    const delta = exports.toDelta(data, state)
+    if (delta !== undefined) {
+      this.queue(delta)
+    }
   })
 }
