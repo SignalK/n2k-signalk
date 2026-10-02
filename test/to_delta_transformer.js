@@ -29,3 +29,40 @@ describe('toDeltaTransformer', function () {
     stream.end()
   })
 })
+
+describe('toDelta context', function () {
+  const { toDelta } = require('../dist/n2kMapper')
+  const report = {
+    pgn: 999001,
+    src: 3,
+    dst: 255,
+    prio: 4,
+    timestamp: '2022-05-09T13:38:38.917Z',
+    fields: { value: 7 }
+  }
+
+  it('ignores a context mapping that does not apply to the report', function () {
+    // The context mapping's filter rejects this report, so it must neither
+    // set the context nor cause the report to be dropped.
+    const customPgns = {
+      999001: [
+        { source: 'value', node: 'test.value' },
+        { filter: () => false, context: () => undefined, node: 'test.other' }
+      ]
+    }
+    const delta = toDelta(report, {}, customPgns)
+    delta.updates[0].values.should.deep.equal([
+      { path: 'test.value', value: 7 }
+    ])
+  })
+
+  it('drops a report whose applying context mapping finds no context', function () {
+    const customPgns = {
+      999001: [
+        { source: 'value', node: 'test.value' },
+        { context: () => undefined, node: 'test.other' }
+      ]
+    }
+    ;(typeof toDelta(report, {}, customPgns)).should.equal('undefined')
+  })
+})

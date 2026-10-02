@@ -208,7 +208,13 @@ var toDelta = function (n2k, state, customPgns = {}) {
     ) {
       let hasContext = false
       theMappings.forEach(function (mapping) {
-        if (typeof mapping.context === 'function') {
+        // Only a mapping that applies to this report decides its context: a
+        // mapping for another variant, or one whose filter rejects the
+        // report, must neither set it nor have it dropped.
+        if (
+          typeof mapping.context === 'function' &&
+          mappingApplies(mapping, n2k, src_state)
+        ) {
           hasContext = true
           result.context = mapping.context(n2k, src_state)
         }
@@ -286,27 +292,33 @@ function reduceMapping (updates, theMapping) {
   return updates
 }
 
+/**
+ * Does this mapping apply to this report: its pgnClass (a PGN variant)
+ * matches and its filter, if any, passes?
+ */
+function mappingApplies (theMapping, n2k, state) {
+  try {
+    if (theMapping.pgnClass) {
+      return (
+        theMapping.pgnClass.isMatch(n2k) &&
+        (theMapping.filter === undefined || theMapping.filter(n2k, state))
+      )
+    } else {
+      return (
+        typeof theMapping.filter === 'undefined' ||
+        theMapping.filter(n2k, state)
+      )
+    }
+  } catch (ex) {
+    process.stderr.write(ex + ' ' + n2k)
+    return false
+  }
+}
+
 var toValuesArray = function (theMappings, n2k, state) {
   if (n2k.fields && typeof theMappings !== 'undefined') {
     return theMappings
-      .filter(function (theMapping) {
-        try {
-          if (theMapping.pgnClass) {
-            return (
-              theMapping.pgnClass.isMatch(n2k) &&
-              (theMapping.filter === undefined || theMapping.filter(n2k, state))
-            )
-          } else {
-            return (
-              typeof theMapping.filter === 'undefined' ||
-              theMapping.filter(n2k, state)
-            )
-          }
-        } catch (ex) {
-          process.stderr.write(ex + ' ' + n2k)
-          return false
-        }
-      })
+      .filter(theMapping => mappingApplies(theMapping, n2k, state))
       .reduce((updates, theMapping) => {
         try {
           if (typeof theMapping === 'function') {
