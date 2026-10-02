@@ -178,6 +178,12 @@ var toDelta = function (n2k, state, customPgns = {}) {
       }
       src_state = state[n2k_src]
     }
+    // The mappings that apply to this report, selected once: the values and
+    // the context both come from this set.
+    const applying = theMappings.filter(theMapping =>
+      mappingApplies(theMapping, n2k, src_state)
+    )
+
     var result = {
       updates: [
         {
@@ -191,7 +197,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
             n2k.timestamp.substring(0, 10) +
             'T' +
             n2k.timestamp.substring(11, n2k.timestamp.length),
-          values: toValuesArray(theMappings, n2k, src_state)
+          values: toValuesArray(applying, n2k, src_state)
         }
       ]
     }
@@ -207,14 +213,11 @@ var toDelta = function (n2k, state, customPgns = {}) {
       typeof theMappings !== 'function'
     ) {
       let hasContext = false
-      theMappings.forEach(function (mapping) {
-        // Only a mapping that applies to this report decides its context: a
-        // mapping for another variant, or one whose filter rejects the
-        // report, must neither set it nor have it dropped.
-        if (
-          typeof mapping.context === 'function' &&
-          mappingApplies(mapping, n2k, src_state)
-        ) {
+      // Only a mapping that applies to this report decides its context: a
+      // mapping for another variant, or one whose filter rejects the report,
+      // must neither set it nor have it dropped.
+      applying.forEach(function (mapping) {
+        if (typeof mapping.context === 'function') {
           hasContext = true
           result.context = mapping.context(n2k, src_state)
         }
@@ -315,10 +318,10 @@ function mappingApplies (theMapping, n2k, state) {
   }
 }
 
+// theMappings are the mappings that apply to the report (see mappingApplies).
 var toValuesArray = function (theMappings, n2k, state) {
   if (n2k.fields && typeof theMappings !== 'undefined') {
     return theMappings
-      .filter(theMapping => mappingApplies(theMapping, n2k, state))
       .reduce((updates, theMapping) => {
         try {
           if (typeof theMapping === 'function') {
