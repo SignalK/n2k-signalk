@@ -8,7 +8,7 @@ import {
 module.exports = [
   {
     pgnClass: PGN_65288_SeatalkAlarm,
-    
+
     filter: function (n2k: PGN_65288_SeatalkAlarm) {
       return (
         typeof n2k.fields.alarmGroup !== 'undefined' &&
@@ -24,10 +24,12 @@ module.exports = [
         alarmName = `unknown${n2k.fields.alarmId}`
       }
 
-      var alarmGroup:string = n2k.fields.alarmGroup !== undefined ?  n2k.fields.alarmGroup.toString() : "unknownGroup"
+      var alarmGroup: string =
+        n2k.fields.alarmGroup !== undefined
+          ? n2k.fields.alarmGroup.toString()
+          : 'unknownGroup'
 
-      var path =
-        alarmGroup.toLowerCase().replace(/ /g, '') + '.' + alarmName
+      var path = alarmGroup.toLowerCase().replace(/ /g, '') + '.' + alarmName
       return 'notifications.' + path
     },
     value: function (n2k: PGN_65288_SeatalkAlarm) {
@@ -35,18 +37,18 @@ module.exports = [
 
       var method = ['visual']
 
-      if (state === SeatalkAlarmStatus.AlarmConditionMetAndNotSilenced ) {
+      if (state === SeatalkAlarmStatus.AlarmConditionMetAndNotSilenced) {
         method.push('sound')
       }
 
-      let notifState : string
+      let notifState: string
       if (state == SeatalkAlarmStatus.AlarmConditionNotMet) {
         notifState = 'normal'
       } else {
         notifState = 'alarm'
       }
 
-      var alarmName : string
+      var alarmName: string
       const alarmId = n2k.fields.alarmId
 
       if (alarmId === undefined || typeof alarmId !== 'string') {
@@ -55,9 +57,9 @@ module.exports = [
         alarmName = alarmId as string
         if (
           notifState == 'alarm' &&
-            (alarmId === SeatalkAlarmId.WpArrival ||
-             alarmId === SeatalkAlarmId.PilotWayPointAdvance ||
-             alarmId === SeatalkAlarmId.PilotRouteComplete)
+          (alarmId === SeatalkAlarmId.WpArrival ||
+            alarmId === SeatalkAlarmId.PilotWayPointAdvance ||
+            alarmId === SeatalkAlarmId.PilotRouteComplete)
         ) {
           notifState = 'alert'
         }

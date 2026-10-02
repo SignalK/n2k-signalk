@@ -3,14 +3,14 @@ chai.Should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
-function generatePGNs (json) {
+function generatePGNs(json) {
   return [json.replace('DC Instance', 'Instance')]
 }
 describe('127506 dc detailed status', function () {
   it('complete sentence converts', function () {
     generatePGNs(
       '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"Instance":1,"State of Charge":60,"State of Health":99,"Time Remaining": "00:30:00", "Ripple Voltage": 10.9, "SID":0}}'
-    ).forEach(pgn => {
+    ).forEach((pgn) => {
       var tree = require('./testMapper').toNested(JSON.parse(pgn))
       tree.should.have.nested.property(
         'electrical.batteries.1.capacity.stateOfCharge.value',
@@ -52,18 +52,18 @@ describe('127506 dc detailed status', function () {
     }
     var delta = require('./testMapper').testToDelta(canboatInput)
     var stateOfHealthValue = delta.updates[0].values.find(
-      v => v.path === 'electrical.batteries.0.capacity.stateOfHealth'
+      (v) => v.path === 'electrical.batteries.0.capacity.stateOfHealth'
     )
     stateOfHealthValue.value.should.equal(0.88)
     var stateOfChargeValue = delta.updates[0].values.find(
-      v => v.path === 'electrical.batteries.0.capacity.stateOfCharge'
+      (v) => v.path === 'electrical.batteries.0.capacity.stateOfCharge'
     )
     stateOfChargeValue.value.should.equal(0.87)
   })
   it('null timeRemaining converts', function () {
     generatePGNs(
       '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"instance":1,"SID":0}}'
-    ).forEach(pgn => {
+    ).forEach((pgn) => {
       var delta = require('./testMapper').testToDelta(JSON.parse(pgn))
       tree = require('./testMapper').toNested(JSON.parse(pgn))
 

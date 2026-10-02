@@ -28,13 +28,13 @@ describe('129808 DSC Call Information', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:366191910')
 
     var position = delta.updates[0].values.find(
-      pathValue => pathValue.path === 'navigation.position'
+      (pathValue) => pathValue.path === 'navigation.position'
     )
     position.value.latitude.should.be.closeTo(48.76, 0.0001)
     position.value.longitude.should.be.closeTo(-123.0, 0.0001)
 
     var notification = delta.updates[0].values.find(
-      pathValue => pathValue.path === 'notifications.sinking'
+      (pathValue) => pathValue.path === 'notifications.sinking'
     )
     notification.should.not.equal(undefined)
   })
@@ -60,7 +60,7 @@ describe('129808 DSC Call Information', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:366191910')
 
     var position = delta.updates[0].values.find(
-      pathValue => pathValue.path === 'navigation.position'
+      (pathValue) => pathValue.path === 'navigation.position'
     )
     position.value.latitude.should.be.closeTo(48.76, 0.0001)
 

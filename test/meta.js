@@ -5,7 +5,7 @@ chai.use(require('chai-things'))
 const N2kMapper = require('../dist/n2kMapper').N2kMapper
 
 describe('Meta data works', function () {
-  it('Address Claim', done => {
+  it('Address Claim', (done) => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('uniqueNumber', 76223)
@@ -40,7 +40,7 @@ describe('Meta data works', function () {
     })
   })
 
-  it('Configuration Information', done => {
+  it('Configuration Information', (done) => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('installationDescription1', 'UD-650')
@@ -66,7 +66,7 @@ describe('Meta data works', function () {
     })
   })
 
-  it('Product Information', done => {
+  it('Product Information', (done) => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('modelId', 'UD-650')

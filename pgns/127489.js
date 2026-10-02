@@ -215,7 +215,7 @@ var status2Notifications = [
   }
 ]
 
-function generateMappingsForStatus (field, notifications) {
+function generateMappingsForStatus(field, notifications) {
   notifications.forEach((notif, index) => {
     var mapping = {
       node: function (n2k) {

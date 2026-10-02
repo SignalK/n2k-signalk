@@ -1,13 +1,13 @@
-function instance (n2k) {
+function instance(n2k) {
   return n2k.fields['instance']
 }
 
-function acPhase (lineData) {
+function acPhase(lineData) {
   const phaseMap = { 0: 'A', 1: 'B', 2: 'C' }
   return phaseMap[lineData.line] ?? 'A'
 }
 
-function prefix (n2k, lineData) {
+function prefix(n2k, lineData) {
   return `electrical.ac.${instance(n2k)}.${acPhase(lineData)}`
 }
 

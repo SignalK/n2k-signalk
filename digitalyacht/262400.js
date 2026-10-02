@@ -4,7 +4,7 @@ function makePath(n2k) {
 
 module.exports = [
   {
-    value: (n2k) => Number(n2k.fields['CAN network load'])/100,
+    value: (n2k) => Number(n2k.fields['CAN network load']) / 100,
     node: (n2k) => `${makePath(n2k)}.canNetworkLoad`
   },
   {

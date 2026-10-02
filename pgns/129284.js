@@ -2,7 +2,7 @@ const debug = require('debug')('n2k-signalk-129284')
 
 var GREATCIRCLE = 'Great Circle'
 
-function calculationType (n2k, state) {
+function calculationType(n2k, state) {
   var res =
     n2k.fields.calculationType === GREATCIRCLE ? 'GreatCircle' : 'Rhumbline'
   debug('set calculationType to: ' + res)

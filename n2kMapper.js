@@ -18,17 +18,17 @@ Object.assign(n2kMappings, require('./digitalyacht'))
 Object.assign(n2kMappings, require('./simrad'))
 Object.assign(n2kMappings, require('./navico'))
 
-function N2kMapper (options) {
+function N2kMapper(options) {
   this.state = {}
   this.unknownPGNs = {}
   this.customPgns = {}
   this.options = options || {}
 
   if (this.options.onPropertyValues) {
-    this.options.onPropertyValues('pgn-to-signalk', values => {
+    this.options.onPropertyValues('pgn-to-signalk', (values) => {
       values
-        .filter(v => v !== undefined)
-        .forEach(pv => {
+        .filter((v) => v !== undefined)
+        .forEach((pv) => {
           Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
             if (
               n2kMappings[pgnNumber] &&
@@ -80,7 +80,7 @@ N2kMapper.prototype.requestMetaPGNs = async function (dst, pgns) {
 
 N2kMapper.prototype.checkSrcMetasAndRetry = function (src) {
   if (src !== '255') {
-    const neededPGNs = Object.keys(metaPGNs).filter(pgn => {
+    const neededPGNs = Object.keys(metaPGNs).filter((pgn) => {
       return (
         !this.state[src].metaPGNsReceived ||
         !this.state[src].metaPGNsReceived[pgn]
@@ -89,7 +89,7 @@ N2kMapper.prototype.checkSrcMetasAndRetry = function (src) {
     if (neededPGNs.length > 0) {
       debug('did not get meta pgns %j for src %d', neededPGNs, src)
       this.requestMetaPGNs(src, neededPGNs).then(() => {
-        neededPGNs.forEach(pgn => {
+        neededPGNs.forEach((pgn) => {
           if (
             !this.state[src].metaPGNsReceived ||
             !this.state[src].metaPGNsReceived[pgn]
@@ -105,7 +105,7 @@ N2kMapper.prototype.checkSrcMetasAndRetry = function (src) {
 
 N2kMapper.prototype.requestAllMeta = function () {
   this.requestMetaPGNs(255, Object.keys(metaPGNs)).then(() => {
-    Object.keys(this.state).forEach(src => this.checkSrcMetasAndRetry(src))
+    Object.keys(this.state).forEach((src) => this.checkSrcMetasAndRetry(src))
   })
 }
 
@@ -181,7 +181,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
     }
     // The mappings that apply to this report, selected once: the values and
     // the context both come from this set.
-    const applying = theMappings.filter(theMapping =>
+    const applying = theMappings.filter((theMapping) =>
       mappingApplies(theMapping, n2k, src_state)
     )
 
@@ -252,7 +252,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
   }
 }
 
-function getValue (n2k, theMapping, state) {
+function getValue(n2k, theMapping, state) {
   if (typeof theMapping.source !== 'undefined') {
     var stringValue = n2k.fields[theMapping.source]
     if (!stringValue && stringValue != '') {
@@ -267,7 +267,7 @@ function getValue (n2k, theMapping, state) {
   }
 }
 
-function reduceMapping (updates, theMapping) {
+function reduceMapping(updates, theMapping) {
   try {
     if (typeof theMapping === 'function') {
       updates.push.apply(updates, theMapping(n2k, state))
@@ -300,7 +300,7 @@ function reduceMapping (updates, theMapping) {
  * Does this mapping apply to this report: its pgnClass (a PGN variant)
  * matches and its filter, if any, passes?
  */
-function mappingApplies (theMapping, n2k, state) {
+function mappingApplies(theMapping, n2k, state) {
   try {
     if (theMapping.pgnClass) {
       return (
@@ -372,7 +372,7 @@ var addToTree = function (pathValue, source, tree) {
   return result
 }
 
-function addAsNested (pathValue, source, timestamp, result) {
+function addAsNested(pathValue, source, timestamp, result) {
   var temp = result
   var parts = pathValue.path.split('.')
   for (var i = 0; i < parts.length - 1; i++) {
@@ -397,15 +397,15 @@ function addAsNested (pathValue, source, timestamp, result) {
 }
 
 const metaPGNs = {
-  60928: n2k => {
+  60928: (n2k) => {
     return {
       ...n2k.fields,
       deviceInstance:
         (n2k.fields.deviceInstanceUpper << 3) | n2k.fields.deviceInstanceLower
     }
   },
-  126998: n2k => n2k.fields,
-  126996: n2k => n2k.fields
+  126998: (n2k) => n2k.fields,
+  126996: (n2k) => n2k.fields
 }
 
 exports.N2kMapper = N2kMapper

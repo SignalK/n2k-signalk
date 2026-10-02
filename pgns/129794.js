@@ -11,7 +11,7 @@ module.exports = [
   },
   {
     node: '',
-    filter: n2k => n2k.fields.name,
+    filter: (n2k) => n2k.fields.name,
     value: function (n2k) {
       return {
         name: n2k.fields.name
@@ -20,7 +20,7 @@ module.exports = [
   },
   {
     node: 'navigation.destination.commonName',
-    value: n2k => n2k.fields.destination
+    value: (n2k) => n2k.fields.destination
   },
   {
     node: 'navigation.destination.eta',
@@ -97,8 +97,8 @@ module.exports = [
   },
   {
     node: '',
-    filter: n2k => n2k.fields.callsign,
-    value: n2k => ({
+    filter: (n2k) => n2k.fields.callsign,
+    value: (n2k) => ({
       communication: {
         callsignVhf: n2k.fields.callsign
       }
@@ -121,7 +121,7 @@ module.exports = [
   },
   {
     node: '',
-    filter: n2k => n2k.fields.userId,
+    filter: (n2k) => n2k.fields.userId,
     value: function (n2k) {
       return {
         mmsi: n2k.fields.userId.toString()

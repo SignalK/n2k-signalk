@@ -26,7 +26,7 @@ const NATURES = {
   'EPIRB emission': 'epirb'
 }
 
-function callerMmsi (n2k) {
+function callerMmsi(n2k) {
   const address = n2k.fields.dscMessageAddress
   if (address === undefined || address === null || Number(address) === 0) {
     return undefined
@@ -34,38 +34,38 @@ function callerMmsi (n2k) {
   return address.toString()
 }
 
-function isDistress (n2k) {
+function isDistress(n2k) {
   return (
     n2k.fields.dscCategory === 'Distress' ||
     n2k.fields.dscCategorySymbol === 'Distress'
   )
 }
 
-function distressNature (n2k) {
+function distressNature(n2k) {
   return NATURES[n2k.fields.natureOfDistress] || 'undesignated'
 }
 
 module.exports = [
   {
     node: 'navigation.position',
-    filter: n2k =>
+    filter: (n2k) =>
       typeof n2k.fields.latitudeOfVesselReported === 'number' &&
       typeof n2k.fields.longitudeOfVesselReported === 'number',
-    value: n2k => ({
+    value: (n2k) => ({
       latitude: n2k.fields.latitudeOfVesselReported,
       longitude: n2k.fields.longitudeOfVesselReported
     })
   },
   {
-    node: n2k => 'notifications.' + distressNature(n2k),
+    node: (n2k) => 'notifications.' + distressNature(n2k),
     filter: isDistress,
-    value: n2k => ({
+    value: (n2k) => ({
       message:
         'DSC Distress Received! Nature of distress: ' + distressNature(n2k)
     })
   },
   {
-    context: n2k => 'vessels.urn:mrn:imo:mmsi:' + callerMmsi(n2k),
-    filter: n2k => typeof callerMmsi(n2k) !== 'undefined'
+    context: (n2k) => 'vessels.urn:mrn:imo:mmsi:' + callerMmsi(n2k),
+    filter: (n2k) => typeof callerMmsi(n2k) !== 'undefined'
   }
 ]

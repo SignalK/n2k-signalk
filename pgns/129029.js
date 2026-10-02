@@ -6,7 +6,7 @@ module.exports = [
         latitude: Number(n2k.fields.latitude)
       }
     },
-    filter: n2k =>
+    filter: (n2k) =>
       typeof n2k.fields.longitude !== 'undefined' &&
       typeof n2k.fields.latitude !== 'undefined',
     node: 'navigation.position'
@@ -15,7 +15,7 @@ module.exports = [
     value: function (n2k) {
       return `${n2k.fields.date.replace(/\./g, '-')}T${n2k.fields.time}Z`
     },
-    filter: n2k =>
+    filter: (n2k) =>
       typeof n2k.fields.date !== 'undefined' &&
       typeof n2k.fields.time !== 'undefined',
     node: 'navigation.datetime'

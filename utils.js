@@ -1,4 +1,4 @@
-function chooseField (n2k, field1, field2) {
+function chooseField(n2k, field1, field2) {
   let res =
     typeof n2k.fields[field1] === 'undefined'
       ? n2k.fields[field2]
@@ -7,7 +7,7 @@ function chooseField (n2k, field1, field2) {
   return res
 }
 
-function skEngineId (n2k) {
+function skEngineId(n2k) {
   let id = n2k.fields.instance
   if (typeof id === 'number') {
     return id
@@ -16,7 +16,7 @@ function skEngineId (n2k) {
   }
 }
 
-function skEngineTitle (n2k) {
+function skEngineTitle(n2k) {
   var engine = skEngineId(n2k)
   if (typeof engine === 'number') {
     return engine
@@ -25,7 +25,7 @@ function skEngineTitle (n2k) {
   }
 }
 
-function acPhase (n2k) {
+function acPhase(n2k) {
   const line = n2k.fields.line
   if (!line) {
     return 'A'
@@ -43,11 +43,11 @@ function acPhase (n2k) {
   }
 }
 
-function percentToRatio (percent) {
+function percentToRatio(percent) {
   return typeof percent === 'number' ? percent / 100 : undefined
 }
 
-function timeToSeconds (time) {
+function timeToSeconds(time) {
   if (typeof time !== 'undefined' && time !== null) {
     let split = time.split(':')
     if (split.length === 3) {

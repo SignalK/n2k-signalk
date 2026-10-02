@@ -12,7 +12,7 @@ describe('Pressure: ', function () {
   )
 
   var testCases = require('./130314-data.json')
-  Object.keys(testCases).forEach(testCaseName => {
+  Object.keys(testCases).forEach((testCaseName) => {
     it(`Converts ${testCaseName}`, () => {
       const testCase = testCases[testCaseName]
 
@@ -23,9 +23,9 @@ describe('Pressure: ', function () {
       delta.should.be.validSignalKDelta
 
       Object.keys(testCase['testExpectConvertedValues']).forEach(
-        expectedValuePath => {
+        (expectedValuePath) => {
           const expectedValueFound = delta.updates[0].values.filter(
-            value => value.path === expectedValuePath
+            (value) => value.path === expectedValuePath
           )
           expectedValueFound.length.should.equal(
             1,

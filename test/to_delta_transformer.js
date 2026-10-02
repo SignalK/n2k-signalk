@@ -7,7 +7,7 @@ describe('toDeltaTransformer', function () {
   it('emits nothing for a report toDelta drops', function (done) {
     const stream = toDeltaTransformer({}, {})
     const emitted = []
-    stream.on('data', d => emitted.push(d))
+    stream.on('data', (d) => emitted.push(d))
     stream.on('end', () => {
       emitted.should.have.lengthOf(0)
       done()
