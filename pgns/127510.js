@@ -8,6 +8,8 @@ module.exports = [
     value: n2k => n2k.fields.chargerEnableDisable === 'On',
     filter: n2k => typeof n2k.fields.chargerEnableDisable === 'string'
   },
+  // Not a current: the limit as a ratio (0-1) of the charger's designed
+  // maximum output current (NMEA 2000 DD263, a percentage on the bus).
   {
     node: n2k => prefix(n2k) + '.chargeCurrentLimit',
     value: n2k => n2k.fields.chargeCurrentLimit,
