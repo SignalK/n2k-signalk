@@ -4,7 +4,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 var msg = JSON.parse(
-  '{"timestamp":"2017-04-15T15:50:48.664Z","prio":3,"src":35,"dst":255,"pgn":129029,"fields":{"SID":126,"Date":"2020.03.09","Time":"17:47:47.80000","Latitude":42.4913166,"Longitude":-70.8850733,"Altitude":41.4,"GNSS type":"GPS","Method":"DGNSS fix","Integrity":"No integrity checking","Number of SVs":10,"HDOP":0.9,"PDOP":1.6,"Geoidal Separation":-30.9,"Reference Stations":1,"list":[{"Reference Station ID":15,"Age of DGNSS Corrections": 30}]},"description":"GNSS Position Data"}'
+  '{"timestamp":"2017-04-15T15:50:48.664Z","prio":3,"src":35,"dst":255,"pgn":129029,"fields":{"SID":126,"Date":"2020.03.09","Time":64067.8,"Latitude":42.4913166,"Longitude":-70.8850733,"Altitude":41.4,"GNSS type":"GPS","Method":"DGNSS fix","Integrity":"No integrity checking","Number of SVs":10,"HDOP":0.9,"PDOP":1.6,"Geoidal Separation":-30.9,"Reference Stations":1,"list":[{"Reference Station ID":15,"Age of DGNSS Corrections": 30}]},"description":"GNSS Position Data"}'
 )
 
 // 2017-07-01T13:02:15.120Z,3,129029,1,255,43,01,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,7f,ff,ff,ff,ff,ff,ff,ff,7f,ff,ff,ff,ff,ff,ff,ff,7f,00,fc,08,ff,7f,ff,7f,ff,ff,ff,7f,ff
@@ -17,7 +17,7 @@ describe('129029 Position Data ', function () {
     var tree = require('./testMapper').toNested(msg)
     tree.navigation.position.value.longitude.should.equal(-70.8850733)
     tree.navigation.position.value.latitude.should.equal(42.4913166)
-    tree.navigation.datetime.value.should.equal('2020-03-09T17:47:47.80000Z')
+    tree.navigation.datetime.value.should.equal('2020-03-09T17:47:47.800Z')
     tree.navigation.gnss.antennaAltitude.value.should.equal(41.4)
     tree.navigation.gnss.satellites.value.should.equal(10)
     tree.navigation.gnss.horizontalDilution.value.should.equal(0.9)
@@ -31,6 +31,24 @@ describe('129029 Position Data ', function () {
     //tree.navigation.gnss.differentialReference.value.should.equal(22)
 
     tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+  it('a coordinate that is not a number produces no position output', function () {
+    // Neither canboat nor canboatjs decodes a coordinate to a string, so
+    // this goes straight to the mapper: a canboatjs round trip cannot
+    // carry it.
+    var mapper = require('./testMapper')
+    var gnss = {
+      ...msg,
+      fields: { latitude: 42.4913166, longitude: -70.8850733, numberOfSvs: 10 }
+    }
+    mapper
+      .n2kToNested(gnss)
+      .should.have.nested.property('navigation.position.value.latitude')
+
+    gnss.fields.latitude = 'unavailable'
+    var tree = mapper.n2kToNested(gnss)
+    tree.should.not.have.nested.property('navigation.position')
+    tree.navigation.gnss.satellites.value.should.equal(10)
   })
   it('no position in input produces no position output', function () {
     var delta = require('./testMapper').testToDelta(invalidDataMsg)

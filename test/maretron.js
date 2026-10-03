@@ -163,7 +163,7 @@ describe('Maretron AC PGNs work', function () {
     )
     tree.should.have.nested.property(
       'electrical.generators.16.average.frequency.value',
-      60.008
+      60.00781
     )
     tree.should.have.nested.property(
       'electrical.generators.16.average.current.value',
