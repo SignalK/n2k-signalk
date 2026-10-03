@@ -89,5 +89,9 @@ describe('127513 battery configuration status', function () {
       'electrical.batteries.1.capacity.nominal.value',
       720000
     )
+    tree.should.have.nested.property(
+      'electrical.batteries.1.chargeEfficiencyFactor.value',
+      0.95
+    )
   })
 })
