@@ -62,9 +62,9 @@ module.exports = [
     value: getFromStarboardEdge,
     filter: function (n2k: PGN_129041) {
       return (
-        typeof n2k.fields.positionReferenceFromStarboardEdge === 'number' &&
-        typeof n2k.fields.beamDiameter === 'number' &&
-        n2k.fields.beamDiameter > 0
+        Number.isFinite(n2k.fields.positionReferenceFromStarboardEdge) &&
+        Number.isFinite(n2k.fields.beamDiameter) &&
+        (n2k.fields.beamDiameter as number) > 0
       )
     }
   },
