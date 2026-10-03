@@ -1,22 +1,23 @@
 const util = require('util')
-const { chooseField, skEngineId, skEngineTitle } = require('../utils.js')
+const { chooseField } = require('../utils.js')
+const { instancePrefix, engineTitle } = require('../instanceGroups')
 
 module.exports = [
   {
     source: 'oilTemperature',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.transmission.oilTemperature'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.transmission.oilTemperature'
     }
   },
   {
     source: 'transmissionGear',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.transmission.gear'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.transmission.gear'
     }
   },
   {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.transmission.oilPressure'
+    node: function (n2k, state) {
+      return instancePrefix(n2k, state) + '.transmission.oilPressure'
     },
     value: function (n2k) {
       var kpa = Number(n2k.fields.oilPressure)
@@ -27,27 +28,27 @@ module.exports = [
 
 var status1Notifications = [
   {
-    node: 'notifications.propulsion.%s.transmission.checkTransmission',
+    node: 'notifications.%s.transmission.checkTransmission',
     message: 'Check %s Engine',
     analyzerText: 'Check Transmission'
   },
   {
-    node: 'notifications.propulsion.%s.transmission.overTemperature',
+    node: 'notifications.%s.transmission.overTemperature',
     message: '%s Transmission Over Temperature',
     analyzerText: 'Over Temperature'
   },
   {
-    node: 'notifications.propulsion.%s.transmission.lowOilPressure',
+    node: 'notifications.%s.transmission.lowOilPressure',
     message: '%s Transmission Low Oil Pressure',
     analyzerText: 'Low Oil Pressure'
   },
   {
-    node: 'notifications.propulsion.%s.transmission.lowOilLevel',
+    node: 'notifications.%s.transmission.lowOilLevel',
     message: '%s Transmission Low Oil Level',
     analyzerText: 'Low Oil Level'
   },
   {
-    node: 'notifications.propulsion.%s.transmission.sailDrive',
+    node: 'notifications.%s.transmission.sailDrive',
     message: '%s Transmission Sail Drive',
     analyzerText: 'Sail Drive'
   }
@@ -56,8 +57,8 @@ var status1Notifications = [
 function generateMappingsForStatus (field, notifications) {
   notifications.forEach((notif, index) => {
     var mapping = {
-      node: function (n2k) {
-        return util.format(notif.node, skEngineId(n2k))
+      node: function (n2k, state) {
+        return util.format(notif.node, instancePrefix(n2k, state))
       },
       filter: function (n2k) {
         return typeof n2k.fields[field] !== 'undefined'
@@ -76,14 +77,14 @@ function generateMappingsForStatus (field, notifications) {
           return {
             state: 'alarm',
             method: ['visual', 'sound'],
-            message: util.format(notif.message, skEngineTitle(n2k))
+            message: util.format(notif.message, engineTitle(n2k, state))
           }
         } else {
           return {
             state: 'normal',
             method: ['visual'],
             message:
-              util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
+              util.format(notif.message, engineTitle(n2k, state)) + ' is Normal'
           }
         }
       }

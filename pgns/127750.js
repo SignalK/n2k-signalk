@@ -1,30 +1,28 @@
-function prefix (n2k) {
-  return `electrical.converter.${n2k.src}.${n2k.fields.connectionNumber}`
-}
+const { instancePrefix } = require('../instanceGroups')
 
 module.exports = [
   {
-    node: n2k => prefix(n2k) + '.operatingState',
+    node: (n2k, state) => instancePrefix(n2k, state) + '.operatingState',
     value: n2k => n2k.fields.operatingState.toLowerCase(),
     filter: n2k => typeof n2k.fields.operatingState === 'string'
   },
   {
-    node: n2k => prefix(n2k) + '.temperatureState',
+    node: (n2k, state) => instancePrefix(n2k, state) + '.temperatureState',
     value: n2k => n2k.fields.temperatureState.toLowerCase(),
     filter: n2k => typeof n2k.fields.temperatureState === 'string'
   },
   {
-    node: n2k => prefix(n2k) + '.overloadState',
+    node: (n2k, state) => instancePrefix(n2k, state) + '.overloadState',
     value: n2k => n2k.fields.overloadState.toLowerCase(),
     filter: n2k => typeof n2k.fields.overloadState === 'string'
   },
   {
-    node: n2k => prefix(n2k) + '.lowDCVoltageState',
+    node: (n2k, state) => instancePrefix(n2k, state) + '.lowDCVoltageState',
     value: n2k => n2k.fields.lowDcVoltageState.toLowerCase(),
     filter: n2k => typeof n2k.fields.lowDcVoltageState === 'string'
   },
   {
-    node: n2k => prefix(n2k) + '.rippleState',
+    node: (n2k, state) => instancePrefix(n2k, state) + '.rippleState',
     value: n2k => n2k.fields.rippleState.toLowerCase(),
     filter: n2k => typeof n2k.fields.rippleState === 'string'
   }
