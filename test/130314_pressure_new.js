@@ -21,6 +21,10 @@ describe('Pressure: ', function () {
       delta.updates[0].source.label = 'aLabel'
       full.addDelta(delta)
       delta.should.be.validSignalKDelta
+      // The server discards a whole update if any value lacks a path
+      delta.updates.forEach(update =>
+        update.values.forEach(value => value.path.should.be.a('string'))
+      )
 
       Object.keys(testCase['testExpectConvertedValues']).forEach(
         expectedValuePath => {
@@ -42,6 +46,31 @@ describe('Pressure: ', function () {
       fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999'
       //fullDoc.should.be.validSignalK
     })
+  })
+
+  it('leaves out a pressure it has no path for, and says so once', function () {
+    const report = {
+      timestamp: '2015-01-15-16:15:21.862Z',
+      prio: '5',
+      src: '90',
+      dst: '255',
+      pgn: '130314',
+      description: 'Actual Pressure',
+      fields: { SID: 176, Instance: 0, Pressure: 101300 }
+    }
+    const logged = []
+    const consoleError = console.error
+    console.error = (...args) => logged.push(args.join(' '))
+    let deltas
+    try {
+      deltas = [n2kMapper.testToDelta(report), n2kMapper.testToDelta(report)]
+    } finally {
+      console.error = consoleError
+    }
+    // Its only value has no path, so nothing is emitted for it.
+    deltas.forEach(delta => delta.updates[0].values.should.be.empty)
+    logged.length.should.equal(1)
+    logged[0].should.contain('pgn 130314 from src 90')
   })
 
   it('all 130314 mappings are valid', function () {

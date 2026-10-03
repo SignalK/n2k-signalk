@@ -66,3 +66,35 @@ describe('toDelta context', function () {
     ;(typeof toDelta(report, {}, customPgns)).should.equal('undefined')
   })
 })
+
+describe('toDelta values without a path', function () {
+  const { toDelta } = require('../dist/n2kMapper')
+
+  it("leaves out a function mapping's value that has no path", function () {
+    const report = {
+      pgn: 999002,
+      src: 3,
+      dst: 255,
+      prio: 4,
+      timestamp: '2022-05-09T13:38:38.917Z',
+      fields: { value: 7 }
+    }
+    const customPgns = {
+      999002: [
+        () => [
+          { path: 'test.good', value: 1 },
+          { path: undefined, value: 2 }
+        ]
+      ]
+    }
+    const consoleError = console.error
+    console.error = () => {}
+    let delta
+    try {
+      delta = toDelta(report, {}, customPgns)
+    } finally {
+      console.error = consoleError
+    }
+    delta.updates[0].values.should.deep.equal([{ path: 'test.good', value: 1 }])
+  })
+})
