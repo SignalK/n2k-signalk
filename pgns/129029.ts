@@ -25,6 +25,10 @@ const mapped =
     return map[value] || value
   }
 
+// A coordinate that is there and a number: null would become 0.
+const isCoordinate = (value: unknown) =>
+  value != null && Number.isFinite(Number(value))
+
 module.exports = [
   {
     node: 'navigation.position',
@@ -33,7 +37,7 @@ module.exports = [
       latitude: Number(n2k.fields.latitude)
     }),
     filter: (n2k: PGN_129029) =>
-      n2k.fields.longitude != null && n2k.fields.latitude != null
+      isCoordinate(n2k.fields.longitude) && isCoordinate(n2k.fields.latitude)
   },
   {
     node: 'navigation.datetime',

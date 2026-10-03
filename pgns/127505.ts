@@ -14,7 +14,6 @@ const tank = (path: string) => (n2k: PGN_127505) =>
     n2k.fields.instance
   }.${path}`
 
-// A tank type with no Signal K path is left out.
 const knownType = (n2k: PGN_127505) =>
   tankMappings[n2k.fields.type as string] !== undefined
 
