@@ -67,11 +67,8 @@ describe('Pressure: ', function () {
     } finally {
       console.error = consoleError
     }
-    deltas.forEach(delta =>
-      (delta.updates || []).forEach(update =>
-        update.values.forEach(value => value.path.should.be.a('string'))
-      )
-    )
+    // Its only value has no path, so nothing is emitted for it.
+    deltas.forEach(delta => delta.updates[0].values.should.be.empty)
     logged.length.should.equal(1)
     logged[0].should.contain('pgn 130314 from src 90')
   })

@@ -283,39 +283,6 @@ function warnNoPath (n2k) {
   }
 }
 
-function reduceMapping (updates, theMapping) {
-  try {
-    if (typeof theMapping === 'function') {
-      updates.push.apply(updates, theMapping(n2k, state))
-    } else {
-      var path =
-        typeof theMapping.node === 'function'
-          ? theMapping.node(n2k, state)
-          : theMapping.node
-      var value =
-        typeof theMapping.source === 'function'
-          ? theMapping.source(n2k, state)
-          : getValue(n2k, theMapping, state)
-      var allowNull =
-        typeof theMapping.allowNull !== 'undefined' && theMapping.allowNull
-      if (!(value == null) || allowNull) {
-        // null or undefined
-        if (typeof path === 'string') {
-          updates.push({
-            path: path,
-            value: value
-          })
-        } else {
-          warnNoPath(n2k)
-        }
-      }
-    }
-  } catch (ex) {
-    process.stderr.write(ex + ' ' + JSON.stringify(n2k))
-  }
-  return updates
-}
-
 /**
  * Does this mapping apply to this report: its pgnClass (a PGN variant)
  * matches and its filter, if any, passes?
