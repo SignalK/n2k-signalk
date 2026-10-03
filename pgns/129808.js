@@ -7,8 +7,9 @@
  * variant (dscFormatSymbol/dscCategorySymbol) — read both.
  *
  * Mirrors the NMEA 0183 $--DSC hook: the reported position and a
- * nature-of-distress notification are emitted under the calling station's
- * MMSI context.
+ * nature-of-distress notification are emitted under the MMSI context of the
+ * vessel the call is about: the ship in distress for a distress relay or
+ * acknowledgement, the calling station otherwise.
  */
 
 const NATURES = {
@@ -30,13 +31,23 @@ const NATURES = {
 // Per ITU-R M.493 it is the station's 9 digit MMSI followed by a 0 (a ship
 // MIDxxxxxx becomes MIDxxxxxx0, a coast station 00MIDxxxx becomes 00MIDxxxx0),
 // so the MMSI is its first 9 digits. Kept a string, so leading zeros survive.
-function callerMmsi (n2k) {
-  const address = n2k.fields.dscMessageAddress
+function addressMmsi (address) {
   if (typeof address !== 'string' || !/^\d{10}$/.test(address)) {
     return undefined
   }
   const mmsi = address.slice(0, 9)
   return mmsi === '000000000' ? undefined : mmsi
+}
+
+// The vessel the call is about. A distress relay or acknowledgement comes
+// from the station passing it on; the position and nature it carries are the
+// ship in distress's, which is named in its own field. Any other call is
+// about its caller.
+function vesselMmsi (n2k) {
+  return (
+    addressMmsi(n2k.fields.mmsiOfShipInDistress) ||
+    addressMmsi(n2k.fields.dscMessageAddress)
+  )
 }
 
 function isDistress (n2k) {
@@ -73,7 +84,7 @@ module.exports = [
   // drops it instead of reporting another station's position as our own.
   {
     context: n2k => {
-      const mmsi = callerMmsi(n2k)
+      const mmsi = vesselMmsi(n2k)
       return mmsi === undefined ? undefined : 'vessels.urn:mrn:imo:mmsi:' + mmsi
     }
   }
