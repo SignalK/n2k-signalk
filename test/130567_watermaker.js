@@ -7,7 +7,7 @@ describe('130567 watermaker input setting and status', function () {
   it('complete sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2026-07-16T12:00:00.000Z","prio":6,"src":22,"dst":255,"pgn":130567,"description":"Watermaker Input Setting and Status","fields":{"watermakerOperatingState":"Running","productionStartStop":"Yes","rinseStartStop":"No","lowPressurePumpStatus":"Yes","highPressurePumpStatus":"Yes","emergencyStop":"No","productSolenoidValveStatus":"OK","flushModeStatus":"No","salinityStatus":"OK","sensorStatus":"OK","oilChangeIndicatorStatus":"OK","filterStatus":"Warning","systemStatus":"OK","salinity":320,"productWaterTemperature":300.15,"preFilterPressure":100000,"postFilterPressure":98000,"feedPressure":100000,"systemHighPressure":5500000,"productWaterFlow":360,"brineWaterFlow":1800,"runTime":123456}}'
+        '{"timestamp":"2026-07-16T12:00:00.000Z","prio":6,"src":22,"dst":255,"pgn":130567,"description":"Watermaker Input Setting and Status","fields":{"watermakerOperatingState":"Running","productionStartStop":"Yes","rinseStartStop":"No","lowPressurePumpStatus":"Yes","highPressurePumpStatus":"Yes","emergencyStop":"No","productSolenoidValveStatus":"OK","flushModeStatus":"No","salinityStatus":"OK","sensorStatus":"OK","oilChangeIndicatorStatus":"OK","filterStatus":"Warning","systemStatus":"OK","salinity":0.00032,"productWaterTemperature":300.15,"preFilterPressure":100000,"postFilterPressure":98000,"feedPressure":100000,"systemHighPressure":5500000,"productWaterFlow":0.0001,"brineWaterFlow":0.0005,"runTime":123456}}'
       )
     )
     tree.should.have.nested.property('watermaker.0.state.value', 'Running')

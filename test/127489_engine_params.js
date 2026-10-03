@@ -7,25 +7,31 @@ describe('127489 engine parameters Port', function () {
   it('every field in the PGN from the NMEA2000 spec converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489", "description":"Engine Parameters, Dynamic","fields":{"Instance":"Single Engine or Dual Engine Port","Temperature":29.85,"Alternator Potential":12.60,"Fuel Rate":0.4,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 20,"Engine Torque":57,"Oil pressure":80000,"Fuel Pressure":504000,"Oil temperature":36,"Coolant Pressure":38900}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489", "description":"Engine Parameters, Dynamic","fields":{"Instance":"Single Engine or Dual Engine Port","Temperature":302.15,"Alternator Potential":12.60,"Fuel Rate":0.0000001111,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 0.2,"Engine Torque":0.57,"Oil pressure":80000,"Fuel Pressure":504000,"Oil temperature":309.2,"Coolant Pressure":38900}}'
       )
     )
 
     tree.should.have.nested.property('propulsion.port.oilTemperature')
-    tree.should.have.nested.property('propulsion.port.oilTemperature.value', 36)
+    tree.should.have.nested.property(
+      'propulsion.port.oilTemperature.value',
+      309.2
+    )
     tree.should.have.nested.property('propulsion.port.coolantPressure')
     tree.should.have.nested.property(
       'propulsion.port.coolantPressure.value',
-      38900000
+      38900
     )
     tree.should.have.nested.property('propulsion.port.fuel.pressure')
     tree.should.have.nested.property(
       'propulsion.port.fuel.pressure.value',
-      504000000
+      504000
     )
 
     tree.should.have.nested.property('propulsion.port.temperature')
-    tree.should.have.nested.property('propulsion.port.temperature.value', 29.85)
+    tree.should.have.nested.property(
+      'propulsion.port.temperature.value',
+      302.15
+    )
     tree.should.have.nested.property('propulsion.port.alternatorVoltage')
     tree.should.have.nested.property(
       'propulsion.port.alternatorVoltage.value',
@@ -34,7 +40,7 @@ describe('127489 engine parameters Port', function () {
     tree.should.have.nested.property('propulsion.port.fuel.rate')
     tree.should.have.nested.property(
       'propulsion.port.fuel.rate.value',
-      1.1111111111111112e-7
+      1.111e-7
     )
     tree.should.have.nested.property('propulsion.port.runTime')
     tree.should.have.nested.property('propulsion.port.runTime.value', 309960)
@@ -64,11 +70,14 @@ describe('127489 engine parameters Port', function () {
   it('complete engine params sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489",	"description":"Engine Parameters, Dynamic","fields":{"Instance":"Single Engine or Dual Engine Port","Temperature":29.85,"Alternator Potential":12.60,"Fuel Rate":0.4,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 20,"Engine Torque":57,"Oil pressure":80000}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489",	"description":"Engine Parameters, Dynamic","fields":{"Instance":"Single Engine or Dual Engine Port","Temperature":302.15,"Alternator Potential":12.60,"Fuel Rate":0.0000001111,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 0.2,"Engine Torque":0.57,"Oil pressure":80000}}'
       )
     )
     tree.should.have.nested.property('propulsion.port.temperature')
-    tree.should.have.nested.property('propulsion.port.temperature.value', 29.85)
+    tree.should.have.nested.property(
+      'propulsion.port.temperature.value',
+      302.15
+    )
     tree.should.have.nested.property('propulsion.port.alternatorVoltage')
     tree.should.have.nested.property(
       'propulsion.port.alternatorVoltage.value',
@@ -77,7 +86,7 @@ describe('127489 engine parameters Port', function () {
     tree.should.have.nested.property('propulsion.port.fuel.rate')
     tree.should.have.nested.property(
       'propulsion.port.fuel.rate.value',
-      1.1111111111111112e-7
+      1.111e-7
     )
     tree.should.have.nested.property('propulsion.port.runTime')
     tree.should.have.nested.property('propulsion.port.runTime.value', 309960)
@@ -109,30 +118,30 @@ describe('127489 engine parameters Starboard', function () {
   it('every field in the PGN from the NMEA2000 spec converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489", "description":"Engine Parameters, Dynamic","fields":{"Instance":"Dual Engine Starboard","Temperature":29.85,"Alternator Potential":12.60,"Fuel Rate":0.4,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 20,"Engine Torque":57,"Oil pressure":80000,"Fuel Pressure":504000,"Oil temperature":36,"Coolant Pressure":38900}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489", "description":"Engine Parameters, Dynamic","fields":{"Instance":"Dual Engine Starboard","Temperature":302.15,"Alternator Potential":12.60,"Fuel Rate":0.0000001111,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 0.2,"Engine Torque":0.57,"Oil pressure":80000,"Fuel Pressure":504000,"Oil temperature":309.2,"Coolant Pressure":38900}}'
       )
     )
 
     tree.should.have.nested.property('propulsion.starboard.oilTemperature')
     tree.should.have.nested.property(
       'propulsion.starboard.oilTemperature.value',
-      36
+      309.2
     )
     tree.should.have.nested.property('propulsion.starboard.coolantPressure')
     tree.should.have.nested.property(
       'propulsion.starboard.coolantPressure.value',
-      38900000
+      38900
     )
     tree.should.have.nested.property('propulsion.starboard.fuel.pressure')
     tree.should.have.nested.property(
       'propulsion.starboard.fuel.pressure.value',
-      504000000
+      504000
     )
 
     tree.should.have.nested.property('propulsion.starboard.temperature')
     tree.should.have.nested.property(
       'propulsion.starboard.temperature.value',
-      29.85
+      302.15
     )
     tree.should.have.nested.property('propulsion.starboard.alternatorVoltage')
     tree.should.have.nested.property(
@@ -142,7 +151,7 @@ describe('127489 engine parameters Starboard', function () {
     tree.should.have.nested.property('propulsion.starboard.fuel.rate')
     tree.should.have.nested.property(
       'propulsion.starboard.fuel.rate.value',
-      1.1111111111111112e-7
+      1.111e-7
     )
     tree.should.have.nested.property('propulsion.starboard.runTime')
     tree.should.have.nested.property(
@@ -184,13 +193,13 @@ describe('127489 engine parameters Starboard', function () {
   it('complete engine params sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Instance":"Dual Engine Starboard","Temperature":29.85,"Alternator Potential":12.60,"Fuel Rate":0.1,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":["Warning Level 1","Maintenance Needed"],"Engine Load": 20,"Engine Torque": 57,"Oil pressure":80000}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Instance":"Dual Engine Starboard","Temperature":302.15,"Alternator Potential":12.60,"Fuel Rate":0.0000000278,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":["Warning Level 1","Maintenance Needed"],"Engine Load": 0.2,"Engine Torque": 0.57,"Oil pressure":80000}}'
       )
     )
     tree.should.have.nested.property('propulsion.starboard.temperature')
     tree.should.have.nested.property(
       'propulsion.starboard.temperature.value',
-      29.85
+      302.15
     )
     tree.should.have.nested.property('propulsion.starboard.alternatorVoltage')
     tree.should.have.nested.property(
@@ -200,7 +209,7 @@ describe('127489 engine parameters Starboard', function () {
     tree.should.have.nested.property('propulsion.starboard.fuel.rate')
     tree.should.have.nested.property(
       'propulsion.starboard.fuel.rate.value',
-      2.777777777777778e-8
+      2.78e-8
     )
     tree.should.have.nested.property('propulsion.starboard.runTime')
     tree.should.have.nested.property(
@@ -242,7 +251,7 @@ describe('127489 engine parameters Starboard', function () {
   it('engine notifications work', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Instance":"Dual Engine Starboard","Temperature":29.85,"Alternator Potential":12.60,"Fuel Rate":0.1,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure"],"Discrete Status 2": [],"Engine Load": 20,"Engine Torque": 57,"Oil pressure":80000}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489","description":"Engine Parameters, Dynamic","fields":{"Instance":"Dual Engine Starboard","Temperature":302.15,"Alternator Potential":12.60,"Fuel Rate":0.0000000278,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure"],"Discrete Status 2": [],"Engine Load": 0.2,"Engine Torque": 0.57,"Oil pressure":80000}}'
       )
     )
     tree.should.have.nested.property(
@@ -269,35 +278,29 @@ describe('127489 engine parameters 2', function () {
   it('every field in the PGN from the NMEA2000 spec converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489", "description":"Engine Parameters, Dynamic","fields":{"Instance":2,"Temperature":29.85,"Alternator Potential":12.60,"Fuel Rate":0.4,"Total Engine hours":"52:20:22","Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 20,"Engine Torque":57,"Oil pressure":80000,"Fuel Pressure": 28000,"Oil temperature":36,"Coolant Pressure":38900}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489", "description":"Engine Parameters, Dynamic","fields":{"Instance":2,"Temperature":302.15,"Alternator Potential":12.60,"Fuel Rate":0.0000001111,"Total Engine hours":"52:20:22","Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 0.2,"Engine Torque":0.57,"Oil pressure":80000,"Fuel Pressure": 28000,"Oil temperature":309.2,"Coolant Pressure":38900}}'
       )
     )
 
     tree.should.have.nested.property('propulsion.2.oilTemperature')
-    tree.should.have.nested.property('propulsion.2.oilTemperature.value', 36)
+    tree.should.have.nested.property('propulsion.2.oilTemperature.value', 309.2)
     tree.should.have.nested.property('propulsion.2.coolantPressure')
     tree.should.have.nested.property(
       'propulsion.2.coolantPressure.value',
-      38900000
+      38900
     )
     tree.should.have.nested.property('propulsion.2.fuel.pressure')
-    tree.should.have.nested.property(
-      'propulsion.2.fuel.pressure.value',
-      28000000
-    )
+    tree.should.have.nested.property('propulsion.2.fuel.pressure.value', 28000)
 
     tree.should.have.nested.property('propulsion.2.temperature')
-    tree.should.have.nested.property('propulsion.2.temperature.value', 29.85)
+    tree.should.have.nested.property('propulsion.2.temperature.value', 302.15)
     tree.should.have.nested.property('propulsion.2.alternatorVoltage')
     tree.should.have.nested.property(
       'propulsion.2.alternatorVoltage.value',
       12.6
     )
     tree.should.have.nested.property('propulsion.2.fuel.rate')
-    tree.should.have.nested.property(
-      'propulsion.2.fuel.rate.value',
-      1.1111111111111112e-7
-    )
+    tree.should.have.nested.property('propulsion.2.fuel.rate.value', 1.111e-7)
     tree.should.have.nested.property('propulsion.2.runTime')
     tree.should.have.nested.property('propulsion.2.runTime.value', 188422)
     tree.should.have.nested.property('propulsion.2.oilPressure')
@@ -326,21 +329,18 @@ describe('127489 engine parameters 2', function () {
   it('complete engine params sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489",	"description":"Engine Parameters, Dynamic","fields":{"Instance":2,"Temperature":29.85,"Alternator Potential":12.60,"Fuel Rate":0.4,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 20,"Engine Torque":57,"Oil pressure":80000}}'
+        '{"timestamp":"2015-01-15-16:25:14.952Z","prio":"2","src":"17","dst":"255","pgn":"127489",	"description":"Engine Parameters, Dynamic","fields":{"Instance":2,"Temperature":302.15,"Alternator Potential":12.60,"Fuel Rate":0.0000001111,"Total Engine hours":309960,"Discrete Status 1":["Low Oil Pressure","Low Coolant Level"],"Discrete Status 2":[ "Warning Level 1","Maintenance Needed"],"Engine Load": 0.2,"Engine Torque":0.57,"Oil pressure":80000}}'
       )
     )
     tree.should.have.nested.property('propulsion.2.temperature')
-    tree.should.have.nested.property('propulsion.2.temperature.value', 29.85)
+    tree.should.have.nested.property('propulsion.2.temperature.value', 302.15)
     tree.should.have.nested.property('propulsion.2.alternatorVoltage')
     tree.should.have.nested.property(
       'propulsion.2.alternatorVoltage.value',
       12.6
     )
     tree.should.have.nested.property('propulsion.2.fuel.rate')
-    tree.should.have.nested.property(
-      'propulsion.2.fuel.rate.value',
-      1.1111111111111112e-7
-    )
+    tree.should.have.nested.property('propulsion.2.fuel.rate.value', 1.111e-7)
     tree.should.have.nested.property('propulsion.2.runTime')
     tree.should.have.nested.property('propulsion.2.runTime.value', 309960)
     tree.should.have.nested.property('propulsion.2.oilPressure')

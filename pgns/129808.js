@@ -26,12 +26,17 @@ const NATURES = {
   'EPIRB emission': 'epirb'
 }
 
+// A DSC address is a DECIMAL field: canboat gives it as a 10 digit string.
+// Per ITU-R M.493 it is the station's 9 digit MMSI followed by a 0 (a ship
+// MIDxxxxxx becomes MIDxxxxxx0, a coast station 00MIDxxxx becomes 00MIDxxxx0),
+// so the MMSI is its first 9 digits. Kept a string, so leading zeros survive.
 function callerMmsi (n2k) {
   const address = n2k.fields.dscMessageAddress
-  if (address === undefined || address === null || Number(address) === 0) {
+  if (typeof address !== 'string' || !/^\d{10}$/.test(address)) {
     return undefined
   }
-  return address.toString()
+  const mmsi = address.slice(0, 9)
+  return mmsi === '000000000' ? undefined : mmsi
 }
 
 function isDistress (n2k) {
@@ -64,8 +69,12 @@ module.exports = [
         'DSC Distress Received! Nature of distress: ' + distressNature(n2k)
     })
   },
+  // No filter: a call without a valid address gives no context, so the mapper
+  // drops it instead of reporting another station's position as our own.
   {
-    context: n2k => 'vessels.urn:mrn:imo:mmsi:' + callerMmsi(n2k),
-    filter: n2k => typeof callerMmsi(n2k) !== 'undefined'
+    context: n2k => {
+      const mmsi = callerMmsi(n2k)
+      return mmsi === undefined ? undefined : 'vessels.urn:mrn:imo:mmsi:' + mmsi
+    }
   }
 ]

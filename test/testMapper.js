@@ -4,7 +4,9 @@ const signalkSchema = require('@signalk/signalk-schema')
 const canboatjs = require('@canboat/canboatjs')
 const { FromPgn, pgnToActisenseSerialFormat } = canboatjs
 const Parser = canboatjs.FromPgn
-const parser = new FromPgn({ useCamel: true })
+// pgnToActisenseSerialFormat writes whole messages, so tell the parser: an
+// 8 byte fast-packet message would otherwise be taken as its first frame.
+const parser = new FromPgn({ useCamel: true, format: 1 })
 
 /*
   By default we take the input canboat json and convert to actisense format,

@@ -1,0 +1,93 @@
+# CodeRabbit configuration. Schema:
+#   https://coderabbit.ai/integrations/schema.v2.json
+
+language: en-US
+
+reviews:
+  profile: assertive
+  # Advisory only: a bot must not hold a maintainer's PR closed.
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_instructions: |
+    Write all summaries in present tense.
+    Describe what the code does, not what it did.
+    Example: "This PR adds feature X" instead of "This PR added feature X"
+  poem: false
+  collapse_walkthrough: true
+
+  auto_review:
+    enabled: true
+    drafts: false
+
+  path_filters:
+    # tsc output, not committed but excluded in case it ever is
+    - "!dist/**"
+    - "!package-lock.json"
+
+  path_instructions:
+    - path: "**/*"
+      instructions: |
+        ## Contribution guidelines compliance
+        Check that the PR follows the contribution guidelines in CONTRIBUTING.md:
+        code formatted with prettier-standard (`npm run format`), and additions
+        covered by tests using sample data captured from real equipment.
+
+        ## Echo comments
+        Flag any comment that merely restates what the code already says.
+        These add noise without adding meaning. Request removal or replacement
+        with a comment explaining *why*, not *what*.
+
+        ## Leftover crumbs from intermediate commits
+        Flag any comments, docs, or code that refer to something not present in
+        the current state of the branch: removed variables, old function names,
+        deleted files, superseded approaches.
+
+        ## Bug-history comments in code
+        Flag any code comment that narrates what the code used to do, why a
+        previous version was wrong, or what a fix changed. That history belongs
+        in the commit message and PR description, not in the source. Keep only
+        current-state rationale.
+
+        ## Unchecked items in test plans
+        If a PR description or any .md file contains a checklist with unchecked
+        items, flag it.
+
+        ## Scope
+        Think carefully about how changes interact with existing code — not
+        just the diff in isolation.
+
+    - path: "{pgns,actisense,digitalyacht,fusion,lowrance,maretron,raymarine,simrad}/**"
+      instructions: |
+        These modules map decoded NMEA 2000 PGNs (as produced by canboatjs) to
+        Signal K deltas.
+
+        - Signal K values are SI: radians, m/s, Kelvin, Pascal, meters, seconds,
+          and ratios (0..1) rather than percentages. Flag any conversion that
+          leaves a value in degrees, knots, Celsius, hPa or percent, or that
+          converts a value canboatjs already delivers in SI.
+        - Paths must exist in the Signal K specification
+          (@signalk/signalk-schema) unless the PR clearly intends a
+          non-standard path; flag misspelled or invented paths.
+        - Field names come from the canboat database and change between canboat
+          releases. A mapping that reads a field must handle every name the
+          supported canboatjs versions can emit; flag a rename that drops the
+          previous name.
+        - Fields may be absent or hold null/"unavailable" values; a mapping
+          must not emit a delta with undefined or NaN values.
+        - New or changed mappings need a matching test in test/.
+
+    - path: "test/**"
+      instructions: |
+        Tests should use sample data captured from real equipment, not
+        hand-constructed messages, and should validate the resulting tree
+        against the Signal K schema (validSignalKVesselIgnoringIdentity) where
+        applicable. Flag tests that only assert a path exists without checking
+        its value.
+
+    - path: ".github/workflows/**"
+      instructions: |
+        Note whether a change alters which events trigger a workflow or which
+        commits get checked.
+
+chat:
+  auto_reply: true
