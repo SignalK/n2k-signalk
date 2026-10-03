@@ -104,3 +104,33 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     //tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
+
+describe('129794 ETA', function () {
+  // canboatjs gives the ETA date as YYYY.MM.DD and its time of day in
+  // seconds; AIS marks an unknown hour as 24, which counts as 0.
+  const eta = (etaDate, etaTime) => {
+    const delta = mapper.n2kToNested({
+      timestamp: '2017-03-13T18:30:56.945Z',
+      prio: 6,
+      src: 43,
+      dst: 255,
+      pgn: 129794,
+      fields: { userId: '356307000', etaDate, etaTime }
+    })
+    return delta.navigation.destination.eta.value
+  }
+
+  it('combines the date and the time of day', function () {
+    eta('2017.03.15', 52200).should.equal('2017-03-15T14:30:00.000Z')
+  })
+
+  it('takes the date at midnight when the time of day is not given', function () {
+    eta('2017.03.15', undefined).should.equal('2017-03-15T00:00:00.000Z')
+  })
+
+  it('takes an unknown hour as midnight, keeping the minutes', function () {
+    eta('2017.03.15', 24 * 3600 + 30 * 60).should.equal(
+      '2017-03-15T00:30:00.000Z'
+    )
+  })
+})

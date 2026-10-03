@@ -1,4 +1,4 @@
-import { timeToSeconds } from '../utils.js'
+import { seconds } from '../utils.js'
 import {
   PGN,
   PGN_130820_FusionMedia,
@@ -96,8 +96,7 @@ module.exports = [
     filter: (n2k: PGN_130820_FusionTrackPosition) =>
       currentFusionSource != null,
 
-    value: (n2k: PGN_130820_FusionTrackPosition) =>
-      timeToSeconds(n2k.fields.progress)
+    value: (n2k: PGN_130820_FusionTrackPosition) => seconds(n2k.fields.progress)
   },
   {
     pgnClass: PGN_130820_FusionMedia,
@@ -109,7 +108,7 @@ module.exports = [
 
     filter: (n2k: PGN_130820_FusionMedia) => currentFusionSource != null,
 
-    value: (n2k: PGN_130820_FusionMedia) => timeToSeconds(n2k.fields.length)
+    value: (n2k: PGN_130820_FusionMedia) => seconds(n2k.fields.length)
   },
   {
     pgnClass: PGN_130820_FusionSiriusxmArtist,
@@ -218,9 +217,8 @@ module.exports = [
 
     node: (n2k: PGN_130820_FusionZoneName) =>
       'entertainment.device.fusion1.output.zone' +
-      // canboat 8 renamed this field from number to zone (still zero-based);
-      // accept either so both canboatjs generations map.
-      (((n2k.fields as any).zone ?? n2k.fields.number) + 1) +
+      // canboat's zone is zero-based.
+      (n2k.fields.zone! + 1) +
       '.name',
 
     value: (n2k: PGN_130820_FusionZoneName) => n2k.fields.name
