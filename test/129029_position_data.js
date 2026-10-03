@@ -32,6 +32,24 @@ describe('129029 Position Data ', function () {
 
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+  it('a coordinate that is not a number produces no position output', function () {
+    // Neither canboat nor canboatjs decodes a coordinate to a string, so
+    // this goes straight to the mapper: a canboatjs round trip cannot
+    // carry it.
+    var mapper = require('./testMapper')
+    var gnss = {
+      ...msg,
+      fields: { latitude: 42.4913166, longitude: -70.8850733, numberOfSvs: 10 }
+    }
+    mapper
+      .n2kToNested(gnss)
+      .should.have.nested.property('navigation.position.value.latitude')
+
+    gnss.fields.latitude = 'unavailable'
+    var tree = mapper.n2kToNested(gnss)
+    tree.should.not.have.nested.property('navigation.position')
+    tree.navigation.gnss.satellites.value.should.equal(10)
+  })
   it('no position in input produces no position output', function () {
     var delta = require('./testMapper').testToDelta(invalidDataMsg)
     delta.updates[0].values.should.not.contain.a.thing.with.property(
