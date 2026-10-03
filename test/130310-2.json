@@ -62,7 +62,7 @@
       "Temperature Source": "Outside Temperature",
       "Humidity Source": "Outside",
       "Temperature": 8.05,
-      "Humidity": 72.772,
+      "Humidity": 0.72772,
       "Atmospheric Pressure": 101800
     },
     "testExpectConvertedValues": {
@@ -549,7 +549,7 @@
       "SID": 1,
       "Instance": "0",
       "Source": "Inside",
-      "Actual Humidity": 45
+      "Actual Humidity": 0.45
     },
     "testExpectConvertedValues": {
       "environment.inside.0.relativeHumidity": 0.45
@@ -566,7 +566,7 @@
       "SID": 1,
       "Instance": "1",
       "Source": "Inside",
-      "Actual Humidity": 38
+      "Actual Humidity": 0.38
     },
     "testExpectConvertedValues": {
       "environment.inside.1.relativeHumidity": 0.38
@@ -583,7 +583,7 @@
       "SID": 1,
       "Instance": "0",
       "Source": "Outside",
-      "Actual Humidity": 60
+      "Actual Humidity": 0.6
     },
     "testExpectConvertedValues": {
       "environment.outside.humidity": 0.6
