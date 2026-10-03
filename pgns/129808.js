@@ -39,21 +39,21 @@ function addressMmsi (address) {
   return mmsi === '000000000' ? undefined : mmsi
 }
 
-// The vessel the call is about. A distress relay or acknowledgement comes
-// from the station passing it on; the position and nature it carries are the
-// ship in distress's, which is named in its own field. Any other call is
-// about its caller.
-function vesselMmsi (n2k) {
-  return (
-    addressMmsi(n2k.fields.mmsiOfShipInDistress) ||
-    addressMmsi(n2k.fields.dscMessageAddress)
-  )
-}
-
 function isDistress (n2k) {
   return (
     n2k.fields.dscCategory === 'Distress' ||
     n2k.fields.dscCategorySymbol === 'Distress'
+  )
+}
+
+// The vessel the call is about. A distress relay or acknowledgement (a call
+// of category Distress, from a station passing it on) carries the ship in
+// distress's position and nature, and names that ship in its own field. Any
+// other call is about its caller.
+function vesselMmsi (n2k) {
+  return (
+    (isDistress(n2k) && addressMmsi(n2k.fields.mmsiOfShipInDistress)) ||
+    addressMmsi(n2k.fields.dscMessageAddress)
   )
 }
 
