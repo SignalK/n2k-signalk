@@ -28,10 +28,8 @@ function nameField (value, mask, table) {
 }
 
 // canName is the device's 8-byte NAME — the wire payload of its ISO
-// Address Claim (PGN 60928, ISO 11783-5 layout) — rendered as hex.
-// Packing the bytes straight from the decoded fields replaces the
-// former round-trip through canboatjs' encoder, which was this
-// mapper's only encode-side dependency.
+// Address Claim (PGN 60928, ISO 11783-5 layout) — rendered as hex,
+// packed straight from the decoded fields.
 function canNameFromClaim (fields) {
   const manufacturer = nameField(
     fields.manufacturerCode,
@@ -51,8 +49,7 @@ function canNameFromClaim (fields) {
   const b4 =
     nameField(fields.deviceInstanceLower, 0x07) |
     (nameField(fields.deviceInstanceUpper, 0x1f) << 3)
-  // canboatjs' encoder matched the field by schema name as well as by
-  // camel id, so existing callers pass either 'spare' or 'Spare'.
+  // Callers pass the field by camel id or by schema name: 'spare' or 'Spare'.
   const spare = fields.spare !== undefined ? fields.spare : fields.Spare
   const b6 = nameField(spare, 0x01) | (deviceClass << 1)
   const b7 =

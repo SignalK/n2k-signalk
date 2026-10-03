@@ -44,8 +44,8 @@ describe('Meta data works', function () {
     // Captured from a live Maretron device (wire bytes
     // 01,51,36,11,01,6e,28,cf): the decoder suppresses fields at
     // their unavailable sentinel — systemInstance 15 here — so they
-    // are absent from the object and must re-encode as all-ones in
-    // the canName, exactly as re-encoding the claim would.
+    // are absent from the object and must be all-ones in the canName,
+    // which then matches the captured wire bytes.
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('canName', 'cf286e0111365101')
