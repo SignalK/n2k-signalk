@@ -7,8 +7,8 @@ const getShipType = require('../aisShipTypeMapping')
 
 /**
  * The ETA as an ISO date-time. canboatjs gives the date as "YYYY.MM.DD" and
- * the time of day in seconds. AIS marks an unknown hour as 24 and an unknown
- * minute as 60; either counts as 0.
+ * the time of day in seconds; an ETA without a time of day is the date at
+ * midnight. AIS marks an unknown hour as 24, which counts as 0.
  */
 function eta(n2k: PGN_129794): string | undefined {
   const date = n2k.fields.etaDate as unknown
@@ -23,8 +23,7 @@ function eta(n2k: PGN_129794): string | undefined {
   const hours = Math.floor(time / 3600)
   const minutes = Math.floor(time / 60) % 60
   const rest = time - Math.floor(time / 60) * 60
-  const sinceMidnight =
-    (hours > 23 ? 0 : hours) * 3600 + (minutes > 59 ? 0 : minutes) * 60 + rest
+  const sinceMidnight = (hours > 23 ? 0 : hours) * 3600 + minutes * 60 + rest
   return new Date(midnight + Math.round(sinceMidnight * 1000)).toISOString()
 }
 

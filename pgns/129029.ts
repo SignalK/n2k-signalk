@@ -33,8 +33,7 @@ module.exports = [
       latitude: Number(n2k.fields.latitude)
     }),
     filter: (n2k: PGN_129029) =>
-      typeof n2k.fields.longitude !== 'undefined' &&
-      typeof n2k.fields.latitude !== 'undefined'
+      n2k.fields.longitude != null && n2k.fields.latitude != null
   },
   {
     node: 'navigation.datetime',

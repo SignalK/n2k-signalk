@@ -40,17 +40,21 @@ export function acPhase(n2k: N2k): string {
 }
 
 /**
- * A TIME or DURATION in seconds. canboatjs gives seconds; a clock string
- * ("HH:MM:SS[.fff]", as older canboatjs gave it) is read too.
+ * A TIME or DURATION in seconds, given as a number of seconds or as a clock
+ * string ("HH:MM:SS[.fff]").
  */
 export function seconds(time: unknown): number | null {
   if (typeof time === 'number') {
     return Number.isFinite(time) ? time : null
   }
   if (typeof time === 'string') {
-    const parts = time.split(':').map(Number)
-    if (parts.length === 3 && parts.every(Number.isFinite)) {
-      return parts[0] * 3600 + parts[1] * 60 + parts[2]
+    const parts = time.split(':')
+    if (
+      parts.length === 3 &&
+      parts.every((p) => p.trim() !== '' && Number.isFinite(Number(p)))
+    ) {
+      const [h, m, s] = parts.map(Number)
+      return h * 3600 + m * 60 + s
     }
   }
   return null

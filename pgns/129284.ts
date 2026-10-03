@@ -39,10 +39,11 @@ module.exports = [
     node: course('nextPoint.position'),
     allowNull: true,
     value: (n2k: PGN_129284) => {
-      const p = {
-        longitude: Number(n2k.fields.destinationLongitude),
-        latitude: Number(n2k.fields.destinationLatitude)
+      const { destinationLatitude: lat, destinationLongitude: lon } = n2k.fields
+      if (lat == null || lon == null) {
+        return null
       }
+      const p = { longitude: Number(lon), latitude: Number(lat) }
       return isNaN(p.latitude) || isNaN(p.longitude) ? null : p
     }
   },

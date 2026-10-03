@@ -124,6 +124,10 @@ describe('129794 ETA', function () {
     eta('2017.03.15', 52200).should.equal('2017-03-15T14:30:00.000Z')
   })
 
+  it('takes the date at midnight when the time of day is not given', function () {
+    eta('2017.03.15', undefined).should.equal('2017-03-15T00:00:00.000Z')
+  })
+
   it('takes an unknown hour as midnight, keeping the minutes', function () {
     eta('2017.03.15', 24 * 3600 + 30 * 60).should.equal(
       '2017-03-15T00:30:00.000Z'

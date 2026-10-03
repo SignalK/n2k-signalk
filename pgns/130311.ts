@@ -32,7 +32,6 @@ module.exports = [
   {
     node: (n2k: PGN_130311) =>
       path(humidityMappings[n2k.fields.humiditySource as string]) ??
-      // Fallback for unknown source enum values.
       ((n2k.fields.humiditySource as unknown) === 'Inside'
         ? 'environment.inside.relativeHumidity'
         : 'environment.outside.humidity'),

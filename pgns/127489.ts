@@ -155,8 +155,9 @@ function generateMappingsForStatus(
   notifications.forEach((notif) => {
     mappings.push({
       node: (n2k: PGN_127489) => format(notif.node, skEngineId(n2k)),
-      filter: (n2k: PGN_127489) =>
-        typeof (n2k.fields as any)[field] !== 'undefined',
+      // A decoded status is the list of the bits set; anything else (absent
+      // or not available) says nothing about this notification.
+      filter: (n2k: PGN_127489) => Array.isArray((n2k.fields as any)[field]),
       value: (n2k: PGN_127489) => {
         const message = format(notif.message, skEngineTitle(n2k))
         if ((n2k.fields as any)[field].indexOf(notif.analyzerText) != -1) {

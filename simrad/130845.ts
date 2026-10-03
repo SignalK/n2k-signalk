@@ -1,8 +1,8 @@
 import { PGN_130845_SimnetKeyValue } from '@canboat/ts-pgns'
 import camelCase from 'camelcase'
 
-// canboat 7 renamed this field from displayGroup to networkGroup (same byte,
-// same 'Group N' values); accept either so both canboatjs generations map.
+// The network group the display belongs to: networkGroup, or displayGroup
+// where the PGN definition still calls it that.
 const group = (n2k: PGN_130845_SimnetKeyValue): unknown =>
   n2k.fields.networkGroup ?? (n2k.fields as any).displayGroup
 
@@ -42,8 +42,10 @@ module.exports = [
     node: display('nightMode.state'),
     allowNull: true,
     // canboatjs gives the SIMNET_NIGHT_MODE name: Day or Night.
-    value: (n2k: PGN_130845_SimnetKeyValue) =>
-      (n2k.fields.value as unknown) === 'Night' ? 1 : 0
+    value: (n2k: PGN_130845_SimnetKeyValue) => {
+      const mode = n2k.fields.value as unknown
+      return mode === 'Night' ? 1 : mode === 'Day' ? 0 : null
+    }
   },
   {
     filter: isKey('Night mode color'),
