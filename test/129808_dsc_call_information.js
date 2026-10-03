@@ -14,17 +14,17 @@ var COAST_STATION_ALL_SHIPS =
 var INDIVIDUAL_POSITION =
   '2026-09-05-10:46:07.912,4,129808,4,255,62,78,6c,16,2d,27,18,00,79,7e,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,02,01,e0,1f,34,17,da,eb,e3,00,80,4e,1a,17,ff,ff,ff,ff,ff,7a,fc,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,80,4e,1a,17,dd,34,17,00'
 
-function decode (line) {
+function decode(line) {
   return new FromPgn({ useCamel: true }).parseString(line)
 }
 
-function valueAt (delta, path) {
-  var found = delta.updates[0].values.find(pv => pv.path === path)
+function valueAt(delta, path) {
+  var found = delta.updates[0].values.find((pv) => pv.path === path)
   return found && found.value
 }
 
-function notifications (delta) {
-  return delta.updates[0].values.filter(pv =>
+function notifications(delta) {
+  return delta.updates[0].values.filter((pv) =>
     pv.path.startsWith('notifications.')
   )
 }

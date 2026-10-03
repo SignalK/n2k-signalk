@@ -24,7 +24,8 @@ describe('129802 AIS Safety Related Broadcast Message', function () {
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:003160001')
 
     var text = delta.updates[0].values.find(
-      pathValue => pathValue.path === 'communication.ais.safetyRelatedBroadcast'
+      (pathValue) =>
+        pathValue.path === 'communication.ais.safetyRelatedBroadcast'
     )
     text.should.not.equal(undefined)
     text.value.should.equal('MAYDAY RELAY, sailing vessel Blue Heron')
@@ -35,7 +36,7 @@ describe('129802 AIS Safety Related Broadcast Message', function () {
   it('trims the text and skips empty broadcasts', function () {
     var mapping = require('../pgns/129802.js')
     var broadcast = mapping.find(
-      m => m.node === 'communication.ais.safetyRelatedBroadcast'
+      (m) => m.node === 'communication.ais.safetyRelatedBroadcast'
     )
     broadcast
       .value({ fields: { safetyRelatedText: '  PAN PAN  ' } })

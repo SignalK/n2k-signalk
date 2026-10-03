@@ -68,7 +68,7 @@ describe('130567 watermaker input setting and status', function () {
         '{"timestamp":"2026-07-16T12:00:00.000Z","prio":6,"src":22,"dst":255,"pgn":130567,"description":"Watermaker Input Setting and Status","fields":{"watermakerOperatingState":"Stopped"}}'
       )
     )
-    var paths = delta.updates[0].values.map(v => v.path)
+    var paths = delta.updates[0].values.map((v) => v.path)
     paths.should.include('watermaker.0.state')
     paths.should.not.include('watermaker.0.production')
     paths.should.not.include('watermaker.0.salinity')

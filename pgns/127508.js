@@ -1,6 +1,6 @@
 const { chooseField } = require('../utils.js')
 
-function instance (n2k) {
+function instance(n2k) {
   return n2k.fields.instance
 }
 

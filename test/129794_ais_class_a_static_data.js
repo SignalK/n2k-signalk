@@ -51,7 +51,7 @@ describe('129794 AIS Class A Static and Voyage Related Data', function () {
     assertSensorClass(delta, 'A')
 
     const valuesWithEmptyPath = delta.updates[0].values.filter(
-      pathValue => pathValue.path === ''
+      (pathValue) => pathValue.path === ''
     )
     valuesWithEmptyPath.length.should.equal(4)
     expect(valuesWithEmptyPath).to.have.deep.members([

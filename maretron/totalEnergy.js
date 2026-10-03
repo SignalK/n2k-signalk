@@ -1,4 +1,3 @@
-
 module.exports = (type) => {
   function prefix(n2k, state) {
     return `electrical.${type}.${state.deviceInstance || 0}.total`
@@ -12,8 +11,9 @@ module.exports = (type) => {
         return n2k.fields.totalEnergyExport
       },
       filter: (n2k, state) => {
-        return n2k.fields.totalEnergyExport != null &&
-          state.deviceInstance != null
+        return (
+          n2k.fields.totalEnergyExport != null && state.deviceInstance != null
+        )
       }
     },
     {
@@ -24,8 +24,9 @@ module.exports = (type) => {
         return n2k.fields.totalEnergyImport
       },
       filter: (n2k, state) => {
-        return n2k.fields.totalEnergyImport != null &&
-          state.deviceInstance != null
+        return (
+          n2k.fields.totalEnergyImport != null && state.deviceInstance != null
+        )
       }
     }
   ]

@@ -4,7 +4,7 @@ module.exports.getMmsiContext = function (n2k) {
     : undefined
 }
 
-function padUserID (n2k) {
+function padUserID(n2k) {
   let id = n2k.fields.userId
   if (typeof id !== 'undefined') {
     id = id.toString()
