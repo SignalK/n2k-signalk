@@ -68,6 +68,43 @@ describe('129808 DSC Call Information', function () {
     delta.should.be.validSignalKDelta
   })
 
+  // No capture of a relay is at hand, so this one is built and round-tripped
+  // through canboatjs.
+  it('a distress relay maps to the ship in distress, not the relaying station', function () {
+    var delta = mapper.testToDelta({
+      timestamp: '2026-10-03T12:00:00.000Z',
+      prio: 4,
+      src: 4,
+      dst: 255,
+      pgn: 129808,
+      fields: {
+        dscFormat: 'All ships',
+        dscCategory: 'Distress',
+        dscMessageAddress: '2470123450',
+        natureOfDistress: 'Sinking',
+        latitudeOfVesselReported: 43.5,
+        longitudeOfVesselReported: 7.25,
+        mmsiOfShipInDistress: '3661919100'
+      }
+    })
+
+    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:366191910')
+    var position = valueAt(delta, 'navigation.position')
+    position.latitude.should.be.closeTo(43.5, 0.00001)
+    position.longitude.should.be.closeTo(7.25, 0.00001)
+    valueAt(delta, 'notifications.sinking').message.should.equal(
+      'DSC Distress Received! Nature of distress: sinking'
+    )
+  })
+
+  it('a call that is not a distress call stays on its caller', function () {
+    var n2k = decode(INDIVIDUAL_POSITION)
+    n2k.fields.mmsiOfShipInDistress = '3661919100'
+    mapper
+      .toDelta(n2k)
+      .context.should.equal('vessels.urn:mrn:imo:mmsi:224539240')
+  })
+
   // Addresses canboatjs 4.0.0-beta.2 and later never give, fed to the mapper
   // directly: beta.1 gave a (garbled) number, and an address shorter than 10
   // digits would be the mistake this mapping once accepted.
