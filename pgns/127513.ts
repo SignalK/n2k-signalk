@@ -22,7 +22,10 @@ module.exports = [
     filter: (n2k: PGN_127513) => typeof n2k.fields.nominalVoltage === 'string'
   },
   { node: battery('chemistry'), ...lower('chemistry') },
-  // canboatjs gives the capacity in coulomb (C), as Signal K wants it.
+  // canboatjs gives the capacity as a charge, in coulomb (C). The schema says
+  // joule, but a charge has no energy without a voltage, and signalk-server's
+  // unit preferences treat capacity.nominal as a charge in C, as every Signal K
+  // battery value from Ah does (SignalK/specification#564).
   { source: 'capacity', node: battery('capacity.nominal') },
   { source: 'temperatureCoefficient', node: battery('temperatureCoefficient') },
   { source: 'peukertExponent', node: battery('peukertExponent') },
