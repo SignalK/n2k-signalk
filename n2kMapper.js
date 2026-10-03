@@ -328,14 +328,10 @@ var toValuesArray = function (theMappings, n2k, state) {
               theMapping.allowNull
             if (!(value == null) || allowNull) {
               // null or undefined
-              if (typeof path === 'string') {
-                updates.push({
-                  path: path,
-                  value: value
-                })
-              } else {
-                warnNoPath(n2k)
-              }
+              updates.push({
+                path: path,
+                value: value
+              })
             }
           }
         } catch (ex) {
@@ -345,7 +341,15 @@ var toValuesArray = function (theMappings, n2k, state) {
         return updates
       }, [])
       .filter(function (x) {
-        return x != undefined
+        if (x == undefined) {
+          return false
+        }
+        // Function mappings (and plugins' customPgns) push their own values.
+        if (typeof x.path !== 'string') {
+          warnNoPath(n2k)
+          return false
+        }
+        return true
       })
   }
   return []
