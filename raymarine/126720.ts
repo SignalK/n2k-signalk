@@ -28,9 +28,10 @@ module.exports = [
       )}.brightness`
     },
     allowNull: true,
+    // canboatjs gives the brightness as a ratio.
     value: (n2k:PGN_126720_Seatalk1DisplayBrightness) => {
       let val = n2k.fields.brightness
-      return val !== undefined ? val / 100.0 : null
+      return val !== undefined ? val : null
     }
   },
   {

@@ -24,7 +24,7 @@ describe('127513 battery configuration status', function () {
           supportsEqualization: 'Yes',
           nominalVoltage: '12V',
           chemistry: 'Pb (Lead)',
-          capacity: 100,
+          capacity: 360000,
           temperatureCoefficient: -5,
           peukertExponent: 1.25,
           chargeEfficiencyFactor: 90
@@ -85,7 +85,7 @@ describe('127513 battery configuration status', function () {
           supportsEqualization: 'No',
           nominalVoltage: '24V',
           chemistry: 'Li',
-          capacity: 200,
+          capacity: 720000,
           temperatureCoefficient: 0,
           peukertExponent: 1.05,
           chargeEfficiencyFactor: 95
