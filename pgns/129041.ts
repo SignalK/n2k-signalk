@@ -1,7 +1,7 @@
 import { PGN_129041, AtonType } from '@canboat/ts-pgns'
 
 import { getMmsiContext } from '../mmsi-context'
-import getFromStarboard from '../aisFromStarboard'
+import getFromStarboardEdge from '../atonFromStarboardEdge'
 const schema = require('@signalk/signalk-schema')
 
 module.exports = [
@@ -55,16 +55,16 @@ module.exports = [
     node: 'design.beam',
     source: 'beamDiameter'
   },
-  {
-    node: 'sensors.ais.fromBow',
-    source: 'positionReferenceFromBow'
-  },
+  // No fromBow equivalent: an AtoN has no bow, and PGN 129041 references its
+  // position from the true-north-facing edge rather than from a bow.
   {
     node: 'sensors.ais.fromCenter',
-    value: getFromStarboard,
+    value: getFromStarboardEdge,
     filter: function (n2k: PGN_129041) {
       return (
-        n2k.fields.positionReferenceFromStarboardEdge && n2k.fields.beamDiameter
+        typeof n2k.fields.positionReferenceFromStarboardEdge === 'number' &&
+        typeof n2k.fields.beamDiameter === 'number' &&
+        n2k.fields.beamDiameter > 0
       )
     }
   },
