@@ -1,7 +1,7 @@
 module.exports.getMmsiContext = function (n2k) {
-  return typeof n2k.fields.userId !== 'undefined'
+  return n2k.fields.userId != null
     ? 'vessels.urn:mrn:imo:mmsi:' + n2k.fields.userId
-    : 'vessels.unknown'
+    : undefined
 }
 
 function padUserID (n2k) {

@@ -148,7 +148,7 @@ describe('130820 Fusion Stereo', function () {
   it('complet zone name sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2016-11-26T20:40:00.996Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Zone Name","fields":{"Manufacturer Code":"Fusion Electronics","Industry Code":"Marine Industry","Message ID":"Zone Name","A":128,"Number":0,"Name":"Cockpit"}}'
+        '{"timestamp":"2016-11-26T20:40:00.996Z","prio":7,"src":10,"dst":255,"pgn":130820,"description":"Fusion: Zone Name","fields":{"Manufacturer Code":"Fusion Electronics","Industry Code":"Marine Industry","Message ID":"Zone Name","A":128,"Number":0,"Zone":0,"Name":"Cockpit"}}'
       )
     )
     tree.should.have.nested.property(

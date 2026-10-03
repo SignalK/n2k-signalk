@@ -1,95 +1,28 @@
-const util = require('util')
-const {
-  chooseField,
-  skEngineId,
-  skEngineTitle,
-  timeToSeconds
-} = require('../utils.js')
+import { PGN_127489 } from '@canboat/ts-pgns'
+import { format } from 'util'
+import { skEngineId, skEngineTitle } from '../utils.js'
 
-module.exports = [
-  {
-    source: 'temperature',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.temperature'
-    }
-  },
-  {
-    source: 'alternatorPotential',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.alternatorVoltage'
-    }
-  },
-  {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.fuel.rate'
-    },
-    value: function (n2k) {
-      var lph = Number(n2k.fields.fuelRate)
-      return isNaN(lph) ? null : lph / 3600000
-    }
-  },
-  {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.oilPressure'
-    },
-    value: function (n2k) {
-      var kpa = Number(n2k.fields.oilPressure)
-      return isNaN(kpa) ? null : kpa
-    }
-  },
-  {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.runTime'
-    },
-    value: function (n2k) {
-      return timeToSeconds(n2k.fields.totalEngineHours)
-    }
-  },
-  {
-    source: 'oilTemperature',
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.oilTemperature'
-    }
-  },
-  {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.coolantPressure'
-    },
-    value: function (n2k) {
-      var kpa = Number(n2k.fields.coolantPressure)
-      return isNaN(kpa) ? null : kpa * 1000.0
-    }
-  },
-  {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.engineLoad'
-    },
-    value: function (n2k) {
-      var percent = Number(n2k.fields.engineLoad)
-      return isNaN(percent) ? null : percent / 100.0
-    }
-  },
-  {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.engineTorque'
-    },
-    value: function (n2k) {
-      var percent = Number(n2k.fields.engineTorque)
-      return isNaN(percent) ? null : percent / 100.0
-    }
-  },
-  {
-    node: function (n2k) {
-      return 'propulsion.' + skEngineId(n2k) + '.fuel.pressure'
-    },
-    value: function (n2k) {
-      var kpa = Number(n2k.fields.fuelPressure)
-      return isNaN(kpa) ? null : kpa * 1000.0
-    }
-  }
+// canboatjs gives every value in SI (Pa, m3/s, K, V, ratios, seconds), as
+// Signal K wants them, so each is passed on as it is.
+const engine = (path: string) => (n2k: PGN_127489) =>
+  `propulsion.${skEngineId(n2k)}.${path}`
+
+const mappings: any[] = [
+  { source: 'temperature', node: engine('temperature') },
+  { source: 'alternatorPotential', node: engine('alternatorVoltage') },
+  { source: 'fuelRate', node: engine('fuel.rate') },
+  { source: 'oilPressure', node: engine('oilPressure') },
+  { source: 'totalEngineHours', node: engine('runTime') },
+  { source: 'oilTemperature', node: engine('oilTemperature') },
+  { source: 'coolantPressure', node: engine('coolantPressure') },
+  { source: 'engineLoad', node: engine('engineLoad') },
+  { source: 'engineTorque', node: engine('engineTorque') },
+  { source: 'fuelPressure', node: engine('fuel.pressure') }
 ]
 
-var status1Notifications = [
+type Notification = { node: string; message: string; analyzerText: string }
+
+const status1Notifications: Notification[] = [
   {
     node: 'notifications.propulsion.%s.checkEngine',
     message: 'Check %s Engine',
@@ -172,7 +105,7 @@ var status1Notifications = [
   }
 ]
 
-var status2Notifications = [
+const status2Notifications: Notification[] = [
   {
     node: 'notifications.propulsion.%s.warningLevel1',
     message: '%s Engine Warning Level 1',
@@ -215,35 +148,28 @@ var status2Notifications = [
   }
 ]
 
-function generateMappingsForStatus (field, notifications) {
-  notifications.forEach((notif, index) => {
-    var mapping = {
-      node: function (n2k) {
-        return util.format(notif.node, skEngineId(n2k))
-      },
-      filter: function (n2k) {
-        return typeof n2k.fields[field] !== 'undefined'
-      },
-      value: function (n2k, state) {
-        if (n2k.fields[field].indexOf(notif.analyzerText) != -1) {
-          return {
-            state: 'alarm',
-            method: ['visual', 'sound'],
-            message: util.format(notif.message, skEngineTitle(n2k))
-          }
-        } else {
-          return {
-            state: 'normal',
-            method: [],
-            message:
-              util.format(notif.message, skEngineTitle(n2k)) + ' is Normal'
-          }
+function generateMappingsForStatus(
+  field: string,
+  notifications: Notification[]
+) {
+  notifications.forEach((notif) => {
+    mappings.push({
+      node: (n2k: PGN_127489) => format(notif.node, skEngineId(n2k)),
+      // A decoded status is the list of the bits set; anything else (absent
+      // or not available) says nothing about this notification.
+      filter: (n2k: PGN_127489) => Array.isArray((n2k.fields as any)[field]),
+      value: (n2k: PGN_127489) => {
+        const message = format(notif.message, skEngineTitle(n2k))
+        if ((n2k.fields as any)[field].indexOf(notif.analyzerText) != -1) {
+          return { state: 'alarm', method: ['visual', 'sound'], message }
         }
+        return { state: 'normal', method: [], message: message + ' is Normal' }
       }
-    }
-    module.exports.push(mapping)
+    })
   })
 }
 
 generateMappingsForStatus('discreteStatus1', status1Notifications)
 generateMappingsForStatus('discreteStatus2', status2Notifications)
+
+module.exports = mappings

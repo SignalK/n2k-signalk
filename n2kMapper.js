@@ -16,6 +16,7 @@ Object.assign(n2kMappings, require('./maretron'))
 Object.assign(n2kMappings, require('./actisense'))
 Object.assign(n2kMappings, require('./digitalyacht'))
 Object.assign(n2kMappings, require('./simrad'))
+Object.assign(n2kMappings, require('./navico'))
 
 function N2kMapper (options) {
   this.state = {}
@@ -178,6 +179,12 @@ var toDelta = function (n2k, state, customPgns = {}) {
       }
       src_state = state[n2k_src]
     }
+    // The mappings that apply to this report, selected once: the values and
+    // the context both come from this set.
+    const applying = theMappings.filter(theMapping =>
+      mappingApplies(theMapping, n2k, src_state)
+    )
+
     var result = {
       updates: [
         {
@@ -191,7 +198,7 @@ var toDelta = function (n2k, state, customPgns = {}) {
             n2k.timestamp.substring(0, 10) +
             'T' +
             n2k.timestamp.substring(11, n2k.timestamp.length),
-          values: toValuesArray(theMappings, n2k, src_state)
+          values: toValuesArray(applying, n2k, src_state)
         }
       ]
     }
@@ -206,11 +213,23 @@ var toDelta = function (n2k, state, customPgns = {}) {
       typeof theMappings !== 'undefined' &&
       typeof theMappings !== 'function'
     ) {
-      theMappings.forEach(function (mapping) {
+      let hasContext = false
+      // Only a mapping that applies to this report decides its context: a
+      // mapping for another variant, or one whose filter rejects the report,
+      // must neither set it nor have it dropped.
+      applying.forEach(function (mapping) {
         if (typeof mapping.context === 'function') {
+          hasContext = true
           result.context = mapping.context(n2k, src_state)
         }
       })
+      // An AIS report without an MMSI belongs to no vessel. canboat and
+      // canboatjs report MMSI 0 -- which no station holds -- as not
+      // available, so the field is simply absent: drop the report, as a
+      // malformed MMSI is dropped below.
+      if (hasContext && !result.context) {
+        return
+      }
       if (result.context) {
         //filter out invalid mmsi
         let last = result.context.lastIndexOf(':')
@@ -277,27 +296,33 @@ function reduceMapping (updates, theMapping) {
   return updates
 }
 
+/**
+ * Does this mapping apply to this report: its pgnClass (a PGN variant)
+ * matches and its filter, if any, passes?
+ */
+function mappingApplies (theMapping, n2k, state) {
+  try {
+    if (theMapping.pgnClass) {
+      return (
+        theMapping.pgnClass.isMatch(n2k) &&
+        (theMapping.filter === undefined || theMapping.filter(n2k, state))
+      )
+    } else {
+      return (
+        typeof theMapping.filter === 'undefined' ||
+        theMapping.filter(n2k, state)
+      )
+    }
+  } catch (ex) {
+    process.stderr.write(ex + ' ' + n2k)
+    return false
+  }
+}
+
+// theMappings are the mappings that apply to the report (see mappingApplies).
 var toValuesArray = function (theMappings, n2k, state) {
   if (n2k.fields && typeof theMappings !== 'undefined') {
     return theMappings
-      .filter(function (theMapping) {
-        try {
-          if (theMapping.pgnClass) {
-            return (
-              theMapping.pgnClass.isMatch(n2k) &&
-              (theMapping.filter === undefined || theMapping.filter(n2k, state))
-            )
-          } else {
-            return (
-              typeof theMapping.filter === 'undefined' ||
-              theMapping.filter(n2k, state)
-            )
-          }
-        } catch (ex) {
-          process.stderr.write(ex + ' ' + n2k)
-          return false
-        }
-      })
       .reduce((updates, theMapping) => {
         try {
           if (typeof theMapping === 'function') {
@@ -387,6 +412,11 @@ exports.N2kMapper = N2kMapper
 exports.toDelta = toDelta
 exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
-    this.queue(exports.toDelta(data, state))
+    // toDelta returns nothing for a report it drops (an AIS report without a
+    // valid MMSI, for one); queueing undefined would still emit a 'data' event.
+    const delta = exports.toDelta(data, state)
+    if (delta !== undefined) {
+      this.queue(delta)
+    }
   })
 }
