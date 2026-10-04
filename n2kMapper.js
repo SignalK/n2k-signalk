@@ -4,6 +4,7 @@ var debug = require('debug')('signalk:n2k-signalk')
 const toPgn = require('@canboat/canboatjs').toPgn
 const Uint64LE = require('int64-buffer').Uint64LE
 const PGN = require('@canboat/ts-pgns').PGN
+const instanceGroups = require('./instanceGroups')
 
 require('util').inherits(N2kMapper, EventEmitter)
 
@@ -158,11 +159,27 @@ N2kMapper.prototype.toDelta = function (n2k) {
         })
       }
     }
-    return toDelta(n2k, this.state, this.customPgns)
+    return toDelta(
+      n2k,
+      this.state,
+      this.customPgns,
+      this.options.instancePrefixResolver
+    )
   }
 }
 
-var toDelta = function (n2k, state, customPgns = {}) {
+/**
+ * @typedef {import('./instanceGroups').InstancePrefixContext} InstancePrefixContext
+ * @typedef {import('./instanceGroups').InstancePrefixResolver} InstancePrefixResolver
+ */
+
+/**
+ * @param {any} n2k
+ * @param {any} state
+ * @param {object} [customPgns]
+ * @param {InstancePrefixResolver} [instancePrefixResolver]
+ */
+var toDelta = function (n2k, state, customPgns = {}, instancePrefixResolver) {
   try {
     var theMappings, customMappings
 
@@ -178,6 +195,11 @@ var toDelta = function (n2k, state, customPgns = {}) {
         state[n2k_src] = {}
       }
       src_state = state[n2k_src]
+      if (instancePrefixResolver || src_state[instanceGroups.RESOLVER]) {
+        src_state[instanceGroups.RESOLVER] =
+          instancePrefixResolver &&
+          instanceGroups.resolverBinding(instancePrefixResolver)
+      }
     }
     // The mappings that apply to this report, selected once: the values and
     // the context both come from this set.
@@ -410,6 +432,9 @@ const metaPGNs = {
 
 exports.N2kMapper = N2kMapper
 exports.toDelta = toDelta
+exports.instanceGroups = require('./instanceGroups').instanceGroups
+exports.classifyInstance = require('./instanceGroups').classifyInstance
+exports.defaultPrefix = require('./instanceGroups').defaultPrefix
 exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
     // toDelta returns nothing for a report it drops (an AIS report without a

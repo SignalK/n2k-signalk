@@ -1,18 +1,16 @@
-function instance (n2k) {
-  return n2k.fields['instance']
-}
+const { instancePrefix } = require('../instanceGroups')
 
 function acPhase (lineData) {
   const phaseMap = { 0: 'A', 1: 'B', 2: 'C' }
   return phaseMap[lineData.line] ?? 'A'
 }
 
-function prefix (n2k, lineData) {
-  return `electrical.ac.${instance(n2k)}.${acPhase(lineData)}`
+function prefix (n2k, state, lineData) {
+  return `${instancePrefix(n2k, state)}.${acPhase(lineData)}`
 }
 
 module.exports = [
-  function (n2k, stage) {
+  function (n2k, state) {
     const fields = {
       acceptability: 'acceptability',
       voltage: 'voltage',
@@ -25,7 +23,7 @@ module.exports = [
     }
     return n2k.fields.list
       ? n2k.fields.list.reduce((updates, lineData) => {
-          const pathPrefix = prefix(n2k, lineData)
+          const pathPrefix = prefix(n2k, state, lineData)
           Object.keys(fields).reduce((fieldUpdates, fieldName) => {
             if (typeof lineData[fieldName] !== 'undefined') {
               updates.push({
