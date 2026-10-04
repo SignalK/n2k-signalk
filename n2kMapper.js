@@ -267,33 +267,20 @@ function getValue (n2k, theMapping, state) {
   }
 }
 
-function reduceMapping (updates, theMapping) {
-  try {
-    if (typeof theMapping === 'function') {
-      updates.push.apply(updates, theMapping(n2k, state))
-    } else {
-      var path =
-        typeof theMapping.node === 'function'
-          ? theMapping.node(n2k, state)
-          : theMapping.node
-      var value =
-        typeof theMapping.source === 'function'
-          ? theMapping.source(n2k, state)
-          : getValue(n2k, theMapping, state)
-      var allowNull =
-        typeof theMapping.allowNull !== 'undefined' && theMapping.allowNull
-      if (!(value == null) || allowNull) {
-        // null or undefined
-        updates.push({
-          path: path,
-          value: value
-        })
-      }
-    }
-  } catch (ex) {
-    process.stderr.write(ex + ' ' + JSON.stringify(n2k))
+// A mapping that finds no path for a report leaves its value out: the server
+// discards a whole update when any value in it lacks a path. Say so once per
+// PGN and source, so a missing mapping still shows in the log.
+const warnedNoPath = new Set()
+function warnNoPath (n2k) {
+  const key = `${n2k.pgn}:${n2k.src}`
+  if (!warnedNoPath.has(key)) {
+    warnedNoPath.add(key)
+    console.error(
+      `n2k-signalk: no Signal K path for a value in pgn ${n2k.pgn} from src ${
+        n2k.src
+      }, left out: ${JSON.stringify(n2k.fields)}`
+    )
   }
-  return updates
 }
 
 /**
@@ -354,7 +341,15 @@ var toValuesArray = function (theMappings, n2k, state) {
         return updates
       }, [])
       .filter(function (x) {
-        return x != undefined
+        if (x == undefined) {
+          return false
+        }
+        // Function mappings (and plugins' customPgns) push their own values.
+        if (typeof x.path !== 'string') {
+          warnNoPath(n2k)
+          return false
+        }
+        return true
       })
   }
   return []

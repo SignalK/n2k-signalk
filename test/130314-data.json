@@ -95,5 +95,37 @@
     "testExpectConvertedValues": {
       "hydraulic.2.pressure": 180911.6
     }
+  },
+  "130314-userDefined129": {
+    "notInSpec": true,
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "89",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID": 176,
+      "Instance": 16,
+      "Source": 129,
+      "Pressure": 101300
+    },
+    "testExpectConvertedValues": {
+      "generic.pressures.userDefined129.16.pressure": 101300
+    }
+  },
+  "130314-no-source": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "89",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID": 176,
+      "Instance": 0,
+      "Pressure": 101300
+    },
+    "testExpectConvertedValues": {}
   }
 }
