@@ -1,5 +1,4 @@
 const padUserID = require('../mmsi-context').padUserID
-const getFromStarboard = require('../aisFromStarboard')
 const getShipType = require('../aisShipTypeMapping')
 
 module.exports = [
