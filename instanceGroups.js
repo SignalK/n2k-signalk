@@ -13,9 +13,9 @@
  * into that form, so the mapper and defaultPrefix share one implementation.
  */
 const {
-  lookupEnumerationName,
-  lookupEnumerationValue
-} = require('@canboat/canboatjs')
+  getEnumerationName: lookupEnumerationName,
+  getEnumerationValue: lookupEnumerationValue
+} = require('@canboat/ts-pgns')
 const { skEngineId, skEngineTitle } = require('./utils.js')
 const temperatureMappings = require('./temperatureMappings')
 const humidityMappings = require('./humidityMappings')
