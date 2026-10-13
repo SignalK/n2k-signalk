@@ -37,7 +37,7 @@ describe('128267_water_depth', function () {
     )
     tree.should.have.nested.property(
       'environment.depth.transducerToKeel.value',
-      -0.304
+      0.304
     )
     tree.should.have.nested.property(
       'environment.depth.belowKeel.value',
