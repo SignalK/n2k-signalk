@@ -41,7 +41,7 @@ describe('129801 AIS Addressed Safety Related Message', function () {
   // canboatjs cannot round-trip an empty STRING_LAU, so exercise the empty /
   // whitespace / trim handling directly against the mapping's filter+value.
   it('trims the text and skips empty messages', function () {
-    var mapping = require('../pgns/129801.js')
+    var mapping = require('../dist/pgns/129801.js')
     var text = mapping.find(
       m => m.node === 'communication.ais.safetyRelatedAddressed'
     )
@@ -54,7 +54,7 @@ describe('129801 AIS Addressed Safety Related Message', function () {
   })
 
   it('pads coast station MMSIs and leaves out a zero addressee', function () {
-    var mapping = require('../pgns/129801.js')
+    var mapping = require('../dist/pgns/129801.js')
     var message = mapping.find(
       m => m.node === 'communication.ais.safetyRelatedAddressed'
     )
