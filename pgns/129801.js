@@ -4,23 +4,17 @@
  * it: a coast station calling a single vessel, a ship-to-ship safety call.
  *
  * Companion to PGN 129802 (the broadcast variant, added in #333). Emits the
- * text under the sending station's MMSI context, following the same
- * `communication.ais.*` namespace, plus the addressee so a consumer can tell
- * whether the message was directed at own vessel.
+ * message under the sending station's MMSI context, following the same
+ * `communication.ais.*` namespace, as one object value holding the text and
+ * the addressee, so a consumer can tell whether the message was directed at
+ * own vessel. Text and addressee travel together: as two paths, a message
+ * without an addressee would leave the previous message's addressee standing
+ * next to the new text.
  */
 
-function senderMmsi (n2k) {
-  const id = n2k.fields.sourceId
-  if (id === undefined || id === null || Number(id) === 0) {
-    return undefined
-  }
-  // Coast stations carry 00-prefixed MMSIs that arrive numerically (leading
-  // zeros dropped). Pad back to 9 digits so the context is a valid MMSI.
-  return id.toString().padStart(9, '0')
-}
-
-function addresseeMmsi (n2k) {
-  const id = n2k.fields.destinationId
+// Coast stations carry 00-prefixed MMSIs that arrive numerically (leading
+// zeros dropped). Pad back to 9 digits so the MMSI is valid.
+function mmsi (id) {
   if (id === undefined || id === null || Number(id) === 0) {
     return undefined
   }
@@ -34,19 +28,24 @@ function safetyText (n2k) {
     : undefined
 }
 
+function message (n2k) {
+  const value = { text: safetyText(n2k) }
+  const addressee = mmsi(n2k.fields.destinationId)
+  if (addressee !== undefined) {
+    value.addressee = addressee
+  }
+  return value
+}
+
 module.exports = [
   {
     node: 'communication.ais.safetyRelatedAddressed',
     filter: n2k => typeof safetyText(n2k) !== 'undefined',
-    value: n2k => safetyText(n2k)
+    value: message
   },
   {
-    node: 'communication.ais.safetyRelatedAddressee',
-    filter: n2k => typeof addresseeMmsi(n2k) !== 'undefined',
-    value: n2k => addresseeMmsi(n2k)
-  },
-  {
-    context: n2k => 'vessels.urn:mrn:imo:mmsi:' + senderMmsi(n2k),
-    filter: n2k => typeof senderMmsi(n2k) !== 'undefined'
+    context: n2k =>
+      'vessels.urn:mrn:imo:mmsi:' + mmsi(n2k.fields.sourceId),
+    filter: n2k => typeof mmsi(n2k.fields.sourceId) !== 'undefined'
   }
 ]
