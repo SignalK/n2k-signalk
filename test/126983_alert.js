@@ -8,9 +8,9 @@ var mapper = require('./testMapper')
 
 //provided by PGN 126985 Alert Text
 var state = {
-  '40': {
+  40: {
     alerts: {
-      '23480': {
+      23480: {
         languageId: 'English (US)',
         locationTextDescription: 'Engine Room',
         textDescription: 'TEST: Temperature over 0'
@@ -107,7 +107,7 @@ describe('126983 Alert', function () {
   it("maps non-standard alertType to 'alert' state without throwing", function () {
     var alertId = 9999
     var nonStandardState = {
-      '128': {
+      128: {
         alerts: {
           [alertId]: {
             languageId: 'English (US)',
@@ -157,9 +157,9 @@ describe('126983 Alert', function () {
 
   it('defaults location to empty string when no location text is present', function () {
     var noLocationState = {
-      '40': {
+      40: {
         alerts: {
-          '23480': {
+          23480: {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: Temperature over 0'

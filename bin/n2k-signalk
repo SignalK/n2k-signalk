@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
-var n2kMapper = require('../dist/n2kMapper.js');
-var JSONStream = require('JSONStream');
+var n2kMapper = require('../dist/n2kMapper.js')
+var JSONStream = require('JSONStream')
 
-process.stdin.setEncoding('utf8');
+process.stdin.setEncoding('utf8')
 
 const state = {}
 
-process.stdin.pipe(JSONStream.parse()).pipe(n2kMapper.toDeltaTransformer(null, state)).pipe(JSONStream.stringify(false)).pipe(process.stdout);
+process.stdin
+  .pipe(JSONStream.parse())
+  .pipe(n2kMapper.toDeltaTransformer(null, state))
+  .pipe(JSONStream.stringify(false))
+  .pipe(process.stdout)

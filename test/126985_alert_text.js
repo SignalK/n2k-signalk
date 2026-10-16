@@ -18,9 +18,9 @@ describe('126985 alert text', function () {
     )
 
     var text = {
-      '40': {
+      40: {
         alerts: {
-          '23480': {
+          23480: {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: Temperature over 0'

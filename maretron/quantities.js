@@ -1,4 +1,3 @@
-
 module.exports = (type, phase) => {
   function prefix(n2k, state) {
     return `electrical.${type}.${state.deviceInstance || 0}.${phase}`

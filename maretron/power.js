@@ -1,10 +1,10 @@
 const { get } = require('lodash')
 
-module.exports = function(type, phase) {
+module.exports = function (type, phase) {
   function prefix(n2k, state) {
     return `electrical.${type}.${state.deviceInstance || 0}.${phase}`
   }
-  
+
   return [
     {
       source: 'realPower',
@@ -24,9 +24,11 @@ module.exports = function(type, phase) {
         return n2k.fields.apparentPower * pf
       },
       filter: (n2k, state) => {
-        return n2k.fields.apparentPower != null &&
+        return (
+          n2k.fields.apparentPower != null &&
           get(state, `maretron.${prefix(n2k, state)}.powerFactor`) != null &&
           state.deviceInstance != null
+        )
       }
     }
   ]

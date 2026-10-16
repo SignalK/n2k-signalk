@@ -31,7 +31,7 @@ const NATURES = {
 // Per ITU-R M.493 it is the station's 9 digit MMSI followed by a 0 (a ship
 // MIDxxxxxx becomes MIDxxxxxx0, a coast station 00MIDxxxx becomes 00MIDxxxx0),
 // so the MMSI is its first 9 digits. Kept a string, so leading zeros survive.
-function addressMmsi (address) {
+function addressMmsi(address) {
   if (typeof address !== 'string' || !/^\d{10}$/.test(address)) {
     return undefined
   }
@@ -39,7 +39,7 @@ function addressMmsi (address) {
   return mmsi === '000000000' ? undefined : mmsi
 }
 
-function isDistress (n2k) {
+function isDistress(n2k) {
   return (
     n2k.fields.dscCategory === 'Distress' ||
     n2k.fields.dscCategorySymbol === 'Distress'
@@ -50,32 +50,32 @@ function isDistress (n2k) {
 // of category Distress, from a station passing it on) carries the ship in
 // distress's position and nature, and names that ship in its own field. Any
 // other call is about its caller.
-function vesselMmsi (n2k) {
+function vesselMmsi(n2k) {
   return (
     (isDistress(n2k) && addressMmsi(n2k.fields.mmsiOfShipInDistress)) ||
     addressMmsi(n2k.fields.dscMessageAddress)
   )
 }
 
-function distressNature (n2k) {
+function distressNature(n2k) {
   return NATURES[n2k.fields.natureOfDistress] || 'undesignated'
 }
 
 module.exports = [
   {
     node: 'navigation.position',
-    filter: n2k =>
+    filter: (n2k) =>
       typeof n2k.fields.latitudeOfVesselReported === 'number' &&
       typeof n2k.fields.longitudeOfVesselReported === 'number',
-    value: n2k => ({
+    value: (n2k) => ({
       latitude: n2k.fields.latitudeOfVesselReported,
       longitude: n2k.fields.longitudeOfVesselReported
     })
   },
   {
-    node: n2k => 'notifications.' + distressNature(n2k),
+    node: (n2k) => 'notifications.' + distressNature(n2k),
     filter: isDistress,
-    value: n2k => ({
+    value: (n2k) => ({
       message:
         'DSC Distress Received! Nature of distress: ' + distressNature(n2k)
     })
@@ -83,7 +83,7 @@ module.exports = [
   // No filter: a call without a valid address gives no context, so the mapper
   // drops it instead of reporting another station's position as our own.
   {
-    context: n2k => {
+    context: (n2k) => {
       const mmsi = vesselMmsi(n2k)
       return mmsi === undefined ? undefined : 'vessels.urn:mrn:imo:mmsi:' + mmsi
     }
