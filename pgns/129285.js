@@ -108,13 +108,13 @@ module.exports = [
   }
 ]
 
-function hasState (state) {
+function hasState(state) {
   return (
     typeof state === 'object' &&
     typeof state.lastCourseCalculationType !== 'undefined'
   )
 }
 
-function hasWaypoints (n2k, min) {
+function hasWaypoints(n2k, min) {
   return !_.isUndefined(n2k.fields.list) && n2k.fields.list.length >= min
 }

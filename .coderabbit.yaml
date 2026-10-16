@@ -21,15 +21,15 @@ reviews:
 
   path_filters:
     # tsc output, not committed but excluded in case it ever is
-    - "!dist/**"
-    - "!package-lock.json"
+    - '!dist/**'
+    - '!package-lock.json'
 
   path_instructions:
-    - path: "**/*"
+    - path: '**/*'
       instructions: |
         ## Contribution guidelines compliance
         Check that the PR follows the contribution guidelines in CONTRIBUTING.md:
-        code formatted with prettier-standard (`npm run format`), and additions
+        code formatted with Prettier (`npm run format`), and additions
         covered by tests using sample data captured from real equipment.
 
         ## Echo comments
@@ -56,7 +56,7 @@ reviews:
         Think carefully about how changes interact with existing code — not
         just the diff in isolation.
 
-    - path: "{pgns,actisense,digitalyacht,fusion,lowrance,maretron,raymarine,simrad}/**"
+    - path: '{pgns,actisense,digitalyacht,fusion,lowrance,maretron,raymarine,simrad}/**'
       instructions: |
         These modules map decoded NMEA 2000 PGNs (as produced by canboatjs) to
         Signal K deltas.
@@ -76,7 +76,7 @@ reviews:
           must not emit a delta with undefined or NaN values.
         - New or changed mappings need a matching test in test/.
 
-    - path: "test/**"
+    - path: 'test/**'
       instructions: |
         Tests should use sample data captured from real equipment, not
         hand-constructed messages, and should validate the resulting tree
@@ -84,7 +84,7 @@ reviews:
         applicable. Flag tests that only assert a path exists without checking
         its value.
 
-    - path: ".github/workflows/**"
+    - path: '.github/workflows/**'
       instructions: |
         Note whether a change alters which events trigger a workflow or which
         commits get checked.

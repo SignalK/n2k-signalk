@@ -10,7 +10,7 @@ module.exports = [
     node: 'navigation.courseOverGroundTrue'
   },
   {
-    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
+    filter: (n2k) => n2k.fields.longitude && n2k.fields.latitude,
     value: function (n2k) {
       var res = {
         longitude: Number(n2k.fields.longitude),
@@ -25,7 +25,7 @@ module.exports = [
   },
   {
     node: '',
-    filter: n2k => n2k.fields.userId,
+    filter: (n2k) => n2k.fields.userId,
     value: function (n2k) {
       return {
         mmsi: padUserID(n2k)

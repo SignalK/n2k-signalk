@@ -1,4 +1,3 @@
-
 function makePath(n2k) {
   return `network.n2k.ngt-1.${n2k.fields['Serial ID']}`
 }

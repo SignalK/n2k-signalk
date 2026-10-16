@@ -5,7 +5,7 @@ const getShipType = require('../aisShipTypeMapping')
 module.exports = [
   {
     node: '',
-    filter: n2k => n2k.fields.name,
+    filter: (n2k) => n2k.fields.name,
     value: function (n2k) {
       return {
         name: n2k.fields.name
@@ -17,7 +17,7 @@ module.exports = [
     node: 'navigation.destination.commonName'
   },
   {
-    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
+    filter: (n2k) => n2k.fields.longitude && n2k.fields.latitude,
     value: function (n2k) {
       return {
         longitude: Number(n2k.fields.longitude),
@@ -73,7 +73,7 @@ module.exports = [
   },
   {
     node: '',
-    filter: n2k => n2k.fields.userId,
+    filter: (n2k) => n2k.fields.userId,
     value: function (n2k) {
       return {
         mmsi: n2k.fields.userId.toString()

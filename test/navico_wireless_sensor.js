@@ -12,7 +12,7 @@ const BATTERY_STATUS =
 const SIGNAL_STATUS =
   '2018-02-14T15:55:08.147Z,7,65312,3,255,8,13,99,00,15,7f,ff,ff,ff'
 
-const parse = line => new FromPgn({ useCamel: true }).parseString(line)
+const parse = (line) => new FromPgn({ useCamel: true }).parseString(line)
 
 describe('Navico wireless sensor status', function () {
   it('65309 reports battery state as ratios', function () {
