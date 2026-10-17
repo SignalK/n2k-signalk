@@ -20,6 +20,12 @@ export function skEngineId(n2k: N2k): number | string {
   return id === 'Single Engine or Dual Engine Port' ? 'port' : 'starboard'
 }
 
+// J1939 PGNs carry no engine-instance field; on a J1939 bus the source
+// address is the engine identity (engine #1 claims 0x00, engine #2 0x01, ...).
+export function skJ1939EngineId(n2k: N2k & { src: number }): number {
+  return n2k.src
+}
+
 export function skEngineTitle(n2k: N2k): number | string {
   const engine = skEngineId(n2k)
   if (typeof engine === 'number') {
