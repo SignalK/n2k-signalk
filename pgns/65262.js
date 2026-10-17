@@ -9,7 +9,7 @@ module.exports = [
     },
     source: 'engineCoolantTemp',
     filter: function (n2k) {
-      return typeof n2k.fields.engineCoolantTemp !== 'undefined'
+      return Number.isFinite(n2k.fields.engineCoolantTemp)
     }
   }
 ]

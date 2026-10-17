@@ -8,10 +8,10 @@ module.exports = [
       return 'propulsion.' + skJ1939EngineId(n2k) + '.revolutions'
     },
     value: function (n2k) {
-      return Number(n2k.fields.engineRpm) / 60.0
+      return n2k.fields.engineRpm / 60.0
     },
     filter: function (n2k) {
-      return typeof n2k.fields.engineRpm !== 'undefined'
+      return Number.isFinite(n2k.fields.engineRpm)
     }
   }
 ]

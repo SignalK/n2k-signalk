@@ -17,4 +17,19 @@ describe('61444 J1939 EEC1 engine speed', function () {
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+
+  it('an engine speed that is not a number is not mapped', function () {
+    ;[undefined, null, 'unavailable', NaN].forEach(function (engineRpm) {
+      var tree = require('./testMapper').n2kToNested({
+        timestamp: '2026-08-06T00:00:00.000Z',
+        prio: 3,
+        src: 0,
+        dst: 255,
+        pgn: 61444,
+        description: 'ECU #1',
+        fields: { engineRpm }
+      })
+      tree.should.not.have.nested.property('propulsion.0.revolutions')
+    })
+  })
 })

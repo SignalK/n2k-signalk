@@ -9,7 +9,7 @@ module.exports = [
     },
     source: 'intakeManifoldTemp',
     filter: function (n2k) {
-      return typeof n2k.fields.intakeManifoldTemp !== 'undefined'
+      return Number.isFinite(n2k.fields.intakeManifoldTemp)
     }
   }
 ]
