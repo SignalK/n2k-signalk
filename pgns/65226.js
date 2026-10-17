@@ -4,12 +4,11 @@ const { skJ1939EngineId } = require('../utils.js')
 // repeating DTC list. Mapped to a notification per engine: the lamps
 // carry the severity, the DTC list rides in the message.
 //
-// Expects canboat's J1939-73 decode (canboat#949, #951): each lamp is the
+// Needs canboat's J1939-73 decode (canboat#949, #951): each lamp is the
 // J1939_LAMP_STATUS lookup (Off / On / Error; not available is omitted),
 // and each DTC is plain numbers, its SPN named from canboat's SPN lookup
-// when canboat knows it. The decode before that reversed the lamp bits and
-// misread the DTCs, so it is not mapped rather than mapped to the wrong
-// severity.
+// when canboat knows it. Lamps in any other shape can't be trusted for a
+// severity, so they produce no notification.
 
 const LAMPS = [
   { field: 'redStopLampStatus', label: 'red stop lamp', state: 'alarm' },
@@ -37,14 +36,18 @@ const activeDtcs = n2k =>
   (Array.isArray(n2k.fields.list) ? n2k.fields.list : []).filter(
     d =>
       d &&
-      typeof d.fmi === 'number' &&
-      d.spn !== undefined &&
-      d.spn !== null &&
+      Number.isFinite(d.fmi) &&
+      // a number, or the name canboat's SPN lookup gives it
+      (Number.isFinite(d.spn) || (typeof d.spn === 'string' && d.spn !== '')) &&
       !(d.spn === 0 && d.fmi === 0)
   )
 
+// CM 1 marks an SPN in an older J1939-73 layout, which canboat decodes as
+// the current one, so its SPN is wrong; the fault itself still stands.
 const dtcText = d =>
-  (typeof d.spn === 'number' ? 'SPN ' + d.spn : d.spn) + ' FMI ' + d.fmi
+  d.cm === 1
+    ? 'FMI ' + d.fmi + ' (SPN in an older layout)'
+    : (typeof d.spn === 'number' ? 'SPN ' + d.spn : d.spn) + ' FMI ' + d.fmi
 
 module.exports = [
   {
