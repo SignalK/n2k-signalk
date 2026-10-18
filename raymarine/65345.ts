@@ -2,7 +2,7 @@ import { PGN_65345_SeatalkPilotWindDatum } from '@canboat/ts-pgns'
 
 // Proprietary PGN numbers are shared between manufacturers, and canboatjs
 // decodes another manufacturer's 65345 with the range's catch-all, which has
-// no windDatum. Without the filter that record would give NaN, sent as null.
+// no windDatum: only a record with a finite windDatum gives an angle.
 module.exports = [
   {
     node: 'steering.autopilot.target.windAngleApparent',

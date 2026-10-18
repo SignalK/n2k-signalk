@@ -2,7 +2,7 @@ import { PGN_65379_SeatalkPilotMode } from '@canboat/ts-pgns'
 
 // Proprietary PGN numbers are shared between manufacturers, and canboatjs
 // decodes another manufacturer's 65379 with the range's catch-all, which has
-// no pilotMode. Without the filter that record would read as standby.
+// no pilotMode: the filter keeps that record from being read as a mode.
 module.exports = [
   {
     node: 'steering.autopilot.state',
