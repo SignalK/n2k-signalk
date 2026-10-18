@@ -46,4 +46,25 @@ describe('65379 Seatalk Pilot Mode', function () {
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+
+  // canboatjs decodes another manufacturer's 65379 with the catch-all of
+  // the proprietary range: only manufacturerCode, industryCode and data.
+  it("ignores another manufacturer's message", function () {
+    var delta = require('./testMapper').toDelta({
+      timestamp: '2026-10-18T12:00:00.000Z',
+      prio: 7,
+      src: 3,
+      dst: 255,
+      pgn: 65379,
+      fields: {
+        manufacturerCode: 'Garmin',
+        industryCode: 'Marine Industry',
+        data: '0102030405'
+      }
+    })
+    var values = delta.updates.flatMap(update => update.values)
+    values
+      .filter(pathValue => pathValue.path === 'steering.autopilot.state')
+      .should.have.length(0)
+  })
 })
