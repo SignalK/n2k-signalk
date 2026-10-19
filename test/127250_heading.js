@@ -43,13 +43,14 @@ describe('127250 Heading', function () {
   it('Deviation sentence converts', function () {
     var tree = require('./testMapper').toNested(
       JSON.parse(
-        '{"timestamp":"2016-04-14T09:34:11.275Z","prio":2,"src":2,"dst":255,"pgn":127250,"description":"Vessel Heading","fields":{"Heading":14.8,"Deviation":0.1,"Variation":0.0,"Reference":"True"}}'
+        '{"timestamp":"2016-04-14T09:34:11.275Z","prio":2,"src":2,"dst":255,"pgn":127250,"description":"Vessel Heading","fields":{"Heading":1.48,"Deviation":0.1,"Variation":0.0,"Reference":"True"}}'
       )
     )
     tree.should.have.with.nested.property(
       'navigation.magneticDeviation.value',
       0.1
     )
+    tree.should.have.with.nested.property('navigation.headingTrue.value', 1.48)
     // tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })

@@ -40,7 +40,7 @@ describe('129038 Class A Update', function () {
 
   it('special maneuver converts', function () {
     var msg = JSON.parse(
-      '{"timestamp":"2014-08-15-15:00:01.665Z","prio":"4","src":"43","dst":"255","pgn":"129038","description":"AIS Class A Position Report","fields":{"Message ID":"1","Repeat Indicator":"Initial","User ID":"230982000","Longitude":"25.2026083","Latitude":"60.2176150","Position Accuracy":"High","RAIM":"not in use","Time Stamp":"0","COG":"154.0","SOG":"2.26","Communication State":"2286","AIS Transceiver information":"Channel B VDL reception","Heading":"153.0","Rate of Turn":"0.047","Nav Status":"Under way using engine", "Special Maneuver Indicator": "Engaged in special maneuver"}}'
+      '{"timestamp":"2014-08-15-15:00:01.665Z","prio":"4","src":"43","dst":"255","pgn":"129038","description":"AIS Class A Position Report","fields":{"Message ID":"1","Repeat Indicator":"Initial","User ID":"230982000","Longitude":"25.2026083","Latitude":"60.2176150","Position Accuracy":"High","RAIM":"not in use","Time Stamp":"0","COG":"2.6878","SOG":"2.26","Communication State":"2286","AIS Transceiver information":"Channel B VDL reception","Heading":"2.6704","Rate of Turn":"0.047","Nav Status":"Under way using engine", "Special Maneuver Indicator": "Engaged in special maneuver"}}'
     )
     var tree = mapper.toNested(msg)
     tree.should.have.nested.property('navigation.state')
@@ -48,6 +48,11 @@ describe('129038 Class A Update', function () {
       'navigation.specialManeuver.value',
       'engaged'
     )
+    tree.should.have.nested.property(
+      'navigation.courseOverGroundTrue.value',
+      2.6878
+    )
+    tree.should.have.nested.property('navigation.headingTrue.value', 2.6704)
     var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230982000')
