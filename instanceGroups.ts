@@ -91,6 +91,16 @@ export interface InstancePrefixContext {
   src: number | string
   /** Undefined until the source's PGN 60928 has been seen. */
   canName: string | undefined
+  /**
+   * The manufacturer code of the NAME (bits 21-31); undefined until the
+   * source's PGN 60928 has been seen.
+   */
+  manufacturerCode: number | undefined
+  /**
+   * The unique number of the NAME (bits 0-20); undefined until the source's
+   * PGN 60928 has been seen.
+   */
+  uniqueNumber: number | undefined
 }
 
 /**
@@ -481,10 +491,20 @@ interface ResolverBinding {
   prefix: string | undefined
 }
 
+// Key of the device identity decoded from the per-source state's canName, kept
+// until the canName changes so a frame reads it without decoding.
+const DEVICE = Symbol('device')
+
+interface Device {
+  canName: string
+  identity: DeviceIdentity | undefined
+}
+
 /** The per-source state toDelta passes to a mapping. */
 export interface SourceState {
   canName?: string
   [RESOLVER]?: ResolverBinding
+  [DEVICE]?: Device
 }
 
 /** The binding toDelta stores on the per-source state for one frame. */
@@ -500,6 +520,57 @@ export function hasInstanceGroup (pgn: number | string): boolean {
   return PGN_INDEX.has(Number(pgn))
 }
 
+// The low 32 bits of the NAME: the unique number in bits 0-20, then the
+// manufacturer code in bits 21-31.
+export const UNIQUE_NUMBER_BITS = 21
+export const UNIQUE_NUMBER_MASK = 0x1fffff
+export const MANUFACTURER_CODE_MASK = 0x7ff
+/**
+ * 2^21, the place value of the manufacturer code: shifting it left by 21
+ * would overflow JavaScript's signed 32 bits for codes of 1024 and above.
+ */
+export const UNIQUE_NUMBERS = UNIQUE_NUMBER_MASK + 1
+
+// The NAME as n2kMapper renders it: hex, at most 64 bits.
+const CAN_NAME_HEX = /^[0-9a-f]{1,16}$/i
+// The low 32 bits of the NAME: the last 8 hex digits.
+const LOW_WORD_DIGITS = 8
+
+/** The device a NAME identifies, as instance prefix rules key it. */
+export interface DeviceIdentity {
+  manufacturerCode: number
+  uniqueNumber: number
+}
+
+/**
+ * The manufacturer code and unique number of a canName as the mapper renders
+ * it in deltas, or undefined for a value that is not one.
+ */
+export function deviceIdentity (canName: string): DeviceIdentity | undefined {
+  if (typeof canName !== 'string' || !CAN_NAME_HEX.test(canName)) {
+    return undefined
+  }
+  const low = parseInt(canName.slice(-LOW_WORD_DIGITS), 16)
+  return {
+    manufacturerCode: low >>> UNIQUE_NUMBER_BITS,
+    uniqueNumber: low & UNIQUE_NUMBER_MASK
+  }
+}
+
+// The device the state's canName names, decoded once per canName.
+function deviceOf (state: SourceState): Device | undefined {
+  const { canName } = state
+  if (canName === undefined) {
+    return undefined
+  }
+  let device = state[DEVICE]
+  if (device === undefined || device.canName !== canName) {
+    device = { canName, identity: deviceIdentity(canName) }
+    state[DEVICE] = device
+  }
+  return device
+}
+
 function resolve (
   resolver: InstancePrefixResolver,
   n2k: N2kFrame,
@@ -511,12 +582,16 @@ function resolve (
   if (!classification || n2k.src === undefined) {
     return undefined
   }
+  const device = deviceOf(state)
+  const identity = device && device.identity
   const prefix = resolver({
     group: classification.group,
     discriminator: classification.discriminator,
     instance: classification.instance,
     src: n2k.src,
-    canName: state.canName
+    canName: state.canName,
+    manufacturerCode: identity && identity.manufacturerCode,
+    uniqueNumber: identity && identity.uniqueNumber
   })
   return typeof prefix === 'string' && prefix !== '' ? prefix : undefined
 }
