@@ -59,16 +59,19 @@ See [signalk-over-n2k](https://github.com/SignalK/signalk-over-n2k) for an examp
 
 PGNs that carry an instance number (engines, batteries, chargers, inverters, tanks, AC and DC connections, temperature, humidity and pressure sensors) write their data under a prefix built from that instance, such as `propulsion.port` or `electrical.batteries.3`.
 
-Pass `instancePrefixResolver` to replace that prefix:
+Set an instance prefix resolver to replace that prefix:
 
 ```js
 const { N2kMapper } = require('@signalk/n2k-signalk')
 
-const mapper = new N2kMapper({
-  instancePrefixResolver: ({ group, discriminator, instance, src, canName }) =>
+const mapper = new N2kMapper()
+mapper.setInstancePrefixResolver(
+  ({ group, discriminator, instance, src, canName }) =>
     group === 'engine' && instance === 0 ? 'propulsion.main' : undefined
-})
+)
 ```
+
+`setInstancePrefixResolver(undefined)` removes it. The `instancePrefixResolver` constructor option is applied once, through the same setter; changing the options object afterwards has no effect.
 
 The resolver is called with:
 
@@ -78,9 +81,7 @@ The resolver is called with:
 - `src`: the source address of the frame
 - `canName`: the source's CAN name, `undefined` until its PGN 60928 has been seen
 
-A non-empty string replaces the prefix, notifications included; anything else keeps the default. For temperature, humidity and pressure the prefix is the full leaf path, e.g. `environment.inside.engineRoom.temperature`. Engine alarm messages name a remapped engine by the prefix's last segment. The resolver is called once per frame and every path of that frame uses its result, so it should be pure. If it throws, the mapper writes every path of the frame under the default prefix, as if the resolver had returned nothing. It logs the error, with the PGN and source address, the first time the resolver throws for that PGN and source address; a new resolver's errors are logged afresh.
-
-The mapper reads `instancePrefixResolver` from its options object on every frame, so setting or deleting it on that object takes effect on the next frame.
+A non-empty string replaces the prefix, notifications included; anything else keeps the default. For temperature, humidity and pressure the prefix is the full leaf path, e.g. `environment.inside.engineRoom.temperature`. Engine alarm messages name a remapped engine by the prefix's last segment. The resolver is called once per frame and every path of that frame uses its result, so it should be pure. If it throws, the mapper writes every path of the frame under the default prefix, as if the resolver had returned nothing. It logs the error, with the PGN and source address, the first time the resolver throws for that PGN and source address in that mapper; a new resolver's errors are logged afresh.
 
 The group vocabulary is exported so callers can build and validate rules without duplicating it:
 

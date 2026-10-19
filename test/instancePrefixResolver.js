@@ -1,6 +1,8 @@
 const chai = require('chai')
 chai.Should()
+chai.use(require('@signalk/signalk-schema').chaiModule)
 const expect = chai.expect
+const signalkSchema = require('@signalk/signalk-schema')
 
 const { FromPgn, pgnToActisenseSerialFormat } = require('@canboat/canboatjs')
 const { N2kMapper, toDelta } = require('../dist/n2kMapper')
@@ -82,6 +84,15 @@ function paths (mapper, n2k) {
   return values(mapper, n2k).map(v => v.path)
 }
 
+// The values the default mapper writes for the frame, moved from one prefix
+// to another.
+function moved (n2k, from, to) {
+  return values(new N2kMapper(), n2k).map(v => ({
+    path: v.path.replace(from, to),
+    value: v.value
+  }))
+}
+
 function quietly (fn) {
   const logged = []
   const consoleError = console.error
@@ -91,6 +102,21 @@ function quietly (fn) {
   } finally {
     console.error = consoleError
   }
+}
+
+function vesselTree (delta) {
+  delta.context = 'vessels.' + signalkSchema.fakeMmsiId
+  return signalkSchema.deltaToFull(delta).vessels[signalkSchema.fakeMmsiId]
+}
+
+// Maps the frame, checks it writes the default values under target, and
+// returns the vessel tree.
+function expectMoved (mapper, n2k, from, to) {
+  const delta = mapper.toDelta(n2k)
+  const expected = moved(n2k, from, to)
+  expected.should.not.be.empty
+  delta.updates[0].values.should.deep.equal(expected)
+  return vesselTree(delta)
 }
 
 // Maps one group/discriminator/instance to target; everything else default.
@@ -108,25 +134,43 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('engine', 0, 'propulsion.main')
     })
-    paths(mapper, engineSpeed(PORT_ENGINE)).should.include(
-      'propulsion.main.revolutions'
+    const frame = engineSpeed(PORT_ENGINE)
+    const tree = expectMoved(
+      mapper,
+      frame,
+      'propulsion.port',
+      'propulsion.main'
     )
+    tree.should.have.nested.property(
+      'propulsion.main.revolutions.value',
+      frame.fields.speed
+    )
+    tree.should.not.have.nested.property('propulsion.port')
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('maps engine alarms and names the engine by its mapped id', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('engine', 0, 'propulsion.main')
     })
-    const alarm = values(mapper, engineAlarm).find(
+    const delta = mapper.toDelta(engineAlarm)
+    const alarm = delta.updates[0].values.find(
       v => v.path === 'notifications.propulsion.main.lowOilPressure'
     )
     expect(alarm).to.not.equal(undefined)
     alarm.value.state.should.equal('alarm')
     alarm.value.message.should.not.contain('Port')
     alarm.value.message.should.contain('Main')
-    paths(mapper, engineAlarm).forEach(path =>
-      path.should.not.contain('propulsion.port')
-    )
+    delta.updates[0].values
+      .map(v => v.path)
+      .should.have.members(
+        moved(engineAlarm, 'propulsion.port', 'propulsion.main').map(
+          v => v.path
+        )
+      )
+    const tree = vesselTree(delta)
+    tree.should.have.nested.property('propulsion.main.temperature.value', 330)
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('keeps the default engine title without a resolver', function () {
@@ -140,8 +184,16 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('engine', 0, 'generator.genset')
     })
-    paths(mapper, engineSpeed(PORT_ENGINE)).should.include(
-      'generator.genset.revolutions'
+    const frame = engineSpeed(PORT_ENGINE)
+    // generator is not in the Signal K 1.3.1 schema the tests validate with.
+    expectMoved(
+      mapper,
+      frame,
+      'propulsion.port',
+      'generator.genset'
+    ).should.have.nested.property(
+      'generator.genset.revolutions.value',
+      frame.fields.speed
     )
   })
 
@@ -149,19 +201,39 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('battery', 3, 'electrical.batteries.house')
     })
-    paths(mapper, battery(3)).should.include(
-      'electrical.batteries.house.voltage'
+    const tree = expectMoved(
+      mapper,
+      battery(3),
+      'electrical.batteries.3',
+      'electrical.batteries.house'
     )
+    tree.should.have.nested.property(
+      'electrical.batteries.house.voltage.value',
+      13.1
+    )
+    tree.should.have.nested.property(
+      'electrical.batteries.house.current.value',
+      5.6
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('maps tank Fuel 1 to tanks.freshWater.aft', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('tank', 1, 'tanks.freshWater.aft', 0)
     })
-    paths(
+    const frame = decode(127505, 17, { instance: 1, type: 'Fuel', level: 50 })
+    const tree = expectMoved(
       mapper,
-      decode(127505, 17, { instance: 1, type: 'Fuel', level: 50 })
-    ).should.include('tanks.freshWater.aft.currentLevel')
+      frame,
+      'tanks.fuel.1',
+      'tanks.freshWater.aft'
+    )
+    tree.should.have.nested.property(
+      'tanks.freshWater.aft.currentLevel.value',
+      frame.fields.level
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('maps Engine Room instance 1 and leaves instance 0 at the default', function () {
@@ -173,11 +245,19 @@ describe('instancePrefixResolver', function () {
         ENGINE_ROOM
       )
     })
-    paths(mapper, engineRoom(1)).should.deep.equal([
+    const tree = expectMoved(
+      mapper,
+      engineRoom(1),
+      'environment.inside.engineRoom.temperature',
       'environment.inside.engineRoomAft.temperature'
-    ])
-    paths(mapper, engineRoom(0)).should.deep.equal([
-      'environment.inside.engineRoom.temperature'
+    )
+    tree.should.have.nested.property(
+      'environment.inside.engineRoomAft.temperature.value',
+      300
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
+    values(mapper, engineRoom(0)).should.deep.equal([
+      { path: 'environment.inside.engineRoom.temperature', value: 300 }
     ])
   })
 
@@ -185,13 +265,15 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('dcConnection', 0, 'electrical.solar.roof')
     })
-    paths(
+    const tree = expectMoved(
       mapper,
-      decode(127751, 34, { connectionNumber: 0, dcVoltage: 14, dcCurrent: 3 })
-    ).should.have.members([
-      'electrical.solar.roof.voltage',
-      'electrical.solar.roof.current'
-    ])
+      decode(127751, 34, { connectionNumber: 0, dcVoltage: 14, dcCurrent: 3 }),
+      'electrical.dc.34.0',
+      'electrical.solar.roof'
+    )
+    tree.should.have.nested.property('electrical.solar.roof.voltage.value', 14)
+    tree.should.have.nested.property('electrical.solar.roof.current.value', 3)
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('passes numeric codes, src and canName once 60928 is seen', function () {
@@ -250,22 +332,106 @@ describe('instancePrefixResolver', function () {
     paths(without, frame).should.include('propulsion.port.revolutions')
   })
 
-  it('stops calling a resolver removed from the options', function () {
-    let calls = 0
-    const options = {
-      instancePrefixResolver: () => {
-        calls++
+  describe('setInstancePrefixResolver', function () {
+    it('sets, replaces and clears the resolver', function () {
+      const mapper = new N2kMapper()
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.port.revolutions'
+      ])
+      mapper.setInstancePrefixResolver(rule('engine', 0, 'propulsion.main'))
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.main.revolutions'
+      ])
+      mapper.setInstancePrefixResolver(rule('engine', 0, 'propulsion.center'))
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.center.revolutions'
+      ])
+      mapper.setInstancePrefixResolver(undefined)
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.port.revolutions'
+      ])
+    })
+
+    it('stops calling a cleared resolver', function () {
+      let calls = 0
+      const mapper = new N2kMapper({
+        instancePrefixResolver: () => {
+          calls++
+        }
+      })
+      mapper.toDelta(engineSpeed(PORT_ENGINE))
+      calls.should.equal(1)
+      mapper.setInstancePrefixResolver(undefined)
+      mapper.toDelta(engineSpeed(PORT_ENGINE))
+      calls.should.equal(1)
+    })
+
+    it('reads the constructor option once', function () {
+      const options = {
+        instancePrefixResolver: rule('engine', 0, 'propulsion.main')
       }
-    }
-    const mapper = new N2kMapper(options)
-    mapper.toDelta(engineSpeed(PORT_ENGINE))
-    calls.should.be.above(0)
-    delete options.instancePrefixResolver
-    calls = 0
-    paths(mapper, engineSpeed(PORT_ENGINE)).should.include(
-      'propulsion.port.revolutions'
-    )
-    calls.should.equal(0)
+      const mapper = new N2kMapper(options)
+      delete options.instancePrefixResolver
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.main.revolutions'
+      ])
+      options.instancePrefixResolver = rule('engine', 0, 'propulsion.center')
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.main.revolutions'
+      ])
+    })
+
+    it("logs a replacing resolver's throws again", function () {
+      const throwing = message => () => {
+        throw new Error(message)
+      }
+      const mapper = new N2kMapper()
+      mapper.setInstancePrefixResolver(throwing('first'))
+      const { logged } = quietly(() => {
+        values(mapper, engineAlarm)
+        values(mapper, engineAlarm)
+        mapper.setInstancePrefixResolver(throwing('second'))
+        values(mapper, engineAlarm)
+        values(mapper, engineAlarm)
+      })
+      logged.should.have.lengthOf(2)
+      logged[0].should.contain('first')
+      logged[1].should.contain('second')
+    })
+
+    it("does not log a re-set resolver's throws again", function () {
+      const throwing = () => {
+        throw new Error('boom')
+      }
+      const mapper = new N2kMapper({ instancePrefixResolver: throwing })
+      const { logged } = quietly(() => {
+        values(mapper, engineAlarm)
+        mapper.setInstancePrefixResolver(throwing)
+        values(mapper, engineAlarm)
+      })
+      logged.should.have.lengthOf(1)
+    })
+
+    it('logs throws per mapper when mappers share a resolver', function () {
+      const throwing = () => {
+        throw new Error('boom')
+      }
+      const first = new N2kMapper({ instancePrefixResolver: throwing })
+      const second = new N2kMapper({ instancePrefixResolver: throwing })
+      const { logged } = quietly(() => {
+        values(first, engineAlarm)
+        values(second, engineAlarm)
+        values(first, engineAlarm)
+        values(second, engineAlarm)
+      })
+      logged.should.have.lengthOf(2)
+    })
+
+    it('rejects a resolver that is not a function', function () {
+      expect(() =>
+        new N2kMapper().setInstancePrefixResolver('propulsion.main')
+      ).to.throw(TypeError)
+    })
   })
 
   it('calls the resolver once per frame', function () {
@@ -327,9 +493,10 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('acConnection', 1, 'electrical.ac.shore')
     })
-    paths(mapper, acPhaseB(1)).should.have.members([
-      'electrical.ac.shore.phase.B.power',
-      'electrical.ac.shore.phase.B.current'
+    // The 1.3.1 schema has no electrical.ac phase paths, default or not.
+    values(mapper, acPhaseB(1)).should.have.deep.members([
+      { path: 'electrical.ac.shore.phase.B.power', value: 120 },
+      { path: 'electrical.ac.shore.phase.B.current', value: 11 }
     ])
   })
 
