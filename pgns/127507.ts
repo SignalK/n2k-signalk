@@ -1,8 +1,8 @@
 import { PGN_127507 } from '@canboat/ts-pgns'
 import { seconds } from '../utils.js'
-const { instancePrefix } = require('../instanceGroups')
+import { instancePrefix, SourceState } from '../instanceGroups.js'
 
-const charger = (path: string) => (n2k: PGN_127507, state: any) =>
+const charger = (path: string) => (n2k: PGN_127507, state?: SourceState) =>
   `${instancePrefix(n2k, state)}.${path}`
 
 const text = (field: keyof PGN_127507['fields']) => ({

@@ -13,5 +13,10 @@ const prefixOf: Typed<typeof defaultPrefix> = defaultPrefix
 const prefix: string | undefined = prefixOf('battery', undefined, 3, 1)
 const classify: Typed<typeof classifyInstance> = classifyInstance
 const groups: Typed<typeof instanceGroups> = instanceGroups
+const codes: readonly number[] | undefined = groups[0].discriminatorCodes
+const enums: (string | undefined)[] = [
+  groups[0].instanceEnum,
+  groups[0].discriminatorEnum
+]
 
-export { prefix, classify, groups }
+export { prefix, classify, groups, codes, enums }

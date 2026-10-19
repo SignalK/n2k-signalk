@@ -1,10 +1,10 @@
 import { PGN_127489 } from '@canboat/ts-pgns'
 import { format } from 'util'
-const { instancePrefix, engineTitle } = require('../instanceGroups')
+import { instancePrefix, engineTitle, SourceState } from '../instanceGroups.js'
 
 // canboatjs gives every value in SI (Pa, m3/s, K, V, ratios, seconds), as
 // Signal K wants them, so each is passed on as it is.
-const engine = (path: string) => (n2k: PGN_127489, state: any) =>
+const engine = (path: string) => (n2k: PGN_127489, state?: SourceState) =>
   `${instancePrefix(n2k, state)}.${path}`
 
 const mappings: any[] = [
@@ -154,12 +154,12 @@ function generateMappingsForStatus(
 ) {
   notifications.forEach((notif) => {
     mappings.push({
-      node: (n2k: PGN_127489, state: any) =>
+      node: (n2k: PGN_127489, state?: SourceState) =>
         format(notif.node, instancePrefix(n2k, state)),
       // A decoded status is the list of the bits set; anything else (absent
       // or not available) says nothing about this notification.
       filter: (n2k: PGN_127489) => Array.isArray((n2k.fields as any)[field]),
-      value: (n2k: PGN_127489, state: any) => {
+      value: (n2k: PGN_127489, state?: SourceState) => {
         const message = format(notif.message, engineTitle(n2k, state))
         if ((n2k.fields as any)[field].indexOf(notif.analyzerText) != -1) {
           return { state: 'alarm', method: ['visual', 'sound'], message }

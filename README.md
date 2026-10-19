@@ -84,6 +84,6 @@ The mapper reads `instancePrefixResolver` from its options object on every frame
 
 The group vocabulary is exported so callers can build and validate rules without duplicating it:
 
-- `instanceGroups`: one entry per group with its `id`, `pgns`, `instanceField`, `maxInstance`, `singleLeaf`, `discriminatorField` and `discriminatorCodes`
+- `instanceGroups`: one entry per group with its `id`, `pgns`, `instanceField`, `maxInstance`, `instanceEnum`, `singleLeaf`, `discriminatorField`, `discriminatorEnum` and `discriminatorCodes`. `instanceEnum` and `discriminatorEnum` name the `@canboat/ts-pgns` enumerations that name the codes (`ENGINE_INSTANCE`, `TANK_TYPE`, `TEMPERATURE_SOURCE`...), `undefined` where the codes are plain numbers or the group has no discriminator. `discriminatorCodes` is the ascending array of discriminator codes the group writes a path for. Entries hold only strings, numbers, booleans, arrays and `undefined`, so they survive `JSON.stringify`, e.g. to feed a rule editor, except that keys whose value is `undefined` are omitted
 - `classifyInstance(n2k)`: `{ group, discriminator, instance }` for a decoded frame, or `undefined`
 - `defaultPrefix(group, discriminator, instance, src, pgn?)`: the prefix written without a resolver
