@@ -15,6 +15,7 @@ const {
   resolverBinding,
   hasInstanceGroup
 } = require('./instanceGroups')
+const { InstancePrefixOverrides } = require('./instancePrefixOverrides')
 
 require('util').inherits(N2kMapper, EventEmitter)
 
@@ -87,6 +88,8 @@ function N2kMapper (options) {
   this.unknownPGNs = {}
   this.customPgns = {}
   this.options = options || {}
+  this.instancePrefixOverrides = new InstancePrefixOverrides()
+  this.setInstancePrefixResolver(this.options.instancePrefixResolver)
 
   if (this.options.onPropertyValues) {
     this.options.onPropertyValues('pgn-to-signalk', values => {
@@ -107,6 +110,16 @@ function N2kMapper (options) {
         })
     })
   }
+}
+
+/**
+ * Replaces the function consulted for an instance's path prefix; undefined
+ * removes it.
+ *
+ * @param {InstancePrefixResolver | undefined} resolver
+ */
+N2kMapper.prototype.setInstancePrefixResolver = function (resolver) {
+  this.instancePrefixOverrides.setResolver(resolver)
 }
 
 N2kMapper.prototype.n2kOutIsAvailable = function (listener, event) {
@@ -226,7 +239,8 @@ N2kMapper.prototype.toDelta = function (n2k) {
       n2k,
       this.state,
       this.customPgns,
-      this.options.instancePrefixResolver
+      this.instancePrefixOverrides.resolver,
+      this.instancePrefixOverrides.reportedThrows
     )
   }
 }
@@ -236,13 +250,35 @@ N2kMapper.prototype.toDelta = function (n2k) {
  * @typedef {import('./instanceGroups').InstancePrefixResolver} InstancePrefixResolver
  */
 
+// A toDelta call without a mapper has no mapper to keep the throws it
+// logged on; they are keyed by its resolver.
+const standaloneThrows = new WeakMap()
+
+/** @param {InstancePrefixResolver} resolver */
+function standaloneReportedThrows (resolver) {
+  let reported = standaloneThrows.get(resolver)
+  if (reported === undefined) {
+    reported = new Set()
+    standaloneThrows.set(resolver, reported)
+  }
+  return reported
+}
+
 /**
  * @param {any} n2k
  * @param {any} state
  * @param {object} [customPgns]
  * @param {InstancePrefixResolver} [instancePrefixResolver]
+ * @param {Set<string>} [reportedThrows] the pgn:src keys the resolver's
+ *   throws have been logged for; keyed by the resolver when absent
  */
-var toDelta = function (n2k, state, customPgns = {}, instancePrefixResolver) {
+var toDelta = function (
+  n2k,
+  state,
+  customPgns = {},
+  instancePrefixResolver,
+  reportedThrows
+) {
   try {
     var theMappings, customMappings
 
@@ -262,7 +298,12 @@ var toDelta = function (n2k, state, customPgns = {}, instancePrefixResolver) {
         ? instancePrefixResolver
         : undefined
       if (resolver || src_state[RESOLVER]) {
-        src_state[RESOLVER] = resolver && resolverBinding(resolver)
+        src_state[RESOLVER] =
+          resolver &&
+          resolverBinding(
+            resolver,
+            reportedThrows || standaloneReportedThrows(resolver)
+          )
       }
     }
     // The mappings that apply to this report, selected once: the values and
