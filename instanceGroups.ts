@@ -157,17 +157,29 @@ const connectionUnder = (base: string): Prefix => n2k =>
 
 const enginePrefix: Prefix = n2k => 'propulsion.' + skEngineId(n2k)
 
-const tankMappings: Record<string, string> = {
-  Fuel: 'fuel',
-  Water: 'freshWater',
-  'Gray water': 'wasteWater',
-  'Live well': 'liveWell',
-  Oil: 'lubrication',
-  'Black water': 'blackWater'
+const TANK_TYPES = new Map<unknown, string>([
+  ['Fuel', 'fuel'],
+  ['Water', 'freshWater'],
+  ['Gray water', 'wasteWater'],
+  ['Live well', 'liveWell'],
+  ['Oil', 'lubrication'],
+  ['Black water', 'blackWater']
+])
+
+/**
+ * The tanks.<type> segment for a 127505 tank type as canboatjs decodes it, or
+ * undefined for a type the mapper writes no path for.
+ */
+export function skTankType (type: unknown): string | undefined {
+  return TANK_TYPES.get(type)
 }
 
-const tankPrefix: Prefix = n2k =>
-  'tanks.' + tankMappings[String(n2k.fields.type)] + '.' + n2k.fields.instance
+const tankPrefix: Prefix = n2k => {
+  const type = skTankType(n2k.fields.type)
+  return type === undefined
+    ? undefined
+    : 'tanks.' + type + '.' + n2k.fields.instance
+}
 
 function mappedPath (mapping: PathMapping, index: unknown) {
   return mapping.pathWithIndex

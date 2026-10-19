@@ -105,6 +105,21 @@ describe('instance groups', function () {
     defaultPrefix('tank', 1, 1, 1).should.equal('tanks.freshWater.1')
   })
 
+  it('lists only the tank types 127505 writes', function () {
+    const tank = instanceGroups.find(g => g.id === 'tank')
+    tank.discriminatorCodes.should.deep.equal([0, 1, 2, 3, 4, 5])
+    for (let code = 0; code <= tank.maxInstance; code++) {
+      const n2k = decode(127505, 1, { instance: 1, type: code, level: 10 })
+      const written = mappedPaths(n2k).length > 0
+      written.should.equal(
+        tank.discriminatorCodes.includes(code),
+        `type ${code}`
+      )
+      expect(classifyInstance(n2k) !== undefined).to.equal(written)
+      expect(defaultPrefix('tank', code, 1, 1) !== undefined).to.equal(written)
+    }
+  })
+
   it('returns nothing for PGNs outside the table', function () {
     ;[129025, 127501, 127245].forEach(pgn => {
       expect(
