@@ -1,8 +1,8 @@
 import { PGN_127506 } from '@canboat/ts-pgns'
 import { seconds } from '../utils.js'
-const { instancePrefix } = require('../instanceGroups')
+import { instancePrefix, SourceState } from '../instanceGroups.js'
 
-const battery = (path: string) => (n2k: PGN_127506, state: any) =>
+const battery = (path: string) => (n2k: PGN_127506, state?: SourceState) =>
   `${instancePrefix(n2k, state)}.capacity.${path}`
 
 // canboatjs gives the state of charge and of health as ratios.

@@ -12,59 +12,125 @@
  * (lookup names, numbers, or absent). defaultPrefix turns numeric codes back
  * into that form, so the mapper and defaultPrefix share one implementation.
  */
-const {
-  getEnumerationName: lookupEnumerationName,
-  getEnumerationValue: lookupEnumerationValue
-} = require('@canboat/ts-pgns')
-const { skEngineId, skEngineTitle } = require('./utils.js')
-const temperatureMappings = require('./temperatureMappings')
-const humidityMappings = require('./humidityMappings')
-const pressureMappings = require('./pressureMappings')
+import {
+  getEnumerationName as lookupEnumerationName,
+  getEnumerationValue as lookupEnumerationValue
+} from '@canboat/ts-pgns'
+import { skEngineId, skEngineTitle } from './utils.js'
+import temperatureMappings from './temperatureMappings.js'
+import humidityMappings from './humidityMappings.js'
+import pressureMappings from './pressureMappings.js'
+
+export type InstanceGroupId =
+  | 'engine'
+  | 'battery'
+  | 'charger'
+  | 'inverter'
+  | 'acInput'
+  | 'tank'
+  | 'temperature'
+  | 'humidity'
+  | 'pressure'
+  | 'acConnection'
+  | 'converter'
+  | 'dcConnection'
+
+export interface InstanceGroup {
+  id: InstanceGroupId
+  pgns: number[]
+  instanceField: string
+  /** Instance codes run 0..maxInstance, the field's "no data" code included. */
+  maxInstance: number
+  /**
+   * The @canboat/ts-pgns enumeration naming the instance codes, e.g.
+   * ENGINE_INSTANCE; undefined when they are plain numbers.
+   */
+  instanceEnum: string | undefined
+  /** True when the prefix is the one leaf path the group writes. */
+  singleLeaf: boolean
+  /** Tank type or sensor source. */
+  discriminatorField: string | undefined
+  /**
+   * The @canboat/ts-pgns enumeration naming the discriminator codes, e.g.
+   * TANK_TYPE or TEMPERATURE_SOURCE; undefined without a discriminator.
+   */
+  discriminatorEnum: string | undefined
+  /**
+   * Codes a group PGN writes a path for, ascending; undefined without a
+   * discriminator.
+   */
+  discriminatorCodes: readonly number[] | undefined
+}
+
+export interface InstanceClassification {
+  group: InstanceGroupId
+  discriminator: number | undefined
+  instance: number
+}
 
 /**
- * @typedef {'engine' | 'battery' | 'charger' | 'inverter' | 'acInput' | 'tank'
- *   | 'temperature' | 'humidity' | 'pressure' | 'acConnection' | 'converter'
- *   | 'dcConnection'} InstanceGroupId
- *
- * @typedef {object} InstanceGroup
- * @property {InstanceGroupId} id
- * @property {number[]} pgns
- * @property {string} instanceField
- * @property {number} maxInstance Instance codes run 0..maxInstance, the
- *   field's "no data" code included.
- * @property {boolean} singleLeaf True when the prefix is the one leaf path
- *   the group writes.
- * @property {string | undefined} discriminatorField Tank type or sensor source.
- * @property {ReadonlySet<number> | undefined} discriminatorCodes Codes a
- *   group PGN writes a path for; undefined without a discriminator.
- *
- * @typedef {object} InstanceClassification
- * @property {InstanceGroupId} group
- * @property {number | undefined} discriminator
- * @property {number} instance
- *
- * @typedef {{ pgn: number | string, src: number | string,
- *   fields?: Record<string, unknown> }} N2kFrame
- *
- * @typedef {object} InstancePrefixContext
- * @property {InstanceGroupId} group
- * @property {number | undefined} discriminator Numeric tank type or sensor
- *   source code; undefined for groups without a discriminator.
- * @property {number} instance Numeric instance code; an absent instance is
- *   its "no data" code.
- * @property {number | string} src Source address of the frame.
- * @property {string | undefined} canName Undefined until the source's PGN
- *   60928 has been seen.
+ * A decoded frame. @canboat/ts-pgns types src as optional, but every frame
+ * the mapper receives carries one.
  */
+export interface N2kFrame {
+  pgn: number | string
+  src?: number | string
+  fields?: object
+}
+
+export interface InstancePrefixContext {
+  group: InstanceGroupId
+  /**
+   * Numeric tank type or sensor source code; undefined for groups without a
+   * discriminator.
+   */
+  discriminator: number | undefined
+  /** Numeric instance code; an absent instance is its "no data" code. */
+  instance: number
+  /** Source address of the frame. */
+  src: number | string
+  /** Undefined until the source's PGN 60928 has been seen. */
+  canName: string | undefined
+}
 
 /**
  * Replaces the prefix a frame's instance is written under. A non-empty string
  * replaces it; anything else keeps the default.
- *
- * @callback InstancePrefixResolver
- * @param {InstancePrefixContext} context
- * @returns {string | null | undefined | void}
  */
+export type InstancePrefixResolver = (
+  context: InstancePrefixContext
+) => string | null | undefined | void
+
+type Fields = Record<string, unknown>
+
+// What a prefix reads of a frame.
+interface PrefixFrame {
+  src?: number | string
+  fields: Fields
+}
+
+type Prefix = (n2k: PrefixFrame) => string | null | undefined
+
+interface PathMapping {
+  path?: string
+  pathWithIndex?: string
+}
+
+interface Discriminator {
+  field: string
+  enumName: string
+  absent: number
+}
+
+interface GroupSpec {
+  id: InstanceGroupId
+  instanceField: string
+  absentInstance: number
+  singleLeaf: boolean
+  instanceEnum?: string
+  discriminator?: Discriminator
+  prefixes: Record<number, Prefix>
+}
 
 // canboatjs omits a field holding its "no data" value; codes represent the
 // absent field with that value.
@@ -73,14 +139,25 @@ const ABSENT_4BIT = 15
 const INDEX = '<index>'
 const SPACES = / /g
 
-const instanceUnder = base => n2k => `${base}.${n2k.fields.instance}`
+const temperatures: Record<string, PathMapping> = temperatureMappings
+const humidities: Record<string, PathMapping> = humidityMappings
+const pressures: Record<string, PathMapping> = pressureMappings
 
-const connectionUnder = base => n2k =>
+// ts-pgns types each PGN's fields as an interface of its own; a prefix reads
+// them by name.
+function prefixFrame (n2k: N2kFrame): PrefixFrame {
+  return { src: n2k.src, fields: n2k.fields as Fields }
+}
+
+const instanceUnder = (base: string): Prefix => n2k =>
+  `${base}.${n2k.fields.instance}`
+
+const connectionUnder = (base: string): Prefix => n2k =>
   `${base}.${n2k.src}.${n2k.fields.connectionNumber}`
 
-const enginePrefix = n2k => 'propulsion.' + skEngineId(n2k)
+const enginePrefix: Prefix = n2k => 'propulsion.' + skEngineId(n2k)
 
-const tankMappings = {
+const tankMappings: Record<string, string> = {
   Fuel: 'fuel',
   Water: 'freshWater',
   'Gray water': 'wasteWater',
@@ -89,69 +166,72 @@ const tankMappings = {
   'Black water': 'blackWater'
 }
 
-const tankPrefix = n2k =>
-  'tanks.' + tankMappings[n2k.fields.type] + '.' + n2k.fields.instance
+const tankPrefix: Prefix = n2k =>
+  'tanks.' + tankMappings[String(n2k.fields.type)] + '.' + n2k.fields.instance
 
-function mappedPath (mapping, index) {
+function mappedPath (mapping: PathMapping, index: unknown) {
   return mapping.pathWithIndex
-    ? mapping.pathWithIndex.replace(INDEX, index)
+    ? mapping.pathWithIndex.replace(INDEX, String(index))
     : mapping.path
 }
 
-// 130312 writes no path without a source, defaults a missing instance to 0
-// and replaces spaces in an unmapped source name.
-function temperaturePath (n2k) {
+// 130312 and 130314 write no path without a source, default a missing
+// instance to 0 and replace spaces in an unmapped source name.
+const sourcePath = (
+  mappings: Record<string, PathMapping>,
+  base: string,
+  leaf: string
+): Prefix => n2k => {
   const { source, instance } = n2k.fields
   if (source == null) {
     return null
   }
   const index = instance != null ? instance : 0
-  const mapping = temperatureMappings[source]
+  const mapping = mappings[String(source)]
   if (mapping) {
     return mappedPath(mapping, index)
   }
-  return `generic.temperatures.userDefined${source
-    .toString()
-    .replace(SPACES, '_')}.${index}.temperature`
+  return `${base}.userDefined${String(source).replace(
+    SPACES,
+    '_'
+  )}.${index}.${leaf}`
 }
 
-// 130316 interpolates source and instance as they are.
-function temperatureExtendedPath (n2k) {
+// 130313 and 130316 interpolate source and instance as they are.
+const rawSourcePath = (
+  mappings: Record<string, PathMapping>,
+  base: string,
+  leaf: string
+): Prefix => n2k => {
   const { source, instance } = n2k.fields
-  const mapping = temperatureMappings[source]
+  const mapping = mappings[String(source)]
   if (mapping) {
     return mappedPath(mapping, instance)
   }
-  return `generic.temperatures.userDefined${source}.${instance}.temperature`
+  return `${base}.userDefined${source}.${instance}.${leaf}`
 }
 
-function humidityPath (n2k) {
-  const { source, instance } = n2k.fields
-  const mapping = humidityMappings[source]
-  if (mapping) {
-    return mappedPath(mapping, instance)
-  }
-  return `environment.userDefined${source}.${instance}.relativeHumidity`
-}
+const temperaturePath = sourcePath(
+  temperatures,
+  'generic.temperatures',
+  'temperature'
+)
+const temperatureExtendedPath = rawSourcePath(
+  temperatures,
+  'generic.temperatures',
+  'temperature'
+)
+const humidityPath = rawSourcePath(
+  humidities,
+  'environment',
+  'relativeHumidity'
+)
+const pressurePath = sourcePath(pressures, 'generic.pressures', 'pressure')
 
-// 130314 handles source and instance as 130312 does: no path without a
-// source, a missing instance is 0, an unmapped source gets a path of its own.
-function pressurePath (n2k) {
-  const { source, instance } = n2k.fields
-  if (source == null) {
-    return null
-  }
-  const index = instance != null ? instance : 0
-  const mapping = pressureMappings[source]
-  if (mapping) {
-    return mappedPath(mapping, index)
-  }
-  return `generic.pressures.userDefined${source
-    .toString()
-    .replace(SPACES, '_')}.${index}.pressure`
-}
-
-const byInstance = (id, prefixes) => ({
+const byInstance = (
+  id: InstanceGroupId,
+  prefixes: Record<number, Prefix>
+): GroupSpec => ({
   id,
   instanceField: 'instance',
   absentInstance: ABSENT_8BIT,
@@ -159,7 +239,11 @@ const byInstance = (id, prefixes) => ({
   prefixes
 })
 
-const bySource = (id, enumName, prefixes) => ({
+const bySource = (
+  id: InstanceGroupId,
+  enumName: string,
+  prefixes: Record<number, Prefix>
+): GroupSpec => ({
   id,
   instanceField: 'instance',
   absentInstance: ABSENT_8BIT,
@@ -168,7 +252,10 @@ const bySource = (id, enumName, prefixes) => ({
   prefixes
 })
 
-const byConnection = (id, prefixes) => ({
+const byConnection = (
+  id: InstanceGroupId,
+  prefixes: Record<number, Prefix>
+): GroupSpec => ({
   id,
   instanceField: 'connectionNumber',
   absentInstance: ABSENT_8BIT,
@@ -184,7 +271,7 @@ const acConnections = connectionUnder('electrical.ac')
 // Switch banks (127501) are left out: PUT handlers and NMEA 2000 output key
 // on their paths. The rudder (127245) is left out: the specification has one
 // rudder path, steering.rudderAngle.
-const GROUP_SPECS = [
+const GROUP_SPECS: GroupSpec[] = [
   {
     id: 'engine',
     instanceField: 'instance',
@@ -239,8 +326,8 @@ const GROUP_SPECS = [
   byConnection('dcConnection', { 127751: connectionUnder('electrical.dc') })
 ]
 
-const PGN_INDEX = new Map()
-const SPECS_BY_ID = new Map()
+const PGN_INDEX = new Map<number, { spec: GroupSpec; prefix: Prefix }>()
+const SPECS_BY_ID = new Map<InstanceGroupId, GroupSpec>()
 for (const spec of GROUP_SPECS) {
   SPECS_BY_ID.set(spec.id, spec)
   for (const [pgn, prefix] of Object.entries(spec.prefixes)) {
@@ -250,7 +337,11 @@ for (const spec of GROUP_SPECS) {
 
 // The field as canboatjs decodes it: its lookup name, the number when the
 // enumeration has no name for it, or absent.
-function fieldView (code, enumName, absent) {
+function fieldView (
+  code: number,
+  enumName: string | undefined,
+  absent: number
+): string | number | undefined {
   if (code === absent) {
     return undefined
   }
@@ -258,7 +349,11 @@ function fieldView (code, enumName, absent) {
   return name !== undefined ? name : code
 }
 
-function fieldCode (value, enumName, absent) {
+function fieldCode (
+  value: unknown,
+  enumName: string | undefined,
+  absent: number
+): number | undefined {
   if (value == null) {
     return absent
   }
@@ -281,15 +376,14 @@ function fieldCode (value, enumName, absent) {
  * replaces spaces in an unmapped source name and writes an absent instance as
  * 0, 130316 does neither. pgn picks the spelling and defaults to the group's
  * first PGN; iterate the group's pgns to get every spelling.
- *
- * @param {InstanceGroupId} groupId
- * @param {number | undefined} discriminator
- * @param {number} instance
- * @param {number | string} src
- * @param {number | string} [pgn]
- * @returns {string | undefined}
  */
-function defaultPrefix (groupId, discriminator, instance, src, pgn) {
+export function defaultPrefix (
+  groupId: InstanceGroupId,
+  discriminator: number | undefined,
+  instance: number,
+  src: number | string,
+  pgn?: number | string
+): string | undefined {
   const spec = SPECS_BY_ID.get(groupId)
   if (
     !spec ||
@@ -304,14 +398,14 @@ function defaultPrefix (groupId, discriminator, instance, src, pgn) {
   if (!prefix) {
     return undefined
   }
-  const fields = {
+  const fields: Fields = {
     [spec.instanceField]: fieldView(
       instance,
       spec.instanceEnum,
       spec.absentInstance
     )
   }
-  if (spec.discriminator) {
+  if (spec.discriminator && discriminator !== undefined) {
     fields[spec.discriminator.field] = fieldView(
       discriminator,
       spec.discriminator.enumName,
@@ -326,18 +420,18 @@ function defaultPrefix (groupId, discriminator, instance, src, pgn) {
  * The group, discriminator code and instance code of a decoded frame, or
  * undefined for PGNs outside the group table and frames the mapper writes no
  * instance path for.
- *
- * @param {N2kFrame} n2k
- * @returns {InstanceClassification | undefined}
  */
-function classifyInstance (n2k) {
+export function classifyInstance (
+  n2k: N2kFrame
+): InstanceClassification | undefined {
   const entry = PGN_INDEX.get(Number(n2k.pgn))
   if (!entry || !n2k.fields) {
     return undefined
   }
   const { spec, prefix } = entry
+  const frame = prefixFrame(n2k)
   const instance = fieldCode(
-    n2k.fields[spec.instanceField],
+    frame.fields[spec.instanceField],
     spec.instanceEnum,
     spec.absentInstance
   )
@@ -347,7 +441,7 @@ function classifyInstance (n2k) {
   let discriminator
   if (spec.discriminator) {
     discriminator = fieldCode(
-      n2k.fields[spec.discriminator.field],
+      frame.fields[spec.discriminator.field],
       spec.discriminator.enumName,
       spec.discriminator.absent
     )
@@ -355,7 +449,7 @@ function classifyInstance (n2k) {
       return undefined
     }
   }
-  if (prefix(n2k) == null) {
+  if (prefix(frame) == null) {
     return undefined
   }
   return { group: spec.id, discriminator, instance }
@@ -364,20 +458,36 @@ function classifyInstance (n2k) {
 // Key of the resolver binding on the per-source state. A symbol keeps it out
 // of Object.keys and JSON of the state. toDelta stores a fresh binding per
 // frame, so a result cached on it never outlives the frame.
-const RESOLVER = Symbol('instancePrefixResolver')
+export const RESOLVER = Symbol('instancePrefixResolver')
 
-/**
- * The binding toDelta stores on the per-source state for one frame.
- *
- * @param {InstancePrefixResolver} resolver
- */
-function resolverBinding (resolver) {
+interface ResolverBinding {
+  resolver: InstancePrefixResolver
+  frame: N2kFrame | undefined
+  prefix: string | undefined
+}
+
+/** The per-source state toDelta passes to a mapping. */
+export interface SourceState {
+  canName?: string
+  [RESOLVER]?: ResolverBinding
+}
+
+/** The binding toDelta stores on the per-source state for one frame. */
+export function resolverBinding (
+  resolver: InstancePrefixResolver
+): ResolverBinding {
   return { resolver, frame: undefined, prefix: undefined }
 }
 
-function resolve (resolver, n2k, state) {
+function resolve (
+  resolver: InstancePrefixResolver,
+  n2k: N2kFrame,
+  state: SourceState
+) {
   const classification = classifyInstance(n2k)
-  if (!classification) {
+  // toDelta keys the per-source state by src, so a frame with a binding has
+  // one; the check narrows ts-pgns' optional src.
+  if (!classification || n2k.src === undefined) {
     return undefined
   }
   const prefix = resolver({
@@ -394,14 +504,10 @@ function resolve (resolver, n2k, state) {
  * The prefix the source state's resolver returns for this frame, or undefined
  * when there is no resolver, the frame has no instance or the resolver
  * returns nothing. Every mapping of a frame asks; the resolver runs once.
- *
- * @param {N2kFrame} n2k
- * @param {object | undefined} state
- * @returns {string | undefined}
  */
-function resolvedPrefix (n2k, state) {
+function resolvedPrefix (n2k: N2kFrame, state: SourceState | undefined) {
   const binding = state && state[RESOLVER]
-  if (!binding) {
+  if (!state || !binding) {
     return undefined
   }
   if (binding.frame !== n2k) {
@@ -415,71 +521,63 @@ function resolvedPrefix (n2k, state) {
 /**
  * The prefix a PGN module writes this frame's instance under. state is the
  * per-source state node() receives.
- *
- * @param {N2kFrame} n2k
- * @param {object | undefined} state
- * @returns {string | null | undefined}
  */
-function instancePrefix (n2k, state) {
+export function instancePrefix (
+  n2k: N2kFrame,
+  state: SourceState | undefined
+): string | null | undefined {
   const entry = PGN_INDEX.get(Number(n2k.pgn))
   if (!entry) {
     throw new Error(`PGN ${n2k.pgn} has no instance group`)
   }
   const resolved = resolvedPrefix(n2k, state)
-  return resolved !== undefined ? resolved : entry.prefix(n2k)
+  return resolved !== undefined ? resolved : entry.prefix(prefixFrame(n2k))
 }
 
 /**
  * The engine's name in alarm messages: the last segment of the resolved
  * prefix, so a remapped engine is not called "Port", or the default title.
- *
- * @param {N2kFrame} n2k
- * @param {object | undefined} state
- * @returns {string | number}
  */
-function engineTitle (n2k, state) {
+export function engineTitle (
+  n2k: N2kFrame,
+  state: SourceState | undefined
+): string | number {
   const resolved = resolvedPrefix(n2k, state)
   if (resolved === undefined) {
-    return skEngineTitle(n2k)
+    return skEngineTitle(prefixFrame(n2k))
   }
   const name = resolved.slice(resolved.lastIndexOf('.') + 1)
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
-function discriminatorCodes (spec) {
+function discriminatorCodes (spec: GroupSpec) {
   if (!spec.discriminator) {
     return undefined
   }
-  const codes = new Set()
+  const codes: number[] = []
   for (let code = 0; code <= spec.discriminator.absent; code++) {
-    for (const pgn of Object.keys(spec.prefixes)) {
-      if (defaultPrefix(spec.id, code, 0, 0, pgn) !== undefined) {
-        codes.add(code)
-      }
+    const pgns = Object.keys(spec.prefixes)
+    if (
+      pgns.some(pgn => defaultPrefix(spec.id, code, 0, 0, pgn) !== undefined)
+    ) {
+      codes.push(code)
     }
   }
-  return codes
+  return Object.freeze(codes)
 }
 
-/** @type {readonly Readonly<InstanceGroup>[]} */
-const instanceGroups = GROUP_SPECS.map(spec =>
+const frozenGroups = GROUP_SPECS.map(spec =>
   Object.freeze({
     id: spec.id,
     pgns: Object.keys(spec.prefixes).map(Number),
     instanceField: spec.instanceField,
     maxInstance: spec.absentInstance,
+    instanceEnum: spec.instanceEnum,
     singleLeaf: spec.singleLeaf,
     discriminatorField: spec.discriminator && spec.discriminator.field,
+    discriminatorEnum: spec.discriminator && spec.discriminator.enumName,
     discriminatorCodes: discriminatorCodes(spec)
   })
 )
 
-module.exports = {
-  instanceGroups,
-  classifyInstance,
-  defaultPrefix,
-  instancePrefix,
-  engineTitle,
-  RESOLVER,
-  resolverBinding
-}
+export const instanceGroups: readonly Readonly<InstanceGroup>[] = frozenGroups

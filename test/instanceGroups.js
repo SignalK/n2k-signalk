@@ -157,10 +157,49 @@ describe('instance groups', function () {
   it('lists the codes a group writes paths for', function () {
     const pressure = instanceGroups.find(g => g.id === 'pressure')
     // An unmapped source gets a userDefined path; only an absent one has none.
-    pressure.discriminatorCodes.size.should.equal(255)
-    pressure.discriminatorCodes.has(255).should.equal(false)
+    pressure.discriminatorCodes.should.have.lengthOf(255)
+    pressure.discriminatorCodes.should.not.include(255)
     expect(instanceGroups.find(g => g.id === 'engine').discriminatorCodes).to.be
       .undefined
+  })
+
+  it('lists the codes sorted, frozen and as JSON keeps them', function () {
+    instanceGroups
+      .filter(g => g.discriminatorCodes !== undefined)
+      .forEach(g => {
+        g.discriminatorCodes.should.be.an('array')
+        g.discriminatorCodes.should.deep.equal(
+          [...g.discriminatorCodes].sort((a, b) => a - b)
+        )
+        Object.isFrozen(g.discriminatorCodes).should.equal(true)
+        JSON.parse(JSON.stringify(g)).discriminatorCodes.should.deep.equal(
+          g.discriminatorCodes
+        )
+      })
+  })
+
+  it('names the enumerations of instance and discriminator codes', function () {
+    const enums = Object.fromEntries(
+      instanceGroups.map(g => [g.id, [g.instanceEnum, g.discriminatorEnum]])
+    )
+    enums.should.deep.equal({
+      engine: ['ENGINE_INSTANCE', undefined],
+      battery: [undefined, undefined],
+      charger: [undefined, undefined],
+      inverter: [undefined, undefined],
+      acInput: [undefined, undefined],
+      tank: [undefined, 'TANK_TYPE'],
+      temperature: [undefined, 'TEMPERATURE_SOURCE'],
+      humidity: [undefined, 'HUMIDITY_SOURCE'],
+      pressure: [undefined, 'PRESSURE_SOURCE'],
+      acConnection: [undefined, undefined],
+      converter: [undefined, undefined],
+      dcConnection: [undefined, undefined]
+    })
+    instanceGroups.forEach(g => {
+      g.should.have.property('instanceEnum')
+      g.should.have.property('discriminatorEnum')
+    })
   })
 
   it('instancePrefix names a PGN outside the table', function () {

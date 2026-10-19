@@ -1,5 +1,5 @@
 import { PGN_127505 } from '@canboat/ts-pgns'
-const { instancePrefix } = require('../instanceGroups')
+import { instancePrefix, SourceState } from '../instanceGroups.js'
 
 // The tank types instanceGroups maps to a tanks.<type> path; others are left out.
 const tankMappings: Record<string, string> = {
@@ -11,7 +11,7 @@ const tankMappings: Record<string, string> = {
   'Black water': 'blackWater'
 }
 
-const tank = (path: string) => (n2k: PGN_127505, state: any) =>
+const tank = (path: string) => (n2k: PGN_127505, state?: SourceState) =>
   `${instancePrefix(n2k, state)}.${path}`
 
 const knownType = (n2k: PGN_127505) =>

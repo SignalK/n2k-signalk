@@ -1,6 +1,6 @@
 import { PGN_130313 } from '@canboat/ts-pgns'
 
-const { instancePrefix } = require('../instanceGroups')
+import { instancePrefix } from '../instanceGroups.js'
 
 module.exports = [
   {
