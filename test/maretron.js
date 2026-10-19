@@ -176,3 +176,33 @@ describe('Maretron AC PGNs work', function () {
     //tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
+
+// Frames from a Maretron ACM100 on a generator, captured on a boat
+// (canboat samples/dirona-actisense-serial.raw).
+describe('Maretron generator frames from real equipment', function () {
+  const { FromPgn } = require('@canboat/canboatjs')
+  const parser = new FromPgn({ useCamel: true })
+  const n2kMapper = new N2kMapper()
+  const map = line => n2kMapper.toDelta(parser.parseString(line))
+
+  map('2016-02-28T19:57:12.402Z,6,60928,196,255,8,0c,10,35,11,02,8c,3c,c0')
+
+  it('65025 gives the power factor the power readings imply', function () {
+    const reactive = map(
+      '2016-02-28T19:58:06.629Z,3,65025,196,255,8,f5,94,35,77,00,7b,fd,ff'
+    ).updates[0].values
+    const power = map(
+      '2016-02-28T19:58:06.629Z,3,65026,196,255,8,4e,96,35,77,7f,96,35,77'
+    ).updates[0].values
+    const value = (values, leaf) =>
+      values.find(v => v.path === `electrical.generators.2.phase.A.${leaf}`)
+        .value
+
+    value(reactive, 'reactivePower').should.equal(245)
+    value(reactive, 'powerFactor').should.equal(0.921875)
+    value(reactive, 'powerFactorLagging').should.equal('lagging')
+    value(power, 'realPower').should.equal(590)
+    value(power, 'apparentPower').should.equal(639)
+    value(reactive, 'powerFactor').should.be.closeTo(590 / 639, 0.005)
+  })
+})
