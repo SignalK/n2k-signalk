@@ -13,6 +13,10 @@ describe('127488 engine boost Port', function () {
     console.log(tree)
     tree.should.have.nested.property('propulsion.port.boostPressure')
     tree.should.have.nested.property(
+      'propulsion.port.revolutions.value',
+      53.16667
+    )
+    tree.should.have.nested.property(
       'propulsion.port.boostPressure.value',
       393000
     )
@@ -28,6 +32,10 @@ describe('127488 engine boost Starboard', function () {
       )
     )
     tree.should.have.nested.property('propulsion.starboard.boostPressure')
+    tree.should.have.nested.property(
+      'propulsion.starboard.revolutions.value',
+      53.16667
+    )
     tree.should.have.nested.property(
       'propulsion.starboard.boostPressure.value',
       393000
@@ -45,6 +53,7 @@ describe('127488 engine boost 2', function () {
     )
 
     tree.should.have.nested.property('propulsion.2.boostPressure')
+    tree.should.have.nested.property('propulsion.2.revolutions.value', 53.16667)
     tree.should.have.nested.property('propulsion.2.boostPressure.value', 393000)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })

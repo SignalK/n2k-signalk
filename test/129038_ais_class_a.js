@@ -48,6 +48,11 @@ describe('129038 Class A Update', function () {
       'navigation.specialManeuver.value',
       'engaged'
     )
+    tree.should.have.nested.property(
+      'navigation.courseOverGroundTrue.value',
+      2.6878
+    )
+    tree.should.have.nested.property('navigation.headingTrue.value', 2.6704)
     var delta = mapper.testToDelta(msg)
     delta.updates.length.should.equal(1)
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:230982000')

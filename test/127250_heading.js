@@ -50,6 +50,7 @@ describe('127250 Heading', function () {
       'navigation.magneticDeviation.value',
       0.1
     )
+    tree.should.have.with.nested.property('navigation.headingTrue.value', 1.48)
     // tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
