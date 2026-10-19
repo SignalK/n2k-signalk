@@ -167,10 +167,29 @@ function nameField (
   return (Number.isNaN(n) ? mask : n) & mask
 }
 
+// A manufacturer name missing from @canboat/ts-pgns packs as the all-ones
+// code, which no rule for the device matches. Say so once per name.
+const warnedManufacturers = new Set<string>()
+function warnUnknownManufacturer (value: unknown) {
+  if (
+    typeof value !== 'string' ||
+    Object.prototype.hasOwnProperty.call(ManufacturerCodeValues, value) ||
+    !Number.isNaN(Number(value)) ||
+    warnedManufacturers.has(value)
+  ) {
+    return
+  }
+  warnedManufacturers.add(value)
+  console.error(
+    `n2k-signalk: manufacturer "${value}" of a PGN 60928 address claim is not in @canboat/ts-pgns, its NAME carries manufacturer code ${MANUFACTURER_CODE_MASK}: instance prefix rules for the device do not match`
+  )
+}
+
 // canName is the device's 8-byte NAME — the wire payload of its ISO
 // Address Claim (PGN 60928, ISO 11783-5 layout) — rendered as hex,
 // packed straight from the decoded fields.
 function canNameFromClaim (fields: Fields): string {
+  warnUnknownManufacturer(fields.manufacturerCode)
   const manufacturer = nameField(
     fields.manufacturerCode,
     MANUFACTURER_CODE_MASK,

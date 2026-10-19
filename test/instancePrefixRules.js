@@ -372,6 +372,24 @@ describe('instance prefix rules', function () {
     afterTree.should.be.validSignalKVesselIgnoringIdentity
   })
 
+  it('logs a manufacturer name missing from the table once', function () {
+    const mapper = new N2kMapper()
+    const unknown = { manufacturerCode: 'Not In The Table' }
+    const { result, logged } = quietly(() => {
+      mapper.toDelta(addressClaim(SRC, unknown))
+      mapper.toDelta(addressClaim(SRC + 1, unknown))
+      mapper.toDelta(addressClaim(SRC + 2))
+      mapper.toDelta(addressClaim(SRC + 3, { manufacturerCode: FUSION }))
+      return mapper.toDelta(engineSpeed()).updates[0].source.canName
+    })
+    logged.should.have.lengthOf(1)
+    logged[0].should.contain('"Not In The Table"')
+    logged[0].should.contain('2047')
+    // The NAME packs a name missing from the table as manufacturer code 2047.
+    deviceIdentity(result).manufacturerCode.should.equal(2047)
+    result.should.equal('c0fa8200ffe129bf')
+  })
+
   it('matches a claim as canboatjs decodes it', function () {
     const mapper = new N2kMapper({ instancePrefixRules: [mainEngine] })
     const claim = decode(60928, SRC, CLAIM_FIELDS)
