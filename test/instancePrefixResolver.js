@@ -276,7 +276,7 @@ describe('instancePrefixResolver', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
-  it('passes numeric codes, src and canName once 60928 is seen', function () {
+  it('passes numeric codes, src and the device once 60928 is seen', function () {
     const calls = []
     const mapper = new N2kMapper({
       instancePrefixResolver: ctx => {
@@ -295,13 +295,38 @@ describe('instancePrefixResolver', function () {
       discriminator: undefined,
       instance: 0,
       src: frame.src,
-      canName: undefined
+      canName: undefined,
+      manufacturerCode: undefined,
+      uniqueNumber: undefined
     })
     calls
       .slice(0, beforeClaim)
       .forEach(c => expect(c.canName).to.equal(undefined))
-    calls.slice(beforeClaim).forEach(c => c.canName.should.equal(CAN_NAME))
+    calls.slice(beforeClaim).forEach(c => {
+      c.canName.should.equal(CAN_NAME)
+      c.manufacturerCode.should.equal(419)
+      c.uniqueNumber.should.equal(76223)
+    })
     calls.length.should.be.above(beforeClaim)
+  })
+
+  it('reads the device from the source state canName', function () {
+    const calls = []
+    const resolver = ctx => {
+      calls.push([ctx.manufacturerCode, ctx.uniqueNumber])
+    }
+    const state = { 17: { canName: 'c0fa8200346129bf' } }
+    toDelta(engineSpeed(PORT_ENGINE), state, {}, resolver)
+    state['17'].canName = 'ffe00001'
+    toDelta(engineSpeed(PORT_ENGINE), state, {}, resolver)
+    state['17'].canName = 'not a name'
+    toDelta(engineSpeed(PORT_ENGINE), state, {}, resolver)
+    calls.should.deep.equal([
+      [419, 76223],
+      [2047, 1],
+      [undefined, undefined]
+    ])
+    Object.keys(state['17']).should.deep.equal(['canName'])
   })
 
   it('writes the default path when the resolver returns nothing', function () {

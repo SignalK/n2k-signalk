@@ -3,7 +3,10 @@
 import {
   classifyInstance,
   defaultPrefix,
-  instanceGroups
+  instanceGroups,
+  InstancePrefixRule,
+  InstancePrefixRuleProblem,
+  validateInstancePrefixRules
 } from '../../dist/n2kMapper'
 
 // never for an export typed any, which no value but never is assignable to.
@@ -18,5 +21,14 @@ const enums: (string | undefined)[] = [
   groups[0].instanceEnum,
   groups[0].discriminatorEnum
 ]
+const validate: Typed<typeof validateInstancePrefixRules> = validateInstancePrefixRules
+const rule: InstancePrefixRule = {
+  manufacturerCode: 419,
+  uniqueNumber: 76223,
+  group: 'engine',
+  instance: 0,
+  prefix: 'propulsion.main'
+}
+const problems: InstancePrefixRuleProblem[] = validate([rule])
 
-export { prefix, classify, groups, codes, enums }
+export { prefix, classify, groups, codes, enums, problems }

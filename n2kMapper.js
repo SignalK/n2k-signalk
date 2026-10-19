@@ -13,9 +13,13 @@ const {
   defaultPrefix,
   RESOLVER,
   resolverBinding,
-  hasInstanceGroup
+  hasInstanceGroup,
+  deviceIdentity
 } = require('./instanceGroups')
-const { InstancePrefixOverrides } = require('./instancePrefixOverrides')
+const {
+  InstancePrefixOverrides,
+  validateInstancePrefixRules
+} = require('./instancePrefixOverrides')
 
 require('util').inherits(N2kMapper, EventEmitter)
 
@@ -89,6 +93,7 @@ function N2kMapper (options) {
   this.customPgns = {}
   this.options = options || {}
   this.instancePrefixOverrides = new InstancePrefixOverrides()
+  this.setInstancePrefixRules(this.options.instancePrefixRules)
   this.setInstancePrefixResolver(this.options.instancePrefixResolver)
 
   if (this.options.onPropertyValues) {
@@ -113,8 +118,21 @@ function N2kMapper (options) {
 }
 
 /**
- * Replaces the function consulted for an instance's path prefix; undefined
- * removes it.
+ * Replaces the instance prefix rules. Applies the valid rules, logs each
+ * problem of the others once and returns the problems; undefined, null or []
+ * removes every rule, as does a value that is not an array, which is reported
+ * at index -1.
+ *
+ * @param {readonly InstancePrefixRule[] | undefined} rules
+ * @returns {InstancePrefixRuleProblem[]}
+ */
+N2kMapper.prototype.setInstancePrefixRules = function (rules) {
+  return this.instancePrefixOverrides.setRules(rules)
+}
+
+/**
+ * Replaces the function consulted for an instance's path prefix when no rule
+ * matches; undefined removes it.
  *
  * @param {InstancePrefixResolver | undefined} resolver
  */
@@ -248,6 +266,8 @@ N2kMapper.prototype.toDelta = function (n2k) {
 /**
  * @typedef {import('./instanceGroups').InstancePrefixContext} InstancePrefixContext
  * @typedef {import('./instanceGroups').InstancePrefixResolver} InstancePrefixResolver
+ * @typedef {import('./instancePrefixOverrides').InstancePrefixRule} InstancePrefixRule
+ * @typedef {import('./instancePrefixOverrides').InstancePrefixRuleProblem} InstancePrefixRuleProblem
  */
 
 // A toDelta call without a mapper has no mapper to keep the throws it
@@ -535,6 +555,8 @@ exports.toDelta = toDelta
 exports.instanceGroups = instanceGroups
 exports.classifyInstance = classifyInstance
 exports.defaultPrefix = defaultPrefix
+exports.validateInstancePrefixRules = validateInstancePrefixRules
+exports.deviceIdentity = deviceIdentity
 exports.toDeltaTransformer = function (options, state) {
   return through(function (data) {
     // toDelta returns nothing for a report it drops (an AIS report without a
