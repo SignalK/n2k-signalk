@@ -99,7 +99,7 @@ const problems = mapper.setInstancePrefixRules([
 
 `deviceIdentity(canName)` returns the `{ manufacturerCode, uniqueNumber }` of a `canName` as deltas carry it, or `undefined` for a value that is not one, so a caller keys rules for a source exactly as the mapper matches them.
 
-The mapper recovers the manufacturer code from the manufacturer name the decoder puts in PGN 60928, through this package's `@canboat/ts-pgns`, so the decoder (canboatjs 4) must use the same `@canboat/ts-pgns` major version: a name missing from this package's table becomes code 2047, and rules for the device do not match.
+The mapper recovers the manufacturer code from the manufacturer name the decoder puts in PGN 60928, through this package's `@canboat/ts-pgns`, so the decoder (canboatjs 4) must use the same `@canboat/ts-pgns` major version: a name missing from this package's table becomes code 2047, and rules for the device do not match. The mapper logs each such name once.
 
 #### Resolver
 
