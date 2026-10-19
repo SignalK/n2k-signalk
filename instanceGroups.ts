@@ -456,13 +456,14 @@ export function classifyInstance (
 }
 
 // Key of the resolver binding on the per-source state. A symbol keeps it out
-// of Object.keys and JSON of the state. toDelta stores a fresh binding per
-// frame, so a result cached on it never outlives the frame.
+// of Object.keys and JSON of the state. toDelta stores a fresh binding for
+// each frame of an instance PGN and clears it for any other frame, so a
+// result cached on it never outlives the frame.
 export const RESOLVER = Symbol('instancePrefixResolver')
 
 interface ResolverBinding {
   resolver: InstancePrefixResolver
-  frame: N2kFrame | undefined
+  resolved: boolean
   prefix: string | undefined
 }
 
@@ -476,7 +477,12 @@ export interface SourceState {
 export function resolverBinding (
   resolver: InstancePrefixResolver
 ): ResolverBinding {
-  return { resolver, frame: undefined, prefix: undefined }
+  return { resolver, resolved: false, prefix: undefined }
+}
+
+/** True when the PGN writes paths under an instance prefix. */
+export function hasInstanceGroup (pgn: number | string): boolean {
+  return PGN_INDEX.has(Number(pgn))
 }
 
 function resolve (
@@ -500,19 +506,51 @@ function resolve (
   return typeof prefix === 'string' && prefix !== '' ? prefix : undefined
 }
 
+// The pgn:src keys each resolver has thrown for. A replaced resolver's errors
+// are reported afresh; a resolver no mapper holds is collected with its keys.
+const reportedThrows = new WeakMap<InstancePrefixResolver, Set<string>>()
+
+function reportThrow (
+  resolver: InstancePrefixResolver,
+  n2k: N2kFrame,
+  ex: unknown
+) {
+  let reported = reportedThrows.get(resolver)
+  if (reported === undefined) {
+    reported = new Set()
+    reportedThrows.set(resolver, reported)
+  }
+  const key = `${n2k.pgn}:${n2k.src}`
+  if (reported.has(key)) {
+    return
+  }
+  reported.add(key)
+  console.error(
+    `n2k-signalk: instancePrefixResolver threw for pgn ${n2k.pgn} from src ${n2k.src}, writing default paths:`,
+    ex
+  )
+}
+
 /**
  * The prefix the source state's resolver returns for this frame, or undefined
  * when there is no resolver, the frame has no instance or the resolver
- * returns nothing. Every mapping of a frame asks; the resolver runs once.
+ * returns nothing or throws. Every mapping of a frame asks; the resolver runs
+ * once. A throw is logged the first time it happens for the resolver, PGN
+ * and source.
  */
 function resolvedPrefix (n2k: N2kFrame, state: SourceState | undefined) {
   const binding = state && state[RESOLVER]
   if (!state || !binding) {
     return undefined
   }
-  if (binding.frame !== n2k) {
-    const prefix = resolve(binding.resolver, n2k, state)
-    binding.frame = n2k
+  if (!binding.resolved) {
+    let prefix
+    try {
+      prefix = resolve(binding.resolver, n2k, state)
+    } catch (ex) {
+      reportThrow(binding.resolver, n2k, ex)
+    }
+    binding.resolved = true
     binding.prefix = prefix
   }
   return binding.prefix

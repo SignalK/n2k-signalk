@@ -12,7 +12,8 @@ const {
   classifyInstance,
   defaultPrefix,
   RESOLVER,
-  resolverBinding
+  resolverBinding,
+  hasInstanceGroup
 } = require('./instanceGroups')
 
 require('util').inherits(N2kMapper, EventEmitter)
@@ -257,9 +258,11 @@ var toDelta = function (n2k, state, customPgns = {}, instancePrefixResolver) {
         state[n2k_src] = {}
       }
       src_state = state[n2k_src]
-      if (instancePrefixResolver || src_state[RESOLVER]) {
-        src_state[RESOLVER] =
-          instancePrefixResolver && resolverBinding(instancePrefixResolver)
+      const resolver = hasInstanceGroup(n2k.pgn)
+        ? instancePrefixResolver
+        : undefined
+      if (resolver || src_state[RESOLVER]) {
+        src_state[RESOLVER] = resolver && resolverBinding(resolver)
       }
     }
     // The mappings that apply to this report, selected once: the values and
