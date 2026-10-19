@@ -110,7 +110,6 @@ describe('Maretron AC PGNs work', function () {
     //tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
-  //needed for the next test
   n2kMapper.toDelta({
     canId: 217969088,
     prio: 3,
@@ -121,7 +120,7 @@ describe('Maretron AC PGNs work', function () {
     time: '18:58:11.940',
     fields: {
       reactivePower: 37888,
-      powerFactor: 30517,
+      powerFactor: 0.927734375,
       powerFactorLagging: 'Leading'
     },
     description: 'Utility Phase B AC Reactive Power',
@@ -141,9 +140,30 @@ describe('Maretron AC PGNs work', function () {
     )
     tree.should.have.nested.property(
       'electrical.ac.8.phase.B.apparentPower.value',
-      23559124
+      772
     )
     tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+
+  it('65009 Utility Phase B AC Reactive Power', function () {
+    var tree = toNested(
+      JSON.parse(
+        '{"canId":217969088,"prio":3,"src":192,"dst":255,"pgn":65009,"fields":{"reactivePower":859,"powerFactor":0.927734375,"powerFactorLagging":"Leading"},"description":"Utility Phase B AC Reactive Power","timestamp":"2020-03-28T18:58:12.480Z"}'
+      ),
+      n2kMapper.state
+    )
+    tree.should.have.nested.property(
+      'electrical.ac.8.phase.B.reactivePower.value',
+      859
+    )
+    tree.should.have.nested.property(
+      'electrical.ac.8.phase.B.powerFactor.value',
+      0.9277344
+    )
+    tree.should.have.nested.property(
+      'electrical.ac.8.phase.B.powerFactorLagging.value',
+      'leading'
+    )
   })
 
   it('65030 Generator Average Basic AC Quantities', function () {
