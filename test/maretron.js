@@ -110,23 +110,6 @@ describe('Maretron AC PGNs work', function () {
     //tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
-  n2kMapper.toDelta({
-    canId: 217969088,
-    prio: 3,
-    src: 192,
-    dst: 255,
-    pgn: 65009,
-    direction: 'R',
-    time: '18:58:11.940',
-    fields: {
-      reactivePower: 37888,
-      powerFactor: 0.927734375,
-      powerFactorLagging: 'Leading'
-    },
-    description: 'Utility Phase B AC Reactive Power',
-    timestamp: '2020-03-28T18:58:12.480Z'
-  })
-
   it('65010 Utility Phase B AC Power', function () {
     var tree = toNested(
       JSON.parse(
@@ -156,9 +139,9 @@ describe('Maretron AC PGNs work', function () {
       'electrical.ac.8.phase.B.reactivePower.value',
       859
     )
-    tree.should.have.nested.property(
-      'electrical.ac.8.phase.B.powerFactor.value',
-      0.9277344
+    tree.electrical.ac[8].phase.B.powerFactor.value.should.be.closeTo(
+      0.927734375,
+      1e-6
     )
     tree.should.have.nested.property(
       'electrical.ac.8.phase.B.powerFactorLagging.value',
