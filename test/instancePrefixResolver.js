@@ -4,6 +4,7 @@ const expect = chai.expect
 
 const { FromPgn, pgnToActisenseSerialFormat } = require('@canboat/canboatjs')
 const { N2kMapper, toDelta } = require('../dist/n2kMapper')
+const { RESOLVER } = require('../dist/instanceGroups')
 
 const parser = new FromPgn({ useCamel: true })
 const TIMESTAMP = '2026-09-28T12:00:00.000Z'
@@ -50,12 +51,15 @@ const addressClaim = src => ({
 
 const engineSpeed = instance => decode(127488, 17, { instance, speed: 3000 })
 
-const engineAlarm = decode(127489, 17, {
-  instance: PORT_ENGINE,
-  temperature: 330,
-  discreteStatus1: ['Low Oil Pressure'],
-  discreteStatus2: []
-})
+const engineAlarmFrom = src =>
+  decode(127489, src, {
+    instance: PORT_ENGINE,
+    temperature: 330,
+    discreteStatus1: ['Low Oil Pressure'],
+    discreteStatus2: []
+  })
+
+const engineAlarm = engineAlarmFrom(17)
 
 const battery = instance =>
   decode(127508, 17, { instance, voltage: 13.1, current: 5.6 })
@@ -76,6 +80,17 @@ function values (mapper, n2k) {
 
 function paths (mapper, n2k) {
   return values(mapper, n2k).map(v => v.path)
+}
+
+function quietly (fn) {
+  const logged = []
+  const consoleError = console.error
+  console.error = (...args) => logged.push(args.join(' '))
+  try {
+    return { result: fn(), logged }
+  } finally {
+    console.error = consoleError
+  }
 }
 
 // Maps one group/discriminator/instance to target; everything else default.
@@ -265,6 +280,47 @@ describe('instancePrefixResolver', function () {
     calls.should.equal(1)
     mapper.toDelta(engineSpeed(PORT_ENGINE))
     calls.should.equal(2)
+  })
+
+  it('calls a throwing resolver once per frame and writes default paths', function () {
+    let calls = 0
+    const mapper = new N2kMapper({
+      instancePrefixResolver: () => {
+        calls++
+        throw new Error('boom')
+      }
+    })
+    const { result, logged } = quietly(() =>
+      [1, 2, 3].map(() => values(mapper, engineAlarm))
+    )
+    const expected = values(new N2kMapper(), engineAlarm)
+    expected.length.should.be.above(1)
+    result.forEach(frameValues => frameValues.should.deep.equal(expected))
+    calls.should.equal(3)
+    logged.should.have.lengthOf(1)
+    logged[0].should.contain('pgn 127489')
+    logged[0].should.contain('src 17')
+    logged[0].should.contain('boom')
+
+    const { logged: otherSource } = quietly(() => {
+      values(mapper, engineAlarmFrom(18))
+      values(mapper, engineAlarmFrom(18))
+    })
+    otherSource.should.have.lengthOf(1)
+    otherSource[0].should.contain('src 18')
+  })
+
+  it('binds the resolver only for frames of instance PGNs', function () {
+    const mapper = new N2kMapper({
+      instancePrefixResolver: () => 'propulsion.main'
+    })
+    const position = decode(129025, 17, { latitude: 60.1, longitude: 24.9 })
+    mapper.toDelta(position)
+    Object.getOwnPropertySymbols(mapper.state['17']).should.be.empty
+    mapper.toDelta(engineSpeed(PORT_ENGINE))
+    expect(mapper.state['17'][RESOLVER]).to.not.equal(undefined)
+    mapper.toDelta(position)
+    expect(mapper.state['17'][RESOLVER]).to.equal(undefined)
   })
 
   it('appends the phase to a resolved AC connection prefix', function () {

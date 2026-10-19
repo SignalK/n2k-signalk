@@ -78,7 +78,7 @@ The resolver is called with:
 - `src`: the source address of the frame
 - `canName`: the source's CAN name, `undefined` until its PGN 60928 has been seen
 
-A non-empty string replaces the prefix, notifications included; anything else keeps the default. For temperature, humidity and pressure the prefix is the full leaf path, e.g. `environment.inside.engineRoom.temperature`. Engine alarm messages name a remapped engine by the prefix's last segment. The resolver is called once per frame and every path of that frame uses its result, so it should be pure. If it throws, the mapper catches the exception, drops that path's value and writes the error to stderr; the next path of the frame calls the resolver again.
+A non-empty string replaces the prefix, notifications included; anything else keeps the default. For temperature, humidity and pressure the prefix is the full leaf path, e.g. `environment.inside.engineRoom.temperature`. Engine alarm messages name a remapped engine by the prefix's last segment. The resolver is called once per frame and every path of that frame uses its result, so it should be pure. If it throws, the mapper writes every path of the frame under the default prefix, as if the resolver had returned nothing. It logs the error, with the PGN and source address, the first time the resolver throws for that PGN and source address; a new resolver's errors are logged afresh.
 
 The mapper reads `instancePrefixResolver` from its options object on every frame, so setting or deleting it on that object takes effect on the next frame.
 
