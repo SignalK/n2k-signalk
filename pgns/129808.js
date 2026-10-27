@@ -27,15 +27,25 @@ const NATURES = {
   'EPIRB emission': 'epirb'
 }
 
-// A DSC address is a DECIMAL field: canboat gives it as a 10 digit string.
-// Per ITU-R M.493 it is the station's 9 digit MMSI followed by a 0 (a ship
-// MIDxxxxxx becomes MIDxxxxxx0, a coast station 00MIDxxxx becomes 00MIDxxxx0),
-// so the MMSI is its first 9 digits. Kept a string, so leading zeros survive.
+// A DSC address is a DECIMAL field, kept a string so leading zeros survive.
+// Per ITU-R M.493 a DSC call sends the station's 9 digit MMSI followed by a
+// 0 (a ship MIDxxxxxx becomes MIDxxxxxx0, a coast station 00MIDxxxx becomes
+// 00MIDxxxx0). canboatjs with canboat/canboatjs#538 (and canboat 9.1) drops
+// that 0 and gives the 9 digit MMSI; older versions give all 10 digits, so
+// the MMSI is then the first 9. Ten digits that don't end in 0 are not an
+// MMSI: the newer decoder gives those for a call to a geographical area.
 function addressMmsi (address) {
-  if (typeof address !== 'string' || !/^\d{10}$/.test(address)) {
+  if (typeof address !== 'string') {
     return undefined
   }
-  const mmsi = address.slice(0, 9)
+  let mmsi
+  if (/^\d{9}$/.test(address)) {
+    mmsi = address
+  } else if (/^\d{9}0$/.test(address)) {
+    mmsi = address.slice(0, 9)
+  } else {
+    return undefined
+  }
   return mmsi === '000000000' ? undefined : mmsi
 }
 

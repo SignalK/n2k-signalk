@@ -32,7 +32,8 @@ function notifications (delta) {
 describe('129808 DSC Call Information', function () {
   it('a distress alert maps position and a nature notification', function () {
     var n2k = decode(MOB_DISTRESS)
-    n2k.fields.dscMessageAddress.should.equal('5120009530')
+    // 10 digits before canboatjs#538, the 9 digit MMSI from then on.
+    n2k.fields.dscMessageAddress.should.match(/^5120009530?$/)
     var delta = mapper.toDelta(n2k)
 
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:512000953')
@@ -47,7 +48,8 @@ describe('129808 DSC Call Information', function () {
 
   it('a coast station keeps the leading zeros of its MMSI', function () {
     var n2k = decode(COAST_STATION_ALL_SHIPS)
-    n2k.fields.dscMessageAddress.should.equal('0022410240')
+    // 10 digits before canboatjs#538, the 9 digit MMSI from then on.
+    n2k.fields.dscMessageAddress.should.match(/^0022410240?$/)
     var delta = mapper.toDelta(n2k)
 
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:002241024')
@@ -57,7 +59,8 @@ describe('129808 DSC Call Information', function () {
 
   it('an individual call maps position without a notification', function () {
     var n2k = decode(INDIVIDUAL_POSITION)
-    n2k.fields.dscMessageAddress.should.equal('2245392400')
+    // 10 digits before canboatjs#538, the 9 digit MMSI from then on.
+    n2k.fields.dscMessageAddress.should.match(/^2245392400?$/)
     var delta = mapper.toDelta(n2k)
 
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:224539240')
@@ -105,13 +108,29 @@ describe('129808 DSC Call Information', function () {
       .context.should.equal('vessels.urn:mrn:imo:mmsi:224539240')
   })
 
-  // Addresses canboatjs 4.0.0-beta.2 and later never give, fed to the mapper
-  // directly: beta.1 gave a (garbled) number, and an address shorter than 10
-  // digits would be the mistake this mapping once accepted.
+  // An MMSI as canboatjs gives it before and after canboatjs#538.
+  ;[
+    ['the 9 digit MMSI', '366191910'],
+    ['the 10 digits with the trailing 0', '3661919100']
+  ].forEach(function ([what, address]) {
+    it('reads an address that is ' + what, function () {
+      var n2k = decode(INDIVIDUAL_POSITION)
+      n2k.fields.dscMessageAddress = address
+      mapper
+        .toDelta(n2k)
+        .context.should.equal('vessels.urn:mrn:imo:mmsi:366191910')
+    })
+  })
+
+  // Addresses that are not an MMSI, fed to the mapper directly: canboatjs
+  // 4.0.0-beta.1 gave a (garbled) number, and ten digits that don't end in
+  // 0 are a call to a geographical area.
   ;[
     ['a number', 3661919231],
-    ['nine digits', '366191910'],
-    ['all zeros', '0000000000']
+    ['ten digits not ending in 0', '3661919231'],
+    ['eight digits', '36619191'],
+    ['all zeros', '0000000000'],
+    ['nine zeros', '000000000']
   ].forEach(function ([what, address]) {
     it('drops a call whose address is ' + what, function () {
       var n2k = decode(INDIVIDUAL_POSITION)
