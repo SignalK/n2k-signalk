@@ -72,7 +72,8 @@ describe('129808 DSC Call Information', function () {
   })
 
   // No capture of a relay is at hand, so this one is built and round-tripped
-  // through canboatjs.
+  // through canboatjs. A relay is canboat's "DSC Distress Acknowledgement or
+  // Relay" definition, whose field ids carry the Symbol suffix.
   it('a distress relay maps to the ship in distress, not the relaying station', function () {
     var delta = mapper.testToDelta({
       timestamp: '2026-10-03T12:00:00.000Z',
@@ -81,8 +82,8 @@ describe('129808 DSC Call Information', function () {
       dst: 255,
       pgn: 129808,
       fields: {
-        dscFormat: 'All ships',
-        dscCategory: 'Distress',
+        dscFormatSymbol: 'All ships',
+        dscCategorySymbol: 'Distress',
         dscMessageAddress: '2470123450',
         natureOfDistress: 'Sinking',
         latitudeOfVesselReported: 43.5,
