@@ -3,6 +3,7 @@ chai.Should()
 chai.use(require('chai-things'))
 
 const N2kMapper = require('../dist/n2kMapper').N2kMapper
+const { FromPgn } = require('@canboat/canboatjs')
 
 describe('Meta data works', function () {
   it('Address Claim', done => {
@@ -70,6 +71,50 @@ describe('Meta data works', function () {
       },
       description: 'ISO Address Claim'
     })
+  })
+
+  it('Address Claim with the spare field left out', done => {
+    // canboat and canboatjs omit a spare field whose bits are all clear;
+    // the same claim must keep the canName it has with spare: 0.
+    const n2kMapper = new N2kMapper()
+    n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
+      meta.should.have.property('canName', 'c0fa8200346129bf')
+      done()
+    })
+    n2kMapper.toDelta({
+      prio: 6,
+      pgn: 60928,
+      dst: 255,
+      src: 12,
+      timestamp: '2019-05-31T11:46:58.594Z',
+      fields: {
+        uniqueNumber: 76223,
+        manufacturerCode: 'Fusion Electronics',
+        deviceInstanceLower: 0,
+        deviceInstanceUpper: 0,
+        deviceFunction: 130,
+        spare: null,
+        deviceClass: 'Entertainment',
+        systemInstance: 0,
+        industryGroup: 'Marine',
+        arbitraryAddressCapable: 1
+      },
+      description: 'ISO Address Claim'
+    })
+  })
+
+  it('Address Claim decoded from the wire keeps its NAME', done => {
+    const n2kMapper = new N2kMapper()
+    n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
+      meta.should.have.property('canName', 'c0328200c598e5d3')
+      done()
+    })
+    const parser = new FromPgn({ useCamel: true, format: 1, returnNulls: true })
+    n2kMapper.toDelta(
+      parser.parseString(
+        '2017-04-15T14:57:58.470Z,6,60928,3,255,8,d3,e5,98,c5,00,82,32,c0'
+      )
+    )
   })
 
   it('Configuration Information', done => {
