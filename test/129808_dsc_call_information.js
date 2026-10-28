@@ -14,6 +14,10 @@ var COAST_STATION_ALL_SHIPS =
 var INDIVIDUAL_POSITION =
   '2026-09-05-10:46:07.912,4,129808,4,255,62,78,6c,16,2d,27,18,00,79,7e,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,02,01,e0,1f,34,17,da,eb,e3,00,80,4e,1a,17,ff,ff,ff,ff,ff,7a,fc,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,80,4e,1a,17,dd,34,17,00'
 
+// Built, see the relay test below.
+var DISTRESS_RELAY =
+  '2026-10-03T12:00:00.000Z,4,129808,4,255,62,74,70,18,46,0c,22,32,ff,69,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,02,01,c0,92,ed,19,20,43,52,04,ff,ff,ff,ff,24,3d,5b,5b,00,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff'
+
 function decode (line) {
   return new FromPgn({ useCamel: true }).parseString(line)
 }
@@ -46,6 +50,21 @@ describe('129808 DSC Call Information', function () {
     delta.should.be.validSignalKDelta
   })
 
+  it('a distress alert without a category still raises the notification', function () {
+    // canboat 9.1 knows a distress alert by its format: the alert itself has
+    // no category (ITU-R M.493), so a device may leave it not available.
+    var parts = MOB_DISTRESS.split(',')
+    parts[7] = 'ff'
+    var n2k = decode(parts.join(','))
+    n2k.id.should.equal('dscDistressCallInformation')
+    var delta = mapper.toDelta(n2k)
+
+    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:512000953')
+    valueAt(delta, 'notifications.mob').message.should.equal(
+      'DSC Distress Received! Nature of distress: mob'
+    )
+  })
+
   it('a coast station keeps the leading zeros of its MMSI', function () {
     var n2k = decode(COAST_STATION_ALL_SHIPS)
     // 10 digits before canboatjs#538, the 9 digit MMSI from then on.
@@ -71,26 +90,13 @@ describe('129808 DSC Call Information', function () {
     delta.should.be.validSignalKDelta
   })
 
-  // No capture of a relay is at hand, so this one is built and round-tripped
-  // through canboatjs. A relay is canboat's "DSC Distress Acknowledgement or
-  // Relay" definition, whose field ids carry the Symbol suffix.
+  // No capture of a relay is at hand. This frame is laid out as canboat 9.1
+  // has a relay ("DSC Distress Acknowledgement or Relay": format All ships,
+  // category Distress), with the ship in distress's nature and position.
   it('a distress relay maps to the ship in distress, not the relaying station', function () {
-    var delta = mapper.testToDelta({
-      timestamp: '2026-10-03T12:00:00.000Z',
-      prio: 4,
-      src: 4,
-      dst: 255,
-      pgn: 129808,
-      fields: {
-        dscFormatSymbol: 'All ships',
-        dscCategorySymbol: 'Distress',
-        dscMessageAddress: '2470123450',
-        natureOfDistress: 'Sinking',
-        latitudeOfVesselReported: 43.5,
-        longitudeOfVesselReported: 7.25,
-        mmsiOfShipInDistress: '3661919100'
-      }
-    })
+    var n2k = decode(DISTRESS_RELAY)
+    n2k.id.should.equal('dscDistressAcknowledgementOrRelay')
+    var delta = mapper.toDelta(n2k)
 
     delta.context.should.equal('vessels.urn:mrn:imo:mmsi:366191910')
     var position = valueAt(delta, 'navigation.position')
