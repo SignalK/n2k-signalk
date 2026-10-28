@@ -1,21 +1,10 @@
 import { PGN_127505 } from '@canboat/ts-pgns'
+import { instancePrefix, skTankType, SourceState } from '../instanceGroups.js'
 
-const tankMappings: Record<string, string> = {
-  Fuel: 'fuel',
-  Water: 'freshWater',
-  'Gray water': 'wasteWater',
-  'Live well': 'liveWell',
-  Oil: 'lubrication',
-  'Black water': 'blackWater'
-}
+const tank = (path: string) => (n2k: PGN_127505, state?: SourceState) =>
+  `${instancePrefix(n2k, state)}.${path}`
 
-const tank = (path: string) => (n2k: PGN_127505) =>
-  `tanks.${tankMappings[n2k.fields.type as string]}.${
-    n2k.fields.instance
-  }.${path}`
-
-const knownType = (n2k: PGN_127505) =>
-  tankMappings[n2k.fields.type as string] !== undefined
+const knownType = (n2k: PGN_127505) => skTankType(n2k.fields.type) !== undefined
 
 // canboatjs gives the level as a ratio and the capacity in m3.
 module.exports = [
