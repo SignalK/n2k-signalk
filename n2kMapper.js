@@ -50,8 +50,10 @@ function canNameFromClaim (fields) {
     nameField(fields.deviceInstanceLower, 0x07) |
     (nameField(fields.deviceInstanceUpper, 0x1f) << 3)
   // Callers pass the field by camel id or by schema name: 'spare' or 'Spare'.
+  // Unlike the unavailable fields above, a spare the decoder left out is
+  // clear: canboat and canboatjs omit a spare field when it is all zeros.
   const spare = fields.spare !== undefined ? fields.spare : fields.Spare
-  const b6 = nameField(spare, 0x01) | (deviceClass << 1)
+  const b6 = (spare == null ? 0 : nameField(spare, 0x01)) | (deviceClass << 1)
   const b7 =
     nameField(fields.systemInstance, 0x0f) | (industry << 4) | (arbitrary << 7)
   const name =
