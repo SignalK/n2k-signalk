@@ -73,48 +73,37 @@ describe('Meta data works', function () {
     })
   })
 
-  it('Address Claim with the spare field left out', done => {
-    // canboat and canboatjs omit a spare field whose bits are all clear;
-    // the same claim must keep the canName it has with spare: 0.
-    const n2kMapper = new N2kMapper()
-    n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
-      meta.should.have.property('canName', 'c0fa8200346129bf')
-      done()
-    })
-    n2kMapper.toDelta({
-      prio: 6,
-      pgn: 60928,
-      dst: 255,
-      src: 12,
-      timestamp: '2019-05-31T11:46:58.594Z',
-      fields: {
-        uniqueNumber: 76223,
-        manufacturerCode: 'Fusion Electronics',
-        deviceInstanceLower: 0,
-        deviceInstanceUpper: 0,
-        deviceFunction: 130,
-        spare: null,
-        deviceClass: 'Entertainment',
-        systemInstance: 0,
-        industryGroup: 'Marine',
-        arbitraryAddressCapable: 1
-      },
-      description: 'ISO Address Claim'
-    })
-  })
+  // Captured from the wire: byte 6 is 0x32, so the spare bit is clear.
+  const CLAIM_60928 =
+    '2017-04-15T14:57:58.470Z,6,60928,3,255,8,d3,e5,98,c5,00,82,32,c0'
 
-  it('Address Claim decoded from the wire keeps its NAME', done => {
+  it('Address Claim with a clear spare field left out keeps its NAME', done => {
+    // canboatjs, as canboat, leaves an all-zero spare field out of the
+    // decoded fields.
+    const parsed = new FromPgn({ useCamel: true, format: 1 }).parseString(
+      CLAIM_60928
+    )
+    parsed.fields.should.not.have.property('spare')
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('canName', 'c0328200c598e5d3')
       done()
     })
-    const parser = new FromPgn({ useCamel: true, format: 1, returnNulls: true })
-    n2kMapper.toDelta(
-      parser.parseString(
-        '2017-04-15T14:57:58.470Z,6,60928,3,255,8,d3,e5,98,c5,00,82,32,c0'
-      )
-    )
+    n2kMapper.toDelta(parsed)
+  })
+
+  it('Address Claim with a clear spare field as null keeps its NAME', done => {
+    const parsed = new FromPgn({
+      useCamel: true,
+      format: 1,
+      returnNulls: true
+    }).parseString(CLAIM_60928)
+    const n2kMapper = new N2kMapper()
+    n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
+      meta.should.have.property('canName', 'c0328200c598e5d3')
+      done()
+    })
+    n2kMapper.toDelta(parsed)
   })
 
   it('Configuration Information', done => {
