@@ -2,9 +2,10 @@
  * PGN 129808 "DSC Call Information" — VHF Digital Selective Calling.
  *
  * canboatjs (useCamel) resolves the DSC_FORMAT / DSC_CATEGORY / DSC_NATURE
- * lookups to their names. canboat models two field variants of this PGN: the
- * distress variant (dscFormat/dscCategory/natureOfDistress) and the general
- * variant (dscFormatSymbol/dscCategorySymbol) — read both.
+ * lookups to their names. canboat models three variants of this PGN: a
+ * distress alert (format Distress; dscFormat/dscCategory/natureOfDistress), a
+ * distress acknowledgement or relay (category Distress) and any other call,
+ * the last two with dscFormatSymbol/dscCategorySymbol — read both names.
  *
  * Mirrors the NMEA 0183 $--DSC hook: the reported position and a
  * nature-of-distress notification are emitted under the MMSI context of the
@@ -49,8 +50,11 @@ function addressMmsi (address) {
   return mmsi === '000000000' ? undefined : mmsi
 }
 
+// A distress alert has format Distress, and no category of its own; a relay
+// or acknowledgement has category Distress.
 function isDistress (n2k) {
   return (
+    n2k.fields.dscFormat === 'Distress' ||
     n2k.fields.dscCategory === 'Distress' ||
     n2k.fields.dscCategorySymbol === 'Distress'
   )
