@@ -180,7 +180,12 @@ describe('validateInstancePrefixRules', function () {
   it('accepts the highest instance of each range', function () {
     validateInstancePrefixRules([
       { ...mainEngine, instance: 254 },
-      { ...mainEngine, group: 'battery', instance: 252 },
+      {
+        ...mainEngine,
+        group: 'battery',
+        instance: 252,
+        prefix: 'electrical.batteries.house'
+      },
       {
         ...DEVICE,
         group: 'tank',
@@ -357,7 +362,7 @@ describe('validateInstancePrefixRules', function () {
     validateInstancePrefixRules([
       mainEngine,
       { ...mainEngine, instance: 1, group: 'motor' },
-      { ...mainEngine, instance: 2 },
+      { ...mainEngine, instance: 2, prefix: 'propulsion.center' },
       { ...mainEngine, instance: 3, prefix: '' }
     ])
       .map(p => p.index)
@@ -368,8 +373,12 @@ describe('validateInstancePrefixRules', function () {
     const problems = validateInstancePrefixRules([
       mainEngine,
       { ...mainEngine, prefix: 'propulsion.center' },
-      { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 },
-      { ...mainEngine, manufacturerCode: FUSION + 1 },
+      {
+        ...mainEngine,
+        uniqueNumber: UNIQUE_NUMBER + 1,
+        prefix: 'propulsion.center'
+      },
+      { ...mainEngine, manufacturerCode: FUSION + 1, prefix: 'propulsion.aft' },
       {
         ...DEVICE,
         group: 'tank',
@@ -390,10 +399,38 @@ describe('validateInstancePrefixRules', function () {
     problems[0].message.should.contain('rule 0')
   })
 
+  it('reports a rule with the prefix of an earlier one', function () {
+    const problems = validateInstancePrefixRules([
+      mainEngine,
+      { ...mainEngine, instance: 1, prefix: 'propulsion.center' },
+      { ...mainEngine, instance: 2 },
+      { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 },
+      { ...mainEngine, instance: 3, prefix: 'propulsion.center' },
+      { ...mainEngine, instance: 4, prefix: 'propulsion.main.aux' }
+    ])
+    problems.map(p => p.index).should.deep.equal([2, 3, 4])
+    problems[0].message.should.equal('same prefix as rule 0')
+    problems[1].message.should.equal('same prefix as rule 0')
+    problems[2].message.should.equal('same prefix as rule 1')
+  })
+
+  it('reports a rule with the key and prefix of an earlier one once', function () {
+    validateInstancePrefixRules([mainEngine, mainEngine])
+      .map(p => p.message)
+      .should.deep.equal([
+        'same manufacturerCode, uniqueNumber, group, discriminator and instance as rule 0'
+      ])
+  })
+
   it('accepts the bounds of the device key', function () {
     validateInstancePrefixRules([
       { ...mainEngine, manufacturerCode: 0, uniqueNumber: 0 },
-      { ...mainEngine, manufacturerCode: 2047, uniqueNumber: 2097151 }
+      {
+        ...mainEngine,
+        manufacturerCode: 2047,
+        uniqueNumber: 2097151,
+        prefix: 'propulsion.center'
+      }
     ]).should.deep.equal([])
   })
 
@@ -508,8 +545,8 @@ describe('instance prefix rules', function () {
     const mapper = claimedMapper({
       instancePrefixRules: [
         { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 },
-        { ...mainEngine, instance: 1 },
-        { ...mainEngine, group: 'battery' }
+        { ...mainEngine, instance: 1, prefix: 'propulsion.center' },
+        { ...mainEngine, group: 'battery', prefix: 'electrical.batteries.main' }
       ]
     })
     paths(mapper, engineSpeed()).should.deep.equal([
@@ -543,6 +580,23 @@ describe('instance prefix rules', function () {
     ])
     vesselTree(delta).should.be.validSignalKVesselIgnoringIdentity
     paths(mapper, fuelTank(2)).should.deep.equal(['tanks.fuel.2.currentLevel'])
+  })
+
+  it('applies the first of two rules with the same prefix', function () {
+    const { result: mapper, logged } = quietly(() =>
+      claimedMapper({
+        instancePrefixRules: [{ ...mainEngine, instance: 1 }, mainEngine]
+      })
+    )
+    logged.should.have.lengthOf(1)
+    logged[0].should.contain('rule 1: same prefix as rule 0')
+    paths(mapper, engineSpeed()).should.deep.equal([
+      'propulsion.port.revolutions'
+    ])
+    paths(
+      mapper,
+      decode(127488, SRC, { instance: 'Dual Engine Starboard', speed: 50 })
+    ).should.deep.equal(['propulsion.main.revolutions'])
   })
 
   it('matches the highest instance; a reserved one keeps its default', function () {

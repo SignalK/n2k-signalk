@@ -173,6 +173,8 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
 function compileRules (rules: unknown) {
   const problems: InstancePrefixRuleProblem[] = []
   const table: RuleTable = new Map()
+  // Rule indexes by prefix: two rules writing one prefix merge two streams.
+  const targets = new Map<string, number>()
   if (!Array.isArray(rules)) {
     problems.push({
       index: -1,
@@ -188,11 +190,7 @@ function compileRules (rules: unknown) {
       return
     }
     let device = table.get(entry.device)
-    if (device === undefined) {
-      device = new Map()
-      table.set(entry.device, device)
-    }
-    const earlier = device.get(entry.key)
+    const earlier = device && device.get(entry.key)
     if (earlier !== undefined) {
       problems.push({
         index,
@@ -200,6 +198,16 @@ function compileRules (rules: unknown) {
       })
       return
     }
+    const sharing = targets.get(entry.prefix)
+    if (sharing !== undefined) {
+      problems.push({ index, message: `same prefix as rule ${sharing}` })
+      return
+    }
+    if (device === undefined) {
+      device = new Map()
+      table.set(entry.device, device)
+    }
+    targets.set(entry.prefix, index)
     device.set(entry.key, { index, prefix: entry.prefix })
   })
   return { table, problems }
@@ -209,9 +217,9 @@ function compileRules (rules: unknown) {
  * The problems that keep rules from applying, each naming its rule's index:
  * a malformed rule, a manufacturerCode outside 0..2047 or a uniqueNumber
  * outside 0..2^21 - 1, an unknown group, a discriminator the group does not
- * take or write, an instance out of range, a prefix that is not a valid path, a key an
- * earlier rule already holds. A list that is not an array is one problem, at
- * index -1, and no rule is checked.
+ * take or write, an instance out of range, a prefix that is not a valid
+ * path, a key or a prefix an earlier rule already holds. A list that is not an
+ * array is one problem, at index -1, and no rule is checked.
  */
 export function validateInstancePrefixRules (
   rules: unknown
