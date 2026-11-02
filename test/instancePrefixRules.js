@@ -598,6 +598,56 @@ describe('instance prefix rules', function () {
     paths(mapper, fuelTank(2)).should.deep.equal(['tanks.fuel.2.currentLevel'])
   })
 
+  // The number of reads of the frame's fields while the mapper maps it.
+  function fieldReads (mapper, n2k) {
+    let reads = 0
+    const fields = n2k.fields
+    n2k.fields = new Proxy(fields, {
+      get (target, key) {
+        reads++
+        return target[key]
+      }
+    })
+    mapper.toDelta(n2k)
+    n2k.fields = fields
+    return reads
+  }
+
+  it('does not classify the frames of a device without rules', function () {
+    const otherDevice = { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 }
+    const baseline = fieldReads(claimedMapper(), engineSpeed())
+    const withRules = claimedMapper({ instancePrefixRules: [otherDevice] })
+    fieldReads(withRules, engineSpeed()).should.equal(baseline)
+    // Nor before the device is known.
+    const unclaimed = new N2kMapper({ instancePrefixRules: [mainEngine] })
+    fieldReads(unclaimed, engineSpeed()).should.equal(baseline)
+    // A device with rules, or any device given a resolver, is classified.
+    const ruled = claimedMapper({
+      instancePrefixRules: [{ ...mainEngine, instance: 1 }]
+    })
+    fieldReads(ruled, engineSpeed()).should.be.above(baseline)
+    const resolved = claimedMapper({
+      instancePrefixRules: [otherDevice],
+      instancePrefixResolver: () => undefined
+    })
+    fieldReads(resolved, engineSpeed()).should.be.above(baseline)
+  })
+
+  it('asks the resolver for a device without rules', function () {
+    const calls = []
+    const mapper = claimedMapper({
+      instancePrefixRules: [{ ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 }],
+      instancePrefixResolver: ctx => {
+        calls.push(ctx.instance)
+        return 'propulsion.center'
+      }
+    })
+    paths(mapper, engineSpeed()).should.deep.equal([
+      'propulsion.center.revolutions'
+    ])
+    calls.should.deep.equal([0])
+  })
+
   it('applies a rule with a null discriminator', function () {
     const mapper = claimedMapper({
       instancePrefixRules: [{ ...mainEngine, discriminator: null }]

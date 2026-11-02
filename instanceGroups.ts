@@ -516,8 +516,18 @@ export function classifyInstance (
 // result cached on it never outlives the frame.
 export const RESOLVER = Symbol('instancePrefixResolver')
 
+/**
+ * Key of a resolver's device scope: whether it can return a prefix for a
+ * device. A frame from a device outside it is not classified.
+ */
+export const DEVICE_SCOPE = Symbol('deviceScope')
+
+export interface ScopedResolver extends InstancePrefixResolver {
+  [DEVICE_SCOPE]?: (device: DeviceIdentity | undefined) => boolean
+}
+
 interface ResolverBinding {
-  resolver: InstancePrefixResolver
+  resolver: ScopedResolver
   /** The pgn:src keys the resolver's throws have been logged for. */
   reported: Set<string>
   resolved: boolean
@@ -604,19 +614,19 @@ function deviceOf (state: SourceState): Device | undefined {
   return device
 }
 
-function resolve (
-  resolver: InstancePrefixResolver,
-  n2k: N2kFrame,
-  state: SourceState
-) {
+function resolve (resolver: ScopedResolver, n2k: N2kFrame, state: SourceState) {
+  const device = deviceOf(state)
+  const identity = device && device.identity
+  const scope = resolver[DEVICE_SCOPE]
+  if (scope !== undefined && !scope(identity)) {
+    return undefined
+  }
   const classification = classifyInstance(n2k)
   // toDelta keys the per-source state by src, so a frame with a binding has
   // one; the check narrows ts-pgns' optional src.
   if (!classification || n2k.src === undefined) {
     return undefined
   }
-  const device = deviceOf(state)
-  const identity = device && device.identity
   return resolver({
     group: classification.group,
     discriminator: classification.discriminator,

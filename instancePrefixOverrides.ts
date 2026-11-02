@@ -7,9 +7,11 @@ import {
   InstanceGroupId,
   instanceGroups,
   isValidPrefix,
+  DEVICE_SCOPE,
   InstancePrefixContext,
   InstancePrefixResolver,
   MANUFACTURER_CODE_MASK,
+  ScopedResolver,
   UNIQUE_NUMBER_MASK,
   UNIQUE_NUMBERS
 } from './instanceGroups.js'
@@ -251,7 +253,7 @@ function rulePrefix (table: RuleTable, context: InstancePrefixContext) {
  * undefined when nothing overrides the default prefix.
  */
 export class InstancePrefixOverrides {
-  resolver: InstancePrefixResolver | undefined
+  resolver: ScopedResolver | undefined
   /**
    * The pgn:src keys the resolver function's throws and invalid prefixes have
    * been logged for, so each is logged once per mapper and afresh for a new
@@ -308,12 +310,17 @@ export class InstancePrefixOverrides {
       this.resolver = userResolver
       return
     }
+    if (userResolver === undefined) {
+      const resolver: ScopedResolver = context => rulePrefix(rules, context)
+      resolver[DEVICE_SCOPE] = device =>
+        device !== undefined &&
+        rules.has(deviceKey(device.manufacturerCode, device.uniqueNumber))
+      this.resolver = resolver
+      return
+    }
     this.resolver = context => {
       const prefix = rulePrefix(rules, context)
-      if (prefix !== undefined) {
-        return prefix
-      }
-      return userResolver !== undefined ? userResolver(context) : undefined
+      return prefix !== undefined ? prefix : userResolver(context)
     }
   }
 }
