@@ -24,5 +24,5 @@ module.exports = {
   65027: require('./quantities.js')('generators', 'phase.A'),
   65028: require('./reactivePower.js')('generators', 'total'),
   65029: require('./power.js')('generators', 'total'),
-  65030: require('./quantities.js')('generators', 'average'),
+  65030: require('./quantities.js')('generators', 'average')
 }

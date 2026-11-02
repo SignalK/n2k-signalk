@@ -1,8 +1,10 @@
+import { PGN_65359_SeatalkPilotHeading } from '@canboat/ts-pgns'
+
 // PGN 65359 Seatalk: Pilot Heading
 module.exports = [
   {
     node: 'navigation.headingTrue',
-    filter: function (n2k) {
+    filter: function (n2k: PGN_65359_SeatalkPilotHeading) {
       return (
         n2k.description === 'Seatalk: Pilot Heading' &&
         typeof n2k.fields.headingTrue !== 'undefined'
@@ -12,7 +14,7 @@ module.exports = [
   },
   {
     node: 'navigation.headingMagnetic',
-    filter: function (n2k) {
+    filter: function (n2k: PGN_65359_SeatalkPilotHeading) {
       return (
         n2k.description === 'Seatalk: Pilot Heading' &&
         typeof n2k.fields.headingMagnetic !== 'undefined'
