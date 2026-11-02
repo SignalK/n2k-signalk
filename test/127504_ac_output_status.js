@@ -42,8 +42,19 @@ describe('127504 ac output status', function () {
     ])
   })
 
+  it('writes a line with an unknown name under phase A', function () {
+    const unknown = JSON.parse(JSON.stringify(frame))
+    unknown.fields.list[0].line = 'Line 9'
+    mapper.testToDelta(unknown).updates[0].values[0].should.deep.equal({
+      path: 'electrical.inverters.2.A.voltage',
+      value: 230
+    })
+  })
+
   it('writes the lines of a frame decoded by canboatjs to phases A, B and C', function () {
-    // #367: canboatjs decodes line as 'Line 1' to 'Line 3'.
+    // #367: canboatjs decodes line as 'Line 1' to 'Line 3'. There is no
+    // capture of a multi-line frame from real equipment, so it is
+    // encoded and decoded through canboatjs.
     const decoded = new FromPgn({ useCamel: true }).parseString(
       pgnToActisenseSerialFormat({
         pgn: 127504,

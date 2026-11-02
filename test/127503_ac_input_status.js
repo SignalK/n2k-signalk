@@ -79,7 +79,9 @@ describe('127503 ac input status', function () {
   })
 
   it('writes the lines of a frame decoded by canboatjs to phases A, B and C', function () {
-    // #367: canboatjs decodes line as 'Line 1' to 'Line 3'.
+    // #367: canboatjs decodes line as 'Line 1' to 'Line 3'. There is no
+    // capture of a multi-line frame from real equipment, so it is
+    // encoded and decoded through canboatjs.
     const decoded = new FromPgn({ useCamel: true }).parseString(
       pgnToActisenseSerialFormat({
         pgn: 127503,
