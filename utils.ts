@@ -6,12 +6,6 @@
 
 type N2k = { fields: any }
 
-export function chooseField(n2k: N2k, field1: string, field2: string) {
-  return typeof n2k.fields[field1] === 'undefined'
-    ? n2k.fields[field2]
-    : n2k.fields[field1]
-}
-
 export function skEngineId(n2k: N2k): number | string {
   const id = n2k.fields.instance
   if (typeof id === 'number') {
@@ -38,17 +32,6 @@ export function skEngineTitle(n2k: N2k): number | string {
     return engine
   }
   return engine.charAt(0).toUpperCase() + engine.slice(1)
-}
-
-export function acPhase(n2k: N2k): string {
-  switch (n2k.fields.line) {
-    case 'Line 2':
-      return 'B'
-    case 'Line 3':
-      return 'C'
-    default:
-      return 'A'
-  }
 }
 
 /**
