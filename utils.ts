@@ -17,7 +17,12 @@ export function skEngineId(n2k: N2k): number | string {
   if (typeof id === 'number') {
     return id
   }
-  return id === 'Single Engine or Dual Engine Port' ? 'port' : 'starboard'
+  // canboatjs leaves out an absent instance (255); it is written as
+  // instance 0, as the temperature, humidity and pressure PGNs do.
+  if (id == null || id === 'Single Engine or Dual Engine Port') {
+    return 'port'
+  }
+  return 'starboard'
 }
 
 // J1939 PGNs carry no engine-instance field; on a J1939 bus the source

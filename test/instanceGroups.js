@@ -106,7 +106,7 @@ describe('instance groups', function () {
       ['Single Engine or Dual Engine Port', 0, 'propulsion.port'],
       ['Dual Engine Starboard', 1, 'propulsion.starboard'],
       [2, 2, 'propulsion.2'],
-      [undefined, 255, 'propulsion.starboard']
+      [undefined, 255, 'propulsion.port']
     ]
     cases.forEach(([field, code, prefix]) => {
       it(`instance ${field} is code ${code} at ${prefix}`, function () {
