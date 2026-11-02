@@ -40,3 +40,45 @@ describe('130845 Simrad Displays', function () {
     )
   })
 })
+
+describe('130845 Simrad displays, captured frames', function () {
+  const { FromPgn } = require('@canboat/canboatjs')
+  const { N2kMapper } = require('../dist/n2kMapper')
+  // Frames captured from Simrad displays, from canboat's samples/.
+  function values (line) {
+    const n2k = new FromPgn({ useCamel: true }).parseString(line)
+    return new N2kMapper().toDelta(n2k).updates[0].values
+  }
+  const brightness = value => [
+    { path: 'electrical.displays.navico.default.brightness', value }
+  ]
+
+  it('takes a labelled backlight level as its percentage', function () {
+    // ac42-commissioning.raw: 30%, 10% (Min), 100% (Max)
+    values(
+      '2026-06-08T01:54:18.370,3,130845,21,255,14,41,9f,ff,ff,01,ff,ff,12,00,01,16,ff,ff,ff'
+    ).should.deep.equal(brightness(0.3))
+    values(
+      '2026-06-08T01:54:19.614,3,130845,21,255,14,41,9f,ff,ff,01,ff,ff,12,00,01,00,ff,ff,ff'
+    ).should.deep.equal(brightness(0.1))
+    values(
+      '2026-06-08T01:54:24.746,3,130845,21,255,14,41,9f,ff,ff,01,ff,ff,12,00,01,63,ff,ff,ff'
+    ).should.deep.equal(brightness(1))
+  })
+
+  it('takes a level between the steps on a 0-99 scale', function () {
+    // navico-source-selection.raw: 64
+    values(
+      '2026-06-08T07:34:32.488,3,130845,32,255,14,41,9f,ff,ff,01,ff,ff,12,00,01,40,ff,ff,ff'
+    ).should.deep.equal(brightness(64 / 99))
+  })
+
+  it('writes day mode as nightMode.state 0', function () {
+    // ac42-commissioning.raw
+    values(
+      '2026-06-08T01:54:33.543,3,130845,21,255,14,41,9f,ff,ff,01,ff,ff,26,00,01,02,ff,ff,ff'
+    ).should.deep.equal([
+      { path: 'electrical.displays.navico.default.nightMode.state', value: 0 }
+    ])
+  })
+})
