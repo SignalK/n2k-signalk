@@ -1,7 +1,7 @@
 module.exports = {
   require: ['ts-node/register'],
-  extensions: ['ts', 'js'],
-  spec: ['test/*.ts', 'test/*.js'],
+  extensions: ['ts'],
+  spec: ['test/*.ts'],
   ignore: ['test/*.d.ts'],
   exit: true
 }

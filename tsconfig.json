@@ -3,7 +3,6 @@
   "compilerOptions": {
     "outDir": "${configDir}/dist",
     "rootDir": "${configDir}",
-    "allowJs": true,
     "typeRoots": ["./node_modules/@types"],
     "resolveJsonModule": true,
     "declaration": true,
@@ -15,7 +14,6 @@
     "files": true
   },
   "include": [
-    "*.js",
     "*.ts",
     "./pgns/**/*",
     "./actisense/**/*",
