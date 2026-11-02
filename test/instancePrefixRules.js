@@ -487,7 +487,9 @@ describe('instance prefix rules', function () {
 
   it('logs a manufacturer name missing from the table once', function () {
     const mapper = new N2kMapper()
-    const unknown = { manufacturerCode: 'Not In The Table' }
+    // Warnings are kept per process: a name no other test claims with keeps
+    // this test independent of their order.
+    const unknown = { manufacturerCode: 'Warned Once Test Manufacturer' }
     const { result, logged } = quietly(() => {
       mapper.toDelta(addressClaim(SRC, unknown))
       mapper.toDelta(addressClaim(SRC + 1, unknown))
@@ -496,7 +498,7 @@ describe('instance prefix rules', function () {
       return mapper.toDelta(engineSpeed()).updates[0].source.canName
     })
     logged.should.have.lengthOf(1)
-    logged[0].should.contain('"Not In The Table"')
+    logged[0].should.contain('"Warned Once Test Manufacturer"')
     logged[0].should.contain('2047')
     // The NAME packs a name missing from the table as manufacturer code 2047.
     deviceIdentity(result).manufacturerCode.should.equal(2047)
