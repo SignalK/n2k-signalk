@@ -1,0 +1,157 @@
+import chai from 'chai'
+chai.should()
+chai.use(require('chai-things'))
+chai.use(require('@signalk/signalk-schema').chaiModule)
+
+import { FromPgn } from '@canboat/canboatjs'
+const mapper = require('./testMapper')
+
+// A value of a delta, as the tests read it.
+interface PathValue {
+  path: string
+  value?: any
+}
+
+// Real frames, from canboat's samples/pgn129808.raw.
+const MOB_DISTRESS =
+  '2022-04-17-04:35:34.254,4,129808,3,255,83,70,70,33,14,00,5f,1e,6e,64,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,12,01,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,70,69,80,e7,77,b1,3a,68,c0,a6,c1,04,ff,ff,ff,ff,ff,7f,fd,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,64,0a,01,30,38'
+const COAST_STATION_ALL_SHIPS =
+  '2026-08-27-11:03:58.994,4,129808,4,255,62,74,6c,00,16,29,02,28,64,7e,39,30,30,30,31,36,ff,ff,ff,ff,ff,ff,02,01,ff,ff,ff,7f,ff,ff,ff,7f,ff,ff,ff,ff,ff,ff,ff,ff,ff,7f,fc,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,40,f2,b5,17,d4,34,00,00'
+const INDIVIDUAL_POSITION =
+  '2026-09-05-10:46:07.912,4,129808,4,255,62,78,6c,16,2d,27,18,00,79,7e,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,02,01,e0,1f,34,17,da,eb,e3,00,80,4e,1a,17,ff,ff,ff,ff,ff,7a,fc,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,80,4e,1a,17,dd,34,17,00'
+
+// Built, see the relay test below.
+const DISTRESS_RELAY =
+  '2026-10-03T12:00:00.000Z,4,129808,4,255,62,74,70,18,46,0c,22,32,ff,69,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,02,01,c0,92,ed,19,20,43,52,04,ff,ff,ff,ff,24,3d,5b,5b,00,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff'
+
+// The tests read and set fields of the decoded frame freely.
+function decode (line: string): any {
+  return new FromPgn({ useCamel: true }).parseString(line)
+}
+
+function valueAt (delta: any, path: string) {
+  const found = delta.updates[0].values.find(
+    (pv: PathValue) => pv.path === path
+  )
+  return found && found.value
+}
+
+function notifications (delta: any) {
+  return delta.updates[0].values.filter((pv: PathValue) =>
+    pv.path.startsWith('notifications.')
+  )
+}
+
+describe('129808 DSC Call Information', function () {
+  it('a distress alert maps position and a nature notification', function () {
+    const n2k = decode(MOB_DISTRESS)
+    // 10 digits before canboatjs#538, the 9 digit MMSI from then on.
+    n2k.fields.dscMessageAddress.should.match(/^5120009530?$/)
+    const delta = mapper.toDelta(n2k)
+
+    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:512000953')
+    const position = valueAt(delta, 'navigation.position')
+    position.latitude.should.be.closeTo(-41.10148, 0.00001)
+    position.longitude.should.be.closeTo(174.8676983, 0.00001)
+    valueAt(delta, 'notifications.mob').message.should.equal(
+      'DSC Distress Received! Nature of distress: mob'
+    )
+    delta.should.be.validSignalKDelta
+  })
+
+  it('a distress alert without a category still raises the notification', function () {
+    // canboat 9.1 knows a distress alert by its format: the alert itself has
+    // no category (ITU-R M.493), so a device may leave it not available.
+    const parts = MOB_DISTRESS.split(',')
+    parts[7] = 'ff'
+    const n2k = decode(parts.join(','))
+    n2k.id.should.equal('dscDistressCallInformation')
+    const delta = mapper.toDelta(n2k)
+
+    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:512000953')
+    valueAt(delta, 'notifications.mob').message.should.equal(
+      'DSC Distress Received! Nature of distress: mob'
+    )
+  })
+
+  it('a coast station keeps the leading zeros of its MMSI', function () {
+    const n2k = decode(COAST_STATION_ALL_SHIPS)
+    // 10 digits before canboatjs#538, the 9 digit MMSI from then on.
+    n2k.fields.dscMessageAddress.should.match(/^0022410240?$/)
+    const delta = mapper.toDelta(n2k)
+
+    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:002241024')
+    // A safety call without a position: nothing to map but the context.
+    delta.updates[0].values.should.be.empty
+  })
+
+  it('an individual call maps position without a notification', function () {
+    const n2k = decode(INDIVIDUAL_POSITION)
+    // 10 digits before canboatjs#538, the 9 digit MMSI from then on.
+    n2k.fields.dscMessageAddress.should.match(/^2245392400?$/)
+    const delta = mapper.toDelta(n2k)
+
+    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:224539240')
+    const position = valueAt(delta, 'navigation.position')
+    position.latitude.should.be.closeTo(38.9292, 0.00001)
+    position.longitude.should.be.closeTo(1.493705, 0.00001)
+    notifications(delta).should.be.empty
+    delta.should.be.validSignalKDelta
+  })
+
+  // No capture of a relay is at hand. This frame is laid out as canboat 9.1
+  // has a relay ("DSC Distress Acknowledgement or Relay": format All ships,
+  // category Distress), with the ship in distress's nature and position.
+  it('a distress relay maps to the ship in distress, not the relaying station', function () {
+    const n2k = decode(DISTRESS_RELAY)
+    n2k.id.should.equal('dscDistressAcknowledgementOrRelay')
+    const delta = mapper.toDelta(n2k)
+
+    delta.context.should.equal('vessels.urn:mrn:imo:mmsi:366191910')
+    const position = valueAt(delta, 'navigation.position')
+    position.latitude.should.be.closeTo(43.5, 0.00001)
+    position.longitude.should.be.closeTo(7.25, 0.00001)
+    valueAt(delta, 'notifications.sinking').message.should.equal(
+      'DSC Distress Received! Nature of distress: sinking'
+    )
+  })
+
+  it('a call that is not a distress call stays on its caller', function () {
+    const n2k = decode(INDIVIDUAL_POSITION)
+    n2k.fields.mmsiOfShipInDistress = '3661919100'
+    mapper
+      .toDelta(n2k)
+      .context.should.equal('vessels.urn:mrn:imo:mmsi:224539240')
+  })
+
+  // An MMSI as canboatjs gives it before and after canboatjs#538.
+  ;[
+    ['the 9 digit MMSI', '366191910'],
+    ['the 10 digits with the trailing 0', '3661919100']
+  ].forEach(function ([what, address]) {
+    it('reads an address that is ' + what, function () {
+      const n2k = decode(INDIVIDUAL_POSITION)
+      n2k.fields.dscMessageAddress = address
+      mapper
+        .toDelta(n2k)
+        .context.should.equal('vessels.urn:mrn:imo:mmsi:366191910')
+    })
+  })
+
+  // Addresses that are not an MMSI, fed to the mapper directly: canboatjs
+  // 4.0.0-beta.1 gave a (garbled) number, and ten digits that don't end in
+  // 0 are a call to a geographical area.
+  ;[
+    ['a number', 3661919231],
+    ['ten digits not ending in 0', '3661919231'],
+    ['eight digits', '36619191'],
+    ['all zeros', '0000000000'],
+    ['nine zeros', '000000000']
+  ].forEach(function ([what, address]) {
+    it('drops a call whose address is ' + what, function () {
+      const n2k = decode(INDIVIDUAL_POSITION)
+      n2k.fields.dscMessageAddress = address
+      ;(mapper.toDelta(n2k) === undefined).should.equal(true)
+    })
+  })
+})
