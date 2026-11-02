@@ -176,6 +176,14 @@ describe('validateInstancePrefixRules', function () {
     validateInstancePrefixRules([]).should.deep.equal([])
   })
 
+  it('accepts prefix segments of letters, digits, _ and -', function () {
+    validateInstancePrefixRules([
+      { ...mainEngine, prefix: 'Propulsion.main_2-B.0' },
+      { ...mainEngine, instance: 1, prefix: 'x' },
+      { ...mainEngine, instance: 2, prefix: 'propulsion.protoType' }
+    ]).should.deep.equal([])
+  })
+
   const NOT_AN_ARRAY = [
     { index: -1, message: 'instance prefix rules must be an array' }
   ]
@@ -249,6 +257,23 @@ describe('validateInstancePrefixRules', function () {
     ],
     ['a prefix that is not a string', { prefix: 1 }, 'prefix'],
     ['an empty prefix', { prefix: '' }, 'prefix'],
+    ...[
+      ['an empty segment', 'a..b'],
+      ['a trailing dot', 'trail.'],
+      ['a leading dot', '.x'],
+      ['a trailing newline', 'propulsion.main\n'],
+      ['a space', ' '],
+      ['a space in a segment', 'propulsion.main engine'],
+      ['a slash', 'propulsion/main'],
+      ['a __proto__ segment', '__proto__'],
+      ['a nested __proto__ segment', 'propulsion.__proto__.x'],
+      ['a constructor segment', 'propulsion.constructor'],
+      ['a prototype segment', 'prototype.main']
+    ].map(([what, prefix]) => [
+      `a prefix with ${what}`,
+      { prefix },
+      'prefix must be dot-separated segments of A-Z, a-z, 0-9, _ and -'
+    ]),
     [
       'a discriminator on a group without one',
       { discriminator: 0 },

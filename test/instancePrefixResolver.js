@@ -333,8 +333,11 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({ instancePrefixResolver: () => undefined })
     const nullMapper = new N2kMapper({ instancePrefixResolver: () => null })
     const expected = values(new N2kMapper(), engineAlarm)
-    values(mapper, engineAlarm).should.deep.equal(expected)
-    values(nullMapper, engineAlarm).should.deep.equal(expected)
+    const { logged } = quietly(() => {
+      values(mapper, engineAlarm).should.deep.equal(expected)
+      values(nullMapper, engineAlarm).should.deep.equal(expected)
+    })
+    logged.should.deep.equal([])
   })
 
   it('does not apply a battery 1 rule to battery 10', function () {
@@ -524,13 +527,41 @@ describe('instancePrefixResolver', function () {
       { path: 'electrical.ac.shore.phase.B.current', value: 11 }
     ])
   })
+  ;[
+    ['an empty string', ''],
+    ['an empty segment', 'electrical..ac'],
+    ['a trailing dot', 'electrical.ac.'],
+    ['a trailing newline', 'electrical.ac.shore\n'],
+    ['a __proto__ segment', '__proto__'],
+    ['a number', 1]
+  ].forEach(([what, prefix]) => {
+    it(`writes the default path when the resolver returns ${what}`, function () {
+      const mapper = new N2kMapper({ instancePrefixResolver: () => prefix })
+      const { logged } = quietly(() => {
+        paths(mapper, acPhaseB(1)).should.have.members([
+          'electrical.ac.33.1.phase.B.power',
+          'electrical.ac.33.1.phase.B.current'
+        ])
+      })
+      logged.should.have.lengthOf(1)
+      logged[0].should.contain('pgn 127745')
+      logged[0].should.contain('src 33')
+      logged[0].should.contain(JSON.stringify(prefix))
+    })
+  })
 
-  it('writes the default path when the resolver returns an empty string', function () {
-    const mapper = new N2kMapper({ instancePrefixResolver: () => '' })
-    paths(mapper, acPhaseB(1)).should.have.members([
-      'electrical.ac.33.1.phase.B.power',
-      'electrical.ac.33.1.phase.B.current'
-    ])
+  it('logs an invalid prefix once per PGN and source', function () {
+    const mapper = new N2kMapper({ instancePrefixResolver: () => 'a..b' })
+    const { logged } = quietly(() => {
+      values(mapper, engineAlarm)
+      values(mapper, engineAlarm)
+      values(mapper, engineAlarmFrom(18))
+      values(mapper, engineSpeed(PORT_ENGINE))
+    })
+    logged.should.have.lengthOf(3)
+    logged[0].should.contain('pgn 127489 from src 17')
+    logged[1].should.contain('pgn 127489 from src 18')
+    logged[2].should.contain('pgn 127488 from src 17')
   })
 
   it('keeps the stateless toDelta export working', function () {

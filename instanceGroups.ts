@@ -104,14 +104,31 @@ export interface InstancePrefixContext {
 }
 
 /**
- * Replaces the prefix a frame's instance is written under. A non-empty string
- * replaces it; anything else keeps the default.
+ * Replaces the prefix a frame's instance is written under. A valid prefix
+ * (see isValidPrefix) replaces it; undefined or null keeps the default, and
+ * so does anything else, which is logged.
  */
 export type InstancePrefixResolver = (
   context: InstancePrefixContext
 ) => string | null | undefined | void
 
 type Fields = Record<string, unknown>
+
+const PREFIX = /^[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_-]+)*$/
+// Segments that would reach Object.prototype in a full tree built from paths.
+const RESERVED_SEGMENTS = new Set(['__proto__', 'constructor', 'prototype'])
+
+/**
+ * True for a prefix the mapper writes paths under: dot-separated segments of
+ * A-Z, a-z, 0-9, _ and -, none of them __proto__, constructor or prototype.
+ */
+export function isValidPrefix (value: unknown): value is string {
+  return (
+    typeof value === 'string' &&
+    PREFIX.test(value) &&
+    !value.split('.').some(segment => RESERVED_SEGMENTS.has(segment))
+  )
+}
 
 // What a prefix reads of a frame.
 interface PrefixFrame {
@@ -584,7 +601,7 @@ function resolve (
   }
   const device = deviceOf(state)
   const identity = device && device.identity
-  const prefix = resolver({
+  return resolver({
     group: classification.group,
     discriminator: classification.discriminator,
     instance: classification.instance,
@@ -593,27 +610,34 @@ function resolve (
     manufacturerCode: identity && identity.manufacturerCode,
     uniqueNumber: identity && identity.uniqueNumber
   })
-  return typeof prefix === 'string' && prefix !== '' ? prefix : undefined
 }
 
-function reportThrow (reported: Set<string>, n2k: N2kFrame, ex: unknown) {
+// Logs the first failure of the resolver for the frame's PGN and source.
+function reportOnce (
+  reported: Set<string>,
+  n2k: N2kFrame,
+  what: string,
+  ...detail: unknown[]
+) {
   const key = `${n2k.pgn}:${n2k.src}`
   if (reported.has(key)) {
     return
   }
   reported.add(key)
   console.error(
-    `n2k-signalk: instancePrefixResolver threw for pgn ${n2k.pgn} from src ${n2k.src}, writing default paths:`,
-    ex
+    `n2k-signalk: instancePrefixResolver ${what} for pgn ${n2k.pgn} from src ${
+      n2k.src
+    }, writing default paths${detail.length > 0 ? ':' : ''}`,
+    ...detail
   )
 }
 
 /**
  * The prefix the source state's resolver returns for this frame, or undefined
  * when there is no resolver, the frame has no instance or the resolver
- * returns nothing or throws. Every mapping of a frame asks; the resolver runs
- * once. A throw is logged the first time it happens for the binding's
- * reported set, PGN and source.
+ * returns nothing, an invalid prefix or throws. Every mapping of a frame asks;
+ * the resolver runs once. A throw or an invalid prefix is logged the first
+ * time one happens for the binding's reported set, PGN and source.
  */
 function resolvedPrefix (n2k: N2kFrame, state: SourceState | undefined) {
   const binding = state && state[RESOLVER]
@@ -623,9 +647,18 @@ function resolvedPrefix (n2k: N2kFrame, state: SourceState | undefined) {
   if (!binding.resolved) {
     let prefix
     try {
-      prefix = resolve(binding.resolver, n2k, state)
+      const result = resolve(binding.resolver, n2k, state)
+      if (isValidPrefix(result)) {
+        prefix = result
+      } else if (result != null) {
+        reportOnce(
+          binding.reported,
+          n2k,
+          `returned the invalid prefix ${JSON.stringify(result)}`
+        )
+      }
     } catch (ex) {
-      reportThrow(binding.reported, n2k, ex)
+      reportOnce(binding.reported, n2k, 'threw', ex)
     }
     binding.resolved = true
     binding.prefix = prefix

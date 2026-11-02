@@ -6,6 +6,7 @@ import {
   InstanceGroup,
   InstanceGroupId,
   instanceGroups,
+  isValidPrefix,
   InstancePrefixContext,
   InstancePrefixResolver,
   MANUFACTURER_CODE_MASK,
@@ -30,6 +31,7 @@ export interface InstancePrefixRule {
    */
   discriminator?: number
   instance: number
+  /** Dot-separated segments of A-Z, a-z, 0-9, _ and -. */
   prefix: string
 }
 
@@ -90,9 +92,6 @@ type RuleTable = Map<number, Map<number, { index: number; prefix: string }>>
 const isInteger = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value)
 
-const isNonEmptyString = (value: unknown): value is string =>
-  typeof value === 'string' && value !== ''
-
 const isIntegerIn = (value: unknown, max: number): value is number =>
   isInteger(value) && value >= 0 && value <= max
 
@@ -118,8 +117,10 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
   if (!isIntegerIn(uniqueNumber, UNIQUE_NUMBER_MASK)) {
     problems.push(`uniqueNumber must be an integer in 0..${UNIQUE_NUMBER_MASK}`)
   }
-  if (!isNonEmptyString(prefix)) {
-    problems.push('prefix must be a non-empty string')
+  if (!isValidPrefix(prefix)) {
+    problems.push(
+      'prefix must be dot-separated segments of A-Z, a-z, 0-9, _ and -, none of them __proto__, constructor or prototype'
+    )
   }
   if (discriminator !== undefined && !isInteger(discriminator)) {
     problems.push('discriminator must be an integer')
@@ -156,7 +157,7 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
     problems.length > 0 ||
     !isIntegerIn(manufacturerCode, MANUFACTURER_CODE_MASK) ||
     !isIntegerIn(uniqueNumber, UNIQUE_NUMBER_MASK) ||
-    !isNonEmptyString(prefix) ||
+    !isValidPrefix(prefix) ||
     !isInteger(instance) ||
     !(discriminator === undefined || isInteger(discriminator))
   ) {
@@ -208,7 +209,7 @@ function compileRules (rules: unknown) {
  * The problems that keep rules from applying, each naming its rule's index:
  * a malformed rule, a manufacturerCode outside 0..2047 or a uniqueNumber
  * outside 0..2^21 - 1, an unknown group, a discriminator the group does not
- * take or write, an instance out of range, an empty prefix, a key an
+ * take or write, an instance out of range, a prefix that is not a valid path, a key an
  * earlier rule already holds. A list that is not an array is one problem, at
  * index -1, and no rule is checked.
  */
@@ -242,8 +243,9 @@ function rulePrefix (table: RuleTable, context: InstancePrefixContext) {
 export class InstancePrefixOverrides {
   resolver: InstancePrefixResolver | undefined
   /**
-   * The pgn:src keys the resolver function's throws have been logged for, so
-   * each is logged once per mapper and afresh for a new resolver function.
+   * The pgn:src keys the resolver function's throws and invalid prefixes have
+   * been logged for, so each is logged once per mapper and afresh for a new
+   * resolver function.
    */
   readonly reportedThrows = new Set<string>()
   private rules: RuleTable | undefined
