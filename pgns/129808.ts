@@ -13,7 +13,22 @@
  * acknowledgement, the calling station otherwise.
  */
 
-const NATURES = {
+import {
+  PGN_129808,
+  PGN_129808_DscDistressAcknowledgementOrRelay,
+  PGN_129808_DscDistressCallInformation
+} from '@canboat/ts-pgns'
+
+// The fields of all three variants: a mapping here reads both names.
+type Dsc = {
+  fields: Partial<
+    PGN_129808['fields'] &
+      PGN_129808_DscDistressCallInformation['fields'] &
+      PGN_129808_DscDistressAcknowledgementOrRelay['fields']
+  >
+}
+
+const NATURES: Record<string, string> = {
   Fire: 'fire',
   Flooding: 'flooding',
   Collision: 'collision',
@@ -35,7 +50,7 @@ const NATURES = {
 // that 0 and gives the 9 digit MMSI; older versions give all 10 digits, so
 // the MMSI is then the first 9. Ten digits that don't end in 0 are not an
 // MMSI: the newer decoder gives those for a call to a geographical area.
-function addressMmsi (address) {
+function addressMmsi (address: unknown) {
   if (typeof address !== 'string') {
     return undefined
   }
@@ -52,11 +67,11 @@ function addressMmsi (address) {
 
 // A distress alert has format Distress, and no category of its own; a relay
 // or acknowledgement has category Distress.
-function isDistress (n2k) {
+function isDistress (n2k: Dsc) {
   return (
-    n2k.fields.dscFormat === 'Distress' ||
-    n2k.fields.dscCategory === 'Distress' ||
-    n2k.fields.dscCategorySymbol === 'Distress'
+    (n2k.fields.dscFormat as unknown) === 'Distress' ||
+    (n2k.fields.dscCategory as unknown) === 'Distress' ||
+    (n2k.fields.dscCategorySymbol as unknown) === 'Distress'
   )
 }
 
@@ -64,32 +79,35 @@ function isDistress (n2k) {
 // of category Distress, from a station passing it on) carries the ship in
 // distress's position and nature, and names that ship in its own field. Any
 // other call is about its caller.
-function vesselMmsi (n2k) {
+function vesselMmsi (n2k: Dsc) {
   return (
     (isDistress(n2k) && addressMmsi(n2k.fields.mmsiOfShipInDistress)) ||
     addressMmsi(n2k.fields.dscMessageAddress)
   )
 }
 
-function distressNature (n2k) {
-  return NATURES[n2k.fields.natureOfDistress] || 'undesignated'
+function distressNature (n2k: Dsc) {
+  return (
+    NATURES[(n2k.fields.natureOfDistress as unknown) as string] ||
+    'undesignated'
+  )
 }
 
 module.exports = [
   {
     node: 'navigation.position',
-    filter: n2k =>
+    filter: (n2k: Dsc) =>
       typeof n2k.fields.latitudeOfVesselReported === 'number' &&
       typeof n2k.fields.longitudeOfVesselReported === 'number',
-    value: n2k => ({
+    value: (n2k: Dsc) => ({
       latitude: n2k.fields.latitudeOfVesselReported,
       longitude: n2k.fields.longitudeOfVesselReported
     })
   },
   {
-    node: n2k => 'notifications.' + distressNature(n2k),
+    node: (n2k: Dsc) => 'notifications.' + distressNature(n2k),
     filter: isDistress,
-    value: n2k => ({
+    value: (n2k: Dsc) => ({
       message:
         'DSC Distress Received! Nature of distress: ' + distressNature(n2k)
     })
@@ -97,7 +115,7 @@ module.exports = [
   // No filter: a call without a valid address gives no context, so the mapper
   // drops it instead of reporting another station's position as our own.
   {
-    context: n2k => {
+    context: (n2k: Dsc) => {
       const mmsi = vesselMmsi(n2k)
       return mmsi === undefined ? undefined : 'vessels.urn:mrn:imo:mmsi:' + mmsi
     }

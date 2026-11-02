@@ -1,3 +1,5 @@
+import { PGN_129039 } from '@canboat/ts-pgns'
+
 const getMmsiContext = require('../mmsi-context').getMmsiContext
 
 module.exports = [
@@ -10,8 +12,8 @@ module.exports = [
     node: 'navigation.courseOverGroundTrue'
   },
   {
-    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
-    value: function (n2k) {
+    filter: (n2k: PGN_129039) => n2k.fields.longitude && n2k.fields.latitude,
+    value: function (n2k: PGN_129039) {
       return {
         longitude: Number(n2k.fields.longitude),
         latitude: Number(n2k.fields.latitude)
@@ -25,10 +27,10 @@ module.exports = [
   },
   {
     node: '',
-    filter: n2k => n2k.fields.userId,
-    value: function (n2k) {
+    filter: (n2k: PGN_129039) => n2k.fields.userId,
+    value: function (n2k: PGN_129039) {
       return {
-        mmsi: n2k.fields.userId.toString()
+        mmsi: n2k.fields.userId!.toString()
       }
     }
   },
@@ -37,7 +39,7 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k) {
+    value: function (n2k: PGN_129039) {
       return 'B'
     }
   }

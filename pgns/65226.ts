@@ -1,4 +1,13 @@
-const { skJ1939EngineId } = require('../utils.js')
+import { skJ1939EngineId } from '../utils.js'
+
+// ts-pgns has no J1939 PGNs; the fields this mapping reads. The lamps are
+// read by name, so fields is indexable.
+type Dtc = { spn?: number | string; fmi?: number; cm?: number }
+type J1939DM1 = {
+  src: number
+  fields: Record<string, unknown> & { list?: unknown }
+}
+type Lamp = { field: string; label: string; state: string }
 
 // J1939 Active Trouble Codes (DM1) — the four fault lamps plus the
 // repeating DTC list. Mapped to a notification per engine: the lamps
@@ -10,7 +19,7 @@ const { skJ1939EngineId } = require('../utils.js')
 // when canboat knows it. Lamps in any other shape can't be trusted for a
 // severity, so they produce no notification.
 
-const LAMPS = [
+const LAMPS: Lamp[] = [
   { field: 'redStopLampStatus', label: 'red stop lamp', state: 'alarm' },
   {
     field: 'malfunctionIndicatorLampStatus',
@@ -28,12 +37,12 @@ const LAMPS = [
 const LAMP_STATUSES = ['Off', 'On', 'Error']
 
 // Only an explicit On lights a lamp; Error is a lamp fault, not a fault.
-const lampOn = (n2k, field) => n2k.fields[field] === 'On'
+const lampOn = (n2k: J1939DM1, field: string) => n2k.fields[field] === 'On'
 
 // A no-fault DM1 carries one all-zero DTC, and a short frame's padding
 // decodes without an FMI — neither is a real trouble code.
-const activeDtcs = n2k =>
-  (Array.isArray(n2k.fields.list) ? n2k.fields.list : []).filter(
+const activeDtcs = (n2k: J1939DM1): Dtc[] =>
+  (Array.isArray(n2k.fields.list) ? (n2k.fields.list as Dtc[]) : []).filter(
     d =>
       d &&
       Number.isFinite(d.fmi) &&
@@ -44,19 +53,19 @@ const activeDtcs = n2k =>
 
 // CM 1 marks an SPN in an older J1939-73 layout, which canboat decodes as
 // the current one, so its SPN is wrong; the fault itself still stands.
-const dtcText = d =>
+const dtcText = (d: Dtc) =>
   d.cm === 1
     ? 'FMI ' + d.fmi + ' (SPN in an older layout)'
     : (typeof d.spn === 'number' ? 'SPN ' + d.spn : d.spn) + ' FMI ' + d.fmi
 
 module.exports = [
   {
-    node: function (n2k) {
+    node: function (n2k: J1939DM1) {
       return (
         'notifications.propulsion.' + skJ1939EngineId(n2k) + '.troubleCodes'
       )
     },
-    value: function (n2k) {
+    value: function (n2k: J1939DM1) {
       const active = LAMPS.filter(l => lampOn(n2k, l.field))
       const dtcs = activeDtcs(n2k)
       // Most severe active lamp wins; LAMPS is ordered by severity. A DTC
@@ -87,10 +96,11 @@ module.exports = [
         message
       }
     },
-    filter: function (n2k) {
+    filter: function (n2k: J1939DM1) {
       return (
-        LAMPS.some(l => LAMP_STATUSES.includes(n2k.fields[l.field])) ||
-        activeDtcs(n2k).length > 0
+        LAMPS.some(l =>
+          LAMP_STATUSES.includes(n2k.fields[l.field] as string)
+        ) || activeDtcs(n2k).length > 0
       )
     }
   }

@@ -1,3 +1,5 @@
+import { PGN_129038 } from '@canboat/ts-pgns'
+
 const getMmsiContext = require('../mmsi-context').getMmsiContext
 
 module.exports = [
@@ -10,8 +12,8 @@ module.exports = [
     node: 'navigation.courseOverGroundTrue'
   },
   {
-    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
-    value: function (n2k) {
+    filter: (n2k: PGN_129038) => n2k.fields.longitude && n2k.fields.latitude,
+    value: function (n2k: PGN_129038) {
       return {
         longitude: Number(n2k.fields.longitude),
         latitude: Number(n2k.fields.latitude)
@@ -29,28 +31,30 @@ module.exports = [
   },
   {
     node: 'navigation.state',
-    value: function (n2k) {
-      return stateMapping[n2k.fields.navStatus]
+    value: function (n2k: PGN_129038) {
+      return stateMapping[(n2k.fields.navStatus as unknown) as string]
     },
-    filter: function (n2k) {
+    filter: function (n2k: PGN_129038) {
       return n2k.fields.navStatus
     }
   },
   {
     node: 'navigation.specialManeuver',
-    value: function (n2k) {
-      return specialManeuverMapping[n2k.fields.specialManeuverIndicator]
+    value: function (n2k: PGN_129038) {
+      return specialManeuverMapping[
+        (n2k.fields.specialManeuverIndicator as unknown) as string
+      ]
     },
-    filter: function (n2k) {
+    filter: function (n2k: PGN_129038) {
       return n2k.fields.specialManeuverIndicator
     }
   },
   {
     node: '',
-    filter: n2k => n2k.fields.userId,
-    value: function (n2k) {
+    filter: (n2k: PGN_129038) => n2k.fields.userId,
+    value: function (n2k: PGN_129038) {
       return {
-        mmsi: n2k.fields.userId.toString()
+        mmsi: n2k.fields.userId!.toString()
       }
     }
   },
@@ -59,13 +63,13 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k) {
+    value: function (n2k: PGN_129038) {
       return 'A'
     }
   }
 ]
 
-const stateMapping = {
+const stateMapping: Record<string, string> = {
   'Under way using engine': 'motoring',
   'At anchor': 'anchored',
   'Not under command': 'not under command',
@@ -80,7 +84,7 @@ const stateMapping = {
   'AIS-SART': 'ais-sart'
 }
 
-const specialManeuverMapping = {
+const specialManeuverMapping: Record<string, string> = {
   'Not available': 'not available',
   'Not engaged in special maneuver': 'not engaged',
   'Engaged in special maneuver': 'engaged',

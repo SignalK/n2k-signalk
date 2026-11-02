@@ -1,3 +1,5 @@
+import { PGN_129040 } from '@canboat/ts-pgns'
+
 const getMmsiContext = require('../mmsi-context').getMmsiContext
 const getFromStarboard = require('../aisFromStarboard')
 const getShipType = require('../aisShipTypeMapping')
@@ -5,8 +7,8 @@ const getShipType = require('../aisShipTypeMapping')
 module.exports = [
   {
     node: '',
-    filter: n2k => n2k.fields.name,
-    value: function (n2k) {
+    filter: (n2k: PGN_129040) => n2k.fields.name,
+    value: function (n2k: PGN_129040) {
       return {
         name: n2k.fields.name
       }
@@ -17,8 +19,8 @@ module.exports = [
     node: 'navigation.destination.commonName'
   },
   {
-    filter: n2k => n2k.fields.longitude && n2k.fields.latitude,
-    value: function (n2k) {
+    filter: (n2k: PGN_129040) => n2k.fields.longitude && n2k.fields.latitude,
+    value: function (n2k: PGN_129040) {
       return {
         longitude: Number(n2k.fields.longitude),
         latitude: Number(n2k.fields.latitude)
@@ -40,19 +42,19 @@ module.exports = [
   },
   {
     node: 'design.length',
-    value: function (n2k) {
+    value: function (n2k: PGN_129040) {
       return { overall: Number(n2k.fields.length) }
     },
-    filter: function (n2k) {
+    filter: function (n2k: PGN_129040) {
       return n2k.fields.length
     }
   },
   {
     node: 'design.aisShipType',
-    value: function (n2k) {
+    value: function (n2k: PGN_129040) {
       return getShipType(n2k.fields.typeOfShip)
     },
-    filter: function (n2k) {
+    filter: function (n2k: PGN_129040) {
       return n2k.fields.typeOfShip
     }
   },
@@ -67,16 +69,16 @@ module.exports = [
   {
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
-    filter: function (n2k) {
+    filter: function (n2k: PGN_129040) {
       return n2k.fields.positionReferenceFromStarboard && n2k.fields.beam
     }
   },
   {
     node: '',
-    filter: n2k => n2k.fields.userId,
-    value: function (n2k) {
+    filter: (n2k: PGN_129040) => n2k.fields.userId,
+    value: function (n2k: PGN_129040) {
       return {
-        mmsi: n2k.fields.userId.toString()
+        mmsi: n2k.fields.userId!.toString()
       }
     }
   },
@@ -85,7 +87,7 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k) {
+    value: function (n2k: PGN_129040) {
       return 'B'
     }
   }

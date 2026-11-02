@@ -9,7 +9,9 @@
  * the canonical location.
  */
 
-function senderMmsi (n2k) {
+import { PGN_129802 } from '@canboat/ts-pgns'
+
+function senderMmsi (n2k: PGN_129802) {
   const id = n2k.fields.sourceId
   if (id === undefined || id === null || Number(id) === 0) {
     return undefined
@@ -20,7 +22,7 @@ function senderMmsi (n2k) {
   return id.toString().padStart(9, '0')
 }
 
-function safetyText (n2k) {
+function safetyText (n2k: PGN_129802) {
   const text = n2k.fields.safetyRelatedText
   return typeof text === 'string' && text.trim().length > 0
     ? text.trim()
@@ -30,11 +32,11 @@ function safetyText (n2k) {
 module.exports = [
   {
     node: 'communication.ais.safetyRelatedBroadcast',
-    filter: n2k => typeof safetyText(n2k) !== 'undefined',
-    value: n2k => safetyText(n2k)
+    filter: (n2k: PGN_129802) => typeof safetyText(n2k) !== 'undefined',
+    value: (n2k: PGN_129802) => safetyText(n2k)
   },
   {
-    context: n2k => 'vessels.urn:mrn:imo:mmsi:' + senderMmsi(n2k),
-    filter: n2k => typeof senderMmsi(n2k) !== 'undefined'
+    context: (n2k: PGN_129802) => 'vessels.urn:mrn:imo:mmsi:' + senderMmsi(n2k),
+    filter: (n2k: PGN_129802) => typeof senderMmsi(n2k) !== 'undefined'
   }
 ]
