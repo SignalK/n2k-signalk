@@ -117,7 +117,11 @@ describe('instance groups', function () {
           instance: code
         })
         defaultPrefix('engine', undefined, code, 1).should.equal(prefix)
-        mappedPaths(n2k).should.deep.equal([prefix + '.revolutions'])
+        new N2kMapper()
+          .toDelta(n2k)
+          .updates[0].values.should.deep.equal([
+            { path: prefix + '.revolutions', value: 10 }
+          ])
       })
     })
 

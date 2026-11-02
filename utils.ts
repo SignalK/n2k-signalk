@@ -17,8 +17,9 @@ export function skEngineId(n2k: N2k): number | string {
   if (typeof id === 'number') {
     return id
   }
-  // canboatjs leaves out an absent instance (255); it is written as
-  // instance 0, as the temperature, humidity and pressure PGNs do.
+  // canboatjs leaves out an absent instance (255). Like the temperature,
+  // humidity and pressure PGNs, which write it as instance 0, the engine
+  // gets instance 0's path: port.
   if (id == null || id === 'Single Engine or Dual Engine Port') {
     return 'port'
   }
