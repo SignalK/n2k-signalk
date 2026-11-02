@@ -51,7 +51,7 @@ const addressClaim = src => ({
   description: 'ISO Address Claim'
 })
 
-const engineSpeed = instance => decode(127488, 17, { instance, speed: 3000 })
+const engineSpeed = instance => decode(127488, 17, { instance, speed: 50 })
 
 const engineAlarmFrom = src =>
   decode(127489, src, {
@@ -222,7 +222,7 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('tank', 1, 'tanks.freshWater.aft', 0)
     })
-    const frame = decode(127505, 17, { instance: 1, type: 'Fuel', level: 50 })
+    const frame = decode(127505, 17, { instance: 1, type: 'Fuel', level: 0.5 })
     const tree = expectMoved(
       mapper,
       frame,
@@ -283,7 +283,7 @@ describe('instancePrefixResolver', function () {
         calls.push(ctx)
       }
     })
-    const frame = decode(127488, 12, { instance: PORT_ENGINE, speed: 3000 })
+    const frame = decode(127488, 12, { instance: PORT_ENGINE, speed: 50 })
     mapper.toDelta(frame)
     const beforeClaim = calls.length
     mapper.toDelta(addressClaim(12))

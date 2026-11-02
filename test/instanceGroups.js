@@ -57,7 +57,7 @@ describe('instance groups', function () {
     ]
     cases.forEach(([field, code, prefix]) => {
       it(`instance ${field} is code ${code} at ${prefix}`, function () {
-        const n2k = decode(127488, 1, { instance: field, speed: 600 })
+        const n2k = decode(127488, 1, { instance: field, speed: 10 })
         classifyInstance(n2k).should.deep.equal({
           group: 'engine',
           discriminator: undefined,
@@ -96,7 +96,7 @@ describe('instance groups', function () {
   })
 
   it('tank type is a discriminator code', function () {
-    const n2k = decode(127505, 1, { instance: 1, type: 'Water', level: 10 })
+    const n2k = decode(127505, 1, { instance: 1, type: 'Water', level: 0.1 })
     classifyInstance(n2k).should.deep.equal({
       group: 'tank',
       discriminator: 1,
@@ -109,7 +109,7 @@ describe('instance groups', function () {
     const tank = instanceGroups.find(g => g.id === 'tank')
     tank.discriminatorCodes.should.deep.equal([0, 1, 2, 3, 4, 5])
     for (let code = 0; code <= tank.maxInstance; code++) {
-      const n2k = decode(127505, 1, { instance: 1, type: code, level: 10 })
+      const n2k = decode(127505, 1, { instance: 1, type: code, level: 0.1 })
       const written = mappedPaths(n2k).length > 0
       written.should.equal(
         tank.discriminatorCodes.includes(code),

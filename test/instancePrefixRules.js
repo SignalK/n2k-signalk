@@ -62,7 +62,7 @@ const addressClaim = (src, fields) => ({
 })
 
 const engineSpeed = () =>
-  decode(127488, SRC, { instance: PORT_ENGINE, speed: 3000 })
+  decode(127488, SRC, { instance: PORT_ENGINE, speed: 50 })
 
 const engineAlarm = () =>
   decode(127489, SRC, {
@@ -80,7 +80,7 @@ const engineRoom = instance =>
   })
 
 const fuelTank = instance =>
-  decode(127505, SRC, { instance, type: 'Fuel', level: 50 })
+  decode(127505, SRC, { instance, type: 'Fuel', level: 0.5 })
 
 const mainEngine = {
   ...DEVICE,
@@ -396,8 +396,7 @@ describe('instance prefix rules', function () {
     claim.fields.manufacturerCode.should.equal('Fusion Electronics')
     mapper.toDelta(claim)
     const delta = mapper.toDelta(engineSpeed())
-    // canboatjs decodes the reserved bit as 1: another NAME, the same device.
-    delta.updates[0].source.canName.should.not.equal(CAN_NAME)
+    delta.updates[0].source.canName.should.equal(CAN_NAME)
     delta.updates[0].values
       .map(v => v.path)
       .should.deep.equal(['propulsion.main.revolutions'])
@@ -542,7 +541,7 @@ describe('instance prefix rules', function () {
     calls.should.deep.equal([])
     paths(
       mapper,
-      decode(127488, SRC, { instance: 'Dual Engine Starboard', speed: 3000 })
+      decode(127488, SRC, { instance: 'Dual Engine Starboard', speed: 50 })
     ).should.deep.equal(['propulsion.center.revolutions'])
     calls.should.deep.equal([1])
   })

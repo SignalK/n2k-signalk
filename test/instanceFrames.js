@@ -41,9 +41,9 @@ const FRAMES = [
     127488,
     {
       instance: 'Single Engine or Dual Engine Port',
-      speed: 3000,
+      speed: 50,
       boostPressure: 100000,
-      tiltTrim: 10
+      tiltTrim: 0.1
     }
   ],
   [
@@ -66,15 +66,15 @@ const FRAMES = [
       discreteStatus1: ['Over Temperature']
     }
   ],
-  [127497, { tripFuelUsed: 100, fuelRateAverage: 5 }],
+  [127497, { tripFuelUsed: 0.1, fuelRateAverage: 0.000001 }],
   [127503, { instance: 1, numberOfLines: 1, list: [acLine] }],
   [127504, { instance: 2, numberOfLines: 1, list: [acLine] }],
-  [127505, { instance: 1, type: 'Fuel', level: 50, capacity: 200 }],
-  [127506, { instance: 3, stateOfCharge: 80, stateOfHealth: 90 }],
+  [127505, { instance: 1, type: 'Fuel', level: 0.5, capacity: 0.2 }],
+  [127506, { instance: 3, stateOfCharge: 0.8, stateOfHealth: 0.9 }],
   [127507, { instance: 0, batteryInstance: 0, operatingState: 'Bulk' }],
   [127508, { instance: 3, voltage: 12.5, current: 1.5, temperature: 300 }],
   [127509, { instance: 0, acInstance: 0, dcInstance: 0, inverterEnable: 'On' }],
-  [127510, { instance: 1, batteryInstance: 0, chargeCurrentLimit: 20 }],
+  [127510, { instance: 1, batteryInstance: 0, chargeCurrentLimit: 0.2 }],
   [127511, { instance: 0, batteryInstance: 0, inverterEnableDisable: 'On' }],
   [127513, { instance: 3, capacity: 100, peukertExponent: 1.2 }],
   [127744, { connectionNumber: 0, acRmsCurrent: 3, power: 100 }],
@@ -91,8 +91,8 @@ const FRAMES = [
     { instance: 4, source: 'Shaft Seal Temperature', actualTemperature: 330 }
   ],
   [130312, { instance: 2, source: 'Inside Temperature', actualTemperature: 1 }],
-  [130313, { instance: 1, source: 'Inside', actualHumidity: 40 }],
-  [130313, { instance: 0, source: 'Outside', actualHumidity: 60 }],
+  [130313, { instance: 1, source: 'Inside', actualHumidity: 0.4 }],
+  [130313, { instance: 0, source: 'Outside', actualHumidity: 0.6 }],
   [130314, { instance: 0, source: 'Oil', pressure: 300000 }],
   [130314, { instance: 0, source: 'Atmospheric', pressure: 101300 }],
   [
