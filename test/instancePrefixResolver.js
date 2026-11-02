@@ -455,10 +455,40 @@ describe('instancePrefixResolver', function () {
       logged.should.have.lengthOf(2)
     })
 
-    it('rejects a resolver that is not a function', function () {
-      expect(() =>
-        new N2kMapper().setInstancePrefixResolver('propulsion.main')
-      ).to.throw(TypeError)
+    it('logs a resolver that is not a function and clears the resolver', function () {
+      const mapper = new N2kMapper({
+        instancePrefixResolver: rule('engine', 0, 'propulsion.main')
+      })
+      const { logged } = quietly(() =>
+        mapper.setInstancePrefixResolver('propulsion.center')
+      )
+      logged.should.have.lengthOf(1)
+      logged[0].should.contain('instancePrefixResolver must be a function')
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.port.revolutions'
+      ])
+    })
+
+    it('constructs a mapper given a resolver option that is not a function', function () {
+      const { result: mapper, logged } = quietly(
+        () => new N2kMapper({ instancePrefixResolver: { prefix: 'x' } })
+      )
+      logged.should.have.lengthOf(1)
+      logged[0].should.contain('instancePrefixResolver must be a function')
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.port.revolutions'
+      ])
+    })
+
+    it('clears the resolver given null without logging', function () {
+      const mapper = new N2kMapper({
+        instancePrefixResolver: rule('engine', 0, 'propulsion.main')
+      })
+      const { logged } = quietly(() => mapper.setInstancePrefixResolver(null))
+      logged.should.be.empty
+      paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
+        'propulsion.port.revolutions'
+      ])
     })
   })
 

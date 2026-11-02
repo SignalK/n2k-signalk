@@ -272,11 +272,19 @@ export class InstancePrefixOverrides {
     return problems
   }
 
+  /**
+   * Replaces the resolver function; undefined or null removes it, as does
+   * anything else that is not a function, which is logged. Like the rules, it
+   * never throws, so a bad option does not stop the mapper from being
+   * constructed.
+   */
   setResolver (resolver: InstancePrefixResolver | null | undefined) {
     if (resolver != null && typeof resolver !== 'function') {
-      throw new TypeError('instancePrefixResolver must be a function')
+      console.error(
+        'n2k-signalk: instancePrefixResolver must be a function, ignoring it'
+      )
     }
-    const next = resolver != null ? resolver : undefined
+    const next = typeof resolver === 'function' ? resolver : undefined
     if (next !== this.userResolver) {
       this.reportedThrows.clear()
     }

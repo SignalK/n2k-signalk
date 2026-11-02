@@ -308,7 +308,8 @@ export class N2kMapper extends EventEmitter {
 
   /**
    * Replaces the function consulted for an instance's path prefix when no rule
-   * matches; undefined removes it.
+   * matches; undefined removes it, and anything else that is not a function
+   * is logged and removes it too.
    */
   setInstancePrefixResolver (resolver: InstancePrefixResolver | undefined) {
     this.instancePrefixOverrides.setResolver(resolver)
