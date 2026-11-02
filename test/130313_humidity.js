@@ -22,4 +22,18 @@ describe('130313 humidity', function () {
         { path: 'environment.userDefined5.2.relativeHumidity', value: 0.452 }
       ])
   })
+
+  it('writes nothing for a frame without a source', function () {
+    mapper
+      .testToDelta(frame(0, undefined, 0.452))
+      .updates[0].values.should.deep.equal([])
+  })
+
+  it('writes instance 0 for a frame without an instance', function () {
+    const delta = mapper.testToDelta(frame(undefined, 5, 0.452))
+    delta.updates[0].values.should.deep.equal([
+      { path: 'environment.userDefined5.0.relativeHumidity', value: 0.452 }
+    ])
+    delta.updates[0].source.should.not.have.property('instance')
+  })
 })

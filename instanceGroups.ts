@@ -224,8 +224,8 @@ function mappedPath (mapping: PathMapping, index: unknown) {
     : mapping.path
 }
 
-// 130312 and 130314 write no path without a source, default a missing
-// instance to 0 and replace spaces in an unmapped source name.
+// 130312, 130313, 130314 and 130316 write no path without a source, default
+// a missing instance to 0 and replace spaces in an unmapped source name.
 const sourcePath = (
   mappings: Record<string, PathMapping>,
   base: string,
@@ -246,35 +246,12 @@ const sourcePath = (
   )}.${index}.${leaf}`
 }
 
-// 130313 and 130316 interpolate source and instance as they are.
-const rawSourcePath = (
-  mappings: Record<string, PathMapping>,
-  base: string,
-  leaf: string
-): Prefix => n2k => {
-  const { source, instance } = n2k.fields
-  const mapping = mappings[String(source)]
-  if (mapping) {
-    return mappedPath(mapping, instance)
-  }
-  return `${base}.userDefined${source}.${instance}.${leaf}`
-}
-
 const temperaturePath = sourcePath(
   temperatures,
   'generic.temperatures',
   'temperature'
 )
-const temperatureExtendedPath = rawSourcePath(
-  temperatures,
-  'generic.temperatures',
-  'temperature'
-)
-const humidityPath = rawSourcePath(
-  humidities,
-  'environment',
-  'relativeHumidity'
-)
+const humidityPath = sourcePath(humidities, 'environment', 'relativeHumidity')
 const pressurePath = sourcePath(pressures, 'generic.pressures', 'pressure')
 
 const byInstance = (
@@ -365,7 +342,7 @@ const GROUP_SPECS: GroupSpec[] = [
   },
   bySource('temperature', 'TEMPERATURE_SOURCE', {
     130312: temperaturePath,
-    130316: temperatureExtendedPath
+    130316: temperaturePath
   }),
   bySource('humidity', 'HUMIDITY_SOURCE', { 130313: humidityPath }),
   bySource('pressure', 'PRESSURE_SOURCE', { 130314: pressurePath }),
@@ -729,8 +706,7 @@ function discriminatorCodes (spec: GroupSpec) {
     return undefined
   }
   const codes: number[] = []
-  // 130313 and 130316 write userDefinedundefined for an absent source, a
-  // path rules are not meant to target.
+  // A frame without a source writes no path, so the absent code is left out.
   for (let code = 0; code < spec.discriminator.absent; code++) {
     const pgns = Object.keys(spec.prefixes)
     if (
