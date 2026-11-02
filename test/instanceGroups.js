@@ -209,12 +209,12 @@ describe('instance groups', function () {
     prefixOf(second).should.equal('environment.inside.engineRoom.temperature')
   })
 
-  it('spells unmapped temperature sources per PGN', function () {
+  it('spells unmapped temperature sources the same for 130312 and 130316', function () {
     defaultPrefix('temperature', 15, 4, 1).should.equal(
       'generic.temperatures.userDefinedShaft_Seal_Temperature.4.temperature'
     )
     defaultPrefix('temperature', 15, 4, 1, 130316).should.equal(
-      'generic.temperatures.userDefinedShaft Seal Temperature.4.temperature'
+      'generic.temperatures.userDefinedShaft_Seal_Temperature.4.temperature'
     )
   })
 
@@ -240,16 +240,12 @@ describe('instance groups', function () {
     })
   })
 
-  it('keeps the default path of a frame without a source', function () {
-    // 130316 and 130313 interpolate the absent source as undefined.
+  it('writes no path for a frame without a source', function () {
+    // #377: 130316 and 130313 wrote userDefinedundefined.
     const temperature = decode(130316, 1, { instance: 2, temperature: 300 })
-    mappedPaths(temperature).should.deep.equal([
-      'generic.temperatures.userDefinedundefined.2.temperature'
-    ])
+    mappedPaths(temperature).should.deep.equal([])
     const humidity = decode(130313, 1, { instance: 2, actualHumidity: 0.5 })
-    mappedPaths(humidity).should.deep.equal([
-      'environment.userDefinedundefined.2.relativeHumidity'
-    ])
+    mappedPaths(humidity).should.deep.equal([])
   })
 
   it('lists the codes sorted, frozen and as JSON keeps them', function () {

@@ -556,7 +556,11 @@ export function toDelta (
       }
 
       if (theMappings.length === 1 && theMappings[0].instance) {
-        result.updates[0].source.instance = theMappings[0].instance(n2k)
+        // A frame without an instance gets no source.instance (#377).
+        const instance = theMappings[0].instance(n2k)
+        if (instance != null) {
+          result.updates[0].source.instance = instance
+        }
       }
     }
 

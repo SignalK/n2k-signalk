@@ -5,7 +5,8 @@ import { instancePrefix } from '../instanceGroups.js'
 module.exports = [
   {
     node: instancePrefix,
-    instance: (n2k: PGN_130313) => n2k.fields.instance + '',
+    instance: (n2k: PGN_130313) =>
+      n2k.fields.instance != null ? n2k.fields.instance + '' : null,
     // canboatjs gives the humidity as a ratio.
     source: 'actualHumidity'
   }

@@ -26,15 +26,32 @@ describe('130316 temperature, extended range', function () {
     mapper.toNested(n2k).should.be.validSignalKVesselIgnoringIdentity
   })
 
-  it('keeps the spaces of an unmapped source', function () {
+  it('replaces the spaces of an unmapped source, as 130312 does', function () {
     mapper
       .testToDelta(frame(4, 'Shaft Seal Temperature', 330.2))
       .updates[0].values.should.deep.equal([
         {
           path:
-            'generic.temperatures.userDefinedShaft Seal Temperature.4.temperature',
+            'generic.temperatures.userDefinedShaft_Seal_Temperature.4.temperature',
           value: 330.2
         }
       ])
+  })
+
+  // #377: a missing source or instance wrote undefined into the path.
+  it('writes nothing for a frame without a source', function () {
+    mapper
+      .testToDelta(frame(0, undefined, 300))
+      .updates[0].values.should.deep.equal([])
+  })
+
+  it('writes instance 0 for a frame without an instance', function () {
+    const n2k = frame(undefined, 'Inside Temperature', 295.1)
+    const delta = mapper.testToDelta(n2k)
+    delta.updates[0].values.should.deep.equal([
+      { path: 'environment.inside.0.temperature', value: 295.1 }
+    ])
+    delta.updates[0].source.should.not.have.property('instance')
+    mapper.toNested(n2k).should.be.validSignalKVesselIgnoringIdentity
   })
 })
