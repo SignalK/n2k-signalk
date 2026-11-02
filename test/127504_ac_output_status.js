@@ -2,6 +2,7 @@ const chai = require('chai')
 chai.Should()
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
+const { FromPgn, pgnToActisenseSerialFormat } = require('@canboat/canboatjs')
 const mapper = require('./testMapper')
 
 const frame = {
@@ -29,9 +30,7 @@ const frame = {
 }
 
 describe('127504 ac output status', function () {
-  // Pins current behaviour: canboatjs decodes line as "Line 1", which the
-  // phase lookup does not know, so every line lands on phase A.
-  it('writes the line under electrical.inverters.<instance>.A', function () {
+  it('writes line 1 under electrical.inverters.<instance>.A', function () {
     mapper.testToDelta(frame).updates[0].values.should.deep.equal([
       { path: 'electrical.inverters.2.A.voltage', value: 230 },
       { path: 'electrical.inverters.2.A.current', value: 3 },
@@ -41,5 +40,45 @@ describe('127504 ac output status', function () {
       { path: 'electrical.inverters.2.A.reactivePower', value: 5 },
       { path: 'electrical.inverters.2.A.powerFactor', value: 0.99 }
     ])
+  })
+
+  it('writes a line with an unknown name under phase A', function () {
+    const unknown = JSON.parse(JSON.stringify(frame))
+    unknown.fields.list[0].line = 'Line 9'
+    mapper.testToDelta(unknown).updates[0].values[0].should.deep.equal({
+      path: 'electrical.inverters.2.A.voltage',
+      value: 230
+    })
+  })
+
+  it('writes the lines of a frame decoded by canboatjs to phases A, B and C', function () {
+    // #367: canboatjs decodes line as 'Line 1' to 'Line 3'. There is no
+    // capture of a multi-line frame from real equipment, so it is
+    // encoded and decoded through canboatjs.
+    const decoded = new FromPgn({ useCamel: true }).parseString(
+      pgnToActisenseSerialFormat({
+        pgn: 127504,
+        src: 1,
+        dst: 255,
+        prio: 2,
+        fields: {
+          instance: 0,
+          numberOfLines: 3,
+          list: [
+            { line: 0, voltage: 230 },
+            { line: 1, voltage: 231 },
+            { line: 2, voltage: 232 }
+          ]
+        }
+      })
+    )
+    mapper
+      .testToDelta(decoded)
+      .updates[0].values.filter(({ path }) => path.endsWith('.voltage'))
+      .should.deep.equal([
+        { path: 'electrical.inverters.0.A.voltage', value: 230 },
+        { path: 'electrical.inverters.0.B.voltage', value: 231 },
+        { path: 'electrical.inverters.0.C.voltage', value: 232 }
+      ])
   })
 })
