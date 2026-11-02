@@ -556,7 +556,7 @@ export function toDelta (
       }
 
       if (theMappings.length === 1 && theMappings[0].instance) {
-        // A frame without an instance gets no source.instance (#377).
+        // The schema rejects a null source.instance; leave it out.
         const instance = theMappings[0].instance(n2k)
         if (instance != null) {
           result.updates[0].source.instance = instance

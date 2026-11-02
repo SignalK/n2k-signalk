@@ -241,7 +241,6 @@ describe('instance groups', function () {
   })
 
   it('writes no path for a frame without a source', function () {
-    // #377: 130316 and 130313 wrote userDefinedundefined.
     const temperature = decode(130316, 1, { instance: 2, temperature: 300 })
     mappedPaths(temperature).should.deep.equal([])
     const humidity = decode(130313, 1, { instance: 2, actualHumidity: 0.5 })

@@ -38,7 +38,6 @@ describe('130316 temperature, extended range', function () {
       ])
   })
 
-  // #377: a missing source or instance wrote undefined into the path.
   it('writes nothing for a frame without a source', function () {
     mapper
       .testToDelta(frame(0, undefined, 300))
