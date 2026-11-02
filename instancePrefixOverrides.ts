@@ -85,6 +85,7 @@ function deviceKey (manufacturerCode: number, uniqueNumber: number) {
 interface RuleEntry {
   device: number
   key: number
+  info: GroupInfo
   prefix: string
 }
 
@@ -170,6 +171,7 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
   return {
     device: deviceKey(manufacturerCode, uniqueNumber),
     key: ruleKey(info, discriminator, instance),
+    info,
     prefix
   }
 }
@@ -177,8 +179,10 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
 function compileRules (rules: unknown) {
   const problems: InstancePrefixRuleProblem[] = []
   const table: RuleTable = new Map()
-  // Rule indexes by prefix: two rules writing one prefix merge two streams.
-  const targets = new Map<string, number>()
+  // Rules by device and prefix. Two rules of one device and one group, or of
+  // two single-leaf groups, write the same paths with the same $source and
+  // would merge two streams. Two devices are told apart by $source.
+  const targets = new Map<string, Array<{ index: number; info: GroupInfo }>>()
   if (!Array.isArray(rules)) {
     problems.push({
       index: -1,
@@ -202,16 +206,26 @@ function compileRules (rules: unknown) {
       })
       return
     }
-    const sharing = targets.get(entry.prefix)
-    if (sharing !== undefined) {
-      problems.push({ index, message: `same prefix as rule ${sharing}` })
+    const target = `${entry.device} ${entry.prefix}`
+    const sharing = targets.get(target) ?? []
+    const collision = sharing.find(
+      ({ info }) =>
+        info === entry.info ||
+        (info.group.singleLeaf && entry.info.group.singleLeaf)
+    )
+    if (collision !== undefined) {
+      problems.push({
+        index,
+        message: `same prefix as rule ${collision.index}`
+      })
       return
     }
     if (device === undefined) {
       device = new Map()
       table.set(entry.device, device)
     }
-    targets.set(entry.prefix, index)
+    sharing.push({ index, info: entry.info })
+    targets.set(target, sharing)
     device.set(entry.key, { index, prefix: entry.prefix })
   })
   return { table, problems }
@@ -222,7 +236,8 @@ function compileRules (rules: unknown) {
  * a malformed rule, a manufacturerCode outside 0..2047 or a uniqueNumber
  * outside 0..2^21 - 1, an unknown group, a discriminator the group does not
  * take or write, an instance out of range, a prefix that is not a valid
- * path, a key or a prefix an earlier rule already holds. A list that is not an
+ * path, a key an earlier rule already holds, or a prefix an earlier rule of
+ * the same device holds for the same group, or for another single-leaf group. A list that is not an
  * array is one problem, at index -1, and no rule is checked.
  */
 export function validateInstancePrefixRules (

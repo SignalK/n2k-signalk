@@ -420,14 +420,88 @@ describe('validateInstancePrefixRules', function () {
       mainEngine,
       { ...mainEngine, instance: 1, prefix: 'propulsion.center' },
       { ...mainEngine, instance: 2 },
-      { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 },
       { ...mainEngine, instance: 3, prefix: 'propulsion.center' },
       { ...mainEngine, instance: 4, prefix: 'propulsion.main.aux' }
     ])
-    problems.map(p => p.index).should.deep.equal([2, 3, 4])
+    problems.map(p => p.index).should.deep.equal([2, 3])
     problems[0].message.should.equal('same prefix as rule 0')
-    problems[1].message.should.equal('same prefix as rule 0')
-    problems[2].message.should.equal('same prefix as rule 1')
+    problems[1].message.should.equal('same prefix as rule 1')
+  })
+
+  it('reports two rules of one group with the same prefix', function () {
+    const house = {
+      ...DEVICE,
+      group: 'battery',
+      instance: 0,
+      prefix: 'electrical.batteries.house'
+    }
+    const problems = validateInstancePrefixRules([
+      house,
+      { ...house, instance: 1 }
+    ])
+    problems.should.deep.equal([{ index: 1, message: 'same prefix as rule 0' }])
+  })
+
+  it('accepts rules of two devices with the same prefix', function () {
+    const other = { uniqueNumber: UNIQUE_NUMBER + 1 }
+    validateInstancePrefixRules([
+      mainEngine,
+      { ...mainEngine, ...other },
+      {
+        ...DEVICE,
+        group: 'temperature',
+        discriminator: ENGINE_ROOM,
+        instance: 0,
+        prefix: 'environment.inside.engineRoom.value'
+      },
+      {
+        ...DEVICE,
+        ...other,
+        group: 'humidity',
+        discriminator: OUTSIDE_HUMIDITY,
+        instance: 0,
+        prefix: 'environment.inside.engineRoom.value'
+      }
+    ]).should.deep.equal([])
+  })
+
+  it('reports two single-leaf rules of different groups with the same prefix', function () {
+    const problems = validateInstancePrefixRules([
+      {
+        ...DEVICE,
+        group: 'temperature',
+        discriminator: ENGINE_ROOM,
+        instance: 0,
+        prefix: 'environment.inside.engineRoom.value'
+      },
+      {
+        ...DEVICE,
+        group: 'humidity',
+        discriminator: OUTSIDE_HUMIDITY,
+        instance: 0,
+        prefix: 'environment.inside.engineRoom.value'
+      }
+    ])
+    problems.should.deep.equal([{ index: 1, message: 'same prefix as rule 0' }])
+  })
+
+  it('accepts rules of different groups with the same prefix otherwise', function () {
+    validateInstancePrefixRules([
+      { ...DEVICE, group: 'battery', instance: 0, prefix: 'propulsion.main' },
+      mainEngine,
+      {
+        ...DEVICE,
+        group: 'acInput',
+        instance: 0,
+        prefix: 'electrical.ac.shore'
+      },
+      {
+        ...DEVICE,
+        group: 'acConnection',
+        instance: 0,
+        prefix: 'electrical.ac.shore'
+      }
+    ]).should.deep.equal([])
   })
 
   it('reports a rule with the key and prefix of an earlier one once', function () {
@@ -674,6 +748,28 @@ describe('instance prefix rules', function () {
       mapper,
       decode(127488, SRC, { instance: 'Dual Engine Starboard', speed: 50 })
     ).should.deep.equal(['propulsion.main.revolutions'])
+  })
+
+  it('applies rules of groups with disjoint paths and the same prefix', function () {
+    const shore = { ...DEVICE, instance: 0, prefix: 'electrical.ac.shore' }
+    const mapper = claimedMapper({
+      instancePrefixRules: [
+        { ...shore, group: 'acInput' },
+        { ...shore, group: 'acConnection' }
+      ]
+    })
+    const acLine = { line: 'Line 1', voltage: 230, current: 2, frequency: 50 }
+    paths(
+      mapper,
+      decode(127503, SRC, { instance: 0, numberOfLines: 1, list: [acLine] })
+    ).should.include('electrical.ac.shore.A.voltage')
+    paths(
+      mapper,
+      decode(127744, SRC, { connectionNumber: 0, acRmsCurrent: 3, power: 100 })
+    ).should.include.members([
+      'electrical.ac.shore.phase.A.current',
+      'electrical.ac.shore.phase.A.power'
+    ])
   })
 
   it('matches the highest instance; a reserved one keeps its default', function () {
