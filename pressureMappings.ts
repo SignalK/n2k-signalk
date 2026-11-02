@@ -9,7 +9,7 @@
 {"7": "Oil"},
 {"8": "Fuel"}
 */
-module.exports = {
+export = {
   Atmospheric: {
     path: 'environment.outside.pressure'
   },

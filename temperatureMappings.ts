@@ -29,7 +29,7 @@ on the priority engine's `$source` matching. Categories that already
 map to a named zone (Engine Room, Main Cabin, Freezer, Refrigeration,
 Heating Sys) keep the bare zone path.
 */
-module.exports = {
+export = {
   'Sea Temperature': {
     path: 'environment.water.temperature'
   },

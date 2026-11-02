@@ -14,7 +14,7 @@
  * there share the bare path and disambiguation relies on the priority
  * engine's `$source` matching.
  */
-module.exports = {
+export = {
   Inside: {
     pathWithIndex: 'environment.inside.<index>.relativeHumidity'
   },

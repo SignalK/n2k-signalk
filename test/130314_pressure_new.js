@@ -74,7 +74,7 @@ describe('Pressure: ', function () {
   })
 
   it('all 130314 mappings are valid', function () {
-    var pressureMappings = require('../pressureMappings')
+    var pressureMappings = require('../dist/pressureMappings')
     var full = new (require('@signalk/signalk-schema').FullSignalK)(
       'urn:mrn:imo:mmsi:230099999'
     )
