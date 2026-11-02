@@ -19,7 +19,7 @@ const display = (path: string) => (n2k: PGN_130845_SimnetKeyValue) =>
  * label ("90%", "10% (Min)", "100% (Max)"); a level between those steps
  * (newer displays set any of 0-99) as the number, on a 0-99 scale.
  */
-function backlight(value: unknown): number | null {
+function backlight (value: unknown): number | null {
   if (typeof value === 'string') {
     const percent = /^(\d+)%/.exec(value)
     return percent ? Number(percent[1]) / 100 : null
