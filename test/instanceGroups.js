@@ -232,6 +232,26 @@ describe('instance groups', function () {
       .undefined
   })
 
+  it('leaves an absent source out of the codes', function () {
+    ;['temperature', 'humidity'].forEach(id => {
+      const group = instanceGroups.find(g => g.id === id)
+      group.discriminatorCodes.should.have.lengthOf(255)
+      group.discriminatorCodes.should.not.include(255)
+    })
+  })
+
+  it('keeps the default path of a frame without a source', function () {
+    // 130316 and 130313 interpolate the absent source as undefined.
+    const temperature = decode(130316, 1, { instance: 2, temperature: 300 })
+    mappedPaths(temperature).should.deep.equal([
+      'generic.temperatures.userDefinedundefined.2.temperature'
+    ])
+    const humidity = decode(130313, 1, { instance: 2, actualHumidity: 0.5 })
+    mappedPaths(humidity).should.deep.equal([
+      'environment.userDefinedundefined.2.relativeHumidity'
+    ])
+  })
+
   it('lists the codes sorted, frozen and as JSON keeps them', function () {
     instanceGroups
       .filter(g => g.discriminatorCodes !== undefined)

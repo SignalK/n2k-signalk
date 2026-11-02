@@ -60,8 +60,8 @@ export interface InstanceGroup {
    */
   discriminatorEnum: string | undefined
   /**
-   * Codes a group PGN writes a path for, ascending; undefined without a
-   * discriminator.
+   * Codes a group PGN writes a path for, ascending, the absent field's code
+   * left out; undefined without a discriminator.
    */
   discriminatorCodes: readonly number[] | undefined
 }
@@ -719,7 +719,9 @@ function discriminatorCodes (spec: GroupSpec) {
     return undefined
   }
   const codes: number[] = []
-  for (let code = 0; code <= spec.discriminator.absent; code++) {
+  // 130313 and 130316 write userDefinedundefined for an absent source, a
+  // path rules are not meant to target.
+  for (let code = 0; code < spec.discriminator.absent; code++) {
     const pgns = Object.keys(spec.prefixes)
     if (
       pgns.some(pgn => defaultPrefix(spec.id, code, 0, 0, pgn) !== undefined)

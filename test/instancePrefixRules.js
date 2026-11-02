@@ -320,6 +320,16 @@ describe('validateInstancePrefixRules', function () {
       'discriminator'
     ],
     [
+      'an absent temperature source',
+      {
+        group: 'temperature',
+        discriminator: 255,
+        instance: 0,
+        prefix: 'environment.inside.temperature'
+      },
+      'discriminator 255'
+    ],
+    [
       'a tank type with no tanks path',
       {
         group: 'tank',
