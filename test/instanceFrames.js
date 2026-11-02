@@ -21,6 +21,33 @@ function decode (pgn, src, fields) {
   return parsed
 }
 
+function actisense (pgn, src, fields) {
+  return pgnToActisenseSerialFormat({
+    timestamp: TIMESTAMP,
+    prio: 2,
+    src,
+    dst: 255,
+    pgn,
+    fields
+  }).split(',')
+}
+
+// Decodes the frame with its instance field set to code in the raw bytes:
+// the encoder refuses codes canboatjs reserves.
+function decodeWithInstance (pgn, src, fields, field, code) {
+  const one = actisense(pgn, src, { ...fields, [field]: 1 })
+  const two = actisense(pgn, src, { ...fields, [field]: 2 })
+  const at = one.findIndex((part, i) => i > 5 && part !== two[i])
+  const byte = parseInt(one[at], 16)
+  // A code below 16 keeps the byte's high nibble: the 4-bit tank instance
+  // shares its byte with the tank type, and an 8-bit 1 has none.
+  const value = code < 16 ? (byte & 0xf0) | code : code
+  one[at] = value.toString(16).padStart(2, '0')
+  const parsed = parser.parseString(one.join(','))
+  parsed.timestamp = TIMESTAMP
+  return parsed
+}
+
 // The default prefix the frame writes its instance under.
 function prefixOf (n2k) {
   const c = classifyInstance(n2k)
@@ -102,4 +129,4 @@ const FRAMES = [
   [130316, { instance: 4, source: 'Shaft Seal Temperature', temperature: 330 }]
 ]
 
-module.exports = { decode, prefixOf, FRAMES }
+module.exports = { decode, decodeWithInstance, prefixOf, FRAMES }

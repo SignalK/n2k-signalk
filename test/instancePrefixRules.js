@@ -10,6 +10,7 @@ const {
   deviceIdentity,
   validateInstancePrefixRules
 } = require('../dist/n2kMapper')
+const { decodeWithInstance } = require('./instanceFrames')
 
 const parser = new FromPgn({ useCamel: true })
 const TIMESTAMP = '2026-09-28T12:00:00.000Z'
@@ -176,6 +177,20 @@ describe('validateInstancePrefixRules', function () {
     validateInstancePrefixRules([]).should.deep.equal([])
   })
 
+  it('accepts the highest instance of each range', function () {
+    validateInstancePrefixRules([
+      { ...mainEngine, instance: 254 },
+      { ...mainEngine, group: 'battery', instance: 252 },
+      {
+        ...DEVICE,
+        group: 'tank',
+        discriminator: 0,
+        instance: 13,
+        prefix: 'tanks.fuel.aft'
+      }
+    ]).should.deep.equal([])
+  })
+
   it('accepts prefix segments of letters, digits, _ and -', function () {
     validateInstancePrefixRules([
       { ...mainEngine, prefix: 'Propulsion.main_2-B.0' },
@@ -246,14 +261,24 @@ describe('validateInstancePrefixRules', function () {
     ['a negative instance', { instance: -1 }, 'instance'],
     ['an instance above the maximum', { instance: 256 }, 'instance'],
     [
-      'a tank instance above 15',
+      'the absent engine instance',
+      { instance: 255 },
+      'instance must be an integer in 0..254'
+    ],
+    [
+      'a reserved battery instance',
+      { group: 'battery', instance: 253 },
+      'instance must be an integer in 0..252'
+    ],
+    [
+      'a reserved tank instance',
       {
         group: 'tank',
         discriminator: 0,
-        instance: 16,
+        instance: 14,
         prefix: 'tanks.fuel.aft'
       },
-      'instance'
+      'instance must be an integer in 0..13'
     ],
     ['a prefix that is not a string', { prefix: 1 }, 'prefix'],
     ['an empty prefix', { prefix: '' }, 'prefix'],
@@ -508,6 +533,27 @@ describe('instance prefix rules', function () {
     ])
     vesselTree(delta).should.be.validSignalKVesselIgnoringIdentity
     paths(mapper, fuelTank(2)).should.deep.equal(['tanks.fuel.2.currentLevel'])
+  })
+
+  it('matches the highest instance; a reserved one keeps its default', function () {
+    const house = {
+      ...DEVICE,
+      group: 'battery',
+      instance: 252,
+      prefix: 'electrical.batteries.house'
+    }
+    const mapper = claimedMapper({ instancePrefixRules: [house] })
+    const fields = { voltage: 13.1 }
+    const battery = code =>
+      decodeWithInstance(127508, SRC, fields, 'instance', code)
+    paths(mapper, battery(252)).should.deep.equal([
+      'electrical.batteries.house.voltage'
+    ])
+    const reserved = battery(253)
+    paths(mapper, reserved).should.deep.equal(paths(new N2kMapper(), reserved))
+    paths(mapper, reserved).should.not.include(
+      'electrical.batteries.house.voltage'
+    )
   })
 
   it('matches a temperature by source and instance', function () {

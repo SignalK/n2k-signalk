@@ -39,7 +39,11 @@ export interface InstanceGroup {
   id: InstanceGroupId
   pgns: number[]
   instanceField: string
-  /** Instance codes run 0..maxInstance, the field's "no data" code included. */
+  /**
+   * The highest instance code a frame arrives with: canboatjs leaves out the
+   * field's reserved codes (253..255 of an 8-bit number, 14 and 15 of the
+   * tank's 4 bits), so a frame carrying one has no instance.
+   */
   maxInstance: number
   /**
    * The @canboat/ts-pgns enumeration naming the instance codes, e.g.
@@ -153,6 +157,7 @@ interface GroupSpec {
   id: InstanceGroupId
   instanceField: string
   absentInstance: number
+  maxInstance: number
   singleLeaf: boolean
   instanceEnum?: string
   discriminator?: Discriminator
@@ -163,6 +168,11 @@ interface GroupSpec {
 // absent field with that value.
 const ABSENT_8BIT = 255
 const ABSENT_4BIT = 15
+// canboatjs leaves out a number field's reserved codes, 253..255 of 8 bits
+// and 14 and 15 of 4 bits. The ENGINE_INSTANCE lookup decodes 253 and 254.
+const MAX_8BIT = 252
+const MAX_4BIT = 13
+const MAX_ENGINE_INSTANCE = 254
 const INDEX = '<index>'
 const SPACES = / /g
 
@@ -274,6 +284,7 @@ const byInstance = (
   id,
   instanceField: 'instance',
   absentInstance: ABSENT_8BIT,
+  maxInstance: MAX_8BIT,
   singleLeaf: false,
   prefixes
 })
@@ -286,6 +297,7 @@ const bySource = (
   id,
   instanceField: 'instance',
   absentInstance: ABSENT_8BIT,
+  maxInstance: MAX_8BIT,
   singleLeaf: true,
   discriminator: { field: 'source', enumName, absent: ABSENT_8BIT },
   prefixes
@@ -298,6 +310,7 @@ const byConnection = (
   id,
   instanceField: 'connectionNumber',
   absentInstance: ABSENT_8BIT,
+  maxInstance: MAX_8BIT,
   singleLeaf: false,
   prefixes
 })
@@ -315,6 +328,7 @@ const GROUP_SPECS: GroupSpec[] = [
     id: 'engine',
     instanceField: 'instance',
     absentInstance: ABSENT_8BIT,
+    maxInstance: MAX_ENGINE_INSTANCE,
     singleLeaf: false,
     instanceEnum: 'ENGINE_INSTANCE',
     prefixes: {
@@ -340,6 +354,7 @@ const GROUP_SPECS: GroupSpec[] = [
     id: 'tank',
     instanceField: 'instance',
     absentInstance: ABSENT_4BIT,
+    maxInstance: MAX_4BIT,
     singleLeaf: false,
     discriminator: {
       field: 'type',
@@ -408,8 +423,9 @@ function fieldCode (
 /**
  * The Signal K path prefix a PGN of the group writes this instance under, or
  * undefined when it writes none. Codes are numeric; an absent field is its
- * "no data" code (255, or 15 for tank fields). For a single-leaf group the
- * prefix is the full leaf path.
+ * "no data" code (255, or 15 for tank fields), which is also what a frame
+ * carrying a reserved code above maxInstance arrives as. For a single-leaf
+ * group the prefix is the full leaf path.
  *
  * Temperature is the one group whose PGNs spell a prefix differently: 130312
  * replaces spaces in an unmapped source name and writes an absent instance as
@@ -719,7 +735,7 @@ const frozenGroups = GROUP_SPECS.map(spec =>
     id: spec.id,
     pgns: Object.keys(spec.prefixes).map(Number),
     instanceField: spec.instanceField,
-    maxInstance: spec.absentInstance,
+    maxInstance: spec.maxInstance,
     instanceEnum: spec.instanceEnum,
     singleLeaf: spec.singleLeaf,
     discriminatorField: spec.discriminator && spec.discriminator.field,

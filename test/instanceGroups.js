@@ -9,7 +9,12 @@ const {
   defaultPrefix
 } = require('../dist/n2kMapper')
 const { instancePrefix } = require('../dist/instanceGroups')
-const { decode, prefixOf, FRAMES } = require('./instanceFrames')
+const {
+  decode,
+  decodeWithInstance,
+  prefixOf,
+  FRAMES
+} = require('./instanceFrames')
 
 function mappedPaths (n2k) {
   return new N2kMapper().toDelta(n2k).updates[0].values.map(v => v.path)
@@ -44,6 +49,54 @@ describe('instance groups', function () {
             isAtOrUnder(path, 'notifications.' + prefix)
           underPrefix.should.equal(true, `${path} under ${prefix}`)
         }
+      })
+    })
+  })
+
+  describe('instance ranges', function () {
+    it('stop below the codes canboatjs reserves', function () {
+      Object.fromEntries(
+        instanceGroups.map(g => [g.id, g.maxInstance])
+      ).should.deep.equal({
+        engine: 254,
+        battery: 252,
+        charger: 252,
+        inverter: 252,
+        acInput: 252,
+        tank: 13,
+        temperature: 252,
+        humidity: 252,
+        pressure: 252,
+        acConnection: 252,
+        converter: 252,
+        dcConnection: 252
+      })
+    })
+
+    // Every PGN of a group decodes maxInstance and leaves out the code above.
+    FRAMES.filter(
+      ([pgn], i) => FRAMES.findIndex(([other]) => other === pgn) === i
+    ).forEach(([pgn, fields]) => {
+      const group = instanceGroups.find(g => g.pgns.includes(pgn))
+      const { instanceField, maxInstance } = group
+      it(`${pgn} decodes instance ${maxInstance} and omits ${maxInstance +
+        1}`, function () {
+        const highest = decodeWithInstance(
+          pgn,
+          34,
+          fields,
+          instanceField,
+          maxInstance
+        )
+        classifyInstance(highest).instance.should.equal(maxInstance)
+        const above = decodeWithInstance(
+          pgn,
+          34,
+          fields,
+          instanceField,
+          maxInstance + 1
+        )
+        expect(above.fields[instanceField]).to.equal(undefined)
       })
     })
   })
@@ -108,7 +161,8 @@ describe('instance groups', function () {
   it('lists only the tank types 127505 writes', function () {
     const tank = instanceGroups.find(g => g.id === 'tank')
     tank.discriminatorCodes.should.deep.equal([0, 1, 2, 3, 4, 5])
-    for (let code = 0; code <= tank.maxInstance; code++) {
+    // The tank type is 4 bits, 15 its "no data" code.
+    for (let code = 0; code <= 15; code++) {
       const n2k = decode(127505, 1, { instance: 1, type: code, level: 0.1 })
       const written = mappedPaths(n2k).length > 0
       written.should.equal(
