@@ -33,8 +33,12 @@ module.exports = [
       )
     },
     
+    // The angle arrives as 0 to 2π; an apparent wind angle is signed.
     value: function (n2k: PGN_65341_SimnetAutopilotAngle) {
-      return n2k.fields.angle
+      const angle = n2k.fields.angle
+      return typeof angle === 'number' && angle > Math.PI
+        ? angle - Math.PI * 2
+        : angle
     }
   }
 ]
