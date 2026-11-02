@@ -25,6 +25,7 @@
     "./maretron/**/*",
     "./navico/**/*",
     "./raymarine/**/*",
-    "./simrad/**/*"
+    "./simrad/**/*",
+    "./test/*.d.ts"
   ]
 }

@@ -1,13 +1,21 @@
-const { expect } = require('chai')
-const { FromPgn, pgnToActisenseSerialFormat } = require('@canboat/canboatjs')
-const { classifyInstance, defaultPrefix } = require('../dist/n2kMapper')
+import { expect } from 'chai'
+import { FromPgn, pgnToActisenseSerialFormat } from '@canboat/canboatjs'
+import { classifyInstance, defaultPrefix } from '../dist/n2kMapper'
+
+type Fields = Record<string, unknown>
+// A PGN number and its fields. (An interface: the formatter's parser
+// cannot read a tuple type.)
+interface Frame {
+  0: number
+  1: Fields
+}
 
 const parser = new FromPgn({ useCamel: true })
 const TIMESTAMP = '2026-09-28T12:00:00.000Z'
 
 // Round-trip through canboatjs so fields arrive as the mapper receives them.
-function decode (pgn, src, fields) {
-  const parsed = parser.parseString(
+function decode (pgn: number, src: number, fields: Fields): any {
+  const parsed: any = parser.parseString(
     pgnToActisenseSerialFormat({
       timestamp: TIMESTAMP,
       prio: 2,
@@ -15,13 +23,13 @@ function decode (pgn, src, fields) {
       dst: 255,
       pgn,
       fields
-    })
+    } as any)
   )
   parsed.timestamp = TIMESTAMP
   return parsed
 }
 
-function actisense (pgn, src, fields) {
+function actisense (pgn: number, src: number, fields: Fields) {
   return pgnToActisenseSerialFormat({
     timestamp: TIMESTAMP,
     prio: 2,
@@ -29,12 +37,18 @@ function actisense (pgn, src, fields) {
     dst: 255,
     pgn,
     fields
-  }).split(',')
+  } as any).split(',')
 }
 
 // Decodes the frame with its instance field set to code in the raw bytes:
 // the encoder refuses codes canboatjs reserves.
-function decodeWithInstance (pgn, src, fields, field, code) {
+function decodeWithInstance (
+  pgn: number,
+  src: number,
+  fields: Fields,
+  field: string,
+  code: number
+): any {
   const one = actisense(pgn, src, { ...fields, [field]: 1 })
   const two = actisense(pgn, src, { ...fields, [field]: 2 })
   const at = one.findIndex((part, i) => i > 5 && part !== two[i])
@@ -43,16 +57,22 @@ function decodeWithInstance (pgn, src, fields, field, code) {
   // shares its byte with the tank type, and an 8-bit 1 has none.
   const value = code < 16 ? (byte & 0xf0) | code : code
   one[at] = value.toString(16).padStart(2, '0')
-  const parsed = parser.parseString(one.join(','))
+  const parsed: any = parser.parseString(one.join(','))
   parsed.timestamp = TIMESTAMP
   return parsed
 }
 
 // The default prefix the frame writes its instance under.
-function prefixOf (n2k) {
+function prefixOf (n2k: any) {
   const c = classifyInstance(n2k)
   expect(c, `classification of ${n2k.pgn}`).to.not.equal(undefined)
-  return defaultPrefix(c.group, c.discriminator, c.instance, n2k.src, n2k.pgn)
+  return defaultPrefix(
+    c!.group,
+    c!.discriminator,
+    c!.instance,
+    n2k.src,
+    n2k.pgn
+  )
 }
 
 // A representative frame of every PGN in the instance group table.
@@ -63,7 +83,7 @@ const acLine = {
   frequency: 50
 }
 
-const FRAMES = [
+const FRAMES: Frame[] = [
   [
     127488,
     {
@@ -129,4 +149,4 @@ const FRAMES = [
   [130316, { instance: 4, source: 'Shaft Seal Temperature', temperature: 330 }]
 ]
 
-module.exports = { decode, decodeWithInstance, prefixOf, FRAMES }
+export { decode, decodeWithInstance, prefixOf, FRAMES }
