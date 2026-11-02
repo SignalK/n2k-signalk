@@ -177,6 +177,12 @@ describe('validateInstancePrefixRules', function () {
     validateInstancePrefixRules([]).should.deep.equal([])
   })
 
+  it('accepts a null discriminator as none', function () {
+    validateInstancePrefixRules([
+      { ...mainEngine, discriminator: null }
+    ]).should.deep.equal([])
+  })
+
   it('accepts the highest instance of each range', function () {
     validateInstancePrefixRules([
       { ...mainEngine, instance: 254 },
@@ -308,6 +314,16 @@ describe('validateInstancePrefixRules', function () {
       'a discriminator on a group without one',
       { discriminator: 0 },
       'takes no discriminator'
+    ],
+    [
+      'a tank rule with a null discriminator',
+      {
+        group: 'tank',
+        discriminator: null,
+        instance: 1,
+        prefix: 'tanks.fuel.aft'
+      },
+      'needs a discriminator'
     ],
     [
       'a tank rule without a discriminator',
@@ -580,6 +596,15 @@ describe('instance prefix rules', function () {
     ])
     vesselTree(delta).should.be.validSignalKVesselIgnoringIdentity
     paths(mapper, fuelTank(2)).should.deep.equal(['tanks.fuel.2.currentLevel'])
+  })
+
+  it('applies a rule with a null discriminator', function () {
+    const mapper = claimedMapper({
+      instancePrefixRules: [{ ...mainEngine, discriminator: null }]
+    })
+    paths(mapper, engineSpeed()).should.deep.equal([
+      'propulsion.main.revolutions'
+    ])
   })
 
   it('applies the first of two rules with the same prefix', function () {

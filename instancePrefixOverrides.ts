@@ -27,9 +27,9 @@ export interface InstancePrefixRule {
   group: InstanceGroupId
   /**
    * Tank type or sensor source code; required for groups with a
-   * discriminator, absent for the others.
+   * discriminator, absent or null for the others.
    */
-  discriminator?: number
+  discriminator?: number | null
   instance: number
   /** Dot-separated segments of A-Z, a-z, 0-9, _ and -. */
   prefix: string
@@ -105,10 +105,12 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
     manufacturerCode,
     uniqueNumber,
     group,
-    discriminator,
+    discriminator: given,
     instance,
     prefix
   } = rule as Record<string, unknown>
+  // A form that writes null for "none".
+  const discriminator = given === null ? undefined : given
   if (!isIntegerIn(manufacturerCode, MANUFACTURER_CODE_MASK)) {
     problems.push(
       `manufacturerCode must be an integer in 0..${MANUFACTURER_CODE_MASK}`
