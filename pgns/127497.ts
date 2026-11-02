@@ -1,10 +1,10 @@
 import { PGN_127497 } from '@canboat/ts-pgns'
-import { skEngineId } from '../utils.js'
+import { instancePrefix, SourceState } from '../instanceGroups.js'
 
 // canboatjs gives the fuel used in m3 and the rates in m3/s, as Signal K
 // wants them.
-const trip = (path: string) => (n2k: PGN_127497) =>
-  `propulsion.${skEngineId(n2k)}.trip.${path}`
+const trip = (path: string) => (n2k: PGN_127497, state?: SourceState) =>
+  `${instancePrefix(n2k, state)}.trip.${path}`
 
 module.exports = [
   { source: 'tripFuelUsed', node: trip('fuelUsed') },
