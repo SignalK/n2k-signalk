@@ -39,11 +39,29 @@ const debug: (formatter: string, ...args: unknown[]) => void = require('debug')(
 
 type Fields = Record<string, unknown>
 
-/** A decoded frame as toDelta receives it. */
-interface N2kReport extends N2kFrame {
-  src: number | string
-  timestamp: string
-  fields?: Fields
+/**
+ * A decoded frame as toDelta receives it. fields is any object, so a frame
+ * whose fields is an interface (a @canboat/ts-pgns PGN) is accepted.
+ */
+export interface N2kReport extends N2kFrame {
+  timestamp?: string
+}
+
+// An interface has no index signature, so fields is read through Fields.
+function fieldsOf (n2k: N2kReport): Fields | undefined {
+  return n2k.fields as Fields | undefined
+}
+
+// These throw so that toDelta's catch turns a frame without src or timestamp
+// into no values.
+function srcOf (n2k: N2kReport): string {
+  if (n2k.src === undefined) throw new TypeError('frame has no src')
+  return n2k.src.toString()
+}
+
+function timestampOf (n2k: N2kReport): string {
+  if (n2k.timestamp === undefined) throw new TypeError('frame has no timestamp')
+  return n2k.timestamp
 }
 
 /** The per-source state toDelta keeps and passes to a mapping. */
@@ -53,7 +71,7 @@ interface MapperSourceState extends SourceState {
   metaPGNsReceived?: Record<string, number>
 }
 
-type MapperState = Record<string, MapperSourceState>
+export type MapperState = Record<string, MapperSourceState>
 
 /** A value a mapping produced; one without a string path is left out. */
 type MappedValue = { path?: unknown; value: unknown } | undefined
@@ -99,7 +117,7 @@ interface DeltaSource {
   instance?: unknown
 }
 
-interface Delta {
+export interface Delta {
   context?: string
   updates: {
     source: DeltaSource
@@ -121,7 +139,7 @@ interface N2kOutListener {
 
 interface MetaDataRequest {
   pgn: number
-  dst: number | string
+  dst: N2kReport['src']
   PGN: number | string
 }
 
@@ -302,7 +320,7 @@ export class N2kMapper extends EventEmitter {
     this.requestAllMeta()
   }
 
-  requestMetaData (dst: number | string, pgn: number | string): Promise<void> {
+  requestMetaData (dst: N2kReport['src'], pgn: number | string): Promise<void> {
     const listener = this.n2kListener
     if (!listener) {
       debug(
@@ -364,34 +382,37 @@ export class N2kMapper extends EventEmitter {
   toDelta (n2k: N2kReport): Delta | undefined {
     if (metaPGNs[n2k.pgn]) {
       const meta = metaPGNs[n2k.pgn](n2k)
-      if (!this.state[n2k.src]) {
-        this.state[n2k.src] = {}
+      // State is keyed by the string form of src, so a frame without src keys
+      // it as 'undefined'.
+      const srcKey = String(n2k.src)
+      if (!this.state[srcKey]) {
+        this.state[srcKey] = {}
       }
 
       if (n2k.pgn === 60928) {
-        const canName = canNameFromClaim(n2k.fields!)
+        const canName = canNameFromClaim(fieldsOf(n2k)!)
         if (
-          this.state[n2k.src].canName &&
-          this.state[n2k.src].canName != canName
+          this.state[srcKey].canName &&
+          this.state[srcKey].canName != canName
         ) {
           // clear out any existing state since the src addresses have changed
           this.emit(
             'n2kSourceChanged',
             n2k.src,
-            this.state[n2k.src].canName,
+            this.state[srcKey].canName,
             canName
           )
-          this.state[n2k.src] = {}
+          this.state[srcKey] = {}
           this.requestMetaData(n2k.src, 126996).then(() => {
             return this.requestMetaData(n2k.src, 126998)
           })
         }
-        this.state[n2k.src].deviceInstance = meta.deviceInstance
+        this.state[srcKey].deviceInstance = meta.deviceInstance
         meta.canName = canName
-        this.state[n2k.src].canName = canName
+        this.state[srcKey].canName = canName
       }
 
-      const srcState = this.state[n2k.src]
+      const srcState = this.state[srcKey]
       if (!srcState.metaPGNsReceived) {
         srcState.metaPGNsReceived = {}
       }
@@ -401,13 +422,14 @@ export class N2kMapper extends EventEmitter {
       this.emit('n2kSourceMetadata', n2k, meta)
     } else {
       if (!n2kMappings[n2k.pgn]) {
-        if (!this.unknownPGNs[n2k.src]) {
-          this.unknownPGNs[n2k.src] = {}
+        const srcKey = String(n2k.src)
+        if (!this.unknownPGNs[srcKey]) {
+          this.unknownPGNs[srcKey] = {}
         }
-        if (!this.unknownPGNs[n2k.src][n2k.pgn]) {
-          this.unknownPGNs[n2k.src][n2k.pgn] = n2k
+        if (!this.unknownPGNs[srcKey][n2k.pgn]) {
+          this.unknownPGNs[srcKey][n2k.pgn] = n2k
           this.emit('n2kSourceMetadata', n2k, {
-            unknownPGNs: this.unknownPGNs[n2k.src]
+            unknownPGNs: this.unknownPGNs[srcKey]
           })
         }
       }
@@ -447,6 +469,7 @@ export function toDelta (
   reportedThrows?: Set<string>
 ): Delta | undefined {
   try {
+    const src = srcOf(n2k)
     const theMappings: Mapping[] = [
       ...(customPgns[n2k.pgn] || []),
       ...(n2kMappings[n2k.pgn] || [])
@@ -454,11 +477,10 @@ export function toDelta (
 
     let src_state: MapperSourceState | undefined
     if (state) {
-      var n2k_src = n2k.src.toString()
-      if (!state[n2k_src]) {
-        state[n2k_src] = {}
+      if (!state[src]) {
+        state[src] = {}
       }
-      src_state = state[n2k_src]
+      src_state = state[src]
       const resolver = hasInstanceGroup(n2k.pgn)
         ? instancePrefixResolver
         : undefined
@@ -477,6 +499,7 @@ export function toDelta (
       mappingApplies(theMapping, n2k, src_state)
     )
 
+    const timestamp = timestampOf(n2k)
     const result: Delta = {
       updates: [
         {
@@ -484,12 +507,12 @@ export function toDelta (
             label: '',
             type: 'NMEA2000',
             pgn: Number(n2k.pgn),
-            src: n2k.src.toString()
+            src
           },
           timestamp:
-            n2k.timestamp.substring(0, 10) +
+            timestamp.substring(0, 10) +
             'T' +
-            n2k.timestamp.substring(11, n2k.timestamp.length),
+            timestamp.substring(11, timestamp.length),
           values: toValuesArray(applying, n2k, src_state)
         }
       ]
@@ -616,7 +639,7 @@ function toValuesArray (
   n2k: N2kReport,
   state: MapperSourceState | undefined
 ): PathValue[] {
-  const fields = n2k.fields
+  const fields = fieldsOf(n2k)
   if (fields && typeof theMappings !== 'undefined') {
     return theMappings
       .reduce<MappedValue[]>((updates, theMapping) => {
@@ -669,12 +692,12 @@ const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
     return {
       ...n2k.fields,
       deviceInstance:
-        (Number(n2k.fields!.deviceInstanceUpper) << 3) |
-        Number(n2k.fields!.deviceInstanceLower)
+        (Number(fieldsOf(n2k)!.deviceInstanceUpper) << 3) |
+        Number(fieldsOf(n2k)!.deviceInstanceLower)
     }
   },
-  126998: n2k => n2k.fields!,
-  126996: n2k => n2k.fields!
+  126998: n2k => fieldsOf(n2k)!,
+  126996: n2k => fieldsOf(n2k)!
 }
 
 export {

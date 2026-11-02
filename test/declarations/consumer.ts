@@ -1,8 +1,10 @@
 // Compiled by test/declarations.js against the built declarations: a strict
 // consumer that checks library declarations must see typed exports.
 import { EventEmitter } from 'events'
+import { PGN_127488 } from '@canboat/ts-pgns'
 import {
   classifyInstance,
+  Delta,
   defaultPrefix,
   deviceIdentity,
   DeviceIdentity,
@@ -10,8 +12,11 @@ import {
   InstancePrefixResolver,
   InstancePrefixRule,
   InstancePrefixRuleProblem,
+  MapperState,
   N2kMapper,
   N2kMapperOptions,
+  N2kReport,
+  toDelta,
   validateInstancePrefixRules
 } from '../../dist/n2kMapper'
 
@@ -105,7 +110,32 @@ serverMapper.on(
 serverMapper.n2kOutIsAvailable(app, 'nmea2000JsonOut')
 const serverDelta = serverMapper.toDelta(frame)
 
+// A @canboat/ts-pgns PGN object: src and timestamp are optional and fields is
+// an interface, which has no index signature.
+declare const engine: PGN_127488
+const engineDelta: Delta | undefined = toDelta(engine)
+const mappedEngine: Delta | undefined = mapper.toDelta(engine)
+
+interface TankFields {
+  instance: number
+  type: string
+  level: number
+}
+interface TankFrame {
+  pgn: number
+  src: number
+  timestamp: string
+  fields: TankFields
+}
+declare const tankFrame: TankFrame
+const report: N2kReport = tankFrame
+const mapperState: MapperState = {}
+const tankDelta: Delta | undefined = toDelta(report, mapperState)
+
 export {
+  engineDelta,
+  mappedEngine,
+  tankDelta,
   prefix,
   classify,
   groups,

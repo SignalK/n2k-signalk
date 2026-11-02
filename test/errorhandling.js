@@ -30,3 +30,45 @@ describe('No fields in pgn message', function () {
     assert.equal(delta.updates[0].values.length, 0)
   })
 })
+
+describe('Frame without src or timestamp', function () {
+  const { N2kMapper, toDelta } = require('../dist/n2kMapper')
+
+  function quietly (fn) {
+    const consoleError = console.error
+    console.error = () => {}
+    try {
+      return fn()
+    } finally {
+      console.error = consoleError
+    }
+  }
+
+  const frame = {
+    timestamp: '2014-08-15T15:01:01.881Z',
+    prio: 2,
+    src: 17,
+    dst: 255,
+    pgn: 128267,
+    fields: { depth: 5.2, offset: 0 }
+  }
+  const { src, ...withoutSrc } = frame
+  const { timestamp, ...withoutTimestamp } = frame
+
+  it('converts the complete frame to values', function () {
+    toDelta(frame).updates[0].values.should.not.be.empty
+  })
+
+  for (const [what, n2k] of [
+    ['src', withoutSrc],
+    ['timestamp', withoutTimestamp]
+  ]) {
+    it(`converts a frame without ${what} to no values`, function () {
+      quietly(() => toDelta(n2k)).should.deep.equal({ updates: [] })
+      quietly(() => toDelta(n2k, {})).should.deep.equal({ updates: [] })
+      quietly(() => new N2kMapper().toDelta(n2k)).should.deep.equal({
+        updates: []
+      })
+    })
+  }
+})
