@@ -24,10 +24,11 @@ module.exports = [
           setTrue: Number(n2k.fields.set),
           drift: Number(n2k.fields.drift)
         }
-      } else if (n2k.fields.setReference === 'Magnetic') {
-        // speculative, I don't have a real world sample showing 'Magnetic'
+      } else if (n2k.fields.cogReference === 'Magnetic') {
+        // 130577 has no set reference of its own; cogReference applies to
+        // every direction in it.
         return {
-          setTrue: Number(n2k.fields.set),
+          setMagnetic: Number(n2k.fields.set),
           drift: Number(n2k.fields.drift)
         }
       }
