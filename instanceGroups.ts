@@ -528,7 +528,7 @@ export interface ScopedResolver extends InstancePrefixResolver {
 
 interface ResolverBinding {
   resolver: ScopedResolver
-  /** The pgn:src keys the resolver's throws have been logged for. */
+  /** The pgn:src keys the resolver's throws and invalid prefixes have been logged for. */
   reported: Set<string>
   resolved: boolean
   prefix: string | undefined

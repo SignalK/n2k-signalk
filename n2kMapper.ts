@@ -439,35 +439,35 @@ export class N2kMapper extends EventEmitter {
         this.state,
         this.customPgns,
         this.instancePrefixOverrides.resolver,
-        this.instancePrefixOverrides.reportedThrows
+        this.instancePrefixOverrides.reportedFailures
       )
     }
   }
 }
 
-// A toDelta call without a mapper has no mapper to keep the throws it
-// logged on; they are keyed by its resolver.
-const standaloneThrows = new WeakMap<InstancePrefixResolver, Set<string>>()
+// A toDelta call without a mapper has no mapper to keep the resolver failures
+// it logged on; they are keyed by its resolver.
+const standaloneFailures = new WeakMap<InstancePrefixResolver, Set<string>>()
 
-function standaloneReportedThrows (resolver: InstancePrefixResolver) {
-  let reported = standaloneThrows.get(resolver)
+function standaloneReportedFailures (resolver: InstancePrefixResolver) {
+  let reported = standaloneFailures.get(resolver)
   if (reported === undefined) {
     reported = new Set()
-    standaloneThrows.set(resolver, reported)
+    standaloneFailures.set(resolver, reported)
   }
   return reported
 }
 
 /**
- * reportedThrows holds the pgn:src keys the resolver's throws have been
- * logged for; without it they are keyed by the resolver.
+ * reportedFailures holds the pgn:src keys the resolver's throws and invalid
+ * prefixes have been logged for; without it they are keyed by the resolver.
  */
 export function toDelta (
   n2k: N2kReport,
   state?: MapperState,
   customPgns: Record<string, Mapping[]> = {},
   instancePrefixResolver?: InstancePrefixResolver,
-  reportedThrows?: Set<string>
+  reportedFailures?: Set<string>
 ): Delta | undefined {
   try {
     const src = srcOf(n2k)
@@ -490,7 +490,7 @@ export function toDelta (
           resolver &&
           resolverBinding(
             resolver,
-            reportedThrows || standaloneReportedThrows(resolver)
+            reportedFailures || standaloneReportedFailures(resolver)
           )
       }
     }

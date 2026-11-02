@@ -259,7 +259,7 @@ export class InstancePrefixOverrides {
    * been logged for, so each is logged once per mapper and afresh for a new
    * resolver function.
    */
-  readonly reportedThrows = new Set<string>()
+  readonly reportedFailures = new Set<string>()
   private rules: RuleTable | undefined
   private userResolver: InstancePrefixResolver | undefined
 
@@ -298,7 +298,7 @@ export class InstancePrefixOverrides {
     }
     const next = typeof resolver === 'function' ? resolver : undefined
     if (next !== this.userResolver) {
-      this.reportedThrows.clear()
+      this.reportedFailures.clear()
     }
     this.userResolver = next
     this.combine()
