@@ -366,3 +366,22 @@ describe('127489 engine parameters 2', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
+
+describe('127489 engine parameters without an engine instance', function () {
+  it('writes the engine and its alarms as the port engine', function () {
+    const { decode } = require('./instanceFrames')
+    const n2k = decode(127489, 17, {
+      oilPressure: 80000,
+      discreteStatus1: ['Low Oil Pressure']
+    })
+    n2k.fields.should.not.have.property('instance')
+    const tree = require('./testMapper').toNested(n2k)
+    tree.should.have.nested.property('propulsion.port.oilPressure.value', 80000)
+    tree.should.not.have.nested.property('propulsion.starboard')
+    tree.should.have.nested.property(
+      'notifications.propulsion.port.lowOilPressure.value.message',
+      'Port Engine Low Oil Pressure'
+    )
+    tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+})
