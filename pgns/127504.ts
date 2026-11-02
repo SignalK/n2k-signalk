@@ -1,4 +1,4 @@
-import { PGN_127504 } from '@canboat/ts-pgns'
+import { PGN_127504, getEnumerationValue } from '@canboat/ts-pgns'
 import { instancePrefix, SourceState } from '../instanceGroups.js'
 
 type Line = PGN_127504['fields']['list'][number]
@@ -16,8 +16,13 @@ const fields = [
 
 const phaseMap: Record<string, string> = { 0: 'A', 1: 'B', 2: 'C' }
 
+// canboatjs decodes line through AC_LINE, so it arrives as 'Line 1' to
+// 'Line 3', codes 0 to 2 (#367).
 function acPhase (lineData: Line) {
-  return phaseMap[String(lineData.line)] ?? 'A'
+  const { line } = lineData
+  const code =
+    typeof line === 'string' ? getEnumerationValue('AC_LINE', line) : line
+  return phaseMap[String(code)] ?? 'A'
 }
 
 function prefix (
