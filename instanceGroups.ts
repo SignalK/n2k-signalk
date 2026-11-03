@@ -361,7 +361,9 @@ const GROUP_SPECS: GroupSpec[] = [
 
 const AC_PHASES = ['A', 'B', 'C']
 const acLines = (fields: readonly string[], under = '') =>
-  AC_PHASES.flatMap(phase => fields.map(field => `${under}${phase}.${field}`))
+  AC_PHASES.flatMap((phase) =>
+    fields.map((field) => `${under}${phase}.${field}`)
+  )
 const AC_LINE_FIELDS = [
   'voltage',
   'current',
@@ -452,7 +454,7 @@ const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
 }
 
 /** The paths a group writes under its prefix; '' is the prefix itself. */
-export function groupLeaves (id: InstanceGroupId): readonly string[] {
+export function groupLeaves(id: InstanceGroupId): readonly string[] {
   return GROUP_LEAVES[id]
 }
 
@@ -464,10 +466,10 @@ const atOrUnder = (path: string, base: string) =>
  * path the other writes: one device's values would replace each other, or a
  * value would sit where the other group writes a branch.
  */
-export function leavesCollide (a: InstanceGroupId, b: InstanceGroupId) {
-  return GROUP_LEAVES[a].some(leaf =>
+export function leavesCollide(a: InstanceGroupId, b: InstanceGroupId) {
+  return GROUP_LEAVES[a].some((leaf) =>
     GROUP_LEAVES[b].some(
-      other => atOrUnder(leaf, other) || atOrUnder(other, leaf)
+      (other) => atOrUnder(leaf, other) || atOrUnder(other, leaf)
     )
   )
 }

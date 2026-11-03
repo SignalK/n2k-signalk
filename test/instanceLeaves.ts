@@ -21,7 +21,7 @@ const line = (n: number) => ({
 const lines = (extra: object) => ({
   instance: 0,
   numberOfLines: 3,
-  list: [1, 2, 3].map(n => ({ ...line(n), ...extra }))
+  list: [1, 2, 3].map((n) => ({ ...line(n), ...extra }))
 })
 
 // A frame of every multi-leaf PGN with every field its mapping reads.
@@ -143,9 +143,10 @@ const FULL_FRAMES: Frame[] = [
       chargeEfficiencyFactor: 0.9
     }
   ],
-  ...[127744, 127745, 127746].map(
-    (pgn): Frame => [pgn, { connectionNumber: 0, acRmsCurrent: 3, power: 100 }]
-  ),
+  ...[127744, 127745, 127746].map((pgn): Frame => [
+    pgn,
+    { connectionNumber: 0, acRmsCurrent: 3, power: 100 }
+  ]),
   [
     127750,
     {
@@ -163,7 +164,7 @@ const FULL_FRAMES: Frame[] = [
 // The default paths of the PGN's mapping entries a frame has not reached:
 // a frame missing a field the entry reads leaves its path out of the lists
 // compared below. 127503 and 127504 map every line field they are given.
-function unreached (pgn: number, fields: Fields): string[] {
+function unreached(pgn: number, fields: Fields): string[] {
   const n2k = decode(pgn, 34, fields)
   const paths = new Set(
     new N2kMapper().toDelta(n2k)!.updates[0].values.map((v: any) => v.path)
@@ -176,25 +177,25 @@ function unreached (pgn: number, fields: Fields): string[] {
 
 // The paths a frame writes under the prefix, relative to it, and whether it
 // writes notifications.
-function written (pgn: number, fields: Fields) {
+function written(pgn: number, fields: Fields) {
   const mapper = new N2kMapper({ instancePrefixResolver: () => PREFIX })
   const paths: string[] = mapper
     .toDelta(decode(pgn, 34, fields))!
     .updates[0].values.map((v: any) => v.path)
   const leaves = paths
-    .filter(path => !path.startsWith('notifications.'))
-    .map(path => (path === PREFIX ? '' : path.slice(PREFIX.length + 1)))
+    .filter((path) => !path.startsWith('notifications.'))
+    .map((path) => (path === PREFIX ? '' : path.slice(PREFIX.length + 1)))
   return { leaves, notifies: leaves.length < paths.length }
 }
 
 describe('instance group leaves', function () {
-  instanceGroups.forEach(group => {
+  instanceGroups.forEach((group) => {
     it(`lists the paths the ${group.id} group writes`, function () {
-      const frames = (group.singleLeaf ? FRAMES : FULL_FRAMES).filter(frame =>
+      const frames = (group.singleLeaf ? FRAMES : FULL_FRAMES).filter((frame) =>
         group.pgns.includes(frame[0])
       )
       frames
-        .map(frame => frame[0])
+        .map((frame) => frame[0])
         .should.include.members(group.pgns, 'a frame of every PGN')
       const leaves = new Set<string>()
       for (const frame of frames) {
@@ -204,7 +205,7 @@ describe('instance group leaves', function () {
         if (group.id !== 'engine') {
           result.notifies.should.equal(false, `${pgn} writes notifications`)
         }
-        result.leaves.forEach(leaf => leaves.add(leaf))
+        result.leaves.forEach((leaf) => leaves.add(leaf))
       }
       ;[...leaves].should.have.members([...groupLeaves(group.id)])
     })
