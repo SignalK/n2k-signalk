@@ -12,7 +12,7 @@ module.exports = [
   {
     source: 'actualTemperature',
     node: function (n2k: PGN_65285_LowranceTemperature) {
-      var temperatureMapping: TemperatureMapping | undefined = (
+      const temperatureMapping: TemperatureMapping | undefined = (
         temperatureMappings as Record<string, TemperatureMapping>
       )[n2k.fields.temperatureSource as string]
 
@@ -22,7 +22,7 @@ module.exports = [
           // not every emitter populates it. Fall back to the literal
           // 'default' so downstream paths stay valid against the
           // Signal K schema (tanks.liveWell.<id>.temperature etc.).
-          var instance =
+          const instance =
             instanceOf(n2k) !== undefined ? instanceOf(n2k) : 'default'
           return temperatureMapping.pathWithIndex.replace(
             '<index>',

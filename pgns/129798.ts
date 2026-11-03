@@ -14,7 +14,7 @@ module.exports = [
   {
     filter: (n2k: PGN_129798) => n2k.fields.longitude && n2k.fields.latitude,
     value: function (n2k: PGN_129798) {
-      var res: { longitude: number; latitude: number; altitude?: number } = {
+      const res: { longitude: number; latitude: number; altitude?: number } = {
         longitude: Number(n2k.fields.longitude),
         latitude: Number(n2k.fields.latitude)
       }

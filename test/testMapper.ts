@@ -1,7 +1,7 @@
 import { FromPgn, pgnToActisenseSerialFormat } from '@canboat/canboatjs'
 import * as n2kMapper from '../dist/n2kMapper'
 import { Delta, MapperState } from '../dist/n2kMapper'
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const signalkSchema = require('@signalk/signalk-schema')
 
 // pgnToActisenseSerialFormat writes whole messages, so tell the parser: an

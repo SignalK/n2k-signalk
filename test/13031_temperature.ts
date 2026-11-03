@@ -78,7 +78,7 @@ describe('Temperature: ', function () {
       'urn:mrn:imo:mmsi:230099999'
     )
     _.forOwn(temperatureMappings, function (mapping: any, key: string) {
-      let path = mapping.pathWithIndex
+      const path = mapping.pathWithIndex
         ? mapping.pathWithIndex.replace('<index>', '0')
         : mapping.path
 

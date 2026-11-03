@@ -6,7 +6,7 @@ type AisFrame = {
 }
 
 export = function (n2k: AisFrame) {
-  var fromStarboard = Number(n2k.fields.positionReferenceFromStarboard)
-  var width = Number(n2k.fields.beam)
+  const fromStarboard = Number(n2k.fields.positionReferenceFromStarboard)
+  const width = Number(n2k.fields.beam)
   return width / 2 - fromStarboard
 }

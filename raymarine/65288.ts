@@ -16,7 +16,7 @@ module.exports = [
       )
     },
     node: function (n2k: PGN_65288_SeatalkAlarm) {
-      var alarmName: string
+      let alarmName: string
 
       if (typeof n2k.fields.alarmId === 'string') {
         alarmName = (n2k.fields.alarmId as string).replace(/ /g, '')
@@ -24,18 +24,18 @@ module.exports = [
         alarmName = `unknown${n2k.fields.alarmId}`
       }
 
-      var alarmGroup: string =
+      const alarmGroup: string =
         n2k.fields.alarmGroup !== undefined
           ? n2k.fields.alarmGroup.toString()
           : 'unknownGroup'
 
-      var path = alarmGroup.toLowerCase().replace(/ /g, '') + '.' + alarmName
+      const path = alarmGroup.toLowerCase().replace(/ /g, '') + '.' + alarmName
       return 'notifications.' + path
     },
     value: function (n2k: PGN_65288_SeatalkAlarm) {
-      var state = n2k.fields.alarmStatus
+      const state = n2k.fields.alarmStatus
 
-      var method = ['visual']
+      const method = ['visual']
 
       if (state === SeatalkAlarmStatus.AlarmConditionMetAndNotSilenced) {
         method.push('sound')
@@ -48,7 +48,7 @@ module.exports = [
         notifState = 'alarm'
       }
 
-      var alarmName: string
+      let alarmName: string
       const alarmId = n2k.fields.alarmId
 
       if (alarmId === undefined || typeof alarmId !== 'string') {

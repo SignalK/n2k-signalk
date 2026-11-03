@@ -548,7 +548,7 @@ export function toDelta(
       }
       if (result.context) {
         //filter out invalid mmsi
-        let last = result.context.lastIndexOf(':')
+        const last = result.context.lastIndexOf(':')
         if (last != -1 && result.context.slice(last + 1).length < 9) {
           console.error('bad MMSI: ' + result.context)
           return
@@ -582,11 +582,11 @@ function getValue(
   state: MapperSourceState | undefined
 ): unknown {
   if (typeof source !== 'undefined') {
-    var stringValue = fields[source]
+    const stringValue = fields[source]
     if (!stringValue && stringValue != '') {
       return undefined
     }
-    var numberValue = Number(stringValue)
+    const numberValue = Number(stringValue)
     return isNaN(numberValue) ? stringValue : numberValue
   } else {
     if (theMapping.value) {
@@ -652,15 +652,15 @@ function toValuesArray(
           if (typeof theMapping === 'function') {
             Array.prototype.push.apply(updates, theMapping(n2k, state))
           } else {
-            var path =
+            const path =
               typeof theMapping.node === 'function'
                 ? theMapping.node(n2k, state)
                 : theMapping.node
-            var value =
+            const value =
               typeof theMapping.source === 'function'
                 ? theMapping.source(n2k, state)
                 : getValue(n2k, fields, theMapping.source, theMapping, state)
-            var allowNull =
+            const allowNull =
               typeof theMapping.allowNull !== 'undefined' &&
               theMapping.allowNull
             if (!(value == null) || allowNull) {

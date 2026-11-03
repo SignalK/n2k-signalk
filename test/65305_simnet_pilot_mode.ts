@@ -1,6 +1,6 @@
 import chai from 'chai'
 chai.should()
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 import { FromPgn } from '@canboat/canboatjs'
