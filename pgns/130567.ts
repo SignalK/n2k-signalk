@@ -8,7 +8,7 @@ type Fields = PGN_130567['fields']
 
 const watermaker = (path: string) => () => `watermaker.${wmId()}.${path}`
 
-function yesNo(field: keyof Fields) {
+function yesNo (field: keyof Fields) {
   return (n2k: PGN_130567) => {
     const v = n2k.fields[field] as unknown
     return typeof v === 'undefined' ? null : v === 'Yes'
@@ -69,7 +69,7 @@ const warningNotifications: {
   { field: 'systemStatus', name: 'system', message: 'Watermaker System' }
 ]
 
-warningNotifications.forEach((notif) => {
+warningNotifications.forEach(notif => {
   mappings.push({
     node: () => `notifications.watermaker.${wmId()}.${notif.name}`,
     filter: (n2k: PGN_130567) => typeof n2k.fields[notif.field] !== 'undefined',

@@ -10,7 +10,7 @@ const getShipType = require('../aisShipTypeMapping')
  * the time of day in seconds; an ETA without a time of day is the date at
  * midnight. AIS marks an unknown hour as 24, which counts as 0.
  */
-function eta(n2k: PGN_129794): string | undefined {
+function eta (n2k: PGN_129794): string | undefined {
   const date = n2k.fields.etaDate as unknown
   if (typeof date !== 'string') {
     return undefined

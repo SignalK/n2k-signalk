@@ -1,0 +1,51 @@
+import chai from 'chai'
+chai.should()
+chai.use(require('chai-things'))
+chai.use(require('@signalk/signalk-schema').chaiModule)
+
+const mapper = require('./testMapper')
+
+describe('129041 AIS Aids to Navigation (AtoN) Report', function () {
+  it('complete sentence converts', function () {
+    const msg = JSON.parse(
+      '{"timestamp":"2017-03-14T19:02:40.451Z","prio":4,"src":43,"dst":255,"pgn":129041,"description":"AIS Aids to Navigation (AtoN) Report","fields":{"Message ID":21,"Repeat Indicator":"Initial","User ID":993672315,"Longitude":-76.3847132,"Latitude":38.9938400,"Position Accuracy":"High","AIS RAIM Flag":"not in use","Time Stamp":"Manual input mode","AtoN Type":"Fixed beacon: port hand","Off Position Indicator":"No","Virtual AtoN Flag":"Yes","Assigned Mode Flag":"Autonomous and continuous","AIS Spare":"0","Position Fixing Device Type":"Surveyed","AtoN Status":"0","AIS Transceiver information":"Channel B VDL reception","AtoN Name":"SW                  @"}}'
+    )
+    const delta = mapper.testToDelta(msg)
+    delta.updates.length.should.equal(1)
+    delta.context.should.equal('atons.urn:mrn:imo:mmsi:993672315')
+    delta.updates[0].values[0].path.should.equal('')
+    delta.updates[0].values[0].value.name.should.equal('SW')
+    const tree = mapper.toNested(msg)
+    tree.should.have.nested.property('atonType.value.name', 'Beacon, Port Hand')
+    tree.should.have.nested.property('atonType.value.id', 13)
+    tree.should.have.nested.property('virtual.value', true)
+    tree.should.have.nested.property('offPosition.value', false)
+    tree.navigation.position.value.latitude.should.equal(38.99384)
+    tree.navigation.position.value.longitude.should.equal(-76.3847132)
+    // tree.should.be.validSignalKAtoNIgnoringIdentity;
+  })
+
+  it('converts the reference point offsets', function () {
+    // Beam diameter 6, reference point 2m in from the starboard edge, so
+    // the reference point is 1m to starboard of the centerline: 6/2 - 2.
+    const msg = JSON.parse(
+      '{"timestamp":"2017-03-14T19:02:40.451Z","prio":4,"src":43,"dst":255,"pgn":129041,"description":"AIS Aids to Navigation (AtoN) Report","fields":{"Message ID":21,"Repeat Indicator":"Initial","User ID":993672315,"Longitude":-76.3847132,"Latitude":38.9938400,"Position Accuracy":"High","AIS RAIM Flag":"not in use","Time Stamp":"Manual input mode","Length/Diameter":12.0,"Beam/Diameter":6.0,"Position Reference from Starboard Edge":2.0,"Position Reference from True North Facing Edge":3.0,"AtoN Type":"Fixed beacon: port hand","Off Position Indicator":"No","Virtual AtoN Flag":"No","Assigned Mode Flag":"Autonomous and continuous","AIS Spare":"0","Position Fixing Device Type":"Surveyed","AtoN Status":"0","AIS Transceiver information":"Channel B VDL reception","AtoN Name":"SW                  @"}}'
+    )
+    const tree = mapper.toNested(msg)
+    // Guard explicitly against NaN: chai's equal would also fail on NaN,
+    // but a bare value assertion reads as if only the number were wrong.
+    Number.isFinite(tree.sensors.ais.fromCenter.value).should.equal(true)
+    tree.sensors.ais.fromCenter.value.should.equal(1)
+    tree.should.have.nested.property('design.beam.value', 6.0)
+  })
+
+  it('converts a reference point on the starboard edge', function () {
+    // An offset of 0 is a real position, not a missing one: on the starboard
+    // edge of a 6m beam, 3m to starboard of the centerline.
+    const msg = JSON.parse(
+      '{"timestamp":"2017-03-14T19:02:40.451Z","prio":4,"src":43,"dst":255,"pgn":129041,"description":"AIS Aids to Navigation (AtoN) Report","fields":{"Message ID":21,"Repeat Indicator":"Initial","User ID":993672315,"Longitude":-76.3847132,"Latitude":38.9938400,"Position Accuracy":"High","AIS RAIM Flag":"not in use","Time Stamp":"Manual input mode","Length/Diameter":12.0,"Beam/Diameter":6.0,"Position Reference from Starboard Edge":0,"Position Reference from True North Facing Edge":3.0,"AtoN Type":"Fixed beacon: port hand","Off Position Indicator":"No","Virtual AtoN Flag":"No","Assigned Mode Flag":"Autonomous and continuous","AIS Spare":"0","Position Fixing Device Type":"Surveyed","AtoN Status":"0","AIS Transceiver information":"Channel B VDL reception","AtoN Name":"SW                  @"}}'
+    )
+    const tree = mapper.toNested(msg)
+    tree.sensors.ais.fromCenter.value.should.equal(3)
+  })
+})

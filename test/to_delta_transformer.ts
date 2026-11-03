@@ -1,0 +1,101 @@
+import chai from 'chai'
+chai.should()
+
+import { Transform } from 'stream'
+import { toDeltaTransformer, toDelta } from '../dist/n2kMapper'
+
+describe('toDeltaTransformer', function () {
+  it('emits nothing for a report toDelta drops', function (done) {
+    // Declared as a Stream; it is a Transform.
+    const stream = (toDeltaTransformer({}, {}) as unknown) as Transform
+    const emitted: unknown[] = []
+    stream.on('data', (d: unknown) => emitted.push(d))
+    stream.on('end', () => {
+      emitted.should.have.lengthOf(0)
+      done()
+    })
+    // An AIS position report without an MMSI: canboat and canboatjs report
+    // MMSI 0 as not available, so userId is absent.
+    stream.write({
+      pgn: 129038,
+      src: 3,
+      dst: 255,
+      prio: 4,
+      timestamp: '2022-05-09T13:38:38.917Z',
+      fields: {
+        messageId: 'Scheduled Class A position report',
+        longitude: 10.15,
+        latitude: 54.36
+      }
+    })
+    stream.end()
+  })
+})
+
+describe('toDelta context', function () {
+  const report = {
+    pgn: 999001,
+    src: 3,
+    dst: 255,
+    prio: 4,
+    timestamp: '2022-05-09T13:38:38.917Z',
+    fields: { value: 7 }
+  }
+
+  it('ignores a context mapping that does not apply to the report', function () {
+    // The context mapping's filter rejects this report, so it must neither
+    // set the context nor cause the report to be dropped.
+    const customPgns = {
+      999001: [
+        { source: 'value', node: 'test.value' },
+        { filter: () => false, context: () => undefined, node: 'test.other' }
+      ]
+    }
+    const delta = toDelta(report, {}, customPgns)!
+    delta.updates[0].values.should.deep.equal([
+      { path: 'test.value', value: 7 }
+    ])
+  })
+
+  it('drops a report whose applying context mapping finds no context', function () {
+    const customPgns = {
+      999001: [
+        { source: 'value', node: 'test.value' },
+        { context: () => undefined, node: 'test.other' }
+      ]
+    }
+    ;(typeof toDelta(report, {}, customPgns)).should.equal('undefined')
+  })
+})
+
+describe('toDelta values without a path', function () {
+  it("leaves out a function mapping's value that has no path", function () {
+    const report = {
+      pgn: 999002,
+      src: 3,
+      dst: 255,
+      prio: 4,
+      timestamp: '2022-05-09T13:38:38.917Z',
+      fields: { value: 7 }
+    }
+    const customPgns = {
+      999002: [
+        () => [
+          { path: 'test.good', value: 1 },
+          { path: undefined, value: 2 }
+        ]
+      ]
+    }
+    const consoleError = console.error
+    console.error = () => {}
+    let delta
+    try {
+      delta = toDelta(report, {}, customPgns)
+    } finally {
+      console.error = consoleError
+    }
+    delta!.updates[0].values.should.deep.equal([
+      { path: 'test.good', value: 1 }
+    ])
+  })
+})

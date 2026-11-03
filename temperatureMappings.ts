@@ -1,0 +1,83 @@
+/*
+{"0": "Sea Temperature"},
+{"1": "Outside Temperature"},
+{"2": "Inside Temperature"},
+{"3": "Engine Room Temperature"},
+{"4": "Main Cabin Temperature"},
+{"5": "Live Well Temperature"},
+{"6": "Bait Well Temperature"},
+{"7": "Refrigeration Temperature"},
+{"8": "Heating System Temperature"},
+{"9": "Dew Point Temperature"},
+{"10": "Apparent Wind Chill Temperature"},
+{"11": "Theoretical Wind Chill Temperature"},
+{"12": "Heat Index Temperature"},
+{"13": "Freezer Temperature"},
+{"14": "Exhaust Gas Temperature"}]},
+
+Each PGN 130312/130316 reading carries an Instance number alongside
+the Source enum. Without the instance in the path, multiple sensors
+of the same Source category collapse onto one Signal K path that the
+priority engine cannot disambiguate.
+
+`environment.inside.*` is a zoneObject pattern in the Signal K schema
+that accepts arbitrary subkeys, so unscoped Inside sensors are
+indexed (`environment.inside.<index>.temperature`). Other parents
+(`outside`, `water`) have fixed schemas that don't accept dynamic
+subkeys; sensors there share the bare path and disambiguation relies
+on the priority engine's `$source` matching. Categories that already
+map to a named zone (Engine Room, Main Cabin, Freezer, Refrigeration,
+Heating Sys) keep the bare zone path.
+*/
+export = {
+  'Sea Temperature': {
+    path: 'environment.water.temperature'
+  },
+  'Outside Temperature': {
+    path: 'environment.outside.temperature'
+  },
+  'Inside Temperature': {
+    pathWithIndex: 'environment.inside.<index>.temperature'
+  },
+  'Engine Room Temperature': {
+    path: 'environment.inside.engineRoom.temperature'
+  },
+  'Main Cabin Temperature': {
+    path: 'environment.inside.mainCabin.temperature'
+  },
+  'Live Well Temperature': {
+    pathWithIndex: 'tanks.liveWell.<index>.temperature'
+  },
+  'Bait Well Temperature': {
+    pathWithIndex: 'tanks.baitWell.<index>.temperature'
+  },
+  'Refrigeration Temperature': {
+    path: 'environment.inside.refrigerator.temperature'
+  },
+  //leave old misspelled version in place just in case
+  //https://github.com/canboat/canboat/issues/234
+  'Refridgeration Temperature': {
+    path: 'environment.inside.refrigerator.temperature'
+  },
+  'Heating System Temperature': {
+    path: 'environment.inside.heating.temperature'
+  },
+  'Dew Point Temperature': {
+    path: 'environment.outside.dewPointTemperature'
+  },
+  'Apparent Wind Chill Temperature': {
+    path: 'environment.outside.apparentWindChillTemperature'
+  },
+  'Theoretical Wind Chill Temperature': {
+    path: 'environment.outside.theoreticalWindChillTemperature'
+  },
+  'Heat Index Temperature': {
+    path: 'environment.outside.heatIndexTemperature'
+  },
+  'Freezer Temperature': {
+    path: 'environment.inside.freezer.temperature'
+  },
+  'Exhaust Gas Temperature': {
+    pathWithIndex: 'propulsion.<index>.exhaustTemperature'
+  }
+}
