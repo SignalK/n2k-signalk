@@ -127,7 +127,7 @@ A prefix that follows the rule syntax replaces the default; `undefined` or `null
 
 For each frame of an instance group, a matching rule wins; without one, the resolver is called; when it returns nothing, the default prefix applies. Rules and resolver are consulted once per frame, and every path of the frame uses the result, notifications included. Engine alarm messages name a remapped engine by the prefix's last segment.
 
-Rules, and the resolver's `canName`, `manufacturerCode` and `uniqueNumber`, only apply once the mapper has seen the source's PGN 60928 address claim. Until then a device's data is written under the default prefix, even when a rule covers it: after a restart, its data appears on the default path first and on the rule's path once the claim arrives. A device that claims again with another device or system instance keeps matching its rules; another device that claims the same source address does not.
+Rules only match once the mapper has seen the source's PGN 60928 address claim, and until then the resolver gets `canName`, `manufacturerCode` and `uniqueNumber` as `undefined`. Before the claim, a device's data is written under the prefix the resolver returns, or else under the default prefix, even when a rule covers it: after a restart, its data appears there first and on the rule's path once the claim arrives. A device that claims again with another device or system instance keeps matching its rules; another device that claims the same source address does not.
 
 The J1939 engine PGNs (61444, 65226, 65262 and 65270) write `propulsion.<source address>`. They carry no instance and are not remapped.
 
