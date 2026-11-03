@@ -1,13 +1,25 @@
 import chai from 'chai'
 chai.should()
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+chai.use(require('@signalk/signalk-schema').chaiModule)
 
 import { FromPgn } from '@canboat/canboatjs'
 import { N2kMapper } from '../dist/n2kMapper'
+import testMapper = require('./testMapper')
 
 // Frames captured from Simrad autopilots, from canboat's samples/.
+// Some captures give the time without a zone; it is UTC, as canboat's
+// analyzer reads it.
+const decode = (line: string): any => {
+  const n2k: any = new FromPgn({ useCamel: true }).parseString(line)
+  if (!/(Z|[+-]\d\d:?\d\d)$/.test(n2k.timestamp)) {
+    n2k.timestamp += 'Z'
+  }
+  return n2k
+}
+
 function values (line: string): any[] {
-  const n2k = new FromPgn({ useCamel: true }).parseString(line) as any
-  return new N2kMapper().toDelta(n2k)!.updates[0].values
+  return new N2kMapper().toDelta(decode(line))!.updates[0].values
 }
 
 describe('65305 Simnet pilot mode', function () {
@@ -50,6 +62,12 @@ describe('65305 Simnet pilot mode', function () {
       values(line).should.deep.equal([
         { path: 'steering.autopilot.state', value: state }
       ])
+      // The specification's autopilot states have no heading (#392), so a
+      // heading frame is checked by its value only.
+      if (state !== 'heading') {
+        testMapper.n2kToNested(decode(line)).should.be
+          .validSignalKVesselIgnoringIdentity
+      }
     })
   })
 
