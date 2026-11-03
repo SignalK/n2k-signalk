@@ -3,6 +3,9 @@
   "version": "5.0.0-beta.3",
   "description": "NMEA 2000 to SignalK conversion library",
   "main": "dist/n2kMapper.js",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "test": "mocha",
     "format": "prettier-standard '*.ts' '{pgns,actisense,digitalyacht,fusion,lowrance,maretron,navico,raymarine,simrad}/**/*.ts' 'test/**/*.{js,ts}' 'bin/*.js'",
