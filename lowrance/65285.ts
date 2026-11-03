@@ -3,8 +3,8 @@ import temperatureMappings from '../temperatureMappings.js'
 
 type TemperatureMapping = { path?: string; pathWithIndex?: string }
 
-// PGN_65285_LowranceTemperature has no temperatureInstance field; it is
-// read as the mapping always did.
+// PGN_65285_LowranceTemperature has no temperatureInstance field, so it is
+// read through a cast (#385).
 const instanceOf = (n2k: PGN_65285_LowranceTemperature) =>
   (n2k.fields as { temperatureInstance?: unknown }).temperatureInstance
 
