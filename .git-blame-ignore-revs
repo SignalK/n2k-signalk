@@ -5,3 +5,5 @@
 a73b18e591345a056692777548368d07eac366e3
 # style: let and const for var, as ESLint fixes them
 f1f6532900baa114f5a3efdf1fda91d614438882
+# style: format #396's code with Prettier
+c8a9b4181706fa83ebfa931f9a7cbd4b8659e949
