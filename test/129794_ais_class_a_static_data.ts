@@ -40,7 +40,6 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 const mapper = require('./testMapper')
 
-// A value of a delta, as the tests read it.
 interface PathValue {
   path: string
   value?: any

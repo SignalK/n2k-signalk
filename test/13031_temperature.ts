@@ -6,7 +6,6 @@ const debug = require('debug')('n2k-signalk:test:130312')
 const _ = require('lodash')
 import assert from 'assert'
 
-// A value of a delta, as the tests read it.
 interface PathValue {
   path: string
   value?: any

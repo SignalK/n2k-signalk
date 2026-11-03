@@ -5,7 +5,6 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 const debug = require('debug')('n2k-signalk:test:130314')
 const _ = require('lodash')
 
-// A value of a delta, as the tests read it.
 interface PathValue {
   path: string
   value?: any
