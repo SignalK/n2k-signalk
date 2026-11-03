@@ -7,6 +7,7 @@ import {
   InstanceGroupId,
   instanceGroups,
   isValidPrefix,
+  leavesCollide,
   DEVICE_SCOPE,
   InstancePrefixContext,
   InstancePrefixResolver,
@@ -179,9 +180,9 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
 function compileRules (rules: unknown) {
   const problems: InstancePrefixRuleProblem[] = []
   const table: RuleTable = new Map()
-  // Rules by device and prefix. Two rules of one device and one group, or of
-  // two single-leaf groups, write the same paths with the same $source and
-  // would merge two streams. Two devices are told apart by $source.
+  // Rules by device and prefix. Two rules of one device whose groups write a
+  // common path under the prefix would merge two streams under one $source.
+  // Two devices are told apart by $source.
   const targets = new Map<string, Array<{ index: number; info: GroupInfo }>>()
   if (!Array.isArray(rules)) {
     problems.push({
@@ -208,10 +209,8 @@ function compileRules (rules: unknown) {
     }
     const target = `${entry.device} ${entry.prefix}`
     const sharing = targets.get(target) ?? []
-    const collision = sharing.find(
-      ({ info }) =>
-        info === entry.info ||
-        (info.group.singleLeaf && entry.info.group.singleLeaf)
+    const collision = sharing.find(({ info }) =>
+      leavesCollide(info.group.id, entry.info.group.id)
     )
     if (collision !== undefined) {
       problems.push({
@@ -237,8 +236,9 @@ function compileRules (rules: unknown) {
  * outside 0..2^21 - 1, an unknown group, a discriminator the group does not
  * take or write, an instance out of range, a prefix that is not a valid
  * path, a key an earlier rule already holds, or a prefix an earlier rule of
- * the same device holds for the same group, or for another single-leaf group. A list that is not an
- * array is one problem, at index -1, and no rule is checked.
+ * the same device holds for a group that writes a path at or under one this
+ * rule's group writes. A list that is not an array is one problem, at index
+ * -1, and no rule is checked.
  */
 export function validateInstancePrefixRules (
   rules: unknown
