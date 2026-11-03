@@ -33,7 +33,7 @@ describe('65305 Simnet pilot mode', function () {
     [
       'ap48-tack.all',
       '2026-07-05T00:07:25.129Z,1,65305,19,255,8,41,9f,64,0a,10,00,00,00',
-      'heading'
+      'auto'
     ],
     [
       'ap48-tack.all',
@@ -54,7 +54,14 @@ describe('65305 Simnet pilot mode', function () {
     [
       'ac42-commissioning.raw',
       '2026-06-08T01:59:43.385,7,65305,13,255,8,41,9f,00,0a,14,00,80,00',
-      'heading'
+      'auto'
+    ],
+    // No sample has No Drift: the Heading frame above with the No Drift
+    // bit (8) instead.
+    [
+      'constructed',
+      '2026-07-05T00:07:25.129Z,1,65305,19,255,8,41,9f,64,0a,00,01,00,00',
+      'noDrift'
     ]
   ]
   cases.forEach(([file, line, state]) => {
@@ -62,12 +69,8 @@ describe('65305 Simnet pilot mode', function () {
       values(line).should.deep.equal([
         { path: 'steering.autopilot.state', value: state }
       ])
-      // The specification's autopilot states have no heading (#392), so a
-      // heading frame is checked by its value only.
-      if (state !== 'heading') {
-        testMapper.n2kToNested(decode(line)).should.be
-          .validSignalKVesselIgnoringIdentity
-      }
+      testMapper.n2kToNested(decode(line)).should.be
+        .validSignalKVesselIgnoringIdentity
     })
   })
 
