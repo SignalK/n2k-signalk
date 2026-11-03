@@ -526,7 +526,11 @@ describe('validateInstancePrefixRules', function () {
   })
 
   it('reports a rule keyed by canName instead of the device key', function () {
-    const { manufacturerCode, uniqueNumber, ...rest } = mainEngine
+    const {
+      manufacturerCode: _manufacturerCode,
+      uniqueNumber: _uniqueNumber,
+      ...rest
+    } = mainEngine
     validateInstancePrefixRules([{ ...rest, canName: CAN_NAME }])
       .map((p) => p.message)
       .should.deep.equal([

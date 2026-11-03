@@ -1,5 +1,4 @@
 import { N2kMapper } from '../dist/n2kMapper'
-import EventEmitter from 'events'
 const signalkSchema = require('@signalk/signalk-schema')
 import { PropertyValues } from '@signalk/server-api'
 

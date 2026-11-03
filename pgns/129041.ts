@@ -1,6 +1,5 @@
 import { PGN_129041, AtonType } from '@canboat/ts-pgns'
 
-import { getMmsiContext } from '../mmsi-context'
 import getFromStarboardEdge from '../atonFromStarboardEdge'
 const schema = require('@signalk/signalk-schema')
 
@@ -100,7 +99,7 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k: PGN_129041) {
+    value: function (_n2k: PGN_129041) {
       return 'ATON'
     }
   }

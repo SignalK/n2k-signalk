@@ -39,7 +39,7 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k: PGN_129039) {
+    value: function (_n2k: PGN_129039) {
       return 'B'
     }
   }

@@ -2,7 +2,6 @@ import chai from 'chai'
 chai.should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
-const debug = require('debug')('n2k-signalk:test:130314')
 const _ = require('lodash')
 
 interface PathValue {
@@ -85,7 +84,7 @@ describe('Pressure: ', function () {
     const full = new (require('@signalk/signalk-schema').FullSignalK)(
       'urn:mrn:imo:mmsi:230099999'
     )
-    _.forOwn(pressureMappings, function (mapping: any, key: string) {
+    _.forOwn(pressureMappings, function (mapping: any, _key: string) {
       const delta = {
         context: 'vessels.urn:mrn:imo:mmsi:230099999',
         updates: [

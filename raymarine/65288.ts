@@ -1,6 +1,5 @@
 import {
   PGN_65288_SeatalkAlarm,
-  ManufacturerCode,
   SeatalkAlarmStatus,
   SeatalkAlarmId
 } from '@canboat/ts-pgns'

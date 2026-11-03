@@ -105,7 +105,7 @@ const serverMapper = new N2kMapper({
 }) as N2kMapper & EventEmitter
 serverMapper.on(
   'n2kSourceChanged',
-  (src: string | number, from: string, to: string) => {}
+  (_src: string | number, _from: string, _to: string) => {}
 )
 serverMapper.n2kOutIsAvailable(app, 'nmea2000JsonOut')
 const serverDelta = serverMapper.toDelta(frame)

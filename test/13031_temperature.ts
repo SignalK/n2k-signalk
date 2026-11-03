@@ -2,7 +2,6 @@ import chai from 'chai'
 chai.should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
-const debug = require('debug')('n2k-signalk:test:130312')
 const _ = require('lodash')
 import assert from 'assert'
 
@@ -77,7 +76,7 @@ describe('Temperature: ', function () {
     const full = new (require('@signalk/signalk-schema').FullSignalK)(
       'urn:mrn:imo:mmsi:230099999'
     )
-    _.forOwn(temperatureMappings, function (mapping: any, key: string) {
+    _.forOwn(temperatureMappings, function (mapping: any, _key: string) {
       const path = mapping.pathWithIndex
         ? mapping.pathWithIndex.replace('<index>', '0')
         : mapping.path

@@ -39,7 +39,7 @@ function resolveAlertType(rawAlertType: unknown) {
 
 module.exports = [
   {
-    node: function (n2k: PGN_126983, state?: AlertState) {
+    node: function (n2k: PGN_126983, _state?: AlertState) {
       const resolved = resolveAlertType(n2k.fields.alertType)
       const alertType = resolved.nmea.replace(/ /g, '').toLowerCase()
 

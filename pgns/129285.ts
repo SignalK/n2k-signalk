@@ -1,6 +1,5 @@
 import { PGN_129285 } from '@canboat/ts-pgns'
 
-const debug = require('debug')('n2k-signalk-129285')
 const _ = require('lodash')
 
 type State = { lastCourseCalculationType?: string }
