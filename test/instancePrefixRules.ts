@@ -486,10 +486,49 @@ describe('validateInstancePrefixRules', function () {
     problems.should.deep.equal([{ index: 1, message: 'same prefix as rule 0' }])
   })
 
+  it('reports rules of groups that write a common path under one prefix', function () {
+    const at = (group: string, prefix: string, extra = {}) => ({
+      ...DEVICE,
+      group,
+      instance: 0,
+      prefix,
+      ...extra
+    })
+    validateInstancePrefixRules([
+      // 127489 and 127508 both write <prefix>.temperature.
+      mainEngine,
+      at('battery', 'propulsion.main'),
+      // 127507 and 127509 both write <prefix>.enabled.
+      at('charger', 'electrical.multi'),
+      at('inverter', 'electrical.multi'),
+      // A tank's capacity value where 127513 writes capacity.nominal.
+      at('tank', 'electrical.batteries.house', { discriminator: 0 }),
+      at('battery', 'electrical.batteries.house'),
+      // A temperature value at the prefix the engine writes under.
+      at('temperature', 'propulsion.main', { discriminator: EXHAUST_GAS })
+    ]).should.deep.equal([
+      { index: 1, message: 'same prefix as rule 0' },
+      { index: 3, message: 'same prefix as rule 2' },
+      { index: 5, message: 'same prefix as rule 4' },
+      { index: 6, message: 'same prefix as rule 0' }
+    ])
+  })
+
   it('accepts rules of different groups with the same prefix otherwise', function () {
     validateInstancePrefixRules([
-      { ...DEVICE, group: 'battery', instance: 0, prefix: 'propulsion.main' },
-      mainEngine,
+      {
+        ...DEVICE,
+        group: 'tank',
+        discriminator: 0,
+        instance: 0,
+        prefix: 'electrical.dc.house'
+      },
+      {
+        ...DEVICE,
+        group: 'dcConnection',
+        instance: 0,
+        prefix: 'electrical.dc.house'
+      },
       {
         ...DEVICE,
         group: 'acInput',

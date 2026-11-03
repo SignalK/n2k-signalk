@@ -2,10 +2,10 @@ import { expect } from 'chai'
 import { FromPgn, pgnToActisenseSerialFormat } from '@canboat/canboatjs'
 import { classifyInstance, defaultPrefix } from '../dist/n2kMapper'
 
-type Fields = Record<string, unknown>
+export type Fields = Record<string, unknown>
 // A PGN number and its fields. (An interface: the formatter's parser
 // cannot read a tuple type.)
-interface Frame {
+export interface Frame {
   0: number
   1: Fields
 }

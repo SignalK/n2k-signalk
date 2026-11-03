@@ -359,6 +359,119 @@ const GROUP_SPECS: GroupSpec[] = [
   byConnection('dcConnection', { 127751: connectionUnder('electrical.dc') })
 ]
 
+const AC_PHASES = ['A', 'B', 'C']
+const acLines = (fields: readonly string[], under = '') =>
+  AC_PHASES.flatMap(phase => fields.map(field => `${under}${phase}.${field}`))
+const AC_LINE_FIELDS = [
+  'voltage',
+  'current',
+  'frequency',
+  'breakerSize',
+  'realPower',
+  'reactivePower',
+  'powerFactor'
+]
+
+// The paths each group writes under its prefix, outside notifications; ''
+// is the prefix itself. Only the engine group writes notifications.
+const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
+  engine: [
+    'revolutions',
+    'drive.trimState',
+    'boostPressure',
+    'temperature',
+    'alternatorVoltage',
+    'fuel.rate',
+    'fuel.pressure',
+    'oilPressure',
+    'runTime',
+    'oilTemperature',
+    'coolantPressure',
+    'engineLoad',
+    'engineTorque',
+    'transmission.oilTemperature',
+    'transmission.gear',
+    'transmission.oilPressure',
+    'trip.fuelUsed',
+    'trip.fuelRate.average',
+    'trip.fuelRate.economy',
+    'trip.fuelRate.instantaneousEconomy'
+  ],
+  battery: [
+    'capacity.stateOfCharge',
+    'capacity.stateOfHealth',
+    'capacity.timeRemaining',
+    'capacity.nominal',
+    'voltage',
+    'current',
+    'temperature',
+    'batteryType',
+    'supportsEqualization',
+    'nominalVoltage',
+    'chemistry',
+    'temperatureCoefficient',
+    'peukertExponent',
+    'chargeEfficiencyFactor'
+  ],
+  charger: [
+    'operatingState',
+    'chargeMode',
+    'enabled',
+    'equalizationPending',
+    'equalizationTimeRemaining',
+    'chargeCurrentLimit',
+    'chargingAlgorithm',
+    'estimatedTemperature',
+    'equalizeOneTimeEnabled',
+    'overChargeEnabled',
+    'equalizeTime'
+  ],
+  inverter: [
+    ...acLines(['waveform', ...AC_LINE_FIELDS]),
+    'operatingState',
+    'enabled',
+    'inverterMode',
+    'loadSenseEnabled',
+    'loadSensePowerThreshold',
+    'loadSenseInterval'
+  ],
+  acInput: acLines(['acceptability', ...AC_LINE_FIELDS]),
+  tank: ['currentLevel', 'capacity'],
+  temperature: [''],
+  humidity: [''],
+  pressure: [''],
+  acConnection: acLines(['power', 'current'], 'phase.'),
+  converter: [
+    'operatingState',
+    'temperatureState',
+    'overloadState',
+    'lowDCVoltageState',
+    'rippleState'
+  ],
+  dcConnection: ['voltage', 'current']
+}
+
+/** The paths a group writes under its prefix; '' is the prefix itself. */
+export function groupLeaves (id: InstanceGroupId): readonly string[] {
+  return GROUP_LEAVES[id]
+}
+
+const atOrUnder = (path: string, base: string) =>
+  base === '' || path === base || path.startsWith(base + '.')
+
+/**
+ * True when two groups at one prefix write a path that is, or is under, a
+ * path the other writes: one device's values would replace each other, or a
+ * value would sit where the other group writes a branch.
+ */
+export function leavesCollide (a: InstanceGroupId, b: InstanceGroupId) {
+  return GROUP_LEAVES[a].some(leaf =>
+    GROUP_LEAVES[b].some(
+      other => atOrUnder(leaf, other) || atOrUnder(other, leaf)
+    )
+  )
+}
+
 const PGN_INDEX = new Map<number, { spec: GroupSpec; prefix: Prefix }>()
 const SPECS_BY_ID = new Map<InstanceGroupId, GroupSpec>()
 for (const spec of GROUP_SPECS) {
