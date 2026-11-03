@@ -148,11 +148,11 @@ const status2Notifications: Notification[] = [
   }
 ]
 
-function generateMappingsForStatus (
+function generateMappingsForStatus(
   field: string,
   notifications: Notification[]
 ) {
-  notifications.forEach(notif => {
+  notifications.forEach((notif) => {
     mappings.push({
       node: (n2k: PGN_127489, state?: SourceState) =>
         format(notif.node, instancePrefix(n2k, state)),

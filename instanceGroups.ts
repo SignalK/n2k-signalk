@@ -126,11 +126,11 @@ const RESERVED_SEGMENTS = new Set(['__proto__', 'constructor', 'prototype'])
  * True for a prefix the mapper writes paths under: dot-separated segments of
  * A-Z, a-z, 0-9, _ and -, none of them __proto__, constructor or prototype.
  */
-export function isValidPrefix (value: unknown): value is string {
+export function isValidPrefix(value: unknown): value is string {
   return (
     typeof value === 'string' &&
     PREFIX.test(value) &&
-    !value.split('.').some(segment => RESERVED_SEGMENTS.has(segment))
+    !value.split('.').some((segment) => RESERVED_SEGMENTS.has(segment))
   )
 }
 
@@ -182,17 +182,21 @@ const pressures: Record<string, PathMapping> = pressureMappings
 
 // ts-pgns types each PGN's fields as an interface of its own; a prefix reads
 // them by name.
-function prefixFrame (n2k: N2kFrame): PrefixFrame {
+function prefixFrame(n2k: N2kFrame): PrefixFrame {
   return { src: n2k.src, fields: n2k.fields as Fields }
 }
 
-const instanceUnder = (base: string): Prefix => n2k =>
-  `${base}.${n2k.fields.instance}`
+const instanceUnder =
+  (base: string): Prefix =>
+  (n2k) =>
+    `${base}.${n2k.fields.instance}`
 
-const connectionUnder = (base: string): Prefix => n2k =>
-  `${base}.${n2k.src}.${n2k.fields.connectionNumber}`
+const connectionUnder =
+  (base: string): Prefix =>
+  (n2k) =>
+    `${base}.${n2k.src}.${n2k.fields.connectionNumber}`
 
-const enginePrefix: Prefix = n2k => 'propulsion.' + skEngineId(n2k)
+const enginePrefix: Prefix = (n2k) => 'propulsion.' + skEngineId(n2k)
 
 const TANK_TYPES = new Map<unknown, string>([
   ['Fuel', 'fuel'],
@@ -207,18 +211,18 @@ const TANK_TYPES = new Map<unknown, string>([
  * The tanks.<type> segment for a 127505 tank type as canboatjs decodes it, or
  * undefined for a type the mapper writes no path for.
  */
-export function skTankType (type: unknown): string | undefined {
+export function skTankType(type: unknown): string | undefined {
   return TANK_TYPES.get(type)
 }
 
-const tankPrefix: Prefix = n2k => {
+const tankPrefix: Prefix = (n2k) => {
   const type = skTankType(n2k.fields.type)
   return type === undefined
     ? undefined
     : 'tanks.' + type + '.' + n2k.fields.instance
 }
 
-function mappedPath (mapping: PathMapping, index: unknown) {
+function mappedPath(mapping: PathMapping, index: unknown) {
   return mapping.pathWithIndex
     ? mapping.pathWithIndex.replace(INDEX, String(index))
     : mapping.path
@@ -226,25 +230,23 @@ function mappedPath (mapping: PathMapping, index: unknown) {
 
 // 130312, 130313, 130314 and 130316 write no path without a source, default
 // a missing instance to 0 and replace spaces in an unmapped source name.
-const sourcePath = (
-  mappings: Record<string, PathMapping>,
-  base: string,
-  leaf: string
-): Prefix => n2k => {
-  const { source, instance } = n2k.fields
-  if (source == null) {
-    return null
+const sourcePath =
+  (mappings: Record<string, PathMapping>, base: string, leaf: string): Prefix =>
+  (n2k) => {
+    const { source, instance } = n2k.fields
+    if (source == null) {
+      return null
+    }
+    const index = instance != null ? instance : 0
+    const mapping = mappings[String(source)]
+    if (mapping) {
+      return mappedPath(mapping, index)
+    }
+    return `${base}.userDefined${String(source).replace(
+      SPACES,
+      '_'
+    )}.${index}.${leaf}`
   }
-  const index = instance != null ? instance : 0
-  const mapping = mappings[String(source)]
-  if (mapping) {
-    return mappedPath(mapping, index)
-  }
-  return `${base}.userDefined${String(source).replace(
-    SPACES,
-    '_'
-  )}.${index}.${leaf}`
-}
 
 const temperaturePath = sourcePath(
   temperatures,
@@ -368,7 +370,7 @@ for (const spec of GROUP_SPECS) {
 
 // The field as canboatjs decodes it: its lookup name, the number when the
 // enumeration has no name for it, or absent.
-function fieldView (
+function fieldView(
   code: number,
   enumName: string | undefined,
   absent: number
@@ -380,7 +382,7 @@ function fieldView (
   return name !== undefined ? name : code
 }
 
-function fieldCode (
+function fieldCode(
   value: unknown,
   enumName: string | undefined,
   absent: number
@@ -409,7 +411,7 @@ function fieldCode (
  * 0, 130316 does neither. pgn picks the spelling and defaults to the group's
  * first PGN; iterate the group's pgns to get every spelling.
  */
-export function defaultPrefix (
+export function defaultPrefix(
   groupId: InstanceGroupId,
   discriminator: number | undefined,
   instance: number,
@@ -453,7 +455,7 @@ export function defaultPrefix (
  * undefined for PGNs outside the group table and frames the mapper writes no
  * instance path for.
  */
-export function classifyInstance (
+export function classifyInstance(
   n2k: N2kFrame
 ): InstanceClassification | undefined {
   const entry = PGN_INDEX.get(Number(n2k.pgn))
@@ -528,7 +530,7 @@ export interface SourceState {
 }
 
 /** The binding toDelta stores on the per-source state for one frame. */
-export function resolverBinding (
+export function resolverBinding(
   resolver: InstancePrefixResolver,
   reported: Set<string>
 ): ResolverBinding {
@@ -536,7 +538,7 @@ export function resolverBinding (
 }
 
 /** True when the PGN writes paths under an instance prefix. */
-export function hasInstanceGroup (pgn: number | string): boolean {
+export function hasInstanceGroup(pgn: number | string): boolean {
   return PGN_INDEX.has(Number(pgn))
 }
 
@@ -566,7 +568,7 @@ export interface DeviceIdentity {
  * The manufacturer code and unique number of a canName as the mapper renders
  * it in deltas, or undefined for a value that is not one.
  */
-export function deviceIdentity (canName: string): DeviceIdentity | undefined {
+export function deviceIdentity(canName: string): DeviceIdentity | undefined {
   if (typeof canName !== 'string' || !CAN_NAME_HEX.test(canName)) {
     return undefined
   }
@@ -578,7 +580,7 @@ export function deviceIdentity (canName: string): DeviceIdentity | undefined {
 }
 
 // The device the state's canName names, decoded once per canName.
-function deviceOf (state: SourceState): Device | undefined {
+function deviceOf(state: SourceState): Device | undefined {
   const { canName } = state
   if (canName === undefined) {
     return undefined
@@ -591,7 +593,7 @@ function deviceOf (state: SourceState): Device | undefined {
   return device
 }
 
-function resolve (resolver: ScopedResolver, n2k: N2kFrame, state: SourceState) {
+function resolve(resolver: ScopedResolver, n2k: N2kFrame, state: SourceState) {
   const device = deviceOf(state)
   const identity = device && device.identity
   const scope = resolver[DEVICE_SCOPE]
@@ -616,7 +618,7 @@ function resolve (resolver: ScopedResolver, n2k: N2kFrame, state: SourceState) {
 }
 
 // Logs the first failure of the resolver for the frame's PGN and source.
-function reportOnce (
+function reportOnce(
   reported: Set<string>,
   n2k: N2kFrame,
   what: string,
@@ -642,7 +644,7 @@ function reportOnce (
  * the resolver runs once. A throw or an invalid prefix is logged the first
  * time one happens for the binding's reported set, PGN and source.
  */
-function resolvedPrefix (n2k: N2kFrame, state: SourceState | undefined) {
+function resolvedPrefix(n2k: N2kFrame, state: SourceState | undefined) {
   const binding = state && state[RESOLVER]
   if (!state || !binding) {
     return undefined
@@ -673,7 +675,7 @@ function resolvedPrefix (n2k: N2kFrame, state: SourceState | undefined) {
  * The prefix a PGN module writes this frame's instance under. state is the
  * per-source state node() receives.
  */
-export function instancePrefix (
+export function instancePrefix(
   n2k: N2kFrame,
   state: SourceState | undefined
 ): string | null | undefined {
@@ -689,7 +691,7 @@ export function instancePrefix (
  * The engine's name in alarm messages: the last segment of the resolved
  * prefix, so a remapped engine is not called "Port", or the default title.
  */
-export function engineTitle (
+export function engineTitle(
   n2k: N2kFrame,
   state: SourceState | undefined
 ): string | number {
@@ -701,7 +703,7 @@ export function engineTitle (
   return name.charAt(0).toUpperCase() + name.slice(1)
 }
 
-function discriminatorCodes (spec: GroupSpec) {
+function discriminatorCodes(spec: GroupSpec) {
   if (!spec.discriminator) {
     return undefined
   }
@@ -710,7 +712,7 @@ function discriminatorCodes (spec: GroupSpec) {
   for (let code = 0; code < spec.discriminator.absent; code++) {
     const pgns = Object.keys(spec.prefixes)
     if (
-      pgns.some(pgn => defaultPrefix(spec.id, code, 0, 0, pgn) !== undefined)
+      pgns.some((pgn) => defaultPrefix(spec.id, code, 0, 0, pgn) !== undefined)
     ) {
       codes.push(code)
     }
@@ -718,7 +720,7 @@ function discriminatorCodes (spec: GroupSpec) {
   return Object.freeze(codes)
 }
 
-const frozenGroups = GROUP_SPECS.map(spec =>
+const frozenGroups = GROUP_SPECS.map((spec) =>
   Object.freeze({
     id: spec.id,
     pgns: Object.keys(spec.prefixes).map(Number),

@@ -12,12 +12,9 @@ module.exports = [
   {
     source: 'actualTemperature',
     node: function (n2k: PGN_65285_LowranceTemperature) {
-      var temperatureMapping:
-        | TemperatureMapping
-        | undefined = (temperatureMappings as Record<
-        string,
-        TemperatureMapping
-      >)[n2k.fields.temperatureSource as string]
+      var temperatureMapping: TemperatureMapping | undefined = (
+        temperatureMappings as Record<string, TemperatureMapping>
+      )[n2k.fields.temperatureSource as string]
 
       if (temperatureMapping) {
         if (temperatureMapping.pathWithIndex) {

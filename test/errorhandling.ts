@@ -32,7 +32,7 @@ describe('No fields in pgn message', function () {
 })
 
 describe('Frame without src or timestamp', function () {
-  function quietly (fn: () => unknown): any {
+  function quietly(fn: () => unknown): any {
     const consoleError = console.error
     console.error = () => {}
     try {

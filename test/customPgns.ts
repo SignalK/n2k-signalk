@@ -44,9 +44,8 @@ describe('custom pgns', function () {
     )!
     delta.context = 'vessels.' + signalkSchema.fakeMmsiId
     const contextParts = delta.context.split('.')
-    const tree = signalkSchema.deltaToFull(delta)[contextParts[0]][
-      contextParts[1]
-    ]
+    const tree =
+      signalkSchema.deltaToFull(delta)[contextParts[0]][contextParts[1]]
 
     tree.should.have.nested.property(
       'tanks.fuel.0.customCurrentLevel.value',

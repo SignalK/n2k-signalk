@@ -112,13 +112,13 @@ module.exports = [
   }
 ]
 
-function hasState (state?: State) {
+function hasState(state?: State) {
   return (
     typeof state === 'object' &&
     typeof state.lastCourseCalculationType !== 'undefined'
   )
 }
 
-function hasWaypoints (n2k: PGN_129285, min: number) {
+function hasWaypoints(n2k: PGN_129285, min: number) {
   return !_.isUndefined(n2k.fields.list) && n2k.fields.list.length >= min
 }

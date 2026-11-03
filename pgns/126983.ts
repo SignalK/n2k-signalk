@@ -28,7 +28,7 @@ const alertTypes = [
 // so the notification still surfaces at the lowest severity.
 const defaultAlertType = alertTypes[alertTypes.length - 1]
 
-function resolveAlertType (rawAlertType: unknown) {
+function resolveAlertType(rawAlertType: unknown) {
   if (typeof rawAlertType === 'string') {
     for (var i = 0; i < alertTypes.length; i++) {
       if (alertTypes[i].nmea === rawAlertType) return alertTypes[i]

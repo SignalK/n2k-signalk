@@ -68,7 +68,7 @@ const NO_DISCRIMINATOR = 256
 const DISCRIMINATORS = 257
 const INSTANCES = 256
 
-function ruleKey (
+function ruleKey(
   info: GroupInfo,
   discriminator: number | undefined,
   instance: number
@@ -78,7 +78,7 @@ function ruleKey (
 }
 
 // The low 32 bits of the device's NAME.
-function deviceKey (manufacturerCode: number, uniqueNumber: number) {
+function deviceKey(manufacturerCode: number, uniqueNumber: number) {
   return manufacturerCode * UNIQUE_NUMBERS + uniqueNumber
 }
 
@@ -99,7 +99,7 @@ const isIntegerIn = (value: unknown, max: number): value is number =>
   isInteger(value) && value >= 0 && value <= max
 
 // The problems of one rule; its table entry when it has none.
-function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
+function checkRule(rule: unknown, problems: string[]): RuleEntry | undefined {
   if (typeof rule !== 'object' || rule === null || Array.isArray(rule)) {
     problems.push('rule is not an object')
     return undefined
@@ -176,7 +176,7 @@ function checkRule (rule: unknown, problems: string[]): RuleEntry | undefined {
   }
 }
 
-function compileRules (rules: unknown) {
+function compileRules(rules: unknown) {
   const problems: InstancePrefixRuleProblem[] = []
   const table: RuleTable = new Map()
   // Rules by device and prefix. Two rules of one device and one group, or of
@@ -194,7 +194,7 @@ function compileRules (rules: unknown) {
     const messages: string[] = []
     const entry = checkRule(rule, messages)
     if (entry === undefined) {
-      messages.forEach(message => problems.push({ index, message }))
+      messages.forEach((message) => problems.push({ index, message }))
       return
     }
     let device = table.get(entry.device)
@@ -240,13 +240,13 @@ function compileRules (rules: unknown) {
  * the same device holds for the same group, or for another single-leaf group. A list that is not an
  * array is one problem, at index -1, and no rule is checked.
  */
-export function validateInstancePrefixRules (
+export function validateInstancePrefixRules(
   rules: unknown
 ): InstancePrefixRuleProblem[] {
   return compileRules(rules).problems
 }
 
-function rulePrefix (table: RuleTable, context: InstancePrefixContext) {
+function rulePrefix(table: RuleTable, context: InstancePrefixContext) {
   const { manufacturerCode, uniqueNumber } = context
   if (manufacturerCode === undefined || uniqueNumber === undefined) {
     return undefined
@@ -283,7 +283,7 @@ export class InstancePrefixOverrides {
    * the problems of the others. undefined, null or [] removes every rule, as
    * does a list that is not an array, which is reported.
    */
-  setRules (
+  setRules(
     rules: readonly InstancePrefixRule[] | null | undefined
   ): InstancePrefixRuleProblem[] {
     const { table, problems } = compileRules(rules != null ? rules : [])
@@ -305,7 +305,7 @@ export class InstancePrefixOverrides {
    * never throws, so a bad option does not stop the mapper from being
    * constructed.
    */
-  setResolver (resolver: InstancePrefixResolver | null | undefined) {
+  setResolver(resolver: InstancePrefixResolver | null | undefined) {
     if (resolver != null && typeof resolver !== 'function') {
       console.error(
         'n2k-signalk: instancePrefixResolver must be a function, ignoring it'
@@ -319,21 +319,21 @@ export class InstancePrefixOverrides {
     this.combine()
   }
 
-  private combine () {
+  private combine() {
     const { rules, userResolver } = this
     if (rules === undefined) {
       this.resolver = userResolver
       return
     }
     if (userResolver === undefined) {
-      const resolver: ScopedResolver = context => rulePrefix(rules, context)
-      resolver[DEVICE_SCOPE] = device =>
+      const resolver: ScopedResolver = (context) => rulePrefix(rules, context)
+      resolver[DEVICE_SCOPE] = (device) =>
         device !== undefined &&
         rules.has(deviceKey(device.manufacturerCode, device.uniqueNumber))
       this.resolver = resolver
       return
     }
-    this.resolver = context => {
+    this.resolver = (context) => {
       const prefix = rulePrefix(rules, context)
       return prefix !== undefined ? prefix : userResolver(context)
     }

@@ -5,7 +5,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 import { FromPgn } from '@canboat/canboatjs'
 import { N2kMapper } from '../dist/n2kMapper'
 
-function values (n2k: any): any[] {
+function values(n2k: any): any[] {
   return new N2kMapper().toDelta(n2k)!.updates[0].values
 }
 
@@ -123,6 +123,6 @@ describe('130850 Simnet alarm', function () {
       '2026-06-08T01:55:23.519,2,130850,21,255,12,41,9f,0d,ff,ff,0a,06,00,ff,ff,ff,ff',
       '2026-06-25T13:13:47.979Z,2,130850,30,255,12,41,9f,ff,ff,01,17,3d,00,ff,ff,ff,ff',
       '2026-06-08T02:27:11.886,2,130850,20,255,12,41,9f,ff,ff,64,0a,2b,00,ff,00,00,00'
-    ].forEach(line => values(parser.parseString(line)).should.deep.equal([]))
+    ].forEach((line) => values(parser.parseString(line)).should.deep.equal([]))
   })
 })

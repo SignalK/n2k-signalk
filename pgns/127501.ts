@@ -3,7 +3,7 @@ import { PGN_127501 } from '@canboat/ts-pgns'
 module.exports = [
   function (n2k: PGN_127501) {
     // The indicators are read by number, so fields is indexed by name.
-    const fields = (n2k.fields as unknown) as Record<string, unknown>
+    const fields = n2k.fields as unknown as Record<string, unknown>
     var res = []
     for (var i = 1; i <= 28; i++) {
       const field = 'indicator' + i

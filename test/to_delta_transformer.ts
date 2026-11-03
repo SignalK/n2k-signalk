@@ -7,7 +7,7 @@ import { toDeltaTransformer, toDelta } from '../dist/n2kMapper'
 describe('toDeltaTransformer', function () {
   it('emits nothing for a report toDelta drops', function (done) {
     // Declared as a Stream; it is a Transform.
-    const stream = (toDeltaTransformer({}, {}) as unknown) as Transform
+    const stream = toDeltaTransformer({}, {}) as unknown as Transform
     const emitted: unknown[] = []
     stream.on('data', (d: unknown) => emitted.push(d))
     stream.on('end', () => {

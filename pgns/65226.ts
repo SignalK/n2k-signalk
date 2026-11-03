@@ -43,7 +43,7 @@ const lampOn = (n2k: J1939DM1, field: string) => n2k.fields[field] === 'On'
 // decodes without an FMI — neither is a real trouble code.
 const activeDtcs = (n2k: J1939DM1): Dtc[] =>
   (Array.isArray(n2k.fields.list) ? (n2k.fields.list as Dtc[]) : []).filter(
-    d =>
+    (d) =>
       d &&
       Number.isFinite(d.fmi) &&
       // a number, or the name canboat's SPN lookup gives it
@@ -66,7 +66,7 @@ module.exports = [
       )
     },
     value: function (n2k: J1939DM1) {
-      const active = LAMPS.filter(l => lampOn(n2k, l.field))
+      const active = LAMPS.filter((l) => lampOn(n2k, l.field))
       const dtcs = activeDtcs(n2k)
       // Most severe active lamp wins; LAMPS is ordered by severity. A DTC
       // the ECU reports without lighting a lamp is still a fault.
@@ -78,7 +78,7 @@ module.exports = [
       }
       let message = 'No active trouble codes'
       if (active.length > 0 || dtcs.length > 0) {
-        const parts = active.map(l => l.label)
+        const parts = active.map((l) => l.label)
         if (dtcs.length > 0) {
           parts.push(
             dtcs.length +
@@ -98,7 +98,7 @@ module.exports = [
     },
     filter: function (n2k: J1939DM1) {
       return (
-        LAMPS.some(l =>
+        LAMPS.some((l) =>
           LAMP_STATUSES.includes(n2k.fields[l.field] as string)
         ) || activeDtcs(n2k).length > 0
       )

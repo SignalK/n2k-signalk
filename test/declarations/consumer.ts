@@ -32,7 +32,8 @@ const enums: (string | undefined)[] = [
   groups[0].instanceEnum,
   groups[0].discriminatorEnum
 ]
-const validate: Typed<typeof validateInstancePrefixRules> = validateInstancePrefixRules
+const validate: Typed<typeof validateInstancePrefixRules> =
+  validateInstancePrefixRules
 const rule: InstancePrefixRule = {
   manufacturerCode: 419,
   uniqueNumber: 76223,
@@ -50,7 +51,7 @@ const ruleFromIdentity: InstancePrefixRule | undefined = identity && {
   prefix: 'propulsion.main'
 }
 
-const resolver: InstancePrefixResolver = context =>
+const resolver: InstancePrefixResolver = (context) =>
   context.group === 'tank' ? `tanks.custom.${context.instance}` : undefined
 const options: Typed<ConstructorParameters<typeof N2kMapper>[0]> = {
   instancePrefixRules: [rule],
@@ -65,9 +66,8 @@ const emitter: EventEmitter = mapper
 
 type SetRules = typeof mapper.setInstancePrefixRules
 const rules: Typed<Parameters<SetRules>[0]> = [rule]
-const ruleProblems: Typed<ReturnType<SetRules>> = mapper.setInstancePrefixRules(
-  rules
-)
+const ruleProblems: Typed<ReturnType<SetRules>> =
+  mapper.setInstancePrefixRules(rules)
 mapper.setInstancePrefixRules(null)
 mapper.setInstancePrefixRules(undefined)
 new N2kMapper({ instancePrefixRules: null })

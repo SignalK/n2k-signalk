@@ -46,10 +46,10 @@ describe('65345 Seatalk Wind Datum', function () {
         data: '0102030405'
       }
     })!
-    const values = delta.updates.flatMap(update => update.values)
+    const values = delta.updates.flatMap((update) => update.values)
     values
       .filter(
-        pathValue =>
+        (pathValue) =>
           pathValue.path === 'steering.autopilot.target.windAngleApparent'
       )
       .should.have.length(0)
