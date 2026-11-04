@@ -71,6 +71,40 @@ const xte = {
   }
 } // ap48-tack.all
 
+// The same alarm's later frames in nac3-operations.raw; the Deactivate comes
+// from another device than the Activate.
+function headingMissingWith(
+  command: string,
+  timestamp: string,
+  src: number
+): any {
+  return {
+    ...headingMissing,
+    timestamp,
+    src,
+    fields: { ...headingMissing.fields, command }
+  }
+}
+
+// Frames without an alarm ID, as canboat's analyzer decodes them
+function noAlarmId(timestamp: string, src: number, command: string | number) {
+  return {
+    timestamp,
+    prio: 2,
+    src,
+    dst: 255,
+    pgn: 130850,
+    description: 'Simnet: Alarm',
+    fields: {
+      manufacturerCode: 'Simrad',
+      industryCode: 'Marine Industry',
+      address: 255,
+      eventType: 'Alarm',
+      command
+    }
+  }
+}
+
 describe('130850 Simnet alarm', function () {
   it('writes an alarm as a notification named after it', function () {
     values(headingMissing).should.deep.equal([
@@ -78,8 +112,8 @@ describe('130850 Simnet alarm', function () {
         path: 'notifications.headingMissing',
         value: {
           message: 'Heading missing',
-          method: ['visual'],
-          state: 'warning',
+          method: ['visual', 'sound'],
+          state: 'alarm',
           timestamp: '2026-06-08T02:27:11.485Z'
         }
       }
@@ -99,8 +133,8 @@ describe('130850 Simnet alarm', function () {
         path: 'notifications.unknown999',
         value: {
           message: 'Unknown Simnet Alarm 999',
-          method: ['visual'],
-          state: 'warning',
+          method: ['visual', 'sound'],
+          state: 'alarm',
           timestamp: '2026-06-08T02:27:11.485Z'
         }
       }
@@ -124,5 +158,57 @@ describe('130850 Simnet alarm', function () {
       '2026-06-25T13:13:47.979Z,2,130850,30,255,12,41,9f,ff,ff,01,17,3d,00,ff,ff,ff,ff',
       '2026-06-08T02:27:11.886,2,130850,20,255,12,41,9f,ff,ff,64,0a,2b,00,ff,00,00,00'
     ].forEach((line) => values(parser.parseString(line)).should.deep.equal([]))
+  })
+
+  it('keeps an acknowledged or silenced alarm, without sound', function () {
+    const acknowledged = values(
+      headingMissingWith('Acknowledge', '2026-06-08T02:27:13.084Z', 22)
+    )
+    acknowledged.should.deep.equal([
+      {
+        path: 'notifications.headingMissing',
+        value: {
+          message: 'Heading missing',
+          method: ['visual'],
+          state: 'alarm',
+          timestamp: '2026-06-08T02:27:13.084Z'
+        }
+      }
+    ])
+    // No capture of Silence is available.
+    values(
+      headingMissingWith('Silence', '2026-06-08T02:27:13.084Z', 22)
+    )[0].value.should.include({ state: 'alarm' })
+    values(
+      headingMissingWith('Silence', '2026-06-08T02:27:13.084Z', 22)
+    )[0].value.method.should.deep.equal(['visual'])
+  })
+
+  it('clears a deactivated alarm', function () {
+    values(
+      headingMissingWith('Deactivate', '2026-06-08T02:27:11.886Z', 50)
+    ).should.deep.equal([
+      {
+        path: 'notifications.headingMissing',
+        value: {
+          message: 'Heading missing',
+          method: [],
+          state: 'normal',
+          timestamp: '2026-06-08T02:27:11.886Z'
+        }
+      }
+    ])
+  })
+
+  it('writes nothing for a command without an alarm', function () {
+    ;[
+      noAlarmId('2026-07-05T00:05:05.031Z', 21, 'Tack/Gybe Confirm'), // ap48-tack.all
+      noAlarmId('2026-06-08T02:26:19.335Z', 21, 97), // nac3-operations.raw
+      noAlarmId('2026-06-25T13:49:28.627Z', 30, 'MOB Activated'), // simrad_mob_quick.raw
+      noAlarmId('2026-06-25T13:49:35.481Z', 30, 'MOB Cancelled') // simrad_mob_quick.raw
+    ].forEach((n2k) => {
+      const delta = new N2kMapper().toDelta(n2k)
+      ;(delta?.updates[0]?.values ?? []).should.deep.equal([])
+    })
   })
 })
