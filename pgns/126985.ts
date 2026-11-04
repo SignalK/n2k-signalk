@@ -11,10 +11,8 @@ module.exports = [
         const key = alertKey(n2k.fields)
         const description = n2k.fields.alertTextDescription
         if (description === undefined || description === null) {
-          // No text: forget any earlier text, so 126983 does not show it
-          if (state.alerts) {
-            delete state.alerts[key]
-          }
+          // No text to store. Keep any earlier text for this alert: 126983
+          // needs it to write the alert, including its return to normal.
           return false
         }
         const text: AlertText = {

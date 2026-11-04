@@ -110,12 +110,20 @@ describe('126985 alert text', function () {
 
   it('stores nothing for an alert text without a description', function () {
     const alertState: any = {}
-    mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
     mapper.testToDelta(alertText(1, 0), alertState)
-
-    expect(alertState['41'].alerts).to.deep.equal({})
+    expect(alertState['41']?.alerts ?? {}).to.deep.equal({})
     messages(mapper.testToDelta(alert(1, 0, 'Active'), alertState)).should.eql(
       []
     )
+  })
+
+  it('keeps an alert text when a later one has no description', function () {
+    // So that the alert can still go back to normal
+    const alertState = {}
+    mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
+    mapper.testToDelta(alertText(1, 0), alertState)
+    messages(mapper.testToDelta(alert(1, 0, 'Normal'), alertState)).should.eql([
+      'Bilge pump'
+    ])
   })
 })
