@@ -13,16 +13,18 @@ const commands: Record<string, { state: string; method: string[] }> = {
 
 // Simnet sends an alarm only when it changes, and one display may raise an
 // alarm that another clears or acknowledges, possibly after it was cleared.
-// So the alarms that are active are kept for the whole vessel, by name.
-type ActiveAlarms = Record<string, true>
+// So each alarm's last Activate or Deactivate is kept for the whole vessel, by
+// name. An alarm with neither may be active from before the mapper started.
+type AlarmStatus = 'active' | 'cleared'
+type AlarmStatuses = Record<string, AlarmStatus>
 
-function activeAlarms(state: HoldsVesselState | undefined) {
+function alarmStatuses(state: HoldsVesselState | undefined) {
   const vessel = vesselState(state)
   if (!vessel) return undefined
   if (!vessel.simnetAlarms) {
     vessel.simnetAlarms = {}
   }
-  return vessel.simnetAlarms as ActiveAlarms
+  return vessel.simnetAlarms as AlarmStatuses
 }
 
 function alarmName(n2k: PGN_130850_SimnetAlarm): string {
@@ -39,9 +41,10 @@ module.exports = [
 
     // Tack/Gybe Confirm, MOB Activated/Cancelled, Alarm History and unnamed
     // commands carry no alarm ID and are not about an alarm.
-    // Acknowledge and Silence write nothing for an alarm that is not active,
-    // so that they cannot raise one that was cleared. Without state, which
-    // alarms are active is not known, so they are written.
+    // Acknowledge and Silence write nothing for an alarm that was cleared, so
+    // that they cannot raise it again. They are written for an alarm that is
+    // active, or whose state is not known (no Activate or Deactivate seen,
+    // or no state).
     filter: function (n2k: PGN_130850_SimnetAlarm, state?: HoldsVesselState) {
       const command = n2k.fields.command
       if (
@@ -53,8 +56,7 @@ module.exports = [
         return false
       }
       if (command === 'Acknowledge' || command === 'Silence') {
-        const active = activeAlarms(state)
-        return !active || active[alarmName(n2k)] === true
+        return alarmStatuses(state)?.[alarmName(n2k)] !== 'cleared'
       }
       return true
     },
@@ -70,12 +72,12 @@ module.exports = [
       const command = n2k.fields.command as string
       const { state, method } = commands[command]
 
-      const active = activeAlarms(sourceState)
-      if (active) {
+      const statuses = alarmStatuses(sourceState)
+      if (statuses) {
         if (command === 'Activate') {
-          active[alarmName(n2k)] = true
+          statuses[alarmName(n2k)] = 'active'
         } else if (command === 'Deactivate') {
-          delete active[alarmName(n2k)]
+          statuses[alarmName(n2k)] = 'cleared'
         }
       }
 

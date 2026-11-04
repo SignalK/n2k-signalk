@@ -218,6 +218,21 @@ describe('130850 Simnet alarm', function () {
     )
   })
 
+  it('writes an Acknowledge for an alarm raised before the mapper started', function () {
+    // Simnet does not repeat the Activate, so the alarm may still be active
+    values(
+      headingMissingWith('Acknowledge', '2026-06-08T02:27:13.084Z', 22)
+    )[0].value.should.include({ state: 'alarm' })
+  })
+
+  it('writes nothing for an alarm command without an alarm ID', function () {
+    const noId: any = JSON.parse(JSON.stringify(headingMissing))
+    delete noId.fields.alarmId
+    values(noId).should.deep.equal([])
+    noId.fields.alarmId = null
+    values(noId).should.deep.equal([])
+  })
+
   it('writes an Acknowledge when called without state', function () {
     // Which alarms are active is then not known
     const value: any = toDelta(
