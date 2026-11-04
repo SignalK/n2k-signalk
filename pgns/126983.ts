@@ -72,9 +72,12 @@ module.exports = [
       const alerts = state.alerts!
       const text = alerts[key]
 
+      // An alert back to normal is written as normal, whatever its type
+      const isNormal = n2k.fields.alertState === 'Normal'
+
       const value = {
-        state: resolved.sk,
-        method: ['visual', 'sound'] as string[],
+        state: isNormal ? 'normal' : resolved.sk,
+        method: (isNormal ? [] : ['visual', 'sound']) as string[],
         message: text.textDescription,
         location: text.locationTextDescription || '',
         alertType: n2k.fields.alertType,

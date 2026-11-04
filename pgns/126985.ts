@@ -10,7 +10,11 @@ module.exports = [
       if (typeof state !== 'undefined') {
         const key = alertKey(n2k.fields)
         const description = n2k.fields.alertTextDescription
-        if (description === undefined || description === null) {
+        if (
+          description === undefined ||
+          description === null ||
+          description === ''
+        ) {
           // No text to store. Keep any earlier text for this alert: 126983
           // needs it to write the alert, including its return to normal.
           return false

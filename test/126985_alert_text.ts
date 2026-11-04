@@ -78,6 +78,12 @@ describe('126985 alert text', function () {
     )
   }
 
+  function states(delta: any): unknown[] {
+    return (delta?.updates ?? []).flatMap((u: any) =>
+      u.values.map((v: any) => v.value.state)
+    )
+  }
+
   it('keeps the texts of alerts with the same ID apart', function () {
     const alertState = {}
     mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
@@ -99,9 +105,9 @@ describe('126985 alert text', function () {
     const alertState = {}
     mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
 
-    messages(mapper.testToDelta(alert(1, 0, 'Normal'), alertState)).should.eql([
-      'Bilge pump'
-    ])
+    const normal = mapper.testToDelta(alert(1, 0, 'Normal'), alertState)
+    messages(normal).should.eql(['Bilge pump'])
+    states(normal).should.eql(['normal'])
     // A later alert that reuses the ID waits for its own text
     messages(mapper.testToDelta(alert(1, 0, 'Active'), alertState)).should.eql(
       []
@@ -117,13 +123,22 @@ describe('126985 alert text', function () {
     )
   })
 
-  it('keeps an alert text when a later one has no description', function () {
+  it('keeps an alert text when a later one has no or an empty description', function () {
     // So that the alert can still go back to normal
     const alertState = {}
     mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
     mapper.testToDelta(alertText(1, 0), alertState)
-    messages(mapper.testToDelta(alert(1, 0, 'Normal'), alertState)).should.eql([
-      'Bilge pump'
+    mapper.testToDelta(alertText(1, 0, ''), alertState)
+    const normal = mapper.testToDelta(alert(1, 0, 'Normal'), alertState)
+    messages(normal).should.eql(['Bilge pump'])
+    states(normal).should.eql(['normal'])
+  })
+
+  it('writes an active alert with the state of its type', function () {
+    const alertState = {}
+    mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
+    states(mapper.testToDelta(alert(1, 0, 'Active'), alertState)).should.eql([
+      'warn'
     ])
   })
 })
