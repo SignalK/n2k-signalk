@@ -25,9 +25,21 @@ export function linkVesselState(
   sourceState: HoldsVesselState
 ): void {
   if (!mapperState[VESSEL]) {
-    mapperState[VESSEL] = {}
+    hide(mapperState, {})
   }
-  sourceState[VESSEL] = mapperState[VESSEL]
+  if (sourceState[VESSEL] !== mapperState[VESSEL]) {
+    hide(sourceState, mapperState[VESSEL]!)
+  }
+}
+
+// Not enumerable, so that comparing or serialising a state leaves it out
+function hide(holder: HoldsVesselState, vessel: VesselState) {
+  Object.defineProperty(holder, VESSEL, {
+    value: vessel,
+    enumerable: false,
+    writable: true,
+    configurable: true
+  })
 }
 
 /**
