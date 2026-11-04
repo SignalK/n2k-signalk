@@ -1,0 +1,6 @@
+dist
+node_modules
+package-lock.json
+# Sample data as captured or as given; not formatted
+test/*.json
+test/todo.txt

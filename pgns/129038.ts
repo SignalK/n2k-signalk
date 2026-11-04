@@ -32,7 +32,7 @@ module.exports = [
   {
     node: 'navigation.state',
     value: function (n2k: PGN_129038) {
-      return stateMapping[(n2k.fields.navStatus as unknown) as string]
+      return stateMapping[n2k.fields.navStatus as unknown as string]
     },
     filter: function (n2k: PGN_129038) {
       return n2k.fields.navStatus
@@ -42,7 +42,7 @@ module.exports = [
     node: 'navigation.specialManeuver',
     value: function (n2k: PGN_129038) {
       return specialManeuverMapping[
-        (n2k.fields.specialManeuverIndicator as unknown) as string
+        n2k.fields.specialManeuverIndicator as unknown as string
       ]
     },
     filter: function (n2k: PGN_129038) {
@@ -63,7 +63,7 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k: PGN_129038) {
+    value: function (_n2k: PGN_129038) {
       return 'A'
     }
   }

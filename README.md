@@ -1,16 +1,13 @@
-
-
 n2k-signalk
 ================
-[![Build Status](https://travis-ci.org/SignalK/n2k-signalk.svg?branch=master)](https://travis-ci.org/SignalK/n2k-signalk)
 
+[![Build Status](https://travis-ci.org/SignalK/n2k-signalk.svg?branch=master)](https://travis-ci.org/SignalK/n2k-signalk)
 
 NMEA 2000 to Signal K converter. Converts [Canboat analyzer](https://github.com/canboat/canboat/wiki/analyzer) JSON output to the [Signal K](http://signalk.github.io/) data format (also JSON).
 
 This package is part of [signalk-server](https://github.com/SignalK/signalk-server). Not a plugin. It can also be used outside of signalk-server. See Usage section below.
 
 For mapping NMEA 0183 data to the Signal K data format, see [nmea0183-signalk](https://github.com/SignalK/nmea0183-signalk).
-
 
 USAGE
 -------------
@@ -20,7 +17,6 @@ USAGE
 All data connections in signalk-server that are configured as type NMEA 2000 use this code.
 
 **Usage from command line**
-
 
 ```
 $ actisense-serial /dev/actisense | analyzer -json 2>/dev/null | n2k-signalk | head -5
@@ -37,8 +33,6 @@ $ actisense-serial /dev/actisense | analyzer -json 2>/dev/null | n2k-signalk --f
 {"path":"environment.windSpeedApparent","value":2.93,"source":{"pgn":"130306","timestamp":"2013-08-24-15:31:50.385","src":"105"}}
 ```
 
-
-
 **Usage as stream transformer**
 
 See [bin/n2k-signalk](https://github.com/SignalK/n2k-signalk/blob/master/bin/n2k-signalk).
@@ -47,13 +41,11 @@ See [bin/n2k-signalk](https://github.com/SignalK/n2k-signalk/blob/master/bin/n2k
 
 See [bin/demo.js](https://github.com/SignalK/n2k-signalk/blob/master/bin/demo.js).
 
-
 ### Custom Sentences
 
 You can add custom n2k mappings via the [Signal K Server plugin mechanism](https://github.com/SignalK/signalk-server/blob/master/SERVERPLUGINS.md). A plugin can register custom mappings by emitting `pgn-to-signalk` PropertyValues with a value that is a map with the pgn number has the key and the n2k mappings as the value.
 
 See [signalk-over-n2k](https://github.com/SignalK/signalk-over-n2k) for an example.
-
 
 ### Instance Paths
 
@@ -93,7 +85,7 @@ const problems = mapper.setInstancePrefixRules([
 - `instance`: the numeric instance code, `0` to the group's `maxInstance`: 254 for engines, 13 for tanks and 252 for the other groups. canboatjs leaves the instance out of a frame that carries a reserved code (253 to 255 of an 8-bit instance, 14 and 15 of the tank's 4 bits; the engine instance lookup decodes 253 and 254). Such a frame keeps its default prefix and no rule can target it
 - `prefix`: the prefix to write under: segments of `A-Z`, `a-z`, `0-9`, `_` and `-`, separated by single dots, none of them `__proto__`, `constructor` or `prototype`. For temperature, humidity and pressure it is the full path of the value, leaf included, e.g. `environment.inside.engineRoomAft.temperature` or `propulsion.port.coolantTemperature`
 
-`setInstancePrefixRules` replaces any earlier rules and applies the valid ones. It writes each problem of the others to stderr once and returns them as `{ index, message }` objects; `undefined`, `null` or `[]` removes every rule. A value that is not an array removes them too, and is one problem with `index` `-1`; it never throws, so a malformed `instancePrefixRules` option does not stop the mapper from being constructed. Two rules for the same device, group, discriminator and instance are a problem. So are two rules for the same device with the same prefix when they are of the same group or both of temperature, humidity and pressure, whose prefix is the full path: they would write the same paths with the same `$source`. The first rule applies. Rules for two devices may share a prefix: their values reach the path with different `$source`s, and source priorities choose between them. Rules of other groups may share a prefix, such as `acInput` and `acConnection` under `electrical.ac.shore`, since their paths differ. Other collisions are not detected: a prefix nested under another rule's prefix, and a rule whose prefix another device writes by default, which depends on which devices are on the bus. The `instancePrefixRules` constructor option is applied once, through the same setter.
+`setInstancePrefixRules` replaces any earlier rules and applies the valid ones. It writes each problem of the others to stderr once and returns them as `{ index, message }` objects; `undefined`, `null` or `[]` removes every rule. A value that is not an array removes them too, and is one problem with `index` `-1`; it never throws, so a malformed `instancePrefixRules` option does not stop the mapper from being constructed. Two rules for the same device, group, discriminator and instance are a problem. So are two rules for the same device with the same prefix when one rule's group writes a path at or under a path the other's writes: an engine and a battery both write `<prefix>.temperature`, a charger and an inverter both write `<prefix>.enabled`, and a temperature, humidity or pressure prefix is the full path of its value. They would write the same paths with the same `$source`, or a value where the other writes a branch. The first rule applies. Rules for two devices may share a prefix: their values reach the path with different `$source`s, and source priorities choose between them. Rules of groups whose paths differ may share a prefix, such as `acInput` and `acConnection` under `electrical.ac.shore`. Other collisions are not detected: a prefix nested under another rule's prefix, and a rule whose prefix another device writes by default, which depends on which devices are on the bus. The `instancePrefixRules` constructor option is applied once, through the same setter.
 
 `validateInstancePrefixRules(rules)` returns the same problems without applying anything: a rule that is not an object or has a field of the wrong type, an unknown group, a missing or unexpected discriminator, or one the group writes no path for, a manufacturer code, unique number or instance out of range, a prefix that is not a valid path, and a rule with the same key as an earlier one, or the same prefix as an earlier one of the kind above.
 
@@ -127,7 +119,7 @@ A prefix that follows the rule syntax replaces the default; `undefined` or `null
 
 For each frame of an instance group, a matching rule wins; without one, the resolver is called; when it returns nothing, the default prefix applies. Rules and resolver are consulted once per frame, and every path of the frame uses the result, notifications included. Engine alarm messages name a remapped engine by the prefix's last segment.
 
-Rules, and the resolver's `canName`, `manufacturerCode` and `uniqueNumber`, only apply once the mapper has seen the source's PGN 60928 address claim. Until then a device's data is written under the default prefix, even when a rule covers it: after a restart, its data appears on the default path first and on the rule's path once the claim arrives. A device that claims again with another device or system instance keeps matching its rules; another device that claims the same source address does not.
+Rules only match once the mapper has seen the source's PGN 60928 address claim, and until then the resolver gets `canName`, `manufacturerCode` and `uniqueNumber` as `undefined`. Before the claim, a device's data is written under the prefix the resolver returns, or else under the default prefix, even when a rule covers it: after a restart, its data appears there first and on the rule's path once the claim arrives. A device that claims again with another device or system instance keeps matching its rules; another device that claims the same source address does not.
 
 The J1939 engine PGNs (61444, 65226, 65262 and 65270) write `propulsion.<source address>`. They carry no instance and are not remapped.
 

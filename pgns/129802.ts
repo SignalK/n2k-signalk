@@ -11,7 +11,7 @@
 
 import { PGN_129802 } from '@canboat/ts-pgns'
 
-function senderMmsi (n2k: PGN_129802) {
+function senderMmsi(n2k: PGN_129802) {
   const id = n2k.fields.sourceId
   if (id === undefined || id === null || Number(id) === 0) {
     return undefined
@@ -22,7 +22,7 @@ function senderMmsi (n2k: PGN_129802) {
   return id.toString().padStart(9, '0')
 }
 
-function safetyText (n2k: PGN_129802) {
+function safetyText(n2k: PGN_129802) {
   const text = n2k.fields.safetyRelatedText
   return typeof text === 'string' && text.trim().length > 0
     ? text.trim()

@@ -4,7 +4,6 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 import mapper = require('./testMapper')
-import testMapper = require('./testMapper')
 
 describe('130842 Simnet AIS Class B static data', function () {
   it('complete part A sentence converts', function () {

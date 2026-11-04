@@ -11,17 +11,17 @@ import {
 import { instancePrefix } from '../dist/instanceGroups'
 import { decode, decodeWithInstance, prefixOf, FRAMES } from './instanceFrames'
 
-function mappedPaths (n2k: any) {
+function mappedPaths(n2k: any) {
   return new N2kMapper().toDelta(n2k)!.updates[0].values.map((v: any) => v.path)
 }
 
-function isAtOrUnder (path: string, prefix: string) {
+function isAtOrUnder(path: string, prefix: string) {
   return path === prefix || path.startsWith(prefix + '.')
 }
 
 describe('instance groups', function () {
   it('covers every PGN the representative frames exercise', function () {
-    const tablePgns = instanceGroups.flatMap(g => g.pgns).sort()
+    const tablePgns = instanceGroups.flatMap((g) => g.pgns).sort()
     const framePgns = [...new Set(FRAMES.map(({ 0: pgn }) => pgn))].sort()
     framePgns.should.deep.equal(tablePgns)
   })
@@ -31,11 +31,11 @@ describe('instance groups', function () {
       fields
     )} writes under its default prefix`, function () {
       const n2k = decode(pgn, 34, fields)
-      const group = instanceGroups.find(g => g.pgns.includes(pgn))!
+      const group = instanceGroups.find((g) => g.pgns.includes(pgn))!
       const prefix = prefixOf(n2k)!
       const paths = mappedPaths(n2k)
       paths.should.not.be.empty
-      paths.forEach(path => {
+      paths.forEach((path) => {
         if (group.singleLeaf) {
           path.should.equal(prefix)
         } else {
@@ -51,7 +51,7 @@ describe('instance groups', function () {
   describe('instance ranges', function () {
     it('stop below the codes canboatjs reserves', function () {
       Object.fromEntries(
-        instanceGroups.map(g => [g.id, g.maxInstance])
+        instanceGroups.map((g) => [g.id, g.maxInstance])
       ).should.deep.equal({
         engine: 254,
         battery: 252,
@@ -72,10 +72,11 @@ describe('instance groups', function () {
     FRAMES.filter(
       ({ 0: pgn }, i) => FRAMES.findIndex(({ 0: other }) => other === pgn) === i
     ).forEach(({ 0: pgn, 1: fields }) => {
-      const group = instanceGroups.find(g => g.pgns.includes(pgn))!
+      const group = instanceGroups.find((g) => g.pgns.includes(pgn))!
       const { instanceField, maxInstance } = group
-      it(`${pgn} decodes instance ${maxInstance} and omits ${maxInstance +
-        1}`, function () {
+      it(`${pgn} decodes instance ${maxInstance} and omits ${
+        maxInstance + 1
+      }`, function () {
         const highest = decodeWithInstance(
           pgn,
           34,
@@ -160,7 +161,7 @@ describe('instance groups', function () {
   })
 
   it('lists only the tank types 127505 writes', function () {
-    const tank = instanceGroups.find(g => g.id === 'tank')!
+    const tank = instanceGroups.find((g) => g.id === 'tank')!
     tank.discriminatorCodes!.should.deep.equal([0, 1, 2, 3, 4, 5])
     // The tank type is 4 bits, 15 its "no data" code.
     for (let code = 0; code <= 15; code++) {
@@ -176,7 +177,7 @@ describe('instance groups', function () {
   })
 
   it('returns nothing for PGNs outside the table', function () {
-    ;[129025, 127501, 127245].forEach(pgn => {
+    ;[129025, 127501, 127245].forEach((pgn) => {
       expect(
         classifyInstance({ pgn, src: 1, fields: { instance: 0 } })
       ).to.equal(undefined)
@@ -189,7 +190,7 @@ describe('instance groups', function () {
   })
 
   it('Engine Room instances 0 and 1 share one path', function () {
-    const [first, second] = [0, 1].map(instance =>
+    const [first, second] = [0, 1].map((instance) =>
       decode(130312, 1, {
         instance,
         source: 'Engine Room Temperature',
@@ -225,17 +226,17 @@ describe('instance groups', function () {
   })
 
   it('lists the codes a group writes paths for', function () {
-    const pressure = instanceGroups.find(g => g.id === 'pressure')!
+    const pressure = instanceGroups.find((g) => g.id === 'pressure')!
     // An unmapped source gets a userDefined path; only an absent one has none.
     pressure.discriminatorCodes!.should.have.lengthOf(255)
     pressure.discriminatorCodes!.should.not.include(255)
-    expect(instanceGroups.find(g => g.id === 'engine')!.discriminatorCodes).to
+    expect(instanceGroups.find((g) => g.id === 'engine')!.discriminatorCodes).to
       .be.undefined
   })
 
   it('leaves an absent source out of the codes', function () {
-    ;['temperature', 'humidity'].forEach(id => {
-      const group = instanceGroups.find(g => g.id === id)!
+    ;['temperature', 'humidity'].forEach((id) => {
+      const group = instanceGroups.find((g) => g.id === id)!
       group.discriminatorCodes!.should.have.lengthOf(255)
       group.discriminatorCodes!.should.not.include(255)
     })
@@ -250,8 +251,8 @@ describe('instance groups', function () {
 
   it('lists the codes sorted, frozen and as JSON keeps them', function () {
     instanceGroups
-      .filter(g => g.discriminatorCodes !== undefined)
-      .forEach(g => {
+      .filter((g) => g.discriminatorCodes !== undefined)
+      .forEach((g) => {
         g.discriminatorCodes!.should.be.an('array')
         g.discriminatorCodes!.should.deep.equal(
           [...g.discriminatorCodes!].sort((a, b) => a - b)
@@ -265,7 +266,7 @@ describe('instance groups', function () {
 
   it('names the enumerations of instance and discriminator codes', function () {
     const enums = Object.fromEntries(
-      instanceGroups.map(g => [g.id, [g.instanceEnum, g.discriminatorEnum]])
+      instanceGroups.map((g) => [g.id, [g.instanceEnum, g.discriminatorEnum]])
     )
     enums.should.deep.equal({
       engine: ['ENGINE_INSTANCE', undefined],
@@ -281,7 +282,7 @@ describe('instance groups', function () {
       converter: [undefined, undefined],
       dcConnection: [undefined, undefined]
     })
-    instanceGroups.forEach(g => {
+    instanceGroups.forEach((g) => {
       g.should.have.property('instanceEnum')
       g.should.have.property('discriminatorEnum')
     })

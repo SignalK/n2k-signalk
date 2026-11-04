@@ -28,9 +28,9 @@ const alertTypes = [
 // so the notification still surfaces at the lowest severity.
 const defaultAlertType = alertTypes[alertTypes.length - 1]
 
-function resolveAlertType (rawAlertType: unknown) {
+function resolveAlertType(rawAlertType: unknown) {
   if (typeof rawAlertType === 'string') {
-    for (var i = 0; i < alertTypes.length; i++) {
+    for (let i = 0; i < alertTypes.length; i++) {
       if (alertTypes[i].nmea === rawAlertType) return alertTypes[i]
     }
   }
@@ -39,16 +39,16 @@ function resolveAlertType (rawAlertType: unknown) {
 
 module.exports = [
   {
-    node: function (n2k: PGN_126983, state?: AlertState) {
-      var resolved = resolveAlertType(n2k.fields.alertType)
-      var alertType = resolved.nmea.replace(/ /g, '').toLowerCase()
+    node: function (n2k: PGN_126983, _state?: AlertState) {
+      const resolved = resolveAlertType(n2k.fields.alertType)
+      const alertType = resolved.nmea.replace(/ /g, '').toLowerCase()
 
-      var alertCategory =
+      const alertCategory =
         typeof n2k.fields.alertCategory === 'string'
           ? n2k.fields.alertCategory.toLowerCase()
           : ''
 
-      var path =
+      const path =
         'notifications.nmea.' +
         alertType +
         '.' +
@@ -64,14 +64,14 @@ module.exports = [
     value: function (n2k: PGN_126983, state: AlertState) {
       debug('126983 value')
 
-      var resolved = resolveAlertType(n2k.fields.alertType)
+      const resolved = resolveAlertType(n2k.fields.alertType)
       debug('126983 skstate: ' + resolved.sk)
 
       // The filter has checked that the text for this alert is in the state.
-      var alertId = n2k.fields.alertId as number
-      var alerts = state.alerts!
+      const alertId = n2k.fields.alertId as number
+      const alerts = state.alerts!
 
-      var value = {
+      const value = {
         state: resolved.sk,
         method: ['visual', 'sound'] as string[],
         message: alerts[alertId].textDescription,

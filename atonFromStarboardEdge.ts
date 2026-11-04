@@ -7,7 +7,9 @@ type AtonFrame = {
 }
 
 export = function (n2k: AtonFrame) {
-  var fromStarboardEdge = Number(n2k.fields.positionReferenceFromStarboardEdge)
-  var width = Number(n2k.fields.beamDiameter)
+  const fromStarboardEdge = Number(
+    n2k.fields.positionReferenceFromStarboardEdge
+  )
+  const width = Number(n2k.fields.beamDiameter)
   return width / 2 - fromStarboardEdge
 }

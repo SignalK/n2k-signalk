@@ -1,5 +1,4 @@
 import { N2kMapper } from '../dist/n2kMapper'
-import EventEmitter from 'events'
 const signalkSchema = require('@signalk/signalk-schema')
 import { PropertyValues } from '@signalk/server-api'
 
@@ -44,9 +43,8 @@ describe('custom pgns', function () {
     )!
     delta.context = 'vessels.' + signalkSchema.fakeMmsiId
     const contextParts = delta.context.split('.')
-    const tree = signalkSchema.deltaToFull(delta)[contextParts[0]][
-      contextParts[1]
-    ]
+    const tree =
+      signalkSchema.deltaToFull(delta)[contextParts[0]][contextParts[1]]
 
     tree.should.have.nested.property(
       'tanks.fuel.0.customCurrentLevel.value',

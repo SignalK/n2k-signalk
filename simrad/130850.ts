@@ -17,8 +17,8 @@ module.exports = [
     },
 
     value: function (n2k: PGN_130850_SimnetAlarm) {
-      let state = 'warning'
-      let method = [
+      const state = 'warning'
+      const method = [
         'visual'
         //'sound'
       ]

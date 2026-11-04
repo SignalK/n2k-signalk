@@ -4,7 +4,7 @@ chai.use(require('@signalk/signalk-schema').chaiModule)
 
 const mapper = require('./testMapper')
 
-function frame (
+function frame(
   instance: number | undefined,
   source: string | undefined,
   temperature: number
@@ -35,8 +35,7 @@ describe('130316 temperature, extended range', function () {
       .testToDelta(frame(4, 'Shaft Seal Temperature', 330.2))
       .updates[0].values.should.deep.equal([
         {
-          path:
-            'generic.temperatures.userDefinedShaft_Seal_Temperature.4.temperature',
+          path: 'generic.temperatures.userDefinedShaft_Seal_Temperature.4.temperature',
           value: 330.2
         }
       ])

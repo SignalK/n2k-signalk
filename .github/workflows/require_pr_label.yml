@@ -6,8 +6,8 @@ jobs:
   label:
     runs-on: ubuntu-latest
     steps:
-      - uses: mheap/github-action-required-labels@v1
+      - uses: mheap/github-action-required-labels@v5
         with:
           mode: exactly
           count: 1
-          labels: "fix, feature, doc, chore, test, ignore, other, dependencies"
+          labels: 'fix, feature, doc, chore, test, ignore, other, dependencies'

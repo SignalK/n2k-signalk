@@ -48,18 +48,18 @@ export interface N2kReport extends N2kFrame {
 }
 
 // An interface has no index signature, so fields is read through Fields.
-function fieldsOf (n2k: N2kReport): Fields | undefined {
+function fieldsOf(n2k: N2kReport): Fields | undefined {
   return n2k.fields as Fields | undefined
 }
 
 // These throw so that toDelta's catch turns a frame without src or timestamp
 // into no values.
-function srcOf (n2k: N2kReport): string {
+function srcOf(n2k: N2kReport): string {
   if (n2k.src === undefined) throw new TypeError('frame has no src')
   return n2k.src.toString()
 }
 
-function timestampOf (n2k: N2kReport): string {
+function timestampOf(n2k: N2kReport): string {
   if (n2k.timestamp === undefined) throw new TypeError('frame has no timestamp')
   return n2k.timestamp
 }
@@ -126,10 +126,13 @@ export interface Delta {
   }[]
 }
 
-/** Custom PGN mappings a plugin sets as the 'pgn-to-signalk' property. */
+/**
+ * A property value as the server passes it. For the 'pgn-to-signalk'
+ * property, value holds a plugin's custom PGN mappings, keyed by PGN.
+ */
 interface PgnMappingsPropertyValue {
   setter: string
-  value: Record<string, Mapping[]>
+  value: unknown
 }
 
 /** What n2kOutIsAvailable sends metadata requests through. */
@@ -171,7 +174,7 @@ export interface N2kMapperOptions {
 // unavailable (e.g. systemInstance 15) is absent from the object and
 // must re-encode as its all-ones sentinel — real devices on the bus
 // transmit claims with unavailable instance fields.
-function nameField (
+function nameField(
   value: unknown,
   mask: number,
   table?: Readonly<Record<string, number>>
@@ -188,7 +191,7 @@ function nameField (
 // A manufacturer name missing from @canboat/ts-pgns packs as the all-ones
 // code, which no rule for the device matches. Say so once per name.
 const warnedManufacturers = new Set<string>()
-function warnUnknownManufacturer (value: unknown) {
+function warnUnknownManufacturer(value: unknown) {
   if (
     typeof value !== 'string' ||
     Object.prototype.hasOwnProperty.call(ManufacturerCodeValues, value) ||
@@ -206,7 +209,7 @@ function warnUnknownManufacturer (value: unknown) {
 // canName is the device's 8-byte NAME — the wire payload of its ISO
 // Address Claim (PGN 60928, ISO 11783-5 layout) — rendered as hex,
 // packed straight from the decoded fields.
-function canNameFromClaim (fields: Fields): string {
+function canNameFromClaim(fields: Fields): string {
   warnUnknownManufacturer(fields.manufacturerCode)
   const manufacturer = nameField(
     fields.manufacturerCode,
@@ -263,7 +266,7 @@ export class N2kMapper extends EventEmitter {
   declare n2kOutEvent?: string
   declare n2kListener?: N2kOutListener
 
-  constructor (options?: N2kMapperOptions) {
+  constructor(options?: N2kMapperOptions) {
     super()
     this.state = {}
     this.unknownPGNs = {}
@@ -274,21 +277,27 @@ export class N2kMapper extends EventEmitter {
     this.setInstancePrefixResolver(this.options.instancePrefixResolver)
 
     if (this.options.onPropertyValues) {
-      this.options.onPropertyValues('pgn-to-signalk', values => {
+      this.options.onPropertyValues('pgn-to-signalk', (values) => {
         values
-          .filter(v => v !== undefined)
-          .forEach(pv => {
-            Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
-              if (
-                n2kMappings[pgnNumber] &&
-                !this.options.allowCustomPGNOverride
-              ) {
-                console.error(`pgn ${pgnNumber} can't be overwritten`)
-              } else {
-                this.customPgns[pgnNumber] = mappings
-                debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
+          .filter((v) => v !== undefined)
+          .forEach((pv) => {
+            if (typeof pv.value !== 'object' || pv.value === null) {
+              console.error(`${pv.setter} set invalid custom pgn mappings`)
+              return
+            }
+            Object.entries(pv.value as Record<string, Mapping[]>).forEach(
+              ([pgnNumber, mappings]) => {
+                if (
+                  n2kMappings[pgnNumber] &&
+                  !this.options.allowCustomPGNOverride
+                ) {
+                  console.error(`pgn ${pgnNumber} can't be overwritten`)
+                } else {
+                  this.customPgns[pgnNumber] = mappings
+                  debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
+                }
               }
-            })
+            )
           })
       })
     }
@@ -300,7 +309,7 @@ export class N2kMapper extends EventEmitter {
    * removes every rule, as does a value that is not an array, which is
    * reported at index -1.
    */
-  setInstancePrefixRules (
+  setInstancePrefixRules(
     rules: readonly InstancePrefixRule[] | null | undefined
   ): InstancePrefixRuleProblem[] {
     return this.instancePrefixOverrides.setRules(rules)
@@ -311,17 +320,17 @@ export class N2kMapper extends EventEmitter {
    * matches; undefined removes it, and anything else that is not a function
    * is logged and removes it too.
    */
-  setInstancePrefixResolver (resolver: InstancePrefixResolver | undefined) {
+  setInstancePrefixResolver(resolver: InstancePrefixResolver | undefined) {
     this.instancePrefixOverrides.setResolver(resolver)
   }
 
-  n2kOutIsAvailable (listener: N2kOutListener, event: string) {
+  n2kOutIsAvailable(listener: N2kOutListener, event: string) {
     this.n2kOutEvent = event
     this.n2kListener = listener
     this.requestAllMeta()
   }
 
-  requestMetaData (dst: N2kReport['src'], pgn: number | string): Promise<void> {
+  requestMetaData(dst: N2kReport['src'], pgn: number | string): Promise<void> {
     const listener = this.n2kListener
     if (!listener) {
       debug(
@@ -335,7 +344,7 @@ export class N2kMapper extends EventEmitter {
       PGN: pgn
     }
     debug(`requesting pgn ${pgn} from src ${dst}`)
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       listener.emit(this.n2kOutEvent!, reqPgn)
       setTimeout(() => {
         resolve()
@@ -343,15 +352,15 @@ export class N2kMapper extends EventEmitter {
     })
   }
 
-  async requestMetaPGNs (dst: number | string, pgns: (number | string)[]) {
+  async requestMetaPGNs(dst: number | string, pgns: (number | string)[]) {
     for (let i = 0; i < pgns.length; i++) {
       await this.requestMetaData(dst, pgns[i])
     }
   }
 
-  checkSrcMetasAndRetry (src: string) {
+  checkSrcMetasAndRetry(src: string) {
     if (src !== '255') {
-      const neededPGNs = Object.keys(metaPGNs).filter(pgn => {
+      const neededPGNs = Object.keys(metaPGNs).filter((pgn) => {
         return (
           !this.state[src].metaPGNsReceived ||
           !this.state[src].metaPGNsReceived[pgn]
@@ -360,7 +369,7 @@ export class N2kMapper extends EventEmitter {
       if (neededPGNs.length > 0) {
         debug('did not get meta pgns %j for src %d', neededPGNs, src)
         this.requestMetaPGNs(src, neededPGNs).then(() => {
-          neededPGNs.forEach(pgn => {
+          neededPGNs.forEach((pgn) => {
             if (
               !this.state[src].metaPGNsReceived ||
               !this.state[src].metaPGNsReceived[pgn]
@@ -374,13 +383,13 @@ export class N2kMapper extends EventEmitter {
     }
   }
 
-  requestAllMeta () {
+  requestAllMeta() {
     this.requestMetaPGNs(255, Object.keys(metaPGNs)).then(() => {
-      Object.keys(this.state).forEach(src => this.checkSrcMetasAndRetry(src))
+      Object.keys(this.state).forEach((src) => this.checkSrcMetasAndRetry(src))
     })
   }
 
-  toDelta (n2k: N2kReport): Delta | undefined {
+  toDelta(n2k: N2kReport): Delta | undefined {
     if (metaPGNs[n2k.pgn]) {
       const meta = metaPGNs[n2k.pgn](n2k)
       // State is keyed by the string form of src, so a frame without src keys
@@ -449,7 +458,7 @@ export class N2kMapper extends EventEmitter {
 // it logged on; they are keyed by its resolver.
 const standaloneFailures = new WeakMap<InstancePrefixResolver, Set<string>>()
 
-function standaloneReportedFailures (resolver: InstancePrefixResolver) {
+function standaloneReportedFailures(resolver: InstancePrefixResolver) {
   let reported = standaloneFailures.get(resolver)
   if (reported === undefined) {
     reported = new Set()
@@ -462,7 +471,7 @@ function standaloneReportedFailures (resolver: InstancePrefixResolver) {
  * reportedFailures holds the pgn:src keys the resolver's throws and invalid
  * prefixes have been logged for; without it they are keyed by the resolver.
  */
-export function toDelta (
+export function toDelta(
   n2k: N2kReport,
   state?: MapperState,
   customPgns: Record<string, Mapping[]> = {},
@@ -496,7 +505,7 @@ export function toDelta (
     }
     // The mappings that apply to this report, selected once: the values and
     // the context both come from this set.
-    const applying = theMappings.filter(theMapping =>
+    const applying = theMappings.filter((theMapping) =>
       mappingApplies(theMapping, n2k, src_state)
     )
 
@@ -548,7 +557,7 @@ export function toDelta (
       }
       if (result.context) {
         //filter out invalid mmsi
-        let last = result.context.lastIndexOf(':')
+        const last = result.context.lastIndexOf(':')
         if (last != -1 && result.context.slice(last + 1).length < 9) {
           console.error('bad MMSI: ' + result.context)
           return
@@ -574,7 +583,7 @@ export function toDelta (
   }
 }
 
-function getValue (
+function getValue(
   n2k: N2kReport,
   fields: Fields,
   source: string | undefined,
@@ -582,11 +591,11 @@ function getValue (
   state: MapperSourceState | undefined
 ): unknown {
   if (typeof source !== 'undefined') {
-    var stringValue = fields[source]
+    const stringValue = fields[source]
     if (!stringValue && stringValue != '') {
       return undefined
     }
-    var numberValue = Number(stringValue)
+    const numberValue = Number(stringValue)
     return isNaN(numberValue) ? stringValue : numberValue
   } else {
     if (theMapping.value) {
@@ -599,7 +608,7 @@ function getValue (
 // discards a whole update when any value in it lacks a path. Say so once per
 // PGN and source, so a missing mapping still shows in the log.
 const warnedNoPath = new Set<string>()
-function warnNoPath (n2k: N2kReport) {
+function warnNoPath(n2k: N2kReport) {
   const key = `${n2k.pgn}:${n2k.src}`
   if (!warnedNoPath.has(key)) {
     warnedNoPath.add(key)
@@ -615,7 +624,7 @@ function warnNoPath (n2k: N2kReport) {
  * Does this mapping apply to this report: its pgnClass (a PGN variant)
  * matches and its filter, if any, passes?
  */
-function mappingApplies (
+function mappingApplies(
   theMapping: Mapping,
   n2k: N2kReport,
   state: MapperSourceState | undefined
@@ -639,7 +648,7 @@ function mappingApplies (
 }
 
 // theMappings are the mappings that apply to the report (see mappingApplies).
-function toValuesArray (
+function toValuesArray(
   theMappings: Mapping[],
   n2k: N2kReport,
   state: MapperSourceState | undefined
@@ -652,15 +661,15 @@ function toValuesArray (
           if (typeof theMapping === 'function') {
             Array.prototype.push.apply(updates, theMapping(n2k, state))
           } else {
-            var path =
+            const path =
               typeof theMapping.node === 'function'
                 ? theMapping.node(n2k, state)
                 : theMapping.node
-            var value =
+            const value =
               typeof theMapping.source === 'function'
                 ? theMapping.source(n2k, state)
                 : getValue(n2k, fields, theMapping.source, theMapping, state)
-            var allowNull =
+            const allowNull =
               typeof theMapping.allowNull !== 'undefined' &&
               theMapping.allowNull
             if (!(value == null) || allowNull) {
@@ -693,7 +702,7 @@ function toValuesArray (
 }
 
 const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
-  60928: n2k => {
+  60928: (n2k) => {
     return {
       ...n2k.fields,
       deviceInstance:
@@ -701,8 +710,8 @@ const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
         Number(fieldsOf(n2k)!.deviceInstanceLower)
     }
   },
-  126998: n2k => fieldsOf(n2k)!,
-  126996: n2k => fieldsOf(n2k)!
+  126998: (n2k) => fieldsOf(n2k)!,
+  126996: (n2k) => fieldsOf(n2k)!
 }
 
 export {
@@ -720,7 +729,7 @@ export {
   InstancePrefixRuleProblem
 }
 
-export function toDeltaTransformer (
+export function toDeltaTransformer(
   options: unknown,
   state?: MapperState
 ): Stream {

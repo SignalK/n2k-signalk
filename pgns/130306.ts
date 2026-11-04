@@ -39,7 +39,7 @@ module.exports = [
       )
     },
     value: function (n2k: PGN_130306) {
-      var angle = Number(n2k.fields.windAngle)
+      const angle = Number(n2k.fields.windAngle)
       return angle <= Math.PI ? angle : angle - Math.PI * 2
     }
   },
@@ -49,7 +49,7 @@ module.exports = [
       return (n2k.fields.reference as unknown) === 'True (boat referenced)'
     },
     value: function (n2k: PGN_130306) {
-      var angle = Number(n2k.fields.windAngle)
+      const angle = Number(n2k.fields.windAngle)
       return angle <= Math.PI ? angle : angle - Math.PI * 2
     }
   },

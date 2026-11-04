@@ -1,7 +1,7 @@
 type State = { deviceInstance?: number }
 
 module.exports = (type: string, phase: string) => {
-  function prefix (n2k: unknown, state: State) {
+  function prefix(n2k: unknown, state: State) {
     return `electrical.${type}.${state.deviceInstance || 0}.${phase}`
   }
 
