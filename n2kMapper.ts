@@ -1,3 +1,4 @@
+import { HoldsVesselState, linkVesselState } from './vesselState.js'
 import { EventEmitter } from 'events'
 import { Stream } from 'stream'
 import {
@@ -65,13 +66,14 @@ function timestampOf(n2k: N2kReport): string {
 }
 
 /** The per-source state toDelta keeps and passes to a mapping. */
-interface MapperSourceState extends SourceState {
+interface MapperSourceState extends SourceState, HoldsVesselState {
   deviceInstance?: number
   /** When each metadata PGN was last received, by PGN. */
   metaPGNsReceived?: Record<string, number>
 }
 
-export type MapperState = Record<string, MapperSourceState>
+/** toDelta's state: each source's, by src, and the vessel-wide state. */
+export type MapperState = Record<string, MapperSourceState> & HoldsVesselState
 
 /** A value a mapping produced; one without a string path is left out. */
 type MappedValue = { path?: unknown; value: unknown } | undefined
@@ -482,6 +484,7 @@ export function toDelta(
         state[src] = {}
       }
       src_state = state[src]
+      linkVesselState(state, src_state)
       const resolver = hasInstanceGroup(n2k.pgn)
         ? instancePrefixResolver
         : undefined

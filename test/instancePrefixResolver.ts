@@ -551,7 +551,7 @@ describe('instancePrefixResolver', function () {
     })
     const position = decode(129025, 17, { latitude: 60.1, longitude: 24.9 })
     mapper.toDelta(position)
-    Object.getOwnPropertySymbols(mapper.state['17']).should.be.empty
+    expect(mapper.state['17'][RESOLVER]).to.equal(undefined)
     mapper.toDelta(engineSpeed(PORT_ENGINE))
     expect(mapper.state['17'][RESOLVER]).to.not.equal(undefined)
     mapper.toDelta(position)

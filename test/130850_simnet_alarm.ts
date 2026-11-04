@@ -3,10 +3,10 @@ chai.should()
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 import { FromPgn } from '@canboat/canboatjs'
-import { N2kMapper } from '../dist/n2kMapper'
+import { N2kMapper, toDelta } from '../dist/n2kMapper'
 
-function values(n2k: any): any[] {
-  return new N2kMapper().toDelta(n2k)!.updates[0].values
+function values(n2k: any, mapper = new N2kMapper()): any[] {
+  return mapper.toDelta(n2k)?.updates[0].values ?? []
 }
 
 // Alarms captured from Simrad equipment, from canboat's samples/, as
@@ -161,10 +161,12 @@ describe('130850 Simnet alarm', function () {
   })
 
   it('keeps an acknowledged or silenced alarm, without sound', function () {
-    const acknowledged = values(
-      headingMissingWith('Acknowledge', '2026-06-08T02:27:13.084Z', 22)
-    )
-    acknowledged.should.deep.equal([
+    const mapper = new N2kMapper()
+    values(headingMissing, mapper)
+    values(
+      headingMissingWith('Acknowledge', '2026-06-08T02:27:13.084Z', 22),
+      mapper
+    ).should.deep.equal([
       {
         path: 'notifications.headingMissing',
         value: {
@@ -176,12 +178,52 @@ describe('130850 Simnet alarm', function () {
       }
     ])
     // No capture of Silence is available.
+    const silenced = values(
+      headingMissingWith('Silence', '2026-06-08T02:27:13.084Z', 22),
+      mapper
+    )
+    silenced[0].value.should.include({ state: 'alarm' })
+    silenced[0].value.method.should.deep.equal(['visual'])
+  })
+
+  it('does not raise a cleared alarm again when it is acknowledged', function () {
+    // nac3-operations.raw: one display raises the alarm, another clears it,
+    // and the first acknowledges it after that. Simnet does not repeat an
+    // alarm, so writing the Acknowledge would leave it raised.
+    const mapper = new N2kMapper()
+    values(headingMissing, mapper)[0].value.state.should.equal('alarm')
     values(
-      headingMissingWith('Silence', '2026-06-08T02:27:13.084Z', 22)
-    )[0].value.should.include({ state: 'alarm' })
+      headingMissingWith('Deactivate', '2026-06-08T02:27:11.886Z', 50),
+      mapper
+    )[0].value.state.should.equal('normal')
     values(
-      headingMissingWith('Silence', '2026-06-08T02:27:13.084Z', 22)
-    )[0].value.method.should.deep.equal(['visual'])
+      headingMissingWith('Acknowledge', '2026-06-08T02:27:13.084Z', 22),
+      mapper
+    ).should.deep.equal([])
+  })
+
+  it('takes an Acknowledge from every display while the alarm is active', function () {
+    // navico-source-selection.raw: four devices acknowledge No GPS fix
+    const mapper = new N2kMapper()
+    const noGpsFix = (command: string, src: number) => ({
+      ...headingMissing,
+      src,
+      fields: { ...headingMissing.fields, command, alarmId: 'No GPS fix' }
+    })
+    values(noGpsFix('Activate', 32), mapper)
+    ;[48, 49, 50, 32].forEach((src) =>
+      values(noGpsFix('Acknowledge', src), mapper)[0].value.should.include({
+        state: 'alarm'
+      })
+    )
+  })
+
+  it('writes an Acknowledge when called without state', function () {
+    // Which alarms are active is then not known
+    const value: any = toDelta(
+      headingMissingWith('Acknowledge', '2026-06-08T02:27:13.084Z', 22)
+    )!.updates[0].values[0].value
+    value.should.include({ state: 'alarm' })
   })
 
   it('clears a deactivated alarm', function () {
