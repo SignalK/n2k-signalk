@@ -6,6 +6,11 @@ updates:
       interval: weekly
     open-pull-requests-limit: 5
     labels: [dependencies]
+    ignore:
+      # TypeScript 7 drops the compiler API that ts-node needs, so mocha can't
+      # run the tests. Bump the major when the tests move off ts-node.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
     groups:
       # Dev tooling in one weekly PR rather than one PR per package
       dev-dependencies:
