@@ -1082,7 +1082,7 @@ describe('deviceIdentity', function () {
 
   it('returns undefined for a value that is not a canName', function () {
     ;['', 'not a name', '1'.repeat(17), 17, undefined, null].forEach((value) =>
-      expect(deviceIdentity(value as any)).to.equal(undefined)
+      expect(deviceIdentity(value)).to.equal(undefined)
     )
   })
 

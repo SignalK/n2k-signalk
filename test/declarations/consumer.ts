@@ -6,6 +6,7 @@ import {
   classifyInstance,
   Delta,
   defaultPrefix,
+  DeltaStream,
   deviceIdentity,
   DeviceIdentity,
   instanceGroups,
@@ -17,6 +18,7 @@ import {
   N2kMapperOptions,
   N2kReport,
   toDelta,
+  toDeltaTransformer,
   validateInstancePrefixRules
 } from '../../dist/n2kMapper'
 
@@ -44,6 +46,8 @@ const rule: InstancePrefixRule = {
 const problems: InstancePrefixRuleProblem[] = validate([rule])
 const identify: Typed<typeof deviceIdentity> = deviceIdentity
 const identity: DeviceIdentity | undefined = identify('c0fa8200346129bf')
+// Any value: one that is not a canName gives undefined
+const noIdentity: DeviceIdentity | undefined = identify(17)
 const ruleFromIdentity: InstancePrefixRule | undefined = identity && {
   ...identity,
   group: 'engine',
@@ -78,6 +82,8 @@ type SetResolver = typeof mapper.setInstancePrefixResolver
 const nextResolver: Typed<Parameters<SetResolver>[0]> = resolver
 mapper.setInstancePrefixResolver(nextResolver)
 mapper.setInstancePrefixResolver(undefined)
+mapper.setInstancePrefixResolver(null)
+new N2kMapper({ instancePrefixResolver: null })
 // @ts-expect-error a resolver is a function
 mapper.setInstancePrefixResolver('tanks')
 
@@ -132,10 +138,33 @@ const report: N2kReport = tankFrame
 const mapperState: MapperState = {}
 const tankDelta: Delta | undefined = toDelta(report, mapperState)
 
+// A whole canboat frame written as an object literal
+const canboatDelta: Delta | undefined = toDelta({
+  timestamp: '2022-05-09T13:38:38.917Z',
+  prio: 2,
+  src: 3,
+  dst: 255,
+  pgn: 127488,
+  description: 'Engine Parameters, Rapid Update',
+  fields: { instance: 0, speed: 1500 }
+})
+
+// The transformer is written to and piped like any stream
+const transformer: Typed<DeltaStream> = toDeltaTransformer({}, mapperState)
+const written: boolean = transformer.write({ pgn: 127488, src: 3, fields: {} })
+transformer.end()
+// bin/n2k-signalk's pattern: an object stream of frames piped through it
+declare const frames: NodeJS.ReadableStream
+declare const sink: NodeJS.WritableStream
+frames.pipe(toDeltaTransformer(null, mapperState)).pipe(sink)
+
 export {
   engineDelta,
   mappedEngine,
   tankDelta,
+  canboatDelta,
+  written,
+  noIdentity,
   prefix,
   classify,
   groups,

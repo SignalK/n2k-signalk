@@ -29,10 +29,37 @@ import {
   InstancePrefixRuleProblem
 } from './instancePrefixOverrides.js'
 
+/**
+ * The stream toDeltaTransformer returns: a classic through stream, which is
+ * both writable and readable but is not a stream.Transform. Write decoded
+ * frames to it, or pipe an object stream of them into it, and it emits each
+ * frame's Delta as 'data'. A string or buffer gives no Delta, like any other
+ * frame toDelta drops. The write and end callbacks Node's WritableStream
+ * declares, so that it can be piped into, are never called.
+ */
+export interface DeltaStream extends Stream, NodeJS.WritableStream {
+  readable: boolean
+  paused: boolean
+  write(n2k: N2kReport): boolean
+  write(buffer: Uint8Array | string, cb?: (err?: Error | null) => void): boolean
+  write(
+    str: string,
+    encoding?: BufferEncoding,
+    cb?: (err?: Error | null) => void
+  ): boolean
+  end(cb?: () => void): this
+  end(n2k: N2kReport): this
+  end(data: string | Uint8Array, cb?: () => void): this
+  end(str: string, encoding?: BufferEncoding, cb?: () => void): this
+  pause(): this
+  resume(): this
+  destroy(): this
+}
+
 // through and debug ship no type declarations.
 const through: (
   write: (this: { queue(data: unknown): void }, data: N2kReport) => void
-) => Stream = require('through')
+) => DeltaStream = require('through')
 const debug: (formatter: string, ...args: unknown[]) => void = require('debug')(
   'signalk:n2k-signalk'
 )
@@ -45,6 +72,12 @@ type Fields = Record<string, unknown>
  */
 export interface N2kReport extends N2kFrame {
   timestamp?: string
+  // The rest of a canboat frame, which the mapper does not read
+  prio?: number | string
+  dst?: number | string
+  description?: string
+  id?: string
+  input?: string[]
 }
 
 // An interface has no index signature, so fields is read through Fields.
@@ -159,7 +192,7 @@ export interface N2kMapperOptions {
   /** Lets a custom PGN mapping replace a built-in one. */
   allowCustomPGNOverride?: boolean
   instancePrefixRules?: readonly InstancePrefixRule[] | null
-  instancePrefixResolver?: InstancePrefixResolver
+  instancePrefixResolver?: InstancePrefixResolver | null
   /** @deprecated Ignored; signalk-server still passes it. */
   sendMetaData?: boolean
 }
@@ -308,10 +341,12 @@ export class N2kMapper extends EventEmitter {
 
   /**
    * Replaces the function consulted for an instance's path prefix when no rule
-   * matches; undefined removes it, and anything else that is not a function
-   * is logged and removes it too.
+   * matches; undefined or null removes it, and anything else that is not a
+   * function is logged and removes it too.
    */
-  setInstancePrefixResolver(resolver: InstancePrefixResolver | undefined) {
+  setInstancePrefixResolver(
+    resolver: InstancePrefixResolver | null | undefined
+  ) {
     this.instancePrefixOverrides.setResolver(resolver)
   }
 
@@ -723,7 +758,7 @@ export {
 export function toDeltaTransformer(
   options: unknown,
   state?: MapperState
-): Stream {
+): DeltaStream {
   return through(function (data) {
     // toDelta returns nothing for a report it drops (an AIS report without a
     // valid MMSI, for one); queueing undefined would still emit a 'data' event.
