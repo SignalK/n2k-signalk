@@ -128,10 +128,13 @@ export interface Delta {
   }[]
 }
 
-/** Custom PGN mappings a plugin sets as the 'pgn-to-signalk' property. */
+/**
+ * A property value as the server passes it. For the 'pgn-to-signalk'
+ * property, value holds a plugin's custom PGN mappings, keyed by PGN.
+ */
 interface PgnMappingsPropertyValue {
   setter: string
-  value: Record<string, Mapping[]>
+  value: unknown
 }
 
 /** What n2kOutIsAvailable sends metadata requests through. */
@@ -280,17 +283,23 @@ export class N2kMapper extends EventEmitter {
         values
           .filter((v) => v !== undefined)
           .forEach((pv) => {
-            Object.entries(pv.value).forEach(([pgnNumber, mappings]) => {
-              if (
-                n2kMappings[pgnNumber] &&
-                !this.options.allowCustomPGNOverride
-              ) {
-                console.error(`pgn ${pgnNumber} can't be overwritten`)
-              } else {
-                this.customPgns[pgnNumber] = mappings
-                debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
+            if (typeof pv.value !== 'object' || pv.value === null) {
+              console.error(`${pv.setter} set invalid custom pgn mappings`)
+              return
+            }
+            Object.entries(pv.value as Record<string, Mapping[]>).forEach(
+              ([pgnNumber, mappings]) => {
+                if (
+                  n2kMappings[pgnNumber] &&
+                  !this.options.allowCustomPGNOverride
+                ) {
+                  console.error(`pgn ${pgnNumber} can't be overwritten`)
+                } else {
+                  this.customPgns[pgnNumber] = mappings
+                  debug('registered custom pgn %d by %s', pgnNumber, pv.setter)
+                }
               }
-            })
+            )
           })
       })
     }
