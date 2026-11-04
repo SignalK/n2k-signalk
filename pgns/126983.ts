@@ -1,6 +1,6 @@
 // ALERT
 import { PGN_126983 } from '@canboat/ts-pgns'
-import { AlertState } from './126985.js'
+import { AlertState, alertKey } from './alerts.js'
 
 const debug = require('debug')('n2k-signalk-126983')
 
@@ -68,14 +68,15 @@ module.exports = [
       debug('126983 skstate: ' + resolved.sk)
 
       // The filter has checked that the text for this alert is in the state.
-      const alertId = n2k.fields.alertId as number
+      const key = alertKey(n2k.fields)
       const alerts = state.alerts!
+      const text = alerts[key]
 
       const value = {
         state: resolved.sk,
         method: ['visual', 'sound'] as string[],
-        message: alerts[alertId].textDescription,
-        location: alerts[alertId].locationTextDescription || '',
+        message: text.textDescription,
+        location: text.locationTextDescription || '',
         alertType: n2k.fields.alertType,
         alertCategory: n2k.fields.alertCategory,
         alertSystem: n2k.fields.alertSystem,
@@ -109,6 +110,12 @@ module.exports = [
         debug('126983 value: ' + JSON.stringify(value, null, 2))
       }
 
+      // The alert is over: forget its text, so that a later alert that reuses
+      // the ID does not show it
+      if (n2k.fields.alertState === 'Normal') {
+        delete alerts[key]
+      }
+
       return value
     },
     filter: function (n2k: PGN_126983, state?: AlertState) {
@@ -117,7 +124,7 @@ module.exports = [
         n2k.fields.alertType !== null &&
         typeof state === 'object' &&
         state.alerts &&
-        state.alerts[n2k.fields.alertId as number]
+        state.alerts[alertKey(n2k.fields)]
       )
     }
   }

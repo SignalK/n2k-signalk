@@ -20,7 +20,7 @@ describe('126985 alert text', function () {
     const text = {
       '40': {
         alerts: {
-          '23480': {
+          '20..23480': {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: Temperature over 0'
@@ -29,5 +29,93 @@ describe('126985 alert text', function () {
       }
     }
     expect(state).to.deep.include(text)
+  })
+
+  // A source can run several alert systems and sub-systems, each with its
+  // own alert IDs (#391)
+  function alertText(system: number, subSystem: number, text?: string) {
+    return {
+      prio: 2,
+      src: 41,
+      dst: 255,
+      pgn: 126985,
+      fields: {
+        'Alert Type': 'Warning',
+        'Alert Category': 'Technical',
+        'Alert System': system,
+        'Alert Sub-System': subSystem,
+        'Alert ID': 7,
+        'Data Source Instance': 0,
+        'Alert Occurrence Number': 1,
+        'Language ID': 'English (US)',
+        ...(text === undefined ? {} : { 'Alert Text Description': text })
+      }
+    }
+  }
+
+  function alert(system: number, subSystem: number, alertState: string) {
+    return {
+      prio: 2,
+      src: 41,
+      dst: 255,
+      pgn: 126983,
+      fields: {
+        'Alert Type': 'Warning',
+        'Alert Category': 'Technical',
+        'Alert System': system,
+        'Alert Sub-System': subSystem,
+        'Alert ID': 7,
+        'Data Source Instance': 0,
+        'Alert Occurrence Number': 1,
+        'Alert State': alertState
+      }
+    }
+  }
+
+  function messages(delta: any): unknown[] {
+    return (delta?.updates ?? []).flatMap((u: any) =>
+      u.values.map((v: any) => v.value.message)
+    )
+  }
+
+  it('keeps the texts of alerts with the same ID apart', function () {
+    const alertState = {}
+    mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
+    mapper.testToDelta(alertText(1, 2, 'Fridge'), alertState)
+    mapper.testToDelta(alertText(3, 0, 'Shore power'), alertState)
+
+    messages(mapper.testToDelta(alert(1, 0, 'Active'), alertState)).should.eql([
+      'Bilge pump'
+    ])
+    messages(mapper.testToDelta(alert(1, 2, 'Active'), alertState)).should.eql([
+      'Fridge'
+    ])
+    messages(mapper.testToDelta(alert(3, 0, 'Active'), alertState)).should.eql([
+      'Shore power'
+    ])
+  })
+
+  it('forgets an alert text once the alert is back to normal', function () {
+    const alertState = {}
+    mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
+
+    messages(mapper.testToDelta(alert(1, 0, 'Normal'), alertState)).should.eql([
+      'Bilge pump'
+    ])
+    // A later alert that reuses the ID waits for its own text
+    messages(mapper.testToDelta(alert(1, 0, 'Active'), alertState)).should.eql(
+      []
+    )
+  })
+
+  it('stores nothing for an alert text without a description', function () {
+    const alertState: any = {}
+    mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
+    mapper.testToDelta(alertText(1, 0), alertState)
+
+    expect(alertState['41'].alerts).to.deep.equal({})
+    messages(mapper.testToDelta(alert(1, 0, 'Active'), alertState)).should.eql(
+      []
+    )
   })
 })
