@@ -15,7 +15,7 @@ const PGN_130311_INSTANCE = 'default'
 
 type Mapping = { path?: string; pathWithIndex?: string }
 
-function path (mapping: Mapping | undefined): string | undefined {
+function path(mapping: Mapping | undefined): string | undefined {
   if (mapping?.pathWithIndex) {
     return mapping.pathWithIndex.replace('<index>', PGN_130311_INSTANCE)
   }

@@ -1,7 +1,6 @@
 import { PGN_129793 } from '@canboat/ts-pgns'
 
 const padUserID = require('../mmsi-context').padUserID
-const getShipType = require('../aisShipTypeMapping')
 
 module.exports = [
   {
@@ -37,7 +36,7 @@ module.exports = [
   },
   {
     node: 'sensors.ais.class',
-    value: function (n2k: PGN_129793) {
+    value: function (_n2k: PGN_129793) {
       return 'BASE'
     }
   }

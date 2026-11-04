@@ -1,13 +1,11 @@
 import { seconds } from '../utils.js'
 import {
-  PGN,
   PGN_130820_FusionMedia,
   PGN_130820_FusionDeviceName,
   PGN_130820_FusionPowerState,
   PGN_130820_FusionArtistName,
   PGN_130820_FusionAlbumName,
   PGN_130820_FusionTrackName,
-  PGN_130820_FusionTrackNameMatchFields,
   PGN_130820_FusionTrackPosition,
   PGN_130820_FusionSiriusxmArtist,
   PGN_130820_FusionSiriusxmTitle,
@@ -20,9 +18,7 @@ import {
   PGN_130820_FusionEq,
   PGN_130820_FusionTuner,
   FusionPlayStatus,
-  ManufacturerCode,
-  FusionPowerState,
-  FusionStatusMessageId
+  FusionPowerState
 } from '@canboat/ts-pgns'
 let currentFusionSource: number | null = null
 const fusionSources: { [key: string]: string } = {}
@@ -51,7 +47,7 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionArtistName) => n2k.fields.artist,
 
-    node: (n2k: PGN_130820_FusionArtistName) =>
+    node: (_n2k: PGN_130820_FusionArtistName) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.artistName',
@@ -64,7 +60,7 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionAlbumName) => n2k.fields.album,
 
-    node: (n2k: PGN_130820_FusionAlbumName) =>
+    node: (_n2k: PGN_130820_FusionAlbumName) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.albumName',
@@ -77,7 +73,7 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionTrackName) => n2k.fields.track,
 
-    node: (n2k: any) =>
+    node: (_n2k: any) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.name',
@@ -88,12 +84,12 @@ module.exports = [
   {
     pgnClass: PGN_130820_FusionTrackPosition,
 
-    node: (n2k: PGN_130820_FusionTrackPosition) =>
+    node: (_n2k: PGN_130820_FusionTrackPosition) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.elapsedTime',
 
-    filter: (n2k: PGN_130820_FusionTrackPosition) =>
+    filter: (_n2k: PGN_130820_FusionTrackPosition) =>
       currentFusionSource != null,
 
     value: (n2k: PGN_130820_FusionTrackPosition) => seconds(n2k.fields.progress)
@@ -101,12 +97,12 @@ module.exports = [
   {
     pgnClass: PGN_130820_FusionMedia,
 
-    node: (n2k: PGN_130820_FusionMedia) =>
+    node: (_n2k: PGN_130820_FusionMedia) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.length',
 
-    filter: (n2k: PGN_130820_FusionMedia) => currentFusionSource != null,
+    filter: (_n2k: PGN_130820_FusionMedia) => currentFusionSource != null,
 
     value: (n2k: PGN_130820_FusionMedia) => seconds(n2k.fields.length)
   },
@@ -115,12 +111,12 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionSiriusxmArtist) => n2k.fields.artist,
 
-    node: (n2k: any) =>
+    node: (_n2k: any) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.artistName',
 
-    filter: (n2k: PGN_130820_FusionSiriusxmArtist) =>
+    filter: (_n2k: PGN_130820_FusionSiriusxmArtist) =>
       currentFusionSource != null
   },
   {
@@ -128,24 +124,25 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionSiriusxmTitle) => n2k.fields.title,
 
-    node: (n2k: PGN_130820_FusionSiriusxmTitle) =>
+    node: (_n2k: PGN_130820_FusionSiriusxmTitle) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.name',
 
-    filter: (n2k: PGN_130820_FusionSiriusxmTitle) => currentFusionSource != null
+    filter: (_n2k: PGN_130820_FusionSiriusxmTitle) =>
+      currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionSiriusxmChannel,
 
     value: (n2k: PGN_130820_FusionSiriusxmChannel) => n2k.fields.channel,
 
-    node: (n2k: PGN_130820_FusionSiriusxmChannel) =>
+    node: (_n2k: PGN_130820_FusionSiriusxmChannel) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.tuner.stationName',
 
-    filter: (n2k: PGN_130820_FusionSiriusxmChannel) =>
+    filter: (_n2k: PGN_130820_FusionSiriusxmChannel) =>
       currentFusionSource != null
   },
   {
@@ -153,36 +150,36 @@ module.exports = [
 
     value: (n2k: PGN_130820_FusionSiriusxmContentInfo) => n2k.fields.genre,
 
-    node: (n2k: PGN_130820_FusionSiriusxmContentInfo) =>
+    node: (_n2k: PGN_130820_FusionSiriusxmContentInfo) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.genre',
 
-    filter: (n2k: any) => currentFusionSource != null
+    filter: (_n2k: any) => currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionMedia,
 
     value: (n2k: PGN_130820_FusionMedia) => n2k.fields.track,
 
-    node: (n2k: PGN_130820_FusionMedia) =>
+    node: (_n2k: PGN_130820_FusionMedia) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.number',
 
-    filter: (n2k: PGN_130820_FusionMedia) => currentFusionSource != null
+    filter: (_n2k: PGN_130820_FusionMedia) => currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionMedia,
 
     value: (n2k: PGN_130820_FusionMedia) => n2k.fields.trackCount,
 
-    node: (n2k: PGN_130820_FusionMedia) =>
+    node: (_n2k: PGN_130820_FusionMedia) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.totalTracks',
 
-    filter: (n2k: PGN_130820_FusionMedia) => currentFusionSource != null
+    filter: (_n2k: PGN_130820_FusionMedia) => currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionVolumes,
@@ -280,7 +277,7 @@ module.exports = [
   {
     pgnClass: PGN_130820_FusionTuner,
 
-    node: (n2k: PGN_130820_FusionTuner) =>
+    node: (_n2k: PGN_130820_FusionTuner) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.tuner.frequency',
@@ -298,19 +295,19 @@ module.exports = [
   {
     pgnClass: PGN_130820_FusionTuner,
 
-    node: (n2k: PGN_130820_FusionTuner) =>
+    node: (_n2k: PGN_130820_FusionTuner) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.tuner.signalStrength',
 
     value: (n2k: PGN_130820_FusionTuner) => n2k.fields.signalStrength,
 
-    filter: (n2k: PGN_130820_FusionSource) => currentFusionSource != null
+    filter: (_n2k: PGN_130820_FusionSource) => currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionTuner,
 
-    node: (n2k: PGN_130820_FusionTuner) =>
+    node: (_n2k: PGN_130820_FusionTuner) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.track.name',
@@ -318,12 +315,12 @@ module.exports = [
     value: (n2k: PGN_130820_FusionTuner) =>
       n2k.fields.track && n2k.fields.track.length > 0 ? n2k.fields.track : null,
 
-    filter: (n2k: PGN_130820_FusionSource) => currentFusionSource != null
+    filter: (_n2k: PGN_130820_FusionSource) => currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionMedia,
 
-    node: (n2k: PGN_130820_FusionMedia) =>
+    node: (_n2k: PGN_130820_FusionMedia) =>
       'entertainment.device.fusion1.avsource.source' +
       currentFusionSource +
       '.playbackState',
@@ -335,7 +332,7 @@ module.exports = [
         : 'Playing'
     },
 
-    filter: (n2k: PGN_130820_FusionSource) => currentFusionSource != null
+    filter: (_n2k: PGN_130820_FusionSource) => currentFusionSource != null
   },
   {
     pgnClass: PGN_130820_FusionMute,

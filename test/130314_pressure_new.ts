@@ -2,7 +2,6 @@ import chai from 'chai'
 chai.should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
-const debug = require('debug')('n2k-signalk:test:130314')
 const _ = require('lodash')
 
 interface PathValue {
@@ -17,7 +16,7 @@ describe('Pressure: ', function () {
   )
 
   const testCases = require('./130314-data.json')
-  Object.keys(testCases).forEach(testCaseName => {
+  Object.keys(testCases).forEach((testCaseName) => {
     it(`Converts ${testCaseName}`, () => {
       const testCase = testCases[testCaseName]
 
@@ -34,7 +33,7 @@ describe('Pressure: ', function () {
       )
 
       Object.keys(testCase['testExpectConvertedValues']).forEach(
-        expectedValuePath => {
+        (expectedValuePath) => {
           const expectedValueFound = delta.updates[0].values.filter(
             (value: PathValue) => value.path === expectedValuePath
           )
@@ -75,7 +74,7 @@ describe('Pressure: ', function () {
       console.error = consoleError
     }
     // Its only value has no path, so nothing is emitted for it.
-    deltas.forEach(delta => delta.updates[0].values.should.be.empty)
+    deltas.forEach((delta) => delta.updates[0].values.should.be.empty)
     logged.length.should.equal(1)
     logged[0].should.contain('pgn 130314 from src 90')
   })
@@ -85,7 +84,7 @@ describe('Pressure: ', function () {
     const full = new (require('@signalk/signalk-schema').FullSignalK)(
       'urn:mrn:imo:mmsi:230099999'
     )
-    _.forOwn(pressureMappings, function (mapping: any, key: string) {
+    _.forOwn(pressureMappings, function (mapping: any, _key: string) {
       const delta = {
         context: 'vessels.urn:mrn:imo:mmsi:230099999',
         updates: [

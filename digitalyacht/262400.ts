@@ -1,7 +1,7 @@
 // ts-pgns has no type for 262400; these mappings read canboat field names.
 type Frame = { fields: Record<string, unknown> }
 
-function makePath (n2k: Frame) {
+function makePath(n2k: Frame) {
   return `network.n2k.ikonvert.${n2k.fields['Gateway address']}`
 }
 

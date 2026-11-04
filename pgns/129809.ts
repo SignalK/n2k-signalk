@@ -6,7 +6,7 @@ module.exports = [
   {
     node: 'sensors.ais.class',
     filter: (n2k: PGN_129809) => n2k.fields.userId,
-    value: function (n2k: PGN_129809) {
+    value: function (_n2k: PGN_129809) {
       return 'B'
     }
   },

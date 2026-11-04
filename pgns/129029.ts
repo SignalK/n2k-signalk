@@ -18,13 +18,12 @@ const integrityMap: Record<string, string> = {
   'No integrity checking': 'no Integrity checking'
 }
 
-const mapped = (
-  field: 'gnssType' | 'method' | 'integrity',
-  map: Record<string, string>
-) => (n2k: PGN_129029) => {
-  const value = (n2k.fields[field] as unknown) as string
-  return map[value] || value
-}
+const mapped =
+  (field: 'gnssType' | 'method' | 'integrity', map: Record<string, string>) =>
+  (n2k: PGN_129029) => {
+    const value = n2k.fields[field] as unknown as string
+    return map[value] || value
+  }
 
 // A coordinate that is there and a number: null would become 0.
 const isCoordinate = (value: unknown) =>

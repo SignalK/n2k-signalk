@@ -7,14 +7,14 @@ const axes = ['yaw', 'pitch', 'roll'] as const
 // schema makes no axis required, and Number(undefined) would be NaN, which
 // the server sends as null.
 const measured = (n2k: PGN_127257) =>
-  axes.filter(axis => Number.isFinite(n2k.fields[axis]))
+  axes.filter((axis) => Number.isFinite(n2k.fields[axis]))
 
 module.exports = [
   {
     node: 'navigation.attitude',
     value: (n2k: PGN_127257) =>
       Object.fromEntries(
-        measured(n2k).map(axis => [axis, Number(n2k.fields[axis])])
+        measured(n2k).map((axis) => [axis, Number(n2k.fields[axis])])
       ),
     filter: (n2k: PGN_127257) => measured(n2k).length > 0
   }

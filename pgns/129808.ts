@@ -50,7 +50,7 @@ const NATURES: Record<string, string> = {
 // that 0 and gives the 9 digit MMSI; older versions give all 10 digits, so
 // the MMSI is then the first 9. Ten digits that don't end in 0 are not an
 // MMSI: the newer decoder gives those for a call to a geographical area.
-function addressMmsi (address: unknown) {
+function addressMmsi(address: unknown) {
   if (typeof address !== 'string') {
     return undefined
   }
@@ -67,7 +67,7 @@ function addressMmsi (address: unknown) {
 
 // A distress alert has format Distress, and no category of its own; a relay
 // or acknowledgement has category Distress.
-function isDistress (n2k: Dsc) {
+function isDistress(n2k: Dsc) {
   return (
     (n2k.fields.dscFormat as unknown) === 'Distress' ||
     (n2k.fields.dscCategory as unknown) === 'Distress' ||
@@ -79,17 +79,16 @@ function isDistress (n2k: Dsc) {
 // of category Distress, from a station passing it on) carries the ship in
 // distress's position and nature, and names that ship in its own field. Any
 // other call is about its caller.
-function vesselMmsi (n2k: Dsc) {
+function vesselMmsi(n2k: Dsc) {
   return (
     (isDistress(n2k) && addressMmsi(n2k.fields.mmsiOfShipInDistress)) ||
     addressMmsi(n2k.fields.dscMessageAddress)
   )
 }
 
-function distressNature (n2k: Dsc) {
+function distressNature(n2k: Dsc) {
   return (
-    NATURES[(n2k.fields.natureOfDistress as unknown) as string] ||
-    'undesignated'
+    NATURES[n2k.fields.natureOfDistress as unknown as string] || 'undesignated'
   )
 }
 

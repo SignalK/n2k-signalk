@@ -6,13 +6,13 @@ import { decode, prefixOf, FRAMES } from './instanceFrames'
 
 const SENTINEL = 'x.y'
 
-function values (mapper: N2kMapper, n2k: any): any[] {
+function values(mapper: N2kMapper, n2k: any): any[] {
   return mapper.toDelta(n2k)!.updates[0].values
 }
 
 // path with the prefix it is at or under replaced, notifications included;
 // undefined for a path under neither.
-function rebased (path: string, from: string, to: string) {
+function rebased(path: string, from: string, to: string) {
   for (const root of ['', 'notifications.']) {
     const prefix = root + from
     if (path === prefix || path.startsWith(prefix + '.')) {
@@ -24,7 +24,7 @@ function rebased (path: string, from: string, to: string) {
 
 // A notification's message names the engine, which a remapped prefix
 // renames; the rest of the value is unchanged.
-function withoutMessage (value: any) {
+function withoutMessage(value: any) {
   return value && typeof value === 'object' && 'message' in value
     ? { ...value, message: undefined }
     : value
@@ -36,13 +36,13 @@ describe('instancePrefixResolver override coverage', function () {
       fields
     )} writes every path under the resolved prefix`, function () {
       const n2k = decode(pgn, 34, fields)
-      const group = instanceGroups.find(g => g.pgns.includes(pgn))!
+      const group = instanceGroups.find((g) => g.pgns.includes(pgn))!
       const from = prefixOf(n2k)!
       // A single-leaf prefix is the full path, so keep its leaf.
       const to = group.singleLeaf
         ? SENTINEL + from.slice(from.lastIndexOf('.'))
         : SENTINEL
-      const expected = values(new N2kMapper(), n2k).map(v => {
+      const expected = values(new N2kMapper(), n2k).map((v) => {
         const path = rebased(v.path, from, to)
         chai.expect(path, `${v.path} under ${from}`).to.not.equal(undefined)
         return { path, value: withoutMessage(v.value) }
@@ -50,7 +50,7 @@ describe('instancePrefixResolver override coverage', function () {
       expected.should.not.be.empty
       const mapper = new N2kMapper({ instancePrefixResolver: () => to })
       values(mapper, n2k)
-        .map(v => ({ path: v.path, value: withoutMessage(v.value) }))
+        .map((v) => ({ path: v.path, value: withoutMessage(v.value) }))
         .should.deep.equal(expected)
     })
   })
@@ -65,7 +65,7 @@ describe('instancePrefixResolver override coverage', function () {
       instancePrefixResolver: () => 'propulsion.genset'
     })
     const alarm = values(mapper, n2k).find(
-      v =>
+      (v) =>
         v.path ===
         'notifications.propulsion.genset.transmission.overTemperature'
     )

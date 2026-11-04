@@ -23,7 +23,7 @@ module.exports = [
 
     value: function (n2k: PGN_65305_SimnetPilotMode) {
       let res: string | undefined
-      Object.keys(modeMap).forEach(key => {
+      Object.keys(modeMap).forEach((key) => {
         const mode = modeMap[key]
         if (n2k.fields.mode?.indexOf(mode) != -1) {
           res = key

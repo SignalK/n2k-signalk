@@ -14,7 +14,7 @@ const parser = new FromPgn({ useCamel: true })
 const TIMESTAMP = '2026-09-28T12:00:00.000Z'
 
 // Round-trip through canboatjs so fields arrive as the mapper receives them.
-function decode (pgn: number, src: number, fields: Fields): any {
+function decode(pgn: number, src: number, fields: Fields): any {
   const parsed: any = parser.parseString(
     pgnToActisenseSerialFormat({
       timestamp: TIMESTAMP,
@@ -29,7 +29,7 @@ function decode (pgn: number, src: number, fields: Fields): any {
   return parsed
 }
 
-function actisense (pgn: number, src: number, fields: Fields) {
+function actisense(pgn: number, src: number, fields: Fields) {
   return pgnToActisenseSerialFormat({
     timestamp: TIMESTAMP,
     prio: 2,
@@ -42,7 +42,7 @@ function actisense (pgn: number, src: number, fields: Fields) {
 
 // Decodes the frame with its instance field set to code in the raw bytes:
 // the encoder refuses codes canboatjs reserves.
-function decodeWithInstance (
+function decodeWithInstance(
   pgn: number,
   src: number,
   fields: Fields,
@@ -63,7 +63,7 @@ function decodeWithInstance (
 }
 
 // The default prefix the frame writes its instance under.
-function prefixOf (n2k: any) {
+function prefixOf(n2k: any) {
   const c = classifyInstance(n2k)
   expect(c, `classification of ${n2k.pgn}`).to.not.equal(undefined)
   return defaultPrefix(

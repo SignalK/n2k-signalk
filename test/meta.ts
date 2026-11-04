@@ -6,7 +6,7 @@ import { N2kMapper } from '../dist/n2kMapper'
 import { FromPgn } from '@canboat/canboatjs'
 
 describe('Meta data works', function () {
-  it('Address Claim', done => {
+  it('Address Claim', (done) => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('uniqueNumber', 76223)
@@ -41,7 +41,7 @@ describe('Meta data works', function () {
     })
   })
 
-  it('Address Claim with unavailable instance fields', done => {
+  it('Address Claim with unavailable instance fields', (done) => {
     // Captured from a live Maretron device (wire bytes
     // 01,51,36,11,01,6e,28,cf): the decoder suppresses fields at
     // their unavailable sentinel — systemInstance 15 here — so they
@@ -77,7 +77,7 @@ describe('Meta data works', function () {
   const CLAIM_60928 =
     '2017-04-15T14:57:58.470Z,6,60928,3,255,8,d3,e5,98,c5,00,82,32,c0'
 
-  it('Address Claim with a clear spare field left out keeps its NAME', done => {
+  it('Address Claim with a clear spare field left out keeps its NAME', (done) => {
     // canboatjs, as canboat, leaves an all-zero spare field out of the
     // decoded fields.
     const parsed = new FromPgn({ useCamel: true, format: 1 }).parseString(
@@ -92,7 +92,7 @@ describe('Meta data works', function () {
     n2kMapper.toDelta(parsed)
   })
 
-  it('Address Claim with a clear spare field as null keeps its NAME', done => {
+  it('Address Claim with a clear spare field as null keeps its NAME', (done) => {
     const parsed = new FromPgn({
       useCamel: true,
       format: 1,
@@ -106,7 +106,7 @@ describe('Meta data works', function () {
     n2kMapper.toDelta(parsed)
   })
 
-  it('Address Claim with the spare bit set keeps it in its NAME', done => {
+  it('Address Claim with the spare bit set keeps it in its NAME', (done) => {
     // Byte 6 0x33: the spare bit set, as canboatjs sent its own claim before
     // 4.0.0-beta.4. It is decoded and must stay in the canName.
     const parsed = new FromPgn({ useCamel: true, format: 1 }).parseString(
@@ -121,7 +121,7 @@ describe('Meta data works', function () {
     n2kMapper.toDelta(parsed)
   })
 
-  it('Configuration Information', done => {
+  it('Configuration Information', (done) => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('installationDescription1', 'UD-650')
@@ -147,7 +147,7 @@ describe('Meta data works', function () {
     })
   })
 
-  it('Product Information', done => {
+  it('Product Information', (done) => {
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('modelId', 'UD-650')

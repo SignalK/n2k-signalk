@@ -32,7 +32,7 @@ const addressClaim = (src: number): any => ({
 })
 
 // Lets the promise chains a fired timer resumes run to their next timer.
-const settle = () => new Promise(resolve => setImmediate(resolve))
+const settle = () => new Promise((resolve) => setImmediate(resolve))
 
 describe('metadata requests', function () {
   interface Timer {
@@ -45,17 +45,17 @@ describe('metadata requests', function () {
   beforeEach(function () {
     timers = []
     realSetTimeout = global.setTimeout
-    global.setTimeout = (((fn: () => void, ms: number) => {
+    global.setTimeout = ((fn: () => void, ms: number) => {
       timers.push({ fn, ms })
       return timers.length
-    }) as unknown) as typeof setTimeout
+    }) as unknown as typeof setTimeout
   })
 
   afterEach(function () {
     global.setTimeout = realSetTimeout
   })
 
-  async function fireTimer () {
+  async function fireTimer() {
     timers.length.should.be.above(0)
     const timer = timers.shift()!
     timer.ms.should.equal(REQUEST_TIMEOUT_MS)
@@ -63,11 +63,11 @@ describe('metadata requests', function () {
     await settle()
   }
 
-  function listener () {
+  function listener() {
     const requests: unknown[] = []
     return {
       requests,
-      emit (event: string, request: unknown) {
+      emit(event: string, request: unknown) {
         requests.push({ event, request })
       }
     }
@@ -91,12 +91,12 @@ describe('metadata requests', function () {
     out.requests.should.deep.equal([request(BROADCAST, META_PGNS[0])])
     await fireTimer()
     out.requests.should.deep.equal(
-      META_PGNS.slice(0, 2).map(pgn => request(BROADCAST, pgn))
+      META_PGNS.slice(0, 2).map((pgn) => request(BROADCAST, pgn))
     )
     await fireTimer()
     await fireTimer()
     out.requests.should.deep.equal(
-      META_PGNS.map(pgn => request(BROADCAST, pgn))
+      META_PGNS.map((pgn) => request(BROADCAST, pgn))
     )
     timers.should.be.empty
   })

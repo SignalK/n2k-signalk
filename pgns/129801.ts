@@ -16,21 +16,21 @@ import { PGN_129801 } from '@canboat/ts-pgns'
 
 // Coast stations carry 00-prefixed MMSIs that arrive numerically (leading
 // zeros dropped). Pad back to 9 digits so the MMSI is valid.
-function mmsi (id: unknown): string | undefined {
+function mmsi(id: unknown): string | undefined {
   if (id === undefined || id === null || Number(id) === 0) {
     return undefined
   }
   return id.toString().padStart(9, '0')
 }
 
-function safetyText (n2k: PGN_129801): string | undefined {
+function safetyText(n2k: PGN_129801): string | undefined {
   const text = n2k.fields.safetyRelatedText
   return typeof text === 'string' && text.trim().length > 0
     ? text.trim()
     : undefined
 }
 
-function message (n2k: PGN_129801) {
+function message(n2k: PGN_129801) {
   const value: { text?: string; addressee?: string } = {
     text: safetyText(n2k)
   }

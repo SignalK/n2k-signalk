@@ -19,8 +19,8 @@ module.exports = [
   {
     filter: function (n2k: PGN_126985, state?: AlertState) {
       if (typeof state !== 'undefined') {
-        var alertId = n2k.fields.alertId as number
-        var text: AlertText = {
+        const alertId = n2k.fields.alertId as number
+        const text: AlertText = {
           languageId: n2k.fields.languageId,
           textDescription: n2k.fields.alertTextDescription,
           locationTextDescription: n2k.fields.alertLocationTextDescription || ''
