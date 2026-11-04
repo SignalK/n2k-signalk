@@ -5,7 +5,7 @@ type TotalEnergy = {
 }
 
 module.exports = (type: string) => {
-  function prefix (n2k: TotalEnergy, state: State) {
+  function prefix(n2k: TotalEnergy, state: State) {
     return `electrical.${type}.${state.deviceInstance || 0}.total`
   }
   return [

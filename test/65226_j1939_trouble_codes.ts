@@ -4,7 +4,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 import testMapper = require('./testMapper')
 
-function dm1 (fields: Record<string, unknown>) {
+function dm1(fields: Record<string, unknown>) {
   return testMapper.n2kToNested({
     timestamp: '2023-12-10T18:58:21.487Z',
     prio: 6,

@@ -47,7 +47,7 @@ const status1Notifications: Notification[] = [
   }
 ]
 
-function mappingsForStatus (
+function mappingsForStatus(
   field: 'discreteStatus1',
   notifications: Notification[]
 ) {

@@ -1,7 +1,7 @@
 import { FromPgn, pgnToActisenseSerialFormat } from '@canboat/canboatjs'
 import * as n2kMapper from '../dist/n2kMapper'
 import { Delta, MapperState } from '../dist/n2kMapper'
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const signalkSchema = require('@signalk/signalk-schema')
 
 // pgnToActisenseSerialFormat writes whole messages, so tell the parser: an
@@ -19,11 +19,11 @@ type TestFrame = any
   Set the env variable NO_CANBOATJS=true to skip the back and forth conversion.
 */
 
-function reparse (n2k: TestFrame) {
+function reparse(n2k: TestFrame) {
   return parser.parseString(pgnToActisenseSerialFormat(n2k)) as TestFrame
 }
 
-function nested (delta: Delta) {
+function nested(delta: Delta) {
   if (!delta.context) {
     delta.context = 'vessels.' + signalkSchema.fakeMmsiId
   }
@@ -31,11 +31,11 @@ function nested (delta: Delta) {
   return signalkSchema.deltaToFull(delta)[contextParts[0]][contextParts[1]]
 }
 
-function testToDelta (n2k: TestFrame, state?: MapperState): any {
+function testToDelta(n2k: TestFrame, state?: MapperState): any {
   return n2kMapper.toDelta(reparse(n2k), state)
 }
 
-function doubleConvertWithCanboat (n2k: TestFrame, state?: MapperState): any {
+function doubleConvertWithCanboat(n2k: TestFrame, state?: MapperState): any {
   const parsed = reparse(n2k)
   parsed.src = n2k.src
   if (n2k.timestamp) {
@@ -44,11 +44,11 @@ function doubleConvertWithCanboat (n2k: TestFrame, state?: MapperState): any {
   return nested(n2kMapper.toDelta(parsed, state)!)
 }
 
-function n2kToNested (n2k: TestFrame, state?: MapperState): any {
+function n2kToNested(n2k: TestFrame, state?: MapperState): any {
   return nested(n2kMapper.toDelta(n2k, state)!)
 }
 
-function toNested (n2k: TestFrame, state?: MapperState): any {
+function toNested(n2k: TestFrame, state?: MapperState): any {
   return process.env.NO_CANBOATJS
     ? n2kToNested(n2k, state)
     : doubleConvertWithCanboat(n2k, state)

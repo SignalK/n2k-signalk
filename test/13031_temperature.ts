@@ -2,7 +2,6 @@ import chai from 'chai'
 chai.should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
-const debug = require('debug')('n2k-signalk:test:130312')
 const _ = require('lodash')
 import assert from 'assert'
 
@@ -18,7 +17,7 @@ describe('Temperature: ', function () {
   )
 
   const testCases = require('./130310-2.json')
-  Object.keys(testCases).forEach(testCaseName => {
+  Object.keys(testCases).forEach((testCaseName) => {
     it(`Converts ${testCaseName}`, () => {
       const testCase = testCases[testCaseName]
 
@@ -29,7 +28,7 @@ describe('Temperature: ', function () {
       delta.should.be.validSignalKDelta
 
       Object.keys(testCase['testExpectConvertedValues']).forEach(
-        expectedValuePath => {
+        (expectedValuePath) => {
           const expectedValueFound = delta.updates[0].values.filter(
             (value: PathValue) => value.path === expectedValuePath
           )
@@ -77,8 +76,8 @@ describe('Temperature: ', function () {
     const full = new (require('@signalk/signalk-schema').FullSignalK)(
       'urn:mrn:imo:mmsi:230099999'
     )
-    _.forOwn(temperatureMappings, function (mapping: any, key: string) {
-      let path = mapping.pathWithIndex
+    _.forOwn(temperatureMappings, function (mapping: any, _key: string) {
+      const path = mapping.pathWithIndex
         ? mapping.pathWithIndex.replace('<index>', '0')
         : mapping.path
 

@@ -1,6 +1,6 @@
 import chai from 'chai'
 chai.should()
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
 import { FromPgn } from '@canboat/canboatjs'
@@ -18,7 +18,7 @@ const decode = (line: string): any => {
   return n2k
 }
 
-function values (line: string): any[] {
+function values(line: string): any[] {
   return new N2kMapper().toDelta(decode(line))!.updates[0].values
 }
 
@@ -80,6 +80,6 @@ describe('65305 Simnet pilot mode', function () {
       '2026-06-08T01:55:24.435,7,65305,21,255,8,41,9f,01,03,00,00,00,00',
       '2026-07-05T00:04:57.703Z,7,65305,38,255,8,41,9f,01,17,18,09,00,00',
       '2026-06-08T01:55:43.727,7,65305,13,255,8,41,9f,00,1e,02,00,00,00'
-    ].forEach(line => values(line).should.deep.equal([]))
+    ].forEach((line) => values(line).should.deep.equal([]))
   })
 })

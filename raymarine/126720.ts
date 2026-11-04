@@ -28,7 +28,7 @@ module.exports = [
     allowNull: true,
     // canboatjs gives the brightness as a ratio.
     value: (n2k: PGN_126720_Seatalk1DisplayBrightness) => {
-      let val = n2k.fields.brightness
+      const val = n2k.fields.brightness
       return val !== undefined ? val : null
     }
   },
@@ -61,8 +61,8 @@ module.exports = [
     },
     node: 'steering.autopilot.state',
     value: function (n2k: PGN_126720_Seatalk1PilotMode) {
-      var mode = n2k.fields.pilotMode
-      var subMode = Number(n2k.fields.subMode)
+      const mode = n2k.fields.pilotMode
+      const subMode = Number(n2k.fields.subMode)
 
       if (n2k.fields.pilotMode == 10) {
       }

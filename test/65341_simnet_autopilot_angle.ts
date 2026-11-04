@@ -5,7 +5,7 @@ import { FromPgn } from '@canboat/canboatjs'
 import { N2kMapper } from '../dist/n2kMapper'
 
 // Frames captured from Simrad autopilots, from canboat's samples/.
-function values (line: string): any[] {
+function values(line: string): any[] {
   const n2k = new FromPgn({ useCamel: true }).parseString(line) as any
   return new N2kMapper().toDelta(n2k)!.updates[0].values
 }

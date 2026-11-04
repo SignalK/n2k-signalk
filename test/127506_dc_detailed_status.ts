@@ -3,14 +3,14 @@ chai.should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
-function generatePGNs (json: string) {
+function generatePGNs(json: string) {
   return [json.replace('DC Instance', 'Instance')]
 }
 describe('127506 dc detailed status', function () {
   it('complete sentence converts', function () {
     generatePGNs(
       '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"Instance":1,"State of Charge":0.6,"State of Health":0.99,"Time Remaining": "00:30:00", "Ripple Voltage": 10.9, "SID":0}}'
-    ).forEach(pgn => {
+    ).forEach((pgn) => {
       const tree = require('./testMapper').toNested(JSON.parse(pgn))
       tree.should.have.nested.property(
         'electrical.batteries.1.capacity.stateOfCharge.value',
@@ -65,7 +65,7 @@ describe('127506 dc detailed status', function () {
   it('null timeRemaining converts', function () {
     generatePGNs(
       '{"timestamp":"2016-08-22T16:02:55.272Z","prio":6,"src":17,"dst":255,"pgn":127506,"description":"DC Detailed Status","fields":{"instance":1,"SID":0}}'
-    ).forEach(pgn => {
+    ).forEach((pgn) => {
       const delta = require('./testMapper').testToDelta(JSON.parse(pgn))
       const tree = require('./testMapper').toNested(JSON.parse(pgn))
 

@@ -5,7 +5,7 @@ const debug = require('debug')('n2k-signalk-129284')
 
 type State = { lastCourseCalculationType?: string }
 
-function calculationType (n2k: PGN_129284, state?: State): string {
+function calculationType(n2k: PGN_129284, state?: State): string {
   const res =
     (n2k.fields.calculationType as unknown) === 'Great Circle'
       ? 'GreatCircle'
@@ -15,12 +15,11 @@ function calculationType (n2k: PGN_129284, state?: State): string {
   return res
 }
 
-const course = (path: string, reference = false) => (
-  n2k: PGN_129284,
-  state?: State
-) =>
-  `navigation.course${calculationType(n2k, state)}.${path}` +
-  (reference ? n2k.fields.courseBearingReference : '')
+const course =
+  (path: string, reference = false) =>
+  (n2k: PGN_129284, state?: State) =>
+    `navigation.course${calculationType(n2k, state)}.${path}` +
+    (reference ? n2k.fields.courseBearingReference : '')
 
 module.exports = [
   {

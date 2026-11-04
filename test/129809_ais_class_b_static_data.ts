@@ -24,7 +24,7 @@ describe('129809 Class B static data', function () {
     delta.updates[0].values
       .find((pathValue: PathValue) => pathValue.path === 'sensors.ais.class')
       .value.should.equal('B')
-    const tree = mapper.toNested(msg)
+    mapper.toNested(msg)
     //TODO enable when sensors.ais.class is in the schema
     //tree.should.be.validSignalKVesselIgnoringIdentity
   })

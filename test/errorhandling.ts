@@ -2,7 +2,6 @@ import chai from 'chai'
 chai.should()
 import assert from 'assert'
 import mapper = require('./testMapper')
-import testMapper = require('./testMapper')
 import { N2kMapper, toDelta } from '../dist/n2kMapper'
 
 describe('Unknown pgn', function () {
@@ -32,7 +31,7 @@ describe('No fields in pgn message', function () {
 })
 
 describe('Frame without src or timestamp', function () {
-  function quietly (fn: () => unknown): any {
+  function quietly(fn: () => unknown): any {
     const consoleError = console.error
     console.error = () => {}
     try {
@@ -50,8 +49,8 @@ describe('Frame without src or timestamp', function () {
     pgn: 128267,
     fields: { depth: 5.2, offset: 0 }
   }
-  const { src, ...withoutSrc } = frame
-  const { timestamp, ...withoutTimestamp } = frame
+  const { src: _src, ...withoutSrc } = frame
+  const { timestamp: _timestamp, ...withoutTimestamp } = frame
 
   it('converts the complete frame to values', function () {
     toDelta(frame)!.updates[0].values.should.not.be.empty

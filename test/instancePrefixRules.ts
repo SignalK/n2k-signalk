@@ -27,7 +27,7 @@ const FUSION = 419
 const UNIQUE_NUMBER = 76223
 const DEVICE = { manufacturerCode: FUSION, uniqueNumber: UNIQUE_NUMBER }
 
-function decode (pgn: number, src: number, fields: Record<string, unknown>) {
+function decode(pgn: number, src: number, fields: Record<string, unknown>) {
   const parsed: any = parser.parseString(
     pgnToActisenseSerialFormat({
       timestamp: TIMESTAMP,
@@ -93,26 +93,26 @@ const mainEngine: InstancePrefixRule = {
 }
 
 // A mapper that has seen the source's address claim.
-function claimedMapper (options?: N2kMapperOptions) {
+function claimedMapper(options?: N2kMapperOptions) {
   const mapper = new N2kMapper(options)
   mapper.toDelta(addressClaim(SRC))
   return mapper
 }
 
-function values (mapper: N2kMapper, n2k: any): any[] {
+function values(mapper: N2kMapper, n2k: any): any[] {
   return mapper.toDelta(n2k)!.updates[0].values
 }
 
-function paths (mapper: N2kMapper, n2k: any): string[] {
+function paths(mapper: N2kMapper, n2k: any): string[] {
   return values(mapper, n2k).map((v: any) => v.path)
 }
 
-function vesselTree (delta: any): any {
+function vesselTree(delta: any): any {
   delta.context = 'vessels.' + signalkSchema.fakeMmsiId
   return signalkSchema.deltaToFull(delta).vessels[signalkSchema.fakeMmsiId]
 }
 
-function quietly (fn: () => any): { result: any; logged: string[] } {
+function quietly(fn: () => any): { result: any; logged: string[] } {
   const logged: string[] = []
   const consoleError = console.error
   console.error = (...args) => logged.push(args.join(' '))
@@ -382,7 +382,7 @@ describe('validateInstancePrefixRules', function () {
       { ...mainEngine, instance: 2, prefix: 'propulsion.center' },
       { ...mainEngine, instance: 3, prefix: '' }
     ])
-      .map(p => p.index)
+      .map((p) => p.index)
       .should.deep.equal([1, 3])
   })
 
@@ -424,7 +424,7 @@ describe('validateInstancePrefixRules', function () {
       { ...mainEngine, instance: 3, prefix: 'propulsion.center' },
       { ...mainEngine, instance: 4, prefix: 'propulsion.main.aux' }
     ])
-    problems.map(p => p.index).should.deep.equal([2, 3])
+    problems.map((p) => p.index).should.deep.equal([2, 3])
     problems[0].message.should.equal('same prefix as rule 0')
     problems[1].message.should.equal('same prefix as rule 1')
   })
@@ -546,7 +546,7 @@ describe('validateInstancePrefixRules', function () {
 
   it('reports a rule with the key and prefix of an earlier one once', function () {
     validateInstancePrefixRules([mainEngine, mainEngine])
-      .map(p => p.message)
+      .map((p) => p.message)
       .should.deep.equal([
         'same manufacturerCode, uniqueNumber, group, discriminator and instance as rule 0'
       ])
@@ -565,9 +565,13 @@ describe('validateInstancePrefixRules', function () {
   })
 
   it('reports a rule keyed by canName instead of the device key', function () {
-    const { manufacturerCode, uniqueNumber, ...rest } = mainEngine
+    const {
+      manufacturerCode: _manufacturerCode,
+      uniqueNumber: _uniqueNumber,
+      ...rest
+    } = mainEngine
     validateInstancePrefixRules([{ ...rest, canName: CAN_NAME }])
-      .map(p => p.message)
+      .map((p) => p.message)
       .should.deep.equal([
         'manufacturerCode must be an integer in 0..2047',
         'uniqueNumber must be an integer in 0..2097151'
@@ -717,11 +721,11 @@ describe('instance prefix rules', function () {
   })
 
   // The number of reads of the frame's fields while the mapper maps it.
-  function fieldReads (mapper: N2kMapper, n2k: any) {
+  function fieldReads(mapper: N2kMapper, n2k: any) {
     let reads = 0
     const fields = n2k.fields
     n2k.fields = new Proxy(fields, {
-      get (target, key) {
+      get(target, key) {
         reads++
         return target[key]
       }
@@ -1077,7 +1081,7 @@ describe('deviceIdentity', function () {
   })
 
   it('returns undefined for a value that is not a canName', function () {
-    ;['', 'not a name', '1'.repeat(17), 17, undefined, null].forEach(value =>
+    ;['', 'not a name', '1'.repeat(17), 17, undefined, null].forEach((value) =>
       expect(deviceIdentity(value as any)).to.equal(undefined)
     )
   })

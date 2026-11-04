@@ -15,7 +15,7 @@ const ENGINE_ROOM = 3
 const CAN_NAME = 'c0fa8200346129bf'
 
 // Round-trip through canboatjs so fields arrive as the mapper receives them.
-function decode (pgn: number, src: number, fields: Record<string, unknown>) {
+function decode(pgn: number, src: number, fields: Record<string, unknown>) {
   const parsed: any = parser.parseString(
     pgnToActisenseSerialFormat({
       timestamp: TIMESTAMP,
@@ -77,24 +77,24 @@ const engineRoom = (instance: unknown) =>
 const acPhaseB = (connectionNumber: number) =>
   decode(127745, 33, { connectionNumber, acRmsCurrent: 11, power: 120 })
 
-function values (mapper: N2kMapper, n2k: any): any[] {
+function values(mapper: N2kMapper, n2k: any): any[] {
   return mapper.toDelta(n2k)!.updates[0].values
 }
 
-function paths (mapper: N2kMapper, n2k: any): string[] {
-  return values(mapper, n2k).map(v => v.path)
+function paths(mapper: N2kMapper, n2k: any): string[] {
+  return values(mapper, n2k).map((v) => v.path)
 }
 
 // The values the default mapper writes for the frame, moved from one prefix
 // to another.
-function moved (n2k: any, from: string, to: string) {
-  return values(new N2kMapper(), n2k).map(v => ({
+function moved(n2k: any, from: string, to: string) {
+  return values(new N2kMapper(), n2k).map((v) => ({
     path: v.path.replace(from, to),
     value: v.value
   }))
 }
 
-function quietly (fn: () => any): { result: any; logged: string[] } {
+function quietly(fn: () => any): { result: any; logged: string[] } {
   const logged: string[] = []
   const consoleError = console.error
   console.error = (...args) => logged.push(args.join(' '))
@@ -105,14 +105,14 @@ function quietly (fn: () => any): { result: any; logged: string[] } {
   }
 }
 
-function vesselTree (delta: any): any {
+function vesselTree(delta: any): any {
   delta.context = 'vessels.' + signalkSchema.fakeMmsiId
   return signalkSchema.deltaToFull(delta).vessels[signalkSchema.fakeMmsiId]
 }
 
 // Maps the frame, checks it writes the default values under target, and
 // returns the vessel tree.
-function expectMoved (mapper: N2kMapper, n2k: any, from: string, to: string) {
+function expectMoved(mapper: N2kMapper, n2k: any, from: string, to: string) {
   const delta: any = mapper.toDelta(n2k)!
   const expected = moved(n2k, from, to)
   expected.should.not.be.empty
@@ -121,7 +121,7 @@ function expectMoved (mapper: N2kMapper, n2k: any, from: string, to: string) {
 }
 
 // Maps one group/discriminator/instance to target; everything else default.
-function rule (
+function rule(
   group: string,
   instance: number,
   target: string,
@@ -171,7 +171,7 @@ describe('instancePrefixResolver', function () {
       .map((v: any) => v.path)
       .should.have.members(
         moved(engineAlarm, 'propulsion.port', 'propulsion.main').map(
-          v => v.path
+          (v) => v.path
         )
       )
     const tree = vesselTree(delta)
@@ -181,7 +181,7 @@ describe('instancePrefixResolver', function () {
 
   it('keeps the default engine title without a resolver', function () {
     const alarm = values(new N2kMapper(), engineAlarm).find(
-      v => v.path === 'notifications.propulsion.port.lowOilPressure'
+      (v) => v.path === 'notifications.propulsion.port.lowOilPressure'
     )
     alarm.value.message.should.contain('Port')
   })
@@ -307,8 +307,8 @@ describe('instancePrefixResolver', function () {
     })
     calls
       .slice(0, beforeClaim)
-      .forEach(c => expect(c.canName).to.equal(undefined))
-    calls.slice(beforeClaim).forEach(c => {
+      .forEach((c) => expect(c.canName).to.equal(undefined))
+    calls.slice(beforeClaim).forEach((c) => {
       c.canName.should.equal(CAN_NAME)
       c.manufacturerCode.should.equal(419)
       c.uniqueNumber.should.equal(76223)
@@ -611,10 +611,10 @@ describe('instancePrefixResolver', function () {
   it('keeps the stateless toDelta export working', function () {
     const state = {}
     toDelta(engineSpeed(PORT_ENGINE), state)!
-      .updates[0].values.map(v => v.path)
+      .updates[0].values.map((v) => v.path)
       .should.include('propulsion.port.revolutions')
     toDelta(engineSpeed(PORT_ENGINE))!
-      .updates[0].values.map(v => v.path)
+      .updates[0].values.map((v) => v.path)
       .should.include('propulsion.port.revolutions')
     Object.keys(state).should.deep.equal(['17'])
     JSON.stringify(state).should.equal('{"17":{}}')

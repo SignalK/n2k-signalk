@@ -3,7 +3,7 @@ chai.should()
 
 const mapper = require('./testMapper')
 
-function frame (
+function frame(
   instance: number | undefined,
   source: number | undefined,
   actualHumidity: number

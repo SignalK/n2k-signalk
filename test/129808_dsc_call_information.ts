@@ -24,18 +24,18 @@ const DISTRESS_RELAY =
   '2026-10-03T12:00:00.000Z,4,129808,4,255,62,74,70,18,46,0c,22,32,ff,69,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,02,01,c0,92,ed,19,20,43,52,04,ff,ff,ff,ff,24,3d,5b,5b,00,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff,ff'
 
 // The tests read and set fields of the decoded frame freely.
-function decode (line: string): any {
+function decode(line: string): any {
   return new FromPgn({ useCamel: true }).parseString(line)
 }
 
-function valueAt (delta: any, path: string) {
+function valueAt(delta: any, path: string) {
   const found = delta.updates[0].values.find(
     (pv: PathValue) => pv.path === path
   )
   return found && found.value
 }
 
-function notifications (delta: any) {
+function notifications(delta: any) {
   return delta.updates[0].values.filter((pv: PathValue) =>
     pv.path.startsWith('notifications.')
   )

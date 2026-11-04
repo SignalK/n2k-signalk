@@ -63,9 +63,9 @@ describe('65379 Seatalk Pilot Mode', function () {
         data: '0102030405'
       }
     })!
-    const values = delta.updates.flatMap(update => update.values)
+    const values = delta.updates.flatMap((update) => update.values)
     values
-      .filter(pathValue => pathValue.path === 'steering.autopilot.state')
+      .filter((pathValue) => pathValue.path === 'steering.autopilot.state')
       .should.have.length(0)
   })
 })

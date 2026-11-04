@@ -35,9 +35,9 @@ describe('127257_attitude', function () {
         '{"timestamp":"2013-10-08-15:47:28.263Z","prio":"2","src":"204","dst":"255","pgn":"127257","description":"Attitude","fields":{"SID":1}}'
       )
     )
-    const values = delta.updates.flatMap(update => update.values)
+    const values = delta.updates.flatMap((update) => update.values)
     values
-      .filter(pathValue => pathValue.path === 'navigation.attitude')
+      .filter((pathValue) => pathValue.path === 'navigation.attitude')
       .should.have.length(0)
   })
 })
