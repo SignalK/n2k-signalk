@@ -154,6 +154,55 @@ describe('126983 Alert', function () {
     }
   })
 
+  it('writes an alert without a category or system, as a Maretron CLMD16 sends (#283)', function () {
+    const trippedState = {
+      '4': {
+        alerts: {
+          '..4': {
+            languageId: 'English (US)',
+            locationTextDescription: '',
+            textDescription: 'Breaker tripped'
+          }
+        }
+      }
+    }
+    // From a breaker tripped alarm. Its NAMEs lost their low digits as JSON
+    // numbers, so they are left out here.
+    const delta = mapper.toDelta(
+      {
+        prio: 2,
+        src: 4,
+        dst: 255,
+        pgn: 126983,
+        timestamp: '2025-03-22T17:40:52.871Z',
+        fields: {
+          alertType: 'Alarm',
+          alertId: 4,
+          dataSourceInstance: 41,
+          dataSourceIndexSource: 4,
+          alertOccurrenceNumber: 1,
+          temporarySilenceStatus: 'No',
+          acknowledgeStatus: 'No',
+          escalationStatus: 'No',
+          temporarySilenceSupport: 'Yes',
+          acknowledgeSupport: 'Yes',
+          escalationSupport: 'No',
+          triggerCondition: 'Auto',
+          thresholdStatus: 'Normal',
+          alertPriority: 0,
+          alertState: 'Awaiting Acknowledge'
+        },
+        description: 'Alert'
+      },
+      trippedState
+    )
+    delta.updates[0].values.length.should.equal(1)
+    const v = delta.updates[0].values[0]
+    v.path.should.equal('notifications.nmea.unset.unset.unset.4')
+    v.value.state.should.equal('alarm')
+    v.value.message.should.equal('Breaker tripped')
+  })
+
   it('defaults location to empty string when no location text is present', function () {
     const noLocationState = {
       '40': {
