@@ -5,8 +5,8 @@ const humidityMappings = require('../humidityMappings')
 
 // PGN 130311 (Environmental Parameters) carries one temperature, one
 // humidity and one pressure reading from the device — there is no
-// Instance field. Substitute the literal 'default' for the <index>
-// placeholder so the path slots into the indexed schema position
+// Instance field. Substitute the literal 'default' for the <index> or
+// <engine> placeholder so the path slots into the indexed schema position
 // (e.g. environment.inside.default.temperature). Multiple devices
 // publishing the same Source enum collide on this 'default' segment;
 // resolving that requires distinguishing by $source which the
@@ -17,7 +17,10 @@ type Mapping = { path?: string; pathWithIndex?: string }
 
 function path(mapping: Mapping | undefined): string | undefined {
   if (mapping?.pathWithIndex) {
-    return mapping.pathWithIndex.replace('<index>', PGN_130311_INSTANCE)
+    return mapping.pathWithIndex.replace(
+      /<index>|<engine>/,
+      PGN_130311_INSTANCE
+    )
   }
   return mapping?.path
 }
