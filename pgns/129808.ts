@@ -18,6 +18,7 @@ import {
   PGN_129808_DscDistressAcknowledgementOrRelay,
   PGN_129808_DscDistressCallInformation
 } from '@canboat/ts-pgns'
+import { isPosition } from '../utils.js'
 
 // The fields of all three variants: a mapping here reads both names.
 type Dsc = {
@@ -96,8 +97,10 @@ module.exports = [
   {
     node: 'navigation.position',
     filter: (n2k: Dsc) =>
-      typeof n2k.fields.latitudeOfVesselReported === 'number' &&
-      typeof n2k.fields.longitudeOfVesselReported === 'number',
+      isPosition(
+        n2k.fields.latitudeOfVesselReported,
+        n2k.fields.longitudeOfVesselReported
+      ),
     value: (n2k: Dsc) => ({
       latitude: n2k.fields.latitudeOfVesselReported,
       longitude: n2k.fields.longitudeOfVesselReported

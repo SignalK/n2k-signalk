@@ -47,6 +47,20 @@ export function skEngineTitle(n2k: N2k): number | string {
 }
 
 /**
+ * Whether a latitude and longitude are a position: both readings, and not
+ * exactly 0,0. Some AIS transponders and GPS receivers send 0,0 when they have
+ * no fix, rather than the "not available" value, so 0,0 is taken as
+ * unavailable. A latitude or a longitude of 0 alone is a position.
+ */
+export function isPosition(latitude: unknown, longitude: unknown): boolean {
+  return (
+    isNumber(latitude) &&
+    isNumber(longitude) &&
+    !(Number(latitude) === 0 && Number(longitude) === 0)
+  )
+}
+
+/**
  * A TIME or DURATION in seconds, given as a number of seconds or as a clock
  * string ("HH:MM:SS[.fff]").
  */

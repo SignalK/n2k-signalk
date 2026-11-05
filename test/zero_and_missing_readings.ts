@@ -26,12 +26,19 @@ function values(n2k: any): Record<string, unknown> {
 }
 
 describe('a reading of 0', function () {
-  it('writes a position on the equator and the prime meridian', function () {
-    ;[129038, 129039, 129040, 129798].forEach((pgn) => {
-      values(frame(pgn, { userId: 244850565, latitude: 0, longitude: 0 }))[
-        'navigation.position'
-      ]!.should.deep.include({ latitude: 0, longitude: 0 })
-    })
+  it('writes a position on the equator or the prime meridian', function () {
+    ;[129025, 129029, 129038, 129039, 129040, 129041, 129793, 129798].forEach(
+      (pgn) => {
+        ;[
+          { latitude: 0, longitude: 5.37 },
+          { latitude: 53.13, longitude: 0 }
+        ].forEach((position) => {
+          values(frame(pgn, { userId: 244850565, ...position }))[
+            'navigation.position'
+          ]!.should.deep.equal(position)
+        })
+      }
+    )
   })
 
   it('writes a speed over ground of 0', function () {
@@ -80,6 +87,17 @@ describe('a reading of 0', function () {
 })
 
 describe('a missing reading', function () {
+  it('writes no position at 0,0', function () {
+    // Some AIS transponders and GPS receivers send 0,0 without a fix.
+    ;[129025, 129029, 129038, 129039, 129040, 129041, 129793, 129798].forEach(
+      (pgn) => {
+        values(
+          frame(pgn, { userId: 244850565, latitude: 0, longitude: 0 })
+        ).should.not.have.property('navigation.position')
+      }
+    )
+  })
+
   it('writes no current without a set or a drift', function () {
     ;[{ drift: 0.5 }, { set: 1 }].forEach((fields) => {
       values(

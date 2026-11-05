@@ -1,5 +1,5 @@
 import { PGN_129040 } from '@canboat/ts-pgns'
-import { isNumber } from '../utils.js'
+import { isNumber, isPosition } from '../utils.js'
 
 const getMmsiContext = require('../mmsi-context').getMmsiContext
 const getFromStarboard = require('../aisFromStarboard')
@@ -21,7 +21,7 @@ module.exports = [
   },
   {
     filter: (n2k: PGN_129040) =>
-      isNumber(n2k.fields.longitude) && isNumber(n2k.fields.latitude),
+      isPosition(n2k.fields.latitude, n2k.fields.longitude),
     value: function (n2k: PGN_129040) {
       return {
         longitude: Number(n2k.fields.longitude),
