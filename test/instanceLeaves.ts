@@ -147,6 +147,15 @@ const FULL_FRAMES: Frame[] = [
     pgn,
     { connectionNumber: 0, acRmsCurrent: 3, power: 100 }
   ]),
+  ...[127747, 127748, 127749].map((pgn): Frame => [
+    pgn,
+    {
+      connectionNumber: 0,
+      acVoltageLineToNeutral: 230,
+      acVoltageLineToLine: 400,
+      frequency: 50
+    }
+  ]),
   [
     127750,
     {
