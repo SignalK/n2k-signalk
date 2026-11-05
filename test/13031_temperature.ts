@@ -78,7 +78,9 @@ describe('Temperature: ', function () {
     )
     _.forOwn(temperatureMappings, function (mapping: any, _key: string) {
       const path = mapping.pathWithIndex
-        ? mapping.pathWithIndex.replace('<index>', '0')
+        ? mapping.pathWithIndex
+            .replace('<index>', '0')
+            .replace('<engine>', 'port')
         : mapping.path
 
       const delta = {

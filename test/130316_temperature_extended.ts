@@ -25,9 +25,23 @@ describe('130316 temperature, extended range', function () {
     mapper
       .testToDelta(n2k)
       .updates[0].values.should.deep.equal([
-        { path: 'propulsion.1.exhaustTemperature', value: 700.5 }
+        { path: 'propulsion.starboard.exhaustTemperature', value: 700.5 }
       ])
     mapper.toNested(n2k).should.be.validSignalKVesselIgnoringIdentity
+  })
+
+  it('writes an exhaust gas temperature under its engine, as the engine PGNs name it', function () {
+    // #378: 127488 writes engine instance 0 as port and 1 as starboard
+    ;[
+      [0, 'propulsion.port.exhaustTemperature'],
+      [1, 'propulsion.starboard.exhaustTemperature'],
+      [2, 'propulsion.2.exhaustTemperature'],
+      [undefined, 'propulsion.port.exhaustTemperature']
+    ].forEach(([instance, path]) => {
+      mapper
+        .testToDelta(frame(instance as any, 'Exhaust Gas Temperature', 700))
+        .updates[0].values[0].path.should.equal(path)
+    })
   })
 
   it('replaces the spaces of an unmapped source, as 130312 does', function () {

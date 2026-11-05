@@ -503,7 +503,7 @@
       "Temperature": "300"
     },
     "testExpectConvertedValues": {
-      "propulsion.0.exhaustTemperature": 300
+      "propulsion.port.exhaustTemperature": 300
     }
   },
   "130316-inside-instance0": {
