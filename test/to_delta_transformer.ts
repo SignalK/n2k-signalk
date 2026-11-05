@@ -4,6 +4,12 @@ chai.should()
 
 import { toDeltaTransformer, toDelta } from '../dist/n2kMapper'
 
+// ac42-commissioning.raw in canboat's samples
+const capturedHeading = () =>
+  new FromPgn({ useCamel: true }).parseString(
+    '2026-06-08T01:51:24.127,2,127250,52,255,8,ff,51,9c,ff,7f,55,06,fc'
+  )!
+
 describe('toDeltaTransformer', function () {
   it('emits nothing for a report toDelta drops', function (done) {
     const stream = toDeltaTransformer({}, {})
@@ -52,17 +58,26 @@ describe('toDeltaTransformer', function () {
     const stream = toDeltaTransformer({}, {})
     const called: string[] = []
     stream.on('data', () => {})
-    // ac42-commissioning.raw in canboat's samples
-    const heading = new FromPgn({ useCamel: true }).parseString(
-      '2026-06-08T01:51:24.127,2,127250,52,255,8,ff,51,9c,ff,7f,55,06,fc'
-    )!
-    stream.write(heading, () => called.push('write'))
+    stream.write(capturedHeading(), () => called.push('write'))
     stream.end(() => {
       called.push('end')
       // Node calls a write's callback before the end's
       called.should.deep.equal(['write', 'end'])
       done()
     })
+  })
+
+  it('calls the write callback first when a listener ends the stream', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const called: string[] = []
+    stream.once('data', () => {
+      stream.end(() => {
+        called.push('end')
+        called.should.deep.equal(['write', 'end'])
+        done()
+      })
+    })
+    stream.write(capturedHeading(), () => called.push('write'))
   })
 
   it('returns the stream from a repeated end, pause or destroy', function () {
