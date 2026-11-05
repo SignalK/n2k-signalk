@@ -52,11 +52,11 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, state)
     tree.should.have.nested.property(
-      'notifications.nmea.warning.navigational.20.23480.value'
+      'notifications.nmea.navigational.20.unset.23480.value'
     )
 
     expect(
-      tree.notifications.nmea.warning.navigational[20][23480].value
+      tree.notifications.nmea.navigational[20].unset[23480].value
     ).to.deep.include(value)
 
     const delta = mapper.testToDelta(msg)
@@ -73,11 +73,11 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, state)
     tree.should.have.nested.property(
-      'notifications.nmea.warning.navigational.20.23480.value'
+      'notifications.nmea.navigational.20.unset.23480.value'
     )
 
     expect(
-      tree.notifications.nmea.warning.navigational[20][23480].value
+      tree.notifications.nmea.navigational[20].unset[23480].value
     ).to.deep.include(value)
 
     const delta = mapper.testToDelta(msg)
@@ -93,11 +93,11 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, state)
     tree.should.have.nested.property(
-      'notifications.nmea.warning.navigational.20.23480.value'
+      'notifications.nmea.navigational.20.unset.23480.value'
     )
 
     expect(
-      tree.notifications.nmea.warning.navigational[20][23480].value
+      tree.notifications.nmea.navigational[20].unset[23480].value
     ).to.deep.include(value)
 
     const delta = mapper.testToDelta(msg)
@@ -145,10 +145,9 @@ describe('126983 Alert', function () {
       // Raw alertType from the device is preserved verbatim in the value
       // object, consistent with how every other field is exposed.
       v.value.alertType.should.equal(4)
-      // Non-string alertCategory degrades to an empty path segment rather
-      // than crashing on .toLowerCase().
-      v.path.should.contain('.caution..')
-      v.path.should.equal('notifications.nmea.caution..4.' + alertId)
+      // A category canboatjs can't name stays apart from the others, and the
+      // unset sub-system keeps the path's depth.
+      v.path.should.equal('notifications.nmea.6.4.unset.' + alertId)
     } finally {
       if (saved === undefined) delete process.env.NO_CANBOATJS
       else process.env.NO_CANBOATJS = saved
@@ -173,7 +172,7 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, noLocationState)
 
-    tree.notifications.nmea.warning.navigational[20][23480].value.location.should.equal(
+    tree.notifications.nmea.navigational[20].unset[23480].value.location.should.equal(
       ''
     )
   })

@@ -134,6 +134,58 @@ describe('126985 alert text', function () {
     states(normal).should.eql(['normal'])
   })
 
+  function alertOfType(alertType: string, subSystem: number, state: string) {
+    const frame = alert(1, subSystem, state)
+    frame.fields['Alert Type'] = alertType
+    return frame
+  }
+
+  function paths(delta: any): unknown[] {
+    return (delta?.updates ?? []).flatMap((u: any) =>
+      u.values.map((v: any) => v.path)
+    )
+  }
+
+  it('keeps an alert on one path when it escalates, so normal clears it (#414)', function () {
+    const alertState = {}
+    mapper.testToDelta(alertText(1, 2, 'Bilge pump'), alertState)
+    const expected = ['notifications.nmea.technical.1.2.7']
+
+    const warning = mapper.testToDelta(
+      alertOfType('Warning', 2, 'Active'),
+      alertState
+    )
+    paths(warning).should.eql(expected)
+    states(warning).should.eql(['warn'])
+
+    const alarm = mapper.testToDelta(
+      alertOfType('Alarm', 2, 'Active'),
+      alertState
+    )
+    paths(alarm).should.eql(expected)
+    states(alarm).should.eql(['alarm'])
+
+    const normal = mapper.testToDelta(
+      alertOfType('Alarm', 2, 'Normal'),
+      alertState
+    )
+    paths(normal).should.eql(expected)
+    states(normal).should.eql(['normal'])
+  })
+
+  it('gives alerts that differ only in sub-system their own paths (#414)', function () {
+    const alertState = {}
+    mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
+    mapper.testToDelta(alertText(1, 2, 'Fridge'), alertState)
+
+    const first = mapper.testToDelta(alert(1, 0, 'Active'), alertState)
+    const second = mapper.testToDelta(alert(1, 2, 'Active'), alertState)
+    paths(first).should.eql(['notifications.nmea.technical.1.0.7'])
+    paths(second).should.eql(['notifications.nmea.technical.1.2.7'])
+    first.updates[0].values[0].value.alertSubSystem.should.equal(0)
+    second.updates[0].values[0].value.alertSubSystem.should.equal(2)
+  })
+
   it('writes an active alert with the state of its type', function () {
     const alertState = {}
     mapper.testToDelta(alertText(1, 0, 'Bilge pump'), alertState)
