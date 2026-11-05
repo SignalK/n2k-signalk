@@ -4,7 +4,8 @@ import { Stream } from 'stream'
 import {
   ManufacturerCodeValues,
   IndustryCodeValues,
-  DeviceClassValues
+  DeviceClassValues,
+  getIndirectEnumerationValue
 } from '@canboat/ts-pgns'
 import {
   instanceGroups,
@@ -208,6 +209,22 @@ function warnUnknownManufacturer(value: unknown) {
   )
 }
 
+// The device function's code. canboatjs names it under the device class
+// ("Integrated Navigation System" for 175 in class Navigation), as canboat
+// does, and gave it as a number before: take both.
+function deviceFunctionCode(fields: Fields, deviceClass: number): number {
+  const value = fields.deviceFunction
+  if (typeof value === 'string' && Number.isNaN(Number(value))) {
+    const code = getIndirectEnumerationValue(
+      'DEVICE_FUNCTION',
+      deviceClass,
+      value
+    )
+    return code === undefined ? 0xff : code & 0xff
+  }
+  return nameField(value, 0xff)
+}
+
 // canName is the device's 8-byte NAME — the wire payload of its ISO
 // Address Claim (PGN 60928, ISO 11783-5 layout) — rendered as hex,
 // packed straight from the decoded fields.
@@ -241,7 +258,7 @@ function canNameFromClaim(fields: Fields): string {
   const name =
     BigInt(lo) |
     (BigInt(b4) << 32n) |
-    (BigInt(nameField(fields.deviceFunction, 0xff)) << 40n) |
+    (BigInt(deviceFunctionCode(fields, deviceClass)) << 40n) |
     (BigInt(b6) << 48n) |
     (BigInt(b7) << 56n)
   return name.toString(16)
@@ -706,8 +723,17 @@ function toValuesArray(
 
 const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
   60928: (n2k) => {
+    const fields = fieldsOf(n2k)!
     return {
       ...n2k.fields,
+      // A number in the sources tree, as plugins compare it (== 150 for an
+      // autopilot), whether the decoder named it or not.
+      ...(fields.deviceFunction !== undefined && {
+        deviceFunction: deviceFunctionCode(
+          fields,
+          nameField(fields.deviceClass, 0x7f, DeviceClassValues)
+        )
+      }),
       deviceInstance:
         (Number(fieldsOf(n2k)!.deviceInstanceUpper) << 3) |
         Number(fieldsOf(n2k)!.deviceInstanceLower)
