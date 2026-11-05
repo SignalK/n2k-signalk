@@ -262,6 +262,38 @@ const sourcePath =
     )}.${index}.${leaf}`
   }
 
+const ENGINE_PATH = `propulsion.${ENGINE}.`
+const SOURCE_MAPPINGS: Partial<
+  Record<
+    InstanceGroupId,
+    { mappings: Record<string, PathMapping>; enumName: string }
+  >
+> = {
+  temperature: { mappings: temperatures, enumName: 'TEMPERATURE_SOURCE' }
+}
+
+/**
+ * The path under its engine's prefix that a sensor source writes when its
+ * path follows the engine (propulsion.<engine>.exhaustTemperature gives
+ * exhaustTemperature), or undefined for any other group or source. An engine
+ * rule of the same device then moves it with the engine (#378).
+ */
+export function engineLeaf(
+  group: InstanceGroupId,
+  discriminator: number | undefined
+): string | undefined {
+  const source = SOURCE_MAPPINGS[group]
+  if (!source || discriminator === undefined) {
+    return undefined
+  }
+  const name = lookupEnumerationName(source.enumName, discriminator)
+  const template =
+    name !== undefined ? source.mappings[name]?.pathWithIndex : undefined
+  return template?.startsWith(ENGINE_PATH)
+    ? template.slice(ENGINE_PATH.length)
+    : undefined
+}
+
 const temperaturePath = sourcePath(
   temperatures,
   'generic.temperatures',
