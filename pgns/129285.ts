@@ -42,7 +42,7 @@ module.exports = [
       )
     },
     filter: function (n2k: PGN_129285, state?: State) {
-      return hasState(state) && hasWaypoints(n2k, 1)
+      return hasState(state) && hasWaypoints(n2k, 1) && hasPosition(n2k, 0)
     },
     value: function (n2k: PGN_129285) {
       return {
@@ -75,12 +75,7 @@ module.exports = [
       )
     },
     filter: function (n2k: PGN_129285, state?: State) {
-      return (
-        hasState(state) &&
-        hasWaypoints(n2k, 3) &&
-        !_.isUndefined(n2k.fields.list[2].wpLatitude) &&
-        !_.isUndefined(n2k.fields.list[2].wpLongitude)
-      )
+      return hasState(state) && hasWaypoints(n2k, 3) && hasPosition(n2k, 2)
     },
     value: function (n2k: PGN_129285) {
       return n2k.fields.list[2].wpName
@@ -95,12 +90,7 @@ module.exports = [
       )
     },
     filter: function (n2k: PGN_129285, state?: State) {
-      return (
-        hasState(state) &&
-        hasWaypoints(n2k, 3) &&
-        !_.isUndefined(n2k.fields.list[2].wpLatitude) &&
-        !_.isUndefined(n2k.fields.list[2].wpLongitude)
-      )
+      return hasState(state) && hasWaypoints(n2k, 3) && hasPosition(n2k, 2)
     },
     value: function (n2k: PGN_129285) {
       return {
@@ -120,4 +110,10 @@ function hasState(state?: State) {
 
 function hasWaypoints(n2k: PGN_129285, min: number) {
   return !_.isUndefined(n2k.fields.list) && n2k.fields.list.length >= min
+}
+
+// Raymarine's Go To sends a last waypoint "N/A" without a position.
+function hasPosition(n2k: PGN_129285, index: number) {
+  const { wpLatitude, wpLongitude } = n2k.fields.list[index]
+  return wpLatitude != null && wpLongitude != null
 }
