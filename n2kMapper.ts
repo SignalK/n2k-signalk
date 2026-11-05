@@ -409,7 +409,7 @@ export class N2kMapper extends EventEmitter {
   }
 
   toDelta(n2k: N2kReport): Delta | undefined {
-    if (metaPGNs[n2k.pgn]) {
+    if (metaPGNs[n2k.pgn] && n2k.fields) {
       const meta = metaPGNs[n2k.pgn](n2k)
       // State is keyed by the string form of src, so a frame without src keys
       // it as 'undefined'.
@@ -499,10 +499,10 @@ export function toDelta(
 ): Delta | undefined {
   try {
     const src = srcOf(n2k)
-    const theMappings: Mapping[] = [
-      ...(customPgns[n2k.pgn] || []),
-      ...(n2kMappings[n2k.pgn] || [])
-    ]
+    // A frame canboat could not decode has no fields, and no mapping can read it.
+    const theMappings: Mapping[] = n2k.fields
+      ? [...(customPgns[n2k.pgn] || []), ...(n2kMappings[n2k.pgn] || [])]
+      : []
 
     let src_state: MapperSourceState | undefined
     if (state) {

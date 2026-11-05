@@ -28,6 +28,54 @@ describe('No fields in pgn message', function () {
     const delta = mapper.toDelta(msg)!
     assert.equal(delta.updates[0].values.length, 0)
   })
+
+  // #107: such a frame is not an error to log, whichever PGN it claims to be.
+  describe('of any PGN', function () {
+    const pgns = Object.keys(require('../dist/pgns'))
+    let logged: unknown[]
+    const { error } = console
+    const { write } = process.stderr
+
+    beforeEach(function () {
+      logged = []
+      console.error = (...args: unknown[]) => {
+        logged.push(args)
+      }
+      process.stderr.write = ((chunk: unknown) => {
+        logged.push(chunk)
+        return true
+      }) as typeof process.stderr.write
+    })
+
+    afterEach(function () {
+      console.error = error
+      process.stderr.write = write
+    })
+
+    for (const fields of [undefined, null]) {
+      it(`gives no values and logs nothing with fields ${fields}`, function () {
+        pgns.should.not.be.empty
+        pgns.forEach((pgn) => {
+          const frame: any = {
+            timestamp: '2017-12-08T17:11:14.824Z',
+            prio: 5,
+            src: 114,
+            dst: 255,
+            pgn: Number(pgn),
+            fields
+          }
+          for (const delta of [
+            toDelta(frame),
+            toDelta(frame, {}),
+            new N2kMapper().toDelta(frame)
+          ]) {
+            assert.equal(delta!.updates[0].values.length, 0, pgn)
+          }
+        })
+        logged.should.deep.equal([])
+      })
+    }
+  })
 })
 
 describe('Frame without src or timestamp', function () {
