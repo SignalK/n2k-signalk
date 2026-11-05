@@ -31,4 +31,19 @@ describe('129026 COG & SOG, Rapid Update', function () {
     tree.should.have.nested.property('navigation.speedOverGround.value', 0.0)
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+
+  it('a magnetic COG converts', function () {
+    // From canboat's samples/susteranna2020.raw
+    const tree = require('./testMapper').toNested(
+      JSON.parse(
+        '{"timestamp":"2020-08-22T13:52:36.950Z","prio":2,"src":127,"dst":255,"pgn":129026,"description":"COG & SOG, Rapid Update","fields":{"SID":0,"COG Reference":"Magnetic","COG":1.6985,"SOG":0.00}}'
+      )
+    )
+    tree.should.have.nested.property(
+      'navigation.courseOverGroundMagnetic.value',
+      1.6985
+    )
+    tree.should.not.have.nested.property('navigation.courseOverGroundTrue')
+    tree.should.be.validSignalKVesselIgnoringIdentity
+  })
 })
