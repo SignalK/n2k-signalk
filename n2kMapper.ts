@@ -793,8 +793,15 @@ export function toDeltaTransformer(
     const cb = takeCallback(args)
     // Before the write: a listener it runs may call end, whose callback comes
     // after this one
-    if (cb) process.nextTick(cb)
-    return write.call(stream, args[0])
+    let failed = false
+    if (cb) process.nextTick(() => failed || cb())
+    try {
+      return write.call(stream, args[0])
+    } catch (err) {
+      // The caller has this failure: don't report the write as a success too
+      failed = true
+      throw err
+    }
   }
   const end = stream.end as (data?: unknown) => unknown
   ;(stream.end as unknown) = (...args: unknown[]) => {

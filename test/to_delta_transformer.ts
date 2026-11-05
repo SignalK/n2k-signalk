@@ -80,6 +80,23 @@ describe('toDeltaTransformer', function () {
     stream.write(capturedHeading(), () => called.push('write'))
   })
 
+  it('does not call the write callback when a listener throws', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const failure = new Error('listener failed')
+    stream.once('data', () => {
+      throw failure
+    })
+    let called = false
+    ;(() =>
+      stream.write(capturedHeading(), () => {
+        called = true
+      })).should.throw(failure)
+    setImmediate(() => {
+      called.should.equal(false)
+      done()
+    })
+  })
+
   it('returns the stream from a repeated end, pause or destroy', function () {
     const stream = toDeltaTransformer({}, {})
     stream.pause().should.equal(stream)
