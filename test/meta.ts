@@ -112,7 +112,9 @@ describe('Meta data works', function () {
     const parsed = new FromPgn({ useCamel: true, format: 1 }).parseString(
       '2017-04-15T14:57:58.470Z,6,60928,3,255,8,d3,e5,98,c5,00,82,33,c0'
     ) as any
-    parsed.fields.should.have.property('spare', 1)
+    // canboatjs gives a set spare field as its bytes ('01'), as canboat prints
+    // it, from canboatjs#572; a number before.
+    Number(parsed.fields.spare).should.equal(1)
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('canName', 'c0338200c598e5d3')
