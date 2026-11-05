@@ -33,9 +33,9 @@ import {
  * The stream toDeltaTransformer returns: a classic through stream, which is
  * both writable and readable but is not a stream.Transform. Write decoded
  * frames to it, or pipe an object stream of them into it, and it emits each
- * frame's Delta as 'data'. A string or buffer gives no Delta, like any other
- * frame toDelta drops. The write and end callbacks Node's WritableStream
- * declares, so that it can be piped into, are never called.
+ * frame's Delta as 'data'. A string or buffer is dropped, without a Delta.
+ * The write and end callbacks Node's WritableStream declares, so that it can
+ * be piped into, are never called.
  */
 export interface DeltaStream extends Stream, NodeJS.WritableStream {
   readable: boolean
@@ -58,7 +58,7 @@ export interface DeltaStream extends Stream, NodeJS.WritableStream {
 
 // through and debug ship no type declarations.
 const through: (
-  write: (this: { queue(data: unknown): void }, data: N2kReport) => void
+  write: (this: { queue(data: unknown): void }, data: unknown) => void
 ) => DeltaStream = require('through')
 const debug: (formatter: string, ...args: unknown[]) => void = require('debug')(
   'signalk:n2k-signalk'
@@ -768,12 +768,31 @@ export function toDeltaTransformer(
   options: unknown,
   state?: MapperState
 ): DeltaStream {
-  return through(function (data) {
+  const stream = through(function (data) {
+    // A string or buffer is not a frame: drop it rather than have toDelta log
+    // it as an error and give an empty Delta.
+    if (
+      typeof data !== 'object' ||
+      data === null ||
+      data instanceof Uint8Array
+    ) {
+      return
+    }
     // toDelta returns nothing for a report it drops (an AIS report without a
     // valid MMSI, for one); queueing undefined would still emit a 'data' event.
-    const delta = toDelta(data, state)
+    const delta = toDelta(data as N2kReport, state)
     if (delta !== undefined) {
       this.queue(delta)
     }
   })
+  // through returns undefined from a repeated end, pause or destroy; return
+  // the stream, as DeltaStream (and Node's WritableStream) declares.
+  for (const method of ['end', 'pause', 'destroy'] as const) {
+    const original = stream[method] as (...args: unknown[]) => unknown
+    ;(stream[method] as unknown) = (...args: unknown[]) => {
+      original.apply(stream, args)
+      return stream
+    }
+  }
+  return stream
 }

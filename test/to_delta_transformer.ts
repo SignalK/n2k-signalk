@@ -28,6 +28,34 @@ describe('toDeltaTransformer', function () {
     })
     stream.end()
   })
+
+  it('drops a string or buffer without logging', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const emitted: unknown[] = []
+    const logged: unknown[] = []
+    const error = console.error
+    console.error = (...args: unknown[]) => logged.push(args)
+    stream.on('data', (d: unknown) => emitted.push(d))
+    stream.on('end', () => {
+      console.error = error
+      emitted.should.have.lengthOf(0)
+      logged.should.have.lengthOf(0)
+      done()
+    })
+    stream.write('not a frame')
+    stream.write(Buffer.from('not a frame'))
+    stream.end()
+  })
+
+  it('returns the stream from a repeated end, pause or destroy', function () {
+    const stream = toDeltaTransformer({}, {})
+    stream.pause().should.equal(stream)
+    stream.pause().should.equal(stream)
+    stream.end().should.equal(stream)
+    stream.end().should.equal(stream)
+    stream.destroy().should.equal(stream)
+    stream.destroy().should.equal(stream)
+  })
 })
 
 describe('toDelta context', function () {
