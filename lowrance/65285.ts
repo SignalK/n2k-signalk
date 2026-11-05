@@ -5,8 +5,8 @@ type TemperatureMapping = { path?: string; pathWithIndex?: string }
 
 // 65285 has no instance: canboat defines none, and the bytes after the
 // temperature are unset (0xff) in every capture in canboat's
-// samples/lowrance-65285.raw. A source that takes an index (a live well, a
-// bait well) is written as 'default', so the path stays valid against the
+// samples/lowrance-65285.raw. A source that takes an index or engine (a live
+// well, an exhaust) is written as 'default', so the path stays valid against the
 // Signal K schema, and no source.instance is written.
 const INDEX = 'default'
 
@@ -20,7 +20,10 @@ module.exports = [
 
       if (temperatureMapping) {
         if (temperatureMapping.pathWithIndex) {
-          return temperatureMapping.pathWithIndex.replace('<index>', INDEX)
+          return temperatureMapping.pathWithIndex.replace(
+            /<index>|<engine>/,
+            INDEX
+          )
         } else if (temperatureMapping.path) {
           return temperatureMapping.path
         }

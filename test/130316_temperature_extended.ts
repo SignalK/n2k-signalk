@@ -40,7 +40,7 @@ describe('130316 temperature, extended range', function () {
     ].forEach(([instance, path]) => {
       mapper
         .testToDelta(frame(instance as any, 'Exhaust Gas Temperature', 700))
-        .updates[0].values[0].path.should.equal(path)
+        .updates[0].values.should.deep.equal([{ path, value: 700 }])
     })
   })
 
