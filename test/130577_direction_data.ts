@@ -60,6 +60,13 @@ describe('130577 direction_data with a magnetic reference', function () {
     tree.should.not.have.nested.property('environment.current.value.setTrue')
     tree.should.have.nested.property('environment.current.value.drift', 0.28)
   })
+  it('writes the COG as courseOverGroundMagnetic', function () {
+    tree.should.have.nested.property(
+      'navigation.courseOverGroundMagnetic.value',
+      0.9948
+    )
+    tree.should.not.have.nested.property('navigation.courseOverGroundTrue')
+  })
   it('is valid SignalK', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
