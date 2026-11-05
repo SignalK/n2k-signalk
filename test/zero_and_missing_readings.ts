@@ -6,8 +6,9 @@ import { N2kMapper } from '../dist/n2kMapper'
 import testMapper = require('./testMapper')
 
 // #383. canboat's samples hold no reading of exactly 0 for these fields, so
-// these frames are written here, as canboatjs decodes them (in SI). The cases
-// for a missing wind angle or pilot mode start from a captured frame instead.
+// these frames are written here and encoded and decoded by canboatjs, as other
+// tests' frames are. The cases for a missing wind angle or pilot mode start
+// from a captured frame instead.
 function frame(pgn: number, fields: Record<string, unknown>) {
   return {
     timestamp: '2026-11-05T10:00:00.000Z',
@@ -20,6 +21,11 @@ function frame(pgn: number, fields: Record<string, unknown>) {
 }
 
 function values(n2k: any): Record<string, unknown> {
+  return deltaValues(testMapper.testToDelta(n2k))
+}
+
+// For readings canboatjs cannot encode, as out of range or not a number
+function decodedValues(n2k: any): Record<string, unknown> {
   return deltaValues(new N2kMapper().toDelta(n2k))
 }
 
@@ -166,7 +172,7 @@ describe('a missing reading', function () {
       { latitude: -90.5, longitude: 5.37 },
       { latitude: 53.13, longitude: -180.5 }
     ].forEach((position) => {
-      values(frame(129025, position)).should.not.have.property(
+      decodedValues(frame(129025, position)).should.not.have.property(
         'navigation.position'
       )
     })
@@ -177,7 +183,7 @@ describe('a missing reading', function () {
 
   it('writes a 129798 position without an altitude that is no reading', function () {
     ;[null, 'unavailable'].forEach((altitude) => {
-      values(
+      decodedValues(
         frame(129798, {
           userId: 244850565,
           latitude: 53.13,
@@ -192,7 +198,7 @@ describe('a missing reading', function () {
   })
 
   it('writes no speed through water that is no number', function () {
-    values(
+    decodedValues(
       frame(128259, { sid: 0, speedWaterReferenced: 'unavailable' })
     ).should.not.have.property('navigation.speedThroughWater')
   })
