@@ -1,4 +1,4 @@
-import { PGN_129038 } from '@canboat/ts-pgns'
+import { AisSpecialManeuver, NavStatus, PGN_129038 } from '@canboat/ts-pgns'
 
 const getMmsiContext = require('../mmsi-context').getMmsiContext
 
@@ -35,7 +35,9 @@ module.exports = [
       return stateMapping[n2k.fields.navStatus as unknown as string]
     },
     filter: function (n2k: PGN_129038) {
-      return n2k.fields.navStatus
+      return (
+        stateMapping[n2k.fields.navStatus as unknown as string] !== undefined
+      )
     }
   },
   {
@@ -46,7 +48,11 @@ module.exports = [
       ]
     },
     filter: function (n2k: PGN_129038) {
-      return n2k.fields.specialManeuverIndicator
+      return (
+        specialManeuverMapping[
+          n2k.fields.specialManeuverIndicator as unknown as string
+        ] !== undefined
+      )
     }
   },
   {
@@ -69,24 +75,29 @@ module.exports = [
   }
 ]
 
+// Keyed by canboat's names, so that a key cannot be misspelt. Signal K has no
+// state for Power-driven vessel towing astern (the towing states need the
+// length of the tow) or for pushing ahead or towing alongside, so those are not
+// written.
 const stateMapping: Record<string, string> = {
-  'Under way using engine': 'motoring',
-  'At anchor': 'anchored',
-  'Not under command': 'not under command',
-  'Restricted manoeuverability': 'restricted manouverability',
-  'Constrained by her draught': 'constrained by draft',
-  Moored: 'moored',
-  Aground: 'aground',
-  'Engaged in Fishing': 'fishing',
-  'Under way sailing': 'sailing',
-  'Hazardous material, High Speed': 'hazardous material high speed',
-  'Hazardous material, Wing in Ground': 'hazardous material wing in ground',
-  'AIS-SART': 'ais-sart'
+  [NavStatus.UnderWayUsingEngine]: 'motoring',
+  [NavStatus.AtAnchor]: 'anchored',
+  [NavStatus.NotUnderCommand]: 'not under command',
+  [NavStatus.RestrictedManeuverability]: 'restricted manouverability',
+  [NavStatus.ConstrainedByHerDraught]: 'constrained by draft',
+  [NavStatus.Moored]: 'moored',
+  [NavStatus.Aground]: 'aground',
+  [NavStatus.EngagedInFishing]: 'fishing',
+  [NavStatus.UnderWaySailing]: 'sailing',
+  [NavStatus.HazardousMaterialHighSpeed]: 'hazardous material high speed',
+  [NavStatus.HazardousMaterialWingInGround]:
+    'hazardous material wing in ground',
+  [NavStatus.AisSart]: 'ais-sart'
 }
 
 const specialManeuverMapping: Record<string, string> = {
-  'Not available': 'not available',
-  'Not engaged in special maneuver': 'not engaged',
-  'Engaged in special maneuver': 'engaged',
-  Reserverd: 'reserved'
+  [AisSpecialManeuver.NotAvailable]: 'not available',
+  [AisSpecialManeuver.NotEngagedInSpecialManeuver]: 'not engaged',
+  [AisSpecialManeuver.EngagedInSpecialManeuver]: 'engaged',
+  [AisSpecialManeuver.Reserved]: 'reserved'
 }

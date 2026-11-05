@@ -30,6 +30,9 @@ describe('129038 Class A Update', function () {
 
     //TODO remove when sensors.ais.class is in schema
     delete tree.sensors.ais
+    // The reparsed report has the special maneuver indicator Reserved, and
+    // signalk-schema 1.3.1 has no navigation.specialManeuver (#408)
+    delete tree.navigation.specialManeuver
 
     tree.should.be.validSignalKVesselIgnoringIdentity
     const delta = mapper.testToDelta(msg)
@@ -119,3 +122,81 @@ describe('129038 Class A Update', function () {
  "Nav Status": "Under way using engine"
  }
  */
+
+describe('129038 navigation state', function () {
+  const { FromPgn } = require('@canboat/canboatjs')
+  const { N2kMapper } = require('../dist/n2kMapper')
+
+  // merrimac-2022.raw in canboat's samples
+  const restricted =
+    '2022-09-10T12:06:57.943Z,4,129038,23,255,28,03,85,1f,98,0e,0c,1c,34,03,ab,d8,aa,1f,01,ef,f2,9a,00,c2,1a,00,ba,02,cc,ff,c3,f8,ff'
+
+  function report() {
+    return new FromPgn({ useCamel: true }).parseString(restricted)
+  }
+
+  function value(n2k: any, path: string) {
+    const values = new N2kMapper().toDelta(n2k)!.updates[0].values
+    return values.find((pv: any) => pv.path === path)?.value
+  }
+
+  it('writes Restricted maneuverability', function () {
+    const n2k = report()
+    n2k.fields.navStatus.should.equal('Restricted maneuverability')
+    ;(value(n2k, 'navigation.state') as string).should.equal(
+      'restricted manouverability'
+    )
+  })
+
+  // No capture of the other states is available, so these change the
+  // captured report's state.
+  it('writes every state that Signal K has a value for', function () {
+    ;[
+      ['Under way using engine', 'motoring'],
+      ['At anchor', 'anchored'],
+      ['Not under command', 'not under command'],
+      ['Constrained by her draught', 'constrained by draft'],
+      ['Moored', 'moored'],
+      ['Aground', 'aground'],
+      ['Engaged in Fishing', 'fishing'],
+      ['Under way sailing', 'sailing'],
+      ['Hazardous material - High Speed', 'hazardous material high speed'],
+      [
+        'Hazardous material - Wing in Ground',
+        'hazardous material wing in ground'
+      ],
+      ['AIS-SART', 'ais-sart']
+    ].forEach(([navStatus, state]) => {
+      const n2k = report()
+      n2k.fields.navStatus = navStatus
+      ;(value(n2k, 'navigation.state') as string).should.equal(state)
+    })
+  })
+
+  it('writes no state for towing astern or pushing ahead', function () {
+    ;[
+      'Power-driven vessel towing astern',
+      'Power-driven vessel pushing ahead or towing alongside',
+      14
+    ].forEach((navStatus) => {
+      const n2k = report()
+      n2k.fields.navStatus = navStatus
+      ;(value(n2k, 'navigation.state') === undefined).should.equal(true)
+    })
+  })
+
+  it('writes every special maneuver', function () {
+    ;[
+      ['Not available', 'not available'],
+      ['Not engaged in special maneuver', 'not engaged'],
+      ['Engaged in special maneuver', 'engaged'],
+      ['Reserved', 'reserved']
+    ].forEach(([indicator, specialManeuver]) => {
+      const n2k = report()
+      n2k.fields.specialManeuverIndicator = indicator
+      ;(value(n2k, 'navigation.specialManeuver') as string).should.equal(
+        specialManeuver
+      )
+    })
+  })
+})
