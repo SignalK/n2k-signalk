@@ -6,7 +6,7 @@ module.exports = [
     source: 'speedWaterReferenced',
     node: 'navigation.speedThroughWater',
     filter: function (n2k: PGN_128259) {
-      return typeof n2k.fields.speedWaterReferenced !== 'undefined'
+      return isNumber(n2k.fields.speedWaterReferenced)
     }
   },
   {

@@ -1,10 +1,13 @@
 import chai from 'chai'
 chai.should()
 
+import { FromPgn } from '@canboat/canboatjs'
 import { N2kMapper } from '../dist/n2kMapper'
+import testMapper = require('./testMapper')
 
 // #383. canboat's samples hold no reading of exactly 0 for these fields, so
-// the frames are written here, as canboatjs decodes them (in SI).
+// these frames are written here, as canboatjs decodes them (in SI). The cases
+// for a missing wind angle or pilot mode start from a captured frame instead.
 function frame(pgn: number, fields: Record<string, unknown>) {
   return {
     timestamp: '2026-11-05T10:00:00.000Z',
@@ -17,7 +20,10 @@ function frame(pgn: number, fields: Record<string, unknown>) {
 }
 
 function values(n2k: any): Record<string, unknown> {
-  const delta = new N2kMapper().toDelta(n2k)
+  return deltaValues(new N2kMapper().toDelta(n2k))
+}
+
+function deltaValues(delta: any): Record<string, unknown> {
   const res: Record<string, unknown> = {}
   ;(delta?.updates[0]?.values ?? []).forEach((pv: any) => {
     res[pv.path] = pv.value
@@ -69,7 +75,21 @@ describe('a reading of 0', function () {
       })
     )
     v['design.length']!.should.deep.equal({ overall: 0 })
-    v.should.have.property('sensors.ais.fromCenter')
+    // Half the beam of 4 to starboard of the center
+    v['sensors.ais.fromCenter']!.should.equal(2)
+  })
+
+  it('writes a 129808 position given as strings as numbers', function () {
+    values(
+      frame(129808, {
+        dscMessageAddress: '2448505650',
+        latitudeOfVesselReported: '0',
+        longitudeOfVesselReported: '5.37'
+      })
+    )['navigation.position']!.should.deep.equal({
+      latitude: 0,
+      longitude: 5.37
+    })
   })
 
   it('writes 0 readings of 130310', function () {
@@ -110,22 +130,70 @@ describe('a missing reading', function () {
   })
 
   it('writes no wind angle without one', function () {
-    ;['Apparent', 'True (boat referenced)'].forEach((reference) => {
-      const v = values(frame(130306, { windSpeed: 5, reference }))
+    // From test/130306_wind_data.ts, with the wind angle taken out
+    ;['Apparent', 'True (boat referenced)'].forEach((Reference) => {
+      const v = deltaValues(
+        testMapper.testToDelta({
+          timestamp: '2013-10-08-15:47:28.263Z',
+          prio: '2',
+          src: '1',
+          dst: '255',
+          pgn: '130306',
+          description: 'Wind Data',
+          fields: { SID: '67', 'Wind Speed': 6.22, Reference }
+        })
+      )
       v.should.not.have.property('environment.wind.angleApparent')
       v.should.not.have.property('environment.wind.angleTrueWater')
     })
   })
 
   it('writes no autopilot state for a Simnet pilot mode frame without a mode', function () {
-    values({
-      ...frame(65305, {
-        manufacturerCode: 'Simrad',
-        industryCode: 'Marine Industry',
-        model: 'AC',
-        report: 'Mode'
-      }),
-      description: 'Simnet: Pilot Mode'
-    }).should.not.have.property('steering.autopilot.state')
+    // ap48-tack.all, as in test/65305_simnet_pilot_mode.ts
+    const captured: any = new FromPgn({ useCamel: true }).parseString(
+      '2026-07-05T00:07:13.054Z,1,65305,19,255,8,41,9f,64,0a,08,00,00,00'
+    )
+    values(captured)['steering.autopilot.state']!.should.equal('standby')
+
+    delete captured.fields.mode
+    values(captured).should.not.have.property('steering.autopilot.state')
+  })
+
+  it('writes no position that is out of range', function () {
+    ;[
+      { latitude: 0, longitude: 181 },
+      { latitude: 91, longitude: 0 },
+      { latitude: -90.5, longitude: 5.37 },
+      { latitude: 53.13, longitude: -180.5 }
+    ].forEach((position) => {
+      values(frame(129025, position)).should.not.have.property(
+        'navigation.position'
+      )
+    })
+    values(frame(129025, { latitude: -90, longitude: 180 }))[
+      'navigation.position'
+    ]!.should.deep.equal({ latitude: -90, longitude: 180 })
+  })
+
+  it('writes a 129798 position without an altitude that is no reading', function () {
+    ;[null, 'unavailable'].forEach((altitude) => {
+      values(
+        frame(129798, {
+          userId: 244850565,
+          latitude: 53.13,
+          longitude: 5.37,
+          altitude
+        })
+      )['navigation.position']!.should.deep.equal({
+        latitude: 53.13,
+        longitude: 5.37
+      })
+    })
+  })
+
+  it('writes no speed through water that is no number', function () {
+    values(
+      frame(128259, { sid: 0, speedWaterReferenced: 'unavailable' })
+    ).should.not.have.property('navigation.speedThroughWater')
   })
 })

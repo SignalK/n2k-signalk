@@ -1,5 +1,5 @@
 import { PGN_129798 } from '@canboat/ts-pgns'
-import { isPosition } from '../utils.js'
+import { isNumber, isPosition } from '../utils.js'
 
 const padUserID = require('../mmsi-context').padUserID
 
@@ -20,7 +20,7 @@ module.exports = [
         longitude: Number(n2k.fields.longitude),
         latitude: Number(n2k.fields.latitude)
       }
-      if (typeof n2k.fields.altitude !== 'undefined') {
+      if (isNumber(n2k.fields.altitude)) {
         res.altitude = Number(n2k.fields.altitude)
       }
       return res

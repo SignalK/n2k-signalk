@@ -102,8 +102,8 @@ module.exports = [
         n2k.fields.longitudeOfVesselReported
       ),
     value: (n2k: Dsc) => ({
-      latitude: n2k.fields.latitudeOfVesselReported,
-      longitude: n2k.fields.longitudeOfVesselReported
+      latitude: Number(n2k.fields.latitudeOfVesselReported),
+      longitude: Number(n2k.fields.longitudeOfVesselReported)
     })
   },
   {
