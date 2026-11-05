@@ -165,6 +165,11 @@ describe('129038 navigation state', function () {
         'Hazardous material - Wing in Ground',
         'hazardous material wing in ground'
       ],
+      ['Power-driven vessel towing astern', 'towing astern'],
+      [
+        'Power-driven vessel pushing ahead or towing alongside',
+        'pushing ahead or towing alongside'
+      ],
       ['AIS-SART', 'ais-sart']
     ].forEach(([navStatus, state]) => {
       const n2k = report()
@@ -173,16 +178,11 @@ describe('129038 navigation state', function () {
     })
   })
 
-  it('writes no state for towing astern or pushing ahead', function () {
-    ;[
-      'Power-driven vessel towing astern',
-      'Power-driven vessel pushing ahead or towing alongside',
-      14
-    ].forEach((navStatus) => {
-      const n2k = report()
-      n2k.fields.navStatus = navStatus
-      ;(value(n2k, 'navigation.state') === undefined).should.equal(true)
-    })
+  it('writes no state for a status canboat does not name', function () {
+    // 13 is reserved; canboatjs gives the number
+    const n2k = report()
+    n2k.fields.navStatus = 13
+    ;(value(n2k, 'navigation.state') === undefined).should.equal(true)
   })
 
   it('writes every special maneuver', function () {

@@ -75,10 +75,7 @@ module.exports = [
   }
 ]
 
-// Keyed by canboat's names, so that a key cannot be misspelt. Signal K has no
-// state for Power-driven vessel towing astern (the towing states need the
-// length of the tow) or for pushing ahead or towing alongside, so those are not
-// written.
+// Keyed by canboat's names, so that a key cannot be misspelt.
 const stateMapping: Record<string, string> = {
   [NavStatus.UnderWayUsingEngine]: 'motoring',
   [NavStatus.AtAnchor]: 'anchored',
@@ -92,6 +89,9 @@ const stateMapping: Record<string, string> = {
   [NavStatus.HazardousMaterialHighSpeed]: 'hazardous material high speed',
   [NavStatus.HazardousMaterialWingInGround]:
     'hazardous material wing in ground',
+  [NavStatus.PowerDrivenVesselTowingAstern]: 'towing astern',
+  [NavStatus.PowerDrivenVesselPushingAheadOrTowingAlongside]:
+    'pushing ahead or towing alongside',
   [NavStatus.AisSart]: 'ais-sart'
 }
 
