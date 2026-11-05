@@ -1,4 +1,5 @@
 import { PGN_130306 } from '@canboat/ts-pgns'
+import { isNumber } from '../utils.js'
 
 module.exports = [
   {
@@ -33,9 +34,10 @@ module.exports = [
     node: 'environment.wind.angleApparent',
     filter: function (n2k: PGN_130306) {
       return (
-        (n2k.fields.reference as unknown) === 'Apparent' ||
-        (n2k.fields.reference as unknown) === undefined ||
-        (n2k.fields.reference as unknown) === null
+        isNumber(n2k.fields.windAngle) &&
+        ((n2k.fields.reference as unknown) === 'Apparent' ||
+          (n2k.fields.reference as unknown) === undefined ||
+          (n2k.fields.reference as unknown) === null)
       )
     },
     value: function (n2k: PGN_130306) {
@@ -46,7 +48,10 @@ module.exports = [
   {
     node: 'environment.wind.angleTrueWater',
     filter: function (n2k: PGN_130306) {
-      return (n2k.fields.reference as unknown) === 'True (boat referenced)'
+      return (
+        isNumber(n2k.fields.windAngle) &&
+        (n2k.fields.reference as unknown) === 'True (boat referenced)'
+      )
     },
     value: function (n2k: PGN_130306) {
       const angle = Number(n2k.fields.windAngle)

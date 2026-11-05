@@ -22,10 +22,14 @@ module.exports = [
     node: 'steering.autopilot.state',
 
     value: function (n2k: PGN_65305_SimnetPilotMode) {
+      const modes = n2k.fields.mode
+      if (!Array.isArray(modes)) {
+        return undefined
+      }
       let res: string | undefined
       Object.keys(modeMap).forEach((key) => {
         const mode = modeMap[key]
-        if (n2k.fields.mode?.indexOf(mode) != -1) {
+        if (modes.indexOf(mode) !== -1) {
           res = key
         }
       })

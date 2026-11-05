@@ -6,6 +6,18 @@
 
 type N2k = { fields: any }
 
+/**
+ * Whether a field holds a reading: a finite number, or a string that is one.
+ * A reading of 0 is one; a missing field, null or NaN is not.
+ */
+export function isNumber(value: unknown): boolean {
+  return (
+    (typeof value === 'number' ||
+      (typeof value === 'string' && value.trim() !== '')) &&
+    Number.isFinite(Number(value))
+  )
+}
+
 export function skEngineId(n2k: N2k): number | string {
   const id = n2k.fields.instance
   if (typeof id === 'number') {

@@ -1,4 +1,5 @@
 import { PGN_129040 } from '@canboat/ts-pgns'
+import { isNumber } from '../utils.js'
 
 const getMmsiContext = require('../mmsi-context').getMmsiContext
 const getFromStarboard = require('../aisFromStarboard')
@@ -19,7 +20,8 @@ module.exports = [
     node: 'navigation.destination.commonName'
   },
   {
-    filter: (n2k: PGN_129040) => n2k.fields.longitude && n2k.fields.latitude,
+    filter: (n2k: PGN_129040) =>
+      isNumber(n2k.fields.longitude) && isNumber(n2k.fields.latitude),
     value: function (n2k: PGN_129040) {
       return {
         longitude: Number(n2k.fields.longitude),
@@ -46,7 +48,7 @@ module.exports = [
       return { overall: Number(n2k.fields.length) }
     },
     filter: function (n2k: PGN_129040) {
-      return n2k.fields.length
+      return isNumber(n2k.fields.length)
     }
   },
   {
@@ -70,7 +72,10 @@ module.exports = [
     node: 'sensors.ais.fromCenter',
     value: getFromStarboard,
     filter: function (n2k: PGN_129040) {
-      return n2k.fields.positionReferenceFromStarboard && n2k.fields.beam
+      return (
+        isNumber(n2k.fields.positionReferenceFromStarboard) &&
+        isNumber(n2k.fields.beam)
+      )
     }
   },
   {

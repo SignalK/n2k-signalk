@@ -1,4 +1,5 @@
 import { PGN_129798 } from '@canboat/ts-pgns'
+import { isNumber } from '../utils.js'
 
 const padUserID = require('../mmsi-context').padUserID
 
@@ -12,7 +13,8 @@ module.exports = [
     node: 'navigation.courseOverGroundTrue'
   },
   {
-    filter: (n2k: PGN_129798) => n2k.fields.longitude && n2k.fields.latitude,
+    filter: (n2k: PGN_129798) =>
+      isNumber(n2k.fields.longitude) && isNumber(n2k.fields.latitude),
     value: function (n2k: PGN_129798) {
       const res: { longitude: number; latitude: number; altitude?: number } = {
         longitude: Number(n2k.fields.longitude),
