@@ -11,6 +11,11 @@ updates:
       # run the tests. Bump the major when the tests move off ts-node.
       - dependency-name: typescript
         update-types: ['version-update:semver-major']
+      # signalk-schema 1.4 and later rejects the instance level under
+      # notifications.propulsion that the engine alarms write. Bump it when
+      # the mappings and the schema agree.
+      - dependency-name: '@signalk/signalk-schema'
+        versions: ['>=1.4.0']
     groups:
       # Dev tooling in one weekly PR rather than one PR per package
       dev-dependencies:
