@@ -1,4 +1,5 @@
 import chai from 'chai'
+import { FromPgn } from '@canboat/canboatjs'
 chai.should()
 
 import { toDeltaTransformer, toDelta } from '../dist/n2kMapper'
@@ -51,21 +52,16 @@ describe('toDeltaTransformer', function () {
     const stream = toDeltaTransformer({}, {})
     const called: string[] = []
     stream.on('data', () => {})
-    stream.write(
-      {
-        pgn: 127250,
-        src: 3,
-        timestamp: '2022-05-09T13:38:38.917Z',
-        fields: { heading: 1, reference: 'Magnetic' }
-      },
-      () => called.push('write')
-    )
+    // ac42-commissioning.raw in canboat's samples
+    const heading = new FromPgn({ useCamel: true }).parseString(
+      '2026-06-08T01:51:24.127,2,127250,52,255,8,ff,51,9c,ff,7f,55,06,fc'
+    )!
+    stream.write(heading, () => called.push('write'))
     stream.end(() => {
       called.push('end')
-      setImmediate(() => {
-        called.should.have.members(['write', 'end'])
-        done()
-      })
+      // Node calls a write's callback before the end's
+      called.should.deep.equal(['write', 'end'])
+      done()
     })
   })
 

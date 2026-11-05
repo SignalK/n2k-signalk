@@ -799,7 +799,9 @@ export function toDeltaTransformer(
   ;(stream.end as unknown) = (...args: unknown[]) => {
     const cb = takeCallback(args)
     if (cb) {
-      if (stream.readable) stream.once('end', () => cb())
+      // through may emit 'end' at once; a tick later, the callbacks of
+      // earlier writes have run first, as Node's streams order them
+      if (stream.readable) stream.once('end', () => process.nextTick(cb))
       else process.nextTick(cb)
     }
     // through writes any argument, even undefined, as a last frame
@@ -817,7 +819,6 @@ export function toDeltaTransformer(
   return stream
 }
 
-// The callback a write or end call ends with, removed from its arguments
 function takeCallback(args: unknown[]): (() => void) | undefined {
   const last = args[args.length - 1]
   if (typeof last === 'function') {
