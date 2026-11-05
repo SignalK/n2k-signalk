@@ -47,6 +47,28 @@ describe('toDeltaTransformer', function () {
     stream.end()
   })
 
+  it('calls the write and end callbacks', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const called: string[] = []
+    stream.on('data', () => {})
+    stream.write(
+      {
+        pgn: 127250,
+        src: 3,
+        timestamp: '2022-05-09T13:38:38.917Z',
+        fields: { heading: 1, reference: 'Magnetic' }
+      },
+      () => called.push('write')
+    )
+    stream.end(() => {
+      called.push('end')
+      setImmediate(() => {
+        called.should.have.members(['write', 'end'])
+        done()
+      })
+    })
+  })
+
   it('returns the stream from a repeated end, pause or destroy', function () {
     const stream = toDeltaTransformer({}, {})
     stream.pause().should.equal(stream)

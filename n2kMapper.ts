@@ -34,13 +34,13 @@ import {
  * both writable and readable but is not a stream.Transform. Write decoded
  * frames to it, or pipe an object stream of them into it, and it emits each
  * frame's Delta as 'data'. A string or buffer is dropped, without a Delta.
- * The write and end callbacks Node's WritableStream declares, so that it can
- * be piped into, are never called.
+ * A write callback is called once the frame is handled, and an end callback
+ * once the stream has ended.
  */
 export interface DeltaStream extends Stream, NodeJS.WritableStream {
   readable: boolean
   paused: boolean
-  write(n2k: N2kReport): boolean
+  write(n2k: N2kReport, cb?: (err?: Error | null) => void): boolean
   write(buffer: Uint8Array | string, cb?: (err?: Error | null) => void): boolean
   write(
     str: string,
@@ -48,7 +48,7 @@ export interface DeltaStream extends Stream, NodeJS.WritableStream {
     cb?: (err?: Error | null) => void
   ): boolean
   end(cb?: () => void): this
-  end(n2k: N2kReport): this
+  end(n2k: N2kReport, cb?: () => void): this
   end(data: string | Uint8Array, cb?: () => void): this
   end(str: string, encoding?: BufferEncoding, cb?: () => void): this
   pause(): this
@@ -785,14 +785,44 @@ export function toDeltaTransformer(
       this.queue(delta)
     }
   })
-  // through returns undefined from a repeated end, pause or destroy; return
-  // the stream, as DeltaStream (and Node's WritableStream) declares.
-  for (const method of ['end', 'pause', 'destroy'] as const) {
-    const original = stream[method] as (...args: unknown[]) => unknown
-    ;(stream[method] as unknown) = (...args: unknown[]) => {
-      original.apply(stream, args)
+  // through ignores the callbacks Node's WritableStream declares, and returns
+  // undefined from a repeated end, pause or destroy. Call the callbacks, and
+  // return the stream, as DeltaStream declares.
+  const write = stream.write as (data?: unknown) => boolean
+  ;(stream.write as unknown) = (...args: unknown[]) => {
+    const cb = takeCallback(args)
+    const result = write.call(stream, args[0])
+    if (cb) process.nextTick(cb)
+    return result
+  }
+  const end = stream.end as (data?: unknown) => unknown
+  ;(stream.end as unknown) = (...args: unknown[]) => {
+    const cb = takeCallback(args)
+    if (cb) {
+      if (stream.readable) stream.once('end', () => cb())
+      else process.nextTick(cb)
+    }
+    // through writes any argument, even undefined, as a last frame
+    if (args.length > 0) end.call(stream, args[0])
+    else end.call(stream)
+    return stream
+  }
+  for (const method of ['pause', 'destroy'] as const) {
+    const original = stream[method] as () => unknown
+    ;(stream[method] as unknown) = () => {
+      original.call(stream)
       return stream
     }
   }
   return stream
+}
+
+// The callback a write or end call ends with, removed from its arguments
+function takeCallback(args: unknown[]): (() => void) | undefined {
+  const last = args[args.length - 1]
+  if (typeof last === 'function') {
+    args.pop()
+    return last as () => void
+  }
+  return undefined
 }
