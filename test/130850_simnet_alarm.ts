@@ -11,8 +11,7 @@ function values(n2k: any, mapper = new N2kMapper()): any[] {
 
 // Alarms captured from Simrad equipment, from canboat's samples/, as
 // canboat's analyzer decodes them (analyzer -json -camel). canboatjs
-// decodes these frames as Simnet: Event instead, so they go to the mapper
-// as canboat decodes them.
+// 4.0.0-beta.6 decodes them the same, but leaves out the unset address.
 const headingMissing = {
   timestamp: '2026-06-08T02:27:11.485Z',
   prio: 2,
@@ -203,18 +202,30 @@ describe('130850 Simnet alarm', function () {
   })
 
   it('takes an Acknowledge from every display while the alarm is active', function () {
-    // navico-source-selection.raw: four devices acknowledge No GPS fix
+    // navico-source-selection.raw: src 32 raises No GPS fix, and four
+    // devices acknowledge it
+    const parser = new FromPgn({ useCamel: true })
     const mapper = new N2kMapper()
-    const noGpsFix = (command: string, src: number) => ({
-      ...headingMissing,
-      src,
-      fields: { ...headingMissing.fields, command, alarmId: 'No GPS fix' }
-    })
-    values(noGpsFix('Activate', 32), mapper)
-    ;[48, 49, 50, 32].forEach((src) =>
-      values(noGpsFix('Acknowledge', src), mapper)[0].value.should.include({
-        state: 'alarm'
-      })
+    const [activate, ...acknowledges] = [
+      '2026-06-08T07:43:02.770,2,130850,32,255,12,41,9f,ff,ff,01,ff,39,00,29,00,03,00',
+      '2026-06-08T07:43:03.719,2,130850,48,255,12,41,9f,ff,ff,01,ff,3a,00,29,00,03,00',
+      '2026-06-08T07:43:03.719,2,130850,49,255,12,41,9f,ff,ff,01,ff,3a,00,29,00,03,00',
+      '2026-06-08T07:43:03.747,2,130850,50,255,12,41,9f,ff,ff,01,ff,3a,00,29,00,03,00',
+      '2026-06-08T07:43:03.747,2,130850,32,255,12,41,9f,ff,ff,01,ff,3a,00,29,00,03,00'
+    ].map((line) => parser.parseString(line)!)
+    values(activate, mapper)[0].value.should.include({ state: 'alarm' })
+    acknowledges.forEach((frame) =>
+      values(frame, mapper).should.deep.equal([
+        {
+          path: 'notifications.noGpsFix',
+          value: {
+            message: 'No GPS fix',
+            method: ['visual'],
+            state: 'alarm',
+            timestamp: frame.timestamp
+          }
+        }
+      ])
     )
   })
 

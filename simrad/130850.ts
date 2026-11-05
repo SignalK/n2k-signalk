@@ -2,7 +2,6 @@ import { PGN_130850_SimnetAlarm } from '@canboat/ts-pgns'
 import camelCase from 'camelcase'
 import { HoldsVesselState, vesselState } from '../vesselState.js'
 
-// The Signal K state and method for each command that is about an alarm.
 // Simnet alarms carry no level, so every active alarm is an alarm.
 const commands: Record<string, { state: string; method: string[] }> = {
   Activate: { state: 'alarm', method: ['visual', 'sound'] },
