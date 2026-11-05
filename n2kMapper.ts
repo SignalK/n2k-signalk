@@ -113,6 +113,11 @@ interface DeltaSource {
   pgn: number
   src: string
   canName?: string
+  /**
+   * The NAME's whole device instance byte, (deviceInstanceUpper << 3) |
+   * deviceInstanceLower: 0-255, the number configuration tools show as the
+   * device instance. Not the upper field: upper 6, lower 0 is 48.
+   */
   deviceInstance?: number
   instance?: unknown
 }
@@ -148,6 +153,11 @@ interface MetaDataRequest {
 
 /** The device metadata a metadata PGN carries. */
 interface MetaData {
+  /**
+   * PGN 60928: the NAME's whole device instance byte, (deviceInstanceUpper << 3) |
+   * deviceInstanceLower: 0-255, the number configuration tools show as the
+   * device instance. Not the upper field: upper 6, lower 0 is 48.
+   */
   deviceInstance?: number
   canName?: string
   [field: string]: unknown
@@ -702,6 +712,7 @@ function toValuesArray(
 }
 
 const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
+  // deviceInstance combines the two fields, which stay as decoded (#342)
   60928: (n2k) => {
     return {
       ...n2k.fields,

@@ -41,6 +41,10 @@ See [bin/n2k-signalk](https://github.com/SignalK/n2k-signalk/blob/master/bin/n2k
 
 See [bin/demo.js](https://github.com/SignalK/n2k-signalk/blob/master/bin/demo.js).
 
+### Device metadata
+
+The mapper emits `n2kSourceMetadata` with the fields of a source's PGN 60928 (ISO Address Claim), 126996 (Product Information) and 126998 (Configuration Information). For 60928 it adds `deviceInstance`, which deltas also carry in `source.deviceInstance`. It is the NAME's whole device instance byte, `(deviceInstanceUpper << 3) | deviceInstanceLower`: the 0-255 number that configuration tools show as the device instance, and that a PGN 126208 command sets through 60928 fields 3 and 4. It is not the upper field: `deviceInstanceUpper` 6 with `deviceInstanceLower` 0 is `deviceInstance` 48. The raw `deviceInstanceUpper` (0-31) and `deviceInstanceLower` (0-7) stay in the 60928 metadata as decoded.
+
 ### Custom Sentences
 
 You can add custom n2k mappings via the [Signal K Server plugin mechanism](https://github.com/SignalK/signalk-server/blob/master/SERVERPLUGINS.md). A plugin can register custom mappings by emitting `pgn-to-signalk` PropertyValues with a value that is a map with the pgn number has the key and the n2k mappings as the value.
