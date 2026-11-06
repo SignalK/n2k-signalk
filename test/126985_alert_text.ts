@@ -202,12 +202,18 @@ describe('126985 alert text', function () {
     mapper.testToDelta(alertText(1, 0, 'Bilge pump', 'Technical'), alertState)
 
     // One alert's return to normal leaves the other's text in place
-    messages(
-      mapper.testToDelta(alert(1, 0, 'Normal', 'Navigational'), alertState)
-    ).should.eql(['Off track'])
-    messages(
-      mapper.testToDelta(alert(1, 0, 'Active', 'Technical'), alertState)
-    ).should.eql(['Bilge pump'])
+    const navigational = mapper.testToDelta(
+      alert(1, 0, 'Normal', 'Navigational'),
+      alertState
+    )
+    const technical = mapper.testToDelta(
+      alert(1, 0, 'Active', 'Technical'),
+      alertState
+    )
+    paths(navigational).should.eql(['notifications.nmea.navigational.1.0.7'])
+    paths(technical).should.eql(['notifications.nmea.technical.1.0.7'])
+    messages(navigational).should.eql(['Off track'])
+    messages(technical).should.eql(['Bilge pump'])
   })
 
   it('writes an active alert with the state of its type', function () {
