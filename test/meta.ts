@@ -106,6 +106,38 @@ describe('Meta data works', function () {
     }
   })
 
+  it('Address Claim with the device function named, as canboatjs names it', (done) => {
+    // canboatjs gives the device function by its name under the device
+    // class, as canboat does: the canName and the sources tree keep the
+    // code, so they do not change.
+    const n2kMapper = new N2kMapper()
+    n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
+      meta.should.have.property('deviceFunction', 130)
+      meta.should.have.property('canName', 'c0fa8200346129bf')
+      done()
+    })
+    n2kMapper.toDelta(<any>{
+      prio: 6,
+      pgn: 60928,
+      dst: 255,
+      src: 12,
+      timestamp: '2019-05-31T11:46:58.594Z',
+      fields: {
+        uniqueNumber: 76223,
+        manufacturerCode: 'Fusion Electronics',
+        deviceInstanceLower: 0,
+        deviceInstanceUpper: 0,
+        deviceFunction: 'Multimedia Player',
+        Spare: 0,
+        deviceClass: 'Entertainment',
+        systemInstance: 0,
+        industryGroup: 'Marine',
+        arbitraryAddressCapable: 1
+      },
+      description: 'ISO Address Claim'
+    })
+  })
+
   it('Address Claim with unavailable instance fields', (done) => {
     // Captured from a live Maretron device (wire bytes
     // 01,51,36,11,01,6e,28,cf): the decoder suppresses fields at
@@ -177,7 +209,9 @@ describe('Meta data works', function () {
     const parsed = new FromPgn({ useCamel: true, format: 1 }).parseString(
       '2017-04-15T14:57:58.470Z,6,60928,3,255,8,d3,e5,98,c5,00,82,33,c0'
     ) as any
-    parsed.fields.should.have.property('spare', 1)
+    // canboatjs gives a set spare field as its bytes ('01'), as canboat prints
+    // it, from canboatjs#572; a number before.
+    Number(parsed.fields.spare).should.equal(1)
     const n2kMapper = new N2kMapper()
     n2kMapper.on('n2kSourceMetadata', (n2k, meta) => {
       meta.should.have.property('canName', 'c0338200c598e5d3')
