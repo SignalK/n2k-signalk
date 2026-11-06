@@ -116,7 +116,9 @@ interface DeltaSource {
   /**
    * The NAME's whole device instance byte, (deviceInstanceUpper << 3) |
    * deviceInstanceLower: 0-255, the number configuration tools show as the
-   * device instance. Not the upper field: upper 6, lower 0 is 48.
+   * device instance. Not the upper field: upper 6, lower 0 is 48. A field the
+   * decoder leaves out as unavailable counts as 0, though canName encodes it
+   * as all ones.
    */
   deviceInstance?: number
   instance?: unknown
@@ -156,7 +158,9 @@ interface MetaData {
   /**
    * PGN 60928: the NAME's whole device instance byte, (deviceInstanceUpper << 3) |
    * deviceInstanceLower: 0-255, the number configuration tools show as the
-   * device instance. Not the upper field: upper 6, lower 0 is 48.
+   * device instance. Not the upper field: upper 6, lower 0 is 48. A field the
+   * decoder leaves out as unavailable counts as 0, though canName encodes it
+   * as all ones.
    */
   deviceInstance?: number
   canName?: string
