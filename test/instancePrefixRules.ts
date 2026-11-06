@@ -897,15 +897,17 @@ describe('instance prefix rules', function () {
 
     it("moves with the same device's engine rule", function () {
       const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
-      paths(mapper, exhaustGas(0)).should.deep.equal([
-        'propulsion.main.exhaustTemperature'
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.main.exhaustTemperature', value: 700 }
       ])
+      vesselTree(mapper.toDelta(exhaustGas(0))).should.be
+        .validSignalKVesselIgnoringIdentity
       paths(mapper, engineSpeed()).should.deep.equal([
         'propulsion.main.revolutions'
       ])
       // Instance 1 has no engine rule
-      paths(mapper, exhaustGas(1)).should.deep.equal([
-        'propulsion.starboard.exhaustTemperature'
+      values(mapper, exhaustGas(1)).should.deep.equal([
+        { path: 'propulsion.starboard.exhaustTemperature', value: 700 }
       ])
     })
 
@@ -922,8 +924,8 @@ describe('instance prefix rules', function () {
           }
         ]
       })
-      paths(mapper, exhaustGas(0)).should.deep.equal([
-        'propulsion.main.turbo.exhaustTemperature'
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.main.turbo.exhaustTemperature', value: 700 }
       ])
     })
 
@@ -935,8 +937,8 @@ describe('instance prefix rules', function () {
           { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 }
         ]
       })
-      paths(mapper, exhaustGas(0)).should.deep.equal([
-        'propulsion.port.exhaustTemperature'
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.port.exhaustTemperature', value: 700 }
       ])
     })
 
