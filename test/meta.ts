@@ -41,6 +41,71 @@ describe('Meta data works', function () {
     })
   })
 
+  describe('deviceInstance', function () {
+    const claim = (lower?: number, upper?: number) => {
+      const fields: Record<string, unknown> = {
+        uniqueNumber: 76223,
+        manufacturerCode: 'Fusion Electronics',
+        deviceFunction: 130,
+        deviceClass: 'Entertainment',
+        systemInstance: 0,
+        industryGroup: 'Marine'
+      }
+      if (lower !== undefined) fields.deviceInstanceLower = lower
+      if (upper !== undefined) fields.deviceInstanceUpper = upper
+      return <any>{
+        prio: 6,
+        pgn: 60928,
+        dst: 255,
+        src: 12,
+        timestamp: '2019-05-31T11:46:58.594Z',
+        fields
+      }
+    }
+
+    const cases: [number | undefined, number | undefined, number][] = [
+      [3, 6, 51],
+      [0, 6, 48],
+      [7, 31, 255],
+      [3, undefined, 3],
+      [undefined, 6, 48],
+      [undefined, undefined, 0]
+    ]
+    for (const [lower, upper, expected] of cases) {
+      it(`is ${expected} for lower ${lower} and upper ${upper}`, function () {
+        const n2kMapper = new N2kMapper()
+        const metas: any[] = []
+        n2kMapper.on('n2kSourceMetadata', (_n2k, meta) => metas.push(meta))
+        n2kMapper.toDelta(claim(lower, upper))
+        metas.should.have.lengthOf(1)
+        metas[0].should.have.property('deviceInstance', expected)
+        const delta = n2kMapper.toDelta(<any>{
+          prio: 2,
+          pgn: 127250,
+          dst: 255,
+          src: 12,
+          timestamp: '2019-05-31T11:46:58.594Z',
+          fields: { sid: 0, heading: 1 }
+        })
+        delta!.updates[0].source!.should.have.property(
+          'deviceInstance',
+          expected
+        )
+        // The raw fields stay as decoded.
+        if (lower === undefined) {
+          metas[0].should.not.have.property('deviceInstanceLower')
+        } else {
+          metas[0].should.have.property('deviceInstanceLower', lower)
+        }
+        if (upper === undefined) {
+          metas[0].should.not.have.property('deviceInstanceUpper')
+        } else {
+          metas[0].should.have.property('deviceInstanceUpper', upper)
+        }
+      })
+    }
+  })
+
   it('Address Claim with unavailable instance fields', (done) => {
     // Captured from a live Maretron device (wire bytes
     // 01,51,36,11,01,6e,28,cf): the decoder suppresses fields at
