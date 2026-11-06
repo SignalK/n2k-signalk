@@ -140,7 +140,17 @@ interface PrefixFrame {
   fields: Fields
 }
 
-type Prefix = (n2k: PrefixFrame) => string | null | undefined
+// The device a prefix may be named after, from its address claim and product
+// information.
+export interface PrefixDevice {
+  modelId?: string
+  deviceInstance?: number
+}
+
+type Prefix = (
+  n2k: PrefixFrame,
+  device?: PrefixDevice
+) => string | null | undefined
 
 interface PathMapping {
   path?: string
@@ -175,6 +185,7 @@ const MAX_4BIT = 13
 const MAX_ENGINE_INSTANCE = 254
 const INDEX = '<index>'
 const SPACES = / /g
+const NOT_ALPHANUMERIC = /[^A-Za-z0-9]/g
 
 const temperatures: Record<string, PathMapping> = temperatureMappings
 const humidities: Record<string, PathMapping> = humidityMappings
@@ -297,10 +308,18 @@ const byConnection = (
 const batteries = instanceUnder('electrical.batteries')
 const chargers = instanceUnder('electrical.chargers')
 const inverters = instanceUnder('electrical.inverters')
-// The schema has one key for an AC bus, so the source address is not part of
-// it. Devices with the same connection number are told apart by $source.
-const acConnections: Prefix = (n2k) =>
-  `electrical.ac.${n2k.fields.connectionNumber}`
+// The schema has one alphanumeric key for an AC bus: the device's model and
+// instance, and the connection when it is not 0. Nothing is written until the
+// device has told the mapper both; a rule or resolver does not need them.
+const acConnections: Prefix = (n2k, device) => {
+  const { connectionNumber } = n2k.fields
+  const model = String(device?.modelId ?? '').replace(NOT_ALPHANUMERIC, '')
+  if (!model || device?.deviceInstance == null || connectionNumber == null) {
+    return null
+  }
+  const connection = connectionNumber === 0 ? '' : `c${connectionNumber}`
+  return `electrical.ac.${model}${device.deviceInstance}${connection}`
+}
 
 // Switch banks (127501) are left out: PUT handlers and NMEA 2000 output key
 // on their paths. The rudder (127245) is left out: the specification has one
@@ -539,14 +558,16 @@ function fieldCode(
  * Temperature is the one group whose PGNs spell a prefix differently: 130312
  * replaces spaces in an unmapped source name and writes an absent instance as
  * 0, 130316 does neither. pgn picks the spelling and defaults to the group's
- * first PGN; iterate the group's pgns to get every spelling.
+ * first PGN; iterate the group's pgns to get every spelling. The AC connection
+ * group's prefix is named after the device, and is undefined without one.
  */
 export function defaultPrefix(
   groupId: InstanceGroupId,
   discriminator: number | undefined,
   instance: number,
   src: number | string,
-  pgn?: number | string
+  pgn?: number | string,
+  device?: PrefixDevice
 ): string | undefined {
   const spec = SPECS_BY_ID.get(groupId)
   if (
@@ -576,9 +597,12 @@ export function defaultPrefix(
       spec.discriminator.absent
     )
   }
-  const path = prefix({ src, fields })
+  const path = prefix({ src, fields }, device)
   return path == null ? undefined : path
 }
+
+// Whether a frame writes a path does not depend on the device that sent it.
+const ANY_DEVICE: PrefixDevice = { modelId: 'any', deviceInstance: 0 }
 
 /**
  * The group, discriminator code and instance code of a decoded frame, or
@@ -613,7 +637,7 @@ export function classifyInstance(
       return undefined
     }
   }
-  if (prefix(frame) == null) {
+  if (prefix(frame, ANY_DEVICE) == null) {
     return undefined
   }
   return { group: spec.id, discriminator, instance }
@@ -653,7 +677,7 @@ interface Device {
 }
 
 /** The per-source state toDelta passes to a mapping. */
-export interface SourceState {
+export interface SourceState extends PrefixDevice {
   canName?: string
   [RESOLVER]?: ResolverBinding
   [DEVICE]?: Device
@@ -814,7 +838,9 @@ export function instancePrefix(
     throw new Error(`PGN ${n2k.pgn} has no instance group`)
   }
   const resolved = resolvedPrefix(n2k, state)
-  return resolved !== undefined ? resolved : entry.prefix(prefixFrame(n2k))
+  return resolved !== undefined
+    ? resolved
+    : entry.prefix(prefixFrame(n2k), state)
 }
 
 /**

@@ -6,6 +6,7 @@ const signalkSchema = require('@signalk/signalk-schema')
 
 import { FromPgn, pgnToActisenseSerialFormat } from '@canboat/canboatjs'
 import { N2kMapper, toDelta } from '../dist/n2kMapper'
+import { knownMapper } from './instanceFrames'
 import { RESOLVER } from '../dist/instanceGroups'
 
 const parser = new FromPgn({ useCamel: true })
@@ -577,13 +578,13 @@ describe('instancePrefixResolver', function () {
   ].forEach(([what, prefix]) => {
     it(`writes the default path when the resolver returns ${what}`, function () {
       // The prefix may be invalid, on purpose.
-      const mapper = new N2kMapper({
+      const mapper = knownMapper(33, {
         instancePrefixResolver: (() => prefix) as any
       })
       const { logged } = quietly(() => {
         paths(mapper, acPhaseB(1)).should.have.members([
-          'electrical.ac.1.phase.B.realPower',
-          'electrical.ac.1.phase.B.current'
+          'electrical.ac.MultiPlus2c1.phase.B.realPower',
+          'electrical.ac.MultiPlus2c1.phase.B.current'
         ])
       })
       logged.should.have.lengthOf(1)

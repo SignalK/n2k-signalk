@@ -8,16 +8,22 @@ module.exports = (phase: string) => {
   const ac = (path: string) => (n2k: AcPower, state?: SourceState) =>
     `${instancePrefix(n2k, state)}.${phase}.${path}`
 
+  // A device not yet known by name has no default prefix.
+  const hasPrefix = (n2k: AcPower, state?: SourceState) =>
+    instancePrefix(n2k, state) != null
+
   return [
     {
       node: ac('realPower'),
       value: (n2k: AcPower) => n2k.fields.power,
-      filter: (n2k: AcPower) => typeof n2k.fields.power !== 'undefined'
+      filter: (n2k: AcPower, state?: SourceState) =>
+        typeof n2k.fields.power !== 'undefined' && hasPrefix(n2k, state)
     },
     {
       node: ac('current'),
       value: (n2k: AcPower) => n2k.fields.acRmsCurrent,
-      filter: (n2k: AcPower) => typeof n2k.fields.acRmsCurrent !== 'string'
+      filter: (n2k: AcPower, state?: SourceState) =>
+        typeof n2k.fields.acRmsCurrent !== 'string' && hasPrefix(n2k, state)
     }
   ]
 }

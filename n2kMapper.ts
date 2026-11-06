@@ -68,7 +68,6 @@ function timestampOf(n2k: N2kReport): string {
 
 /** The per-source state toDelta keeps and passes to a mapping. */
 interface MapperSourceState extends SourceState, HoldsVesselState {
-  deviceInstance?: number
   /** When each metadata PGN was last received, by PGN. */
   metaPGNsReceived?: Record<string, number>
 }
@@ -439,6 +438,10 @@ export class N2kMapper extends EventEmitter {
         this.state[srcKey].deviceInstance = meta.deviceInstance
         meta.canName = canName
         this.state[srcKey].canName = canName
+      }
+
+      if (n2k.pgn === 126996) {
+        this.state[srcKey].modelId = meta.modelId as string | undefined
       }
 
       const srcState = this.state[srcKey]

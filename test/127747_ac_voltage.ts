@@ -18,14 +18,19 @@ describe('127747, 127748 and 127749 AC voltage / frequency', function () {
     }
   })
 
+  const state = () => ({ 33: { modelId: 'Multi', deviceInstance: 1 } })
+
   ;[
     [127747, 'A'],
     [127748, 'B'],
     [127749, 'C']
   ].forEach(([pgn, phase]) => {
     it(`${pgn} writes phase ${phase}`, function () {
-      const tree = require('./testMapper').toNested(frame(pgn as number))
-      const at = `electrical.ac.0.phase.${phase}`
+      const tree = require('./testMapper').toNested(
+        frame(pgn as number),
+        state()
+      )
+      const at = `electrical.ac.Multi1.phase.${phase}`
       tree.should.have.nested.property(`${at}.lineNeutralVoltage.value`, 230)
       tree.should.have.nested.property(`${at}.lineLineVoltage.value`, 400)
       tree.should.have.nested.property(`${at}.frequency.value`, 50)
@@ -37,8 +42,8 @@ describe('127747, 127748 and 127749 AC voltage / frequency', function () {
     const n2k = frame(127747)
     const fields: Record<string, unknown> = n2k.fields
     delete fields['AC Voltage Line to Line']
-    const tree = require('./testMapper').toNested(n2k)
-    const phase = tree.electrical.ac[0].phase.A
+    const tree = require('./testMapper').toNested(n2k, state())
+    const phase = tree.electrical.ac.Multi1.phase.A
     phase.should.not.have.property('lineLineVoltage')
     phase.lineNeutralVoltage.value.should.equal(230)
   })
