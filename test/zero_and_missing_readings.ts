@@ -24,7 +24,7 @@ function values(n2k: any): Record<string, unknown> {
   return deltaValues(testMapper.testToDelta(n2k))
 }
 
-// For readings canboatjs cannot encode, as out of range or not a number
+// For inputs a round trip through canboatjs would refuse or change
 function decodedValues(n2k: any): Record<string, unknown> {
   return deltaValues(new N2kMapper().toDelta(n2k))
 }
@@ -86,7 +86,7 @@ describe('a reading of 0', function () {
   })
 
   it('writes a 129808 position given as strings as numbers', function () {
-    values(
+    decodedValues(
       frame(129808, {
         dscMessageAddress: '2448505650',
         latitudeOfVesselReported: '0',
@@ -159,10 +159,23 @@ describe('a missing reading', function () {
     const captured: any = new FromPgn({ useCamel: true }).parseString(
       '2026-07-05T00:07:13.054Z,1,65305,19,255,8,41,9f,64,0a,08,00,00,00'
     )
-    values(captured)['steering.autopilot.state']!.should.equal('standby')
+    decodedValues(captured)['steering.autopilot.state']!.should.equal('standby')
 
     delete captured.fields.mode
-    values(captured).should.not.have.property('steering.autopilot.state')
+    // toDelta logs an exception it catches: that must not pass as no state
+    const logged: unknown[][] = []
+    const consoleError = console.error
+    console.error = (...args: unknown[]) => {
+      logged.push(args)
+    }
+    try {
+      decodedValues(captured).should.not.have.property(
+        'steering.autopilot.state'
+      )
+    } finally {
+      console.error = consoleError
+    }
+    logged.should.deep.equal([])
   })
 
   it('writes no position that is out of range', function () {
