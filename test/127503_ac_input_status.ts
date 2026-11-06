@@ -39,20 +39,20 @@ const frame = {
 }
 
 describe('127503 ac input status', function () {
-  it('writes each line under its own phase', function () {
+  it('writes each line under its own phase, as the specification names it', function () {
     mapper.testToDelta(frame).updates[0].values.should.deep.equal([
-      { path: 'electrical.ac.1.A.acceptability', value: 'Good' },
-      { path: 'electrical.ac.1.A.voltage', value: 230 },
-      { path: 'electrical.ac.1.A.current', value: 2.5 },
-      { path: 'electrical.ac.1.A.frequency', value: 50 },
-      { path: 'electrical.ac.1.A.breakerSize', value: 16 },
-      { path: 'electrical.ac.1.A.realPower', value: 575 },
-      { path: 'electrical.ac.1.A.reactivePower', value: 10 },
-      { path: 'electrical.ac.1.A.powerFactor', value: 0.98 },
-      { path: 'electrical.ac.1.B.acceptability', value: 'Bad level' },
-      { path: 'electrical.ac.1.B.voltage', value: 231 },
-      { path: 'electrical.ac.1.B.current', value: 1.5 },
-      { path: 'electrical.ac.1.B.frequency', value: 50 }
+      { path: 'electrical.ac.1.phase.A.acceptability', value: 'Good' },
+      { path: 'electrical.ac.1.phase.A.lineNeutralVoltage', value: 230 },
+      { path: 'electrical.ac.1.phase.A.current', value: 2.5 },
+      { path: 'electrical.ac.1.phase.A.frequency', value: 50 },
+      { path: 'electrical.ac.1.phase.A.breakerSize', value: 16 },
+      { path: 'electrical.ac.1.phase.A.realPower', value: 575 },
+      { path: 'electrical.ac.1.phase.A.reactivePower', value: 10 },
+      { path: 'electrical.ac.1.phase.A.powerFactor', value: 0.98 },
+      { path: 'electrical.ac.1.phase.B.acceptability', value: 'Bad level' },
+      { path: 'electrical.ac.1.phase.B.lineNeutralVoltage', value: 231 },
+      { path: 'electrical.ac.1.phase.B.current', value: 1.5 },
+      { path: 'electrical.ac.1.phase.B.frequency', value: 50 }
     ])
   })
 
@@ -62,7 +62,7 @@ describe('127503 ac input status', function () {
     numeric.fields.list[1].line = 2
     mapper
       .testToDelta(numeric)
-      .updates[0].values.map(({ path }: { path: string }) => path.split('.')[3])
+      .updates[0].values.map(({ path }: { path: string }) => path.split('.')[4])
       .should.deep.equal([
         'B',
         'B',
@@ -103,12 +103,21 @@ describe('127503 ac input status', function () {
     mapper
       .testToDelta(decoded)
       .updates[0].values.filter(({ path }: { path: string }) =>
-        path.endsWith('.voltage')
+        path.endsWith('.lineNeutralVoltage')
       )
       .should.deep.equal([
-        { path: 'electrical.ac.0.A.voltage', value: 230 },
-        { path: 'electrical.ac.0.B.voltage', value: 231 },
-        { path: 'electrical.ac.0.C.voltage', value: 232 }
+        { path: 'electrical.ac.0.phase.A.lineNeutralVoltage', value: 230 },
+        { path: 'electrical.ac.0.phase.B.lineNeutralVoltage', value: 231 },
+        { path: 'electrical.ac.0.phase.C.lineNeutralVoltage', value: 232 }
       ])
+  })
+  it('writes paths the specification has', function () {
+    const tree = mapper.toNested(frame)
+    // acceptability and breakerSize have no path in the specification
+    Object.values(tree.electrical.ac[1].phase).forEach((line: any) => {
+      delete line.acceptability
+      delete line.breakerSize
+    })
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
