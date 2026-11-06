@@ -10,7 +10,7 @@ const mapper = require('./testMapper')
 const state = {
   '40': {
     alerts: {
-      '20..23480': {
+      'Navigational.20..23480': {
         languageId: 'English (US)',
         locationTextDescription: 'Engine Room',
         textDescription: 'TEST: Temperature over 0'
@@ -109,7 +109,7 @@ describe('126983 Alert', function () {
     const nonStandardState = {
       '128': {
         alerts: {
-          [`4..${alertId}`]: {
+          [`6.4..${alertId}`]: {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: non-standard alertType'
@@ -158,7 +158,7 @@ describe('126983 Alert', function () {
     const trippedState = {
       '4': {
         alerts: {
-          '..4': {
+          '...4': {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'Breaker tripped'
@@ -207,7 +207,7 @@ describe('126983 Alert', function () {
     const noLocationState = {
       '40': {
         alerts: {
-          '20..23480': {
+          'Navigational.20..23480': {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: Temperature over 0'

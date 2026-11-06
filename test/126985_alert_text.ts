@@ -20,7 +20,7 @@ describe('126985 alert text', function () {
     const text = {
       '40': {
         alerts: {
-          '20..23480': {
+          'Navigational.20..23480': {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: Temperature over 0'
@@ -33,7 +33,12 @@ describe('126985 alert text', function () {
 
   // A source can run several alert systems and sub-systems, each with its
   // own alert IDs (#391)
-  function alertText(system: number, subSystem: number, text?: string) {
+  function alertText(
+    system: number,
+    subSystem: number,
+    text?: string,
+    category = 'Technical'
+  ) {
     return {
       prio: 2,
       src: 41,
@@ -41,7 +46,7 @@ describe('126985 alert text', function () {
       pgn: 126985,
       fields: {
         'Alert Type': 'Warning',
-        'Alert Category': 'Technical',
+        'Alert Category': category,
         'Alert System': system,
         'Alert Sub-System': subSystem,
         'Alert ID': 7,
@@ -53,7 +58,12 @@ describe('126985 alert text', function () {
     }
   }
 
-  function alert(system: number, subSystem: number, alertState: string) {
+  function alert(
+    system: number,
+    subSystem: number,
+    alertState: string,
+    category = 'Technical'
+  ) {
     return {
       prio: 2,
       src: 41,
@@ -61,7 +71,7 @@ describe('126985 alert text', function () {
       pgn: 126983,
       fields: {
         'Alert Type': 'Warning',
-        'Alert Category': 'Technical',
+        'Alert Category': category,
         'Alert System': system,
         'Alert Sub-System': subSystem,
         'Alert ID': 7,
@@ -184,6 +194,20 @@ describe('126985 alert text', function () {
     paths(second).should.eql(['notifications.nmea.technical.1.2.7'])
     first.updates[0].values[0].value.alertSubSystem.should.equal(0)
     second.updates[0].values[0].value.alertSubSystem.should.equal(2)
+  })
+
+  it('keeps the texts of alerts that differ only in category apart', function () {
+    const alertState = {}
+    mapper.testToDelta(alertText(1, 0, 'Off track', 'Navigational'), alertState)
+    mapper.testToDelta(alertText(1, 0, 'Bilge pump', 'Technical'), alertState)
+
+    // One alert's return to normal leaves the other's text in place
+    messages(
+      mapper.testToDelta(alert(1, 0, 'Normal', 'Navigational'), alertState)
+    ).should.eql(['Off track'])
+    messages(
+      mapper.testToDelta(alert(1, 0, 'Active', 'Technical'), alertState)
+    ).should.eql(['Bilge pump'])
   })
 
   it('writes an active alert with the state of its type', function () {
