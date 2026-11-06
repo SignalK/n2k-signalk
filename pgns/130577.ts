@@ -9,6 +9,13 @@ module.exports = [
     }
   },
   {
+    source: 'cog',
+    node: 'navigation.courseOverGroundMagnetic',
+    filter: function (n2k: PGN_130577) {
+      return (n2k.fields.cogReference as unknown) === 'Magnetic'
+    }
+  },
+  {
     source: 'sog',
     node: 'navigation.speedOverGround',
     filter: function (n2k: PGN_130577) {
