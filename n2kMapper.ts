@@ -450,7 +450,7 @@ export class N2kMapper extends EventEmitter {
 
       this.emit('n2kSourceMetadata', n2k, meta)
     } else {
-      if (!n2kMappings[n2k.pgn]) {
+      if (!n2kMappings[n2k.pgn] && !metaPGNs[n2k.pgn]) {
         const srcKey = String(n2k.src)
         if (!this.unknownPGNs[srcKey]) {
           this.unknownPGNs[srcKey] = {}

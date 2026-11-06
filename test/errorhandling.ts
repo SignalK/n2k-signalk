@@ -75,6 +75,30 @@ describe('No fields in pgn message', function () {
         logged.should.deep.equal([])
       })
     }
+
+    for (const fields of [undefined, null]) {
+      for (const pgn of [60928, 126996, 126998]) {
+        it(`does not call metadata PGN ${pgn} unknown with fields ${fields}`, function () {
+          const mapper = new N2kMapper()
+          const emitted: unknown[] = []
+          mapper.on('n2kSourceMetadata', (...args: unknown[]) => {
+            emitted.push(args)
+          })
+          const delta = mapper.toDelta({
+            timestamp: '2017-12-08T17:11:14.824Z',
+            prio: 5,
+            src: 114,
+            dst: 255,
+            pgn,
+            fields
+          } as any)
+          assert.equal(delta!.updates[0].values.length, 0)
+          emitted.should.deep.equal([])
+          mapper.unknownPGNs.should.deep.equal({})
+          logged.should.deep.equal([])
+        })
+      }
+    }
   })
 })
 
