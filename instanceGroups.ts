@@ -297,7 +297,10 @@ const byConnection = (
 const batteries = instanceUnder('electrical.batteries')
 const chargers = instanceUnder('electrical.chargers')
 const inverters = instanceUnder('electrical.inverters')
-const acConnections = connectionUnder('electrical.ac')
+// The schema has one key for an AC bus, so the source address is not part of
+// it. Devices with the same connection number are told apart by $source.
+const acConnections: Prefix = (n2k) =>
+  `electrical.ac.${n2k.fields.connectionNumber}`
 
 // Switch banks (127501) are left out: PUT handlers and NMEA 2000 output key
 // on their paths. The rudder (127245) is left out: the specification has one
@@ -446,7 +449,13 @@ const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
   humidity: [''],
   pressure: [''],
   acConnection: acLines(
-    ['power', 'current', 'lineNeutralVoltage', 'lineLineVoltage', 'frequency'],
+    [
+      'realPower',
+      'current',
+      'lineNeutralVoltage',
+      'lineLineVoltage',
+      'frequency'
+    ],
     'phase.'
   ),
   converter: [

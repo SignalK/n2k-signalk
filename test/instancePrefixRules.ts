@@ -814,7 +814,7 @@ describe('instance prefix rules', function () {
       decode(127744, SRC, { connectionNumber: 0, acRmsCurrent: 3, power: 100 })
     ).should.include.members([
       'electrical.ac.shore.phase.A.current',
-      'electrical.ac.shore.phase.A.power'
+      'electrical.ac.shore.phase.A.realPower'
     ])
   })
 

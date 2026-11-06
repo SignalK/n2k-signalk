@@ -10,7 +10,7 @@ module.exports = (phase: string) => {
 
   return [
     {
-      node: ac('power'),
+      node: ac('realPower'),
       value: (n2k: AcPower) => n2k.fields.power,
       filter: (n2k: AcPower) => typeof n2k.fields.power !== 'undefined'
     },

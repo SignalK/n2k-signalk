@@ -562,9 +562,8 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('acConnection', 1, 'electrical.ac.shore')
     })
-    // The 1.3.1 schema has no electrical.ac phase paths, default or not.
     values(mapper, acPhaseB(1)).should.have.deep.members([
-      { path: 'electrical.ac.shore.phase.B.power', value: 120 },
+      { path: 'electrical.ac.shore.phase.B.realPower', value: 120 },
       { path: 'electrical.ac.shore.phase.B.current', value: 11 }
     ])
   })
@@ -583,8 +582,8 @@ describe('instancePrefixResolver', function () {
       })
       const { logged } = quietly(() => {
         paths(mapper, acPhaseB(1)).should.have.members([
-          'electrical.ac.33.1.phase.B.power',
-          'electrical.ac.33.1.phase.B.current'
+          'electrical.ac.1.phase.B.realPower',
+          'electrical.ac.1.phase.B.current'
         ])
       })
       logged.should.have.lengthOf(1)

@@ -19,11 +19,11 @@ describe('127745 ac power/currrent', function () {
       }
     })
     tree.should.have.nested.property(
-      'electrical.ac.33.0.phase.B.power.value',
+      'electrical.ac.0.phase.B.realPower.value',
       120
     )
     tree.should.have.nested.property(
-      'electrical.ac.33.0.phase.B.current.value',
+      'electrical.ac.0.phase.B.current.value',
       11
     )
   })
