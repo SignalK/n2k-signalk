@@ -696,6 +696,22 @@ export function hasInstanceGroup(pgn: number | string): boolean {
   return PGN_INDEX.has(Number(pgn))
 }
 
+/**
+ * True when the frame's default prefix is named after its device and the
+ * mapper does not know enough of the device to write it, and no rule or
+ * resolver names it instead. Call it after toDelta, which binds the resolver.
+ */
+export function awaitsDevice(
+  n2k: N2kFrame,
+  state: SourceState | undefined
+): boolean {
+  return (
+    PGN_INDEX.get(Number(n2k.pgn))?.prefix === acConnections &&
+    classifyInstance(n2k) !== undefined &&
+    instancePrefix(n2k, state) == null
+  )
+}
+
 // The low 32 bits of the NAME: the unique number in bits 0-20, then the
 // manufacturer code in bits 21-31.
 export const UNIQUE_NUMBER_BITS = 21
