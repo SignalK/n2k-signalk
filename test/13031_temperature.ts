@@ -132,19 +132,25 @@ describe('Temperature: ', function () {
     }
 
     Object.entries(frames).forEach(([pgn, frame]) => {
-      it(`${pgn} leaves no placeholder in any path`, function () {
-        Object.keys(temperatureMappings).forEach((source) => {
-          const paths = testMapper
-            .testToDelta({
-              timestamp: '2026-10-19T12:00:00.000Z',
-              prio: 5,
-              src: 36,
-              dst: 255,
-              ...frame(source)
-            })
-            .updates[0].values.map((v: PathValue) => v.path)
-          paths.join().should.not.match(/[<>]/)
-        })
+      it(`${pgn} writes every source to its path, with no placeholder`, function () {
+        Object.entries(temperatureMappings).forEach(
+          ([source, mapping]: [string, any]) => {
+            // The old misspelling: canboatjs can no longer encode it
+            if (source === 'Refridgeration Temperature') return
+            const path =
+              mapping.path ??
+              mapping.pathWithIndex.replace(/<index>|<engine>/, 'default')
+            testMapper
+              .testToDelta({
+                timestamp: '2026-10-19T12:00:00.000Z',
+                prio: 5,
+                src: 36,
+                dst: 255,
+                ...frame(source)
+              })
+              .updates[0].values.should.deep.include({ path, value: 300 })
+          }
+        )
       })
 
       it(`${pgn} writes an exhaust gas temperature under default`, function () {
