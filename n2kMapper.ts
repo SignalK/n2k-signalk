@@ -31,10 +31,37 @@ import {
   InstancePrefixRuleProblem
 } from './instancePrefixOverrides.js'
 
+/**
+ * The stream toDeltaTransformer returns: a classic through stream, which is
+ * both writable and readable but is not a stream.Transform. Write decoded
+ * frames to it, or pipe an object stream of them into it, and it emits each
+ * frame's Delta as 'data'. A string or buffer is dropped, without a Delta.
+ * A write callback is called once the frame is handled, and an end callback
+ * once the stream has ended.
+ */
+export interface DeltaStream extends Stream, NodeJS.WritableStream {
+  readable: boolean
+  paused: boolean
+  write(n2k: N2kReport, cb?: (err?: Error | null) => void): boolean
+  write(buffer: Uint8Array | string, cb?: (err?: Error | null) => void): boolean
+  write(
+    str: string,
+    encoding?: BufferEncoding,
+    cb?: (err?: Error | null) => void
+  ): boolean
+  end(cb?: () => void): this
+  end(n2k: N2kReport, cb?: () => void): this
+  end(data: string | Uint8Array, cb?: () => void): this
+  end(str: string, encoding?: BufferEncoding, cb?: () => void): this
+  pause(): this
+  resume(): this
+  destroy(): this
+}
+
 // through and debug ship no type declarations.
 const through: (
-  write: (this: { queue(data: unknown): void }, data: N2kReport) => void
-) => Stream = require('through')
+  write: (this: { queue(data: unknown): void }, data: unknown) => void
+) => DeltaStream = require('through')
 const debug: (formatter: string, ...args: unknown[]) => void = require('debug')(
   'signalk:n2k-signalk'
 )
@@ -47,6 +74,12 @@ type Fields = Record<string, unknown>
  */
 export interface N2kReport extends N2kFrame {
   timestamp?: string
+  // The rest of a canboat frame, which the mapper does not read
+  prio?: number | string
+  dst?: number | string
+  description?: string
+  id?: string
+  input?: string[]
 }
 
 // An interface has no index signature, so fields is read through Fields.
@@ -165,7 +198,7 @@ export interface N2kMapperOptions {
   /** Lets a custom PGN mapping replace a built-in one. */
   allowCustomPGNOverride?: boolean
   instancePrefixRules?: readonly InstancePrefixRule[] | null
-  instancePrefixResolver?: InstancePrefixResolver
+  instancePrefixResolver?: InstancePrefixResolver | null
   /** @deprecated Ignored; signalk-server still passes it. */
   sendMetaData?: boolean
 }
@@ -336,10 +369,12 @@ export class N2kMapper extends EventEmitter {
 
   /**
    * Replaces the function consulted for an instance's path prefix when no rule
-   * matches; undefined removes it, and anything else that is not a function
-   * is logged and removes it too.
+   * matches; undefined or null removes it, and anything else that is not a
+   * function is logged and removes it too.
    */
-  setInstancePrefixResolver(resolver: InstancePrefixResolver | undefined) {
+  setInstancePrefixResolver(
+    resolver: InstancePrefixResolver | null | undefined
+  ) {
     this.instancePrefixOverrides.setResolver(resolver)
   }
 
@@ -761,13 +796,71 @@ export {
 export function toDeltaTransformer(
   options: unknown,
   state?: MapperState
-): Stream {
-  return through(function (data) {
+): DeltaStream {
+  const stream = through(function (data) {
+    // A string or buffer is not a frame: drop it rather than have toDelta log
+    // it as an error and give an empty Delta.
+    if (
+      typeof data !== 'object' ||
+      data === null ||
+      data instanceof Uint8Array
+    ) {
+      return
+    }
     // toDelta returns nothing for a report it drops (an AIS report without a
     // valid MMSI, for one); queueing undefined would still emit a 'data' event.
-    const delta = toDelta(data, state)
+    const delta = toDelta(data as N2kReport, state)
     if (delta !== undefined) {
       this.queue(delta)
     }
   })
+  // through ignores the callbacks Node's WritableStream declares, and returns
+  // undefined from a repeated end, pause or destroy. Call the callbacks, and
+  // return the stream, as DeltaStream declares.
+  const write = stream.write as (data?: unknown) => boolean
+  ;(stream.write as unknown) = (...args: unknown[]) => {
+    const cb = takeCallback(args)
+    // Before the write: a listener it runs may call end, whose callback comes
+    // after this one
+    let failed = false
+    if (cb) process.nextTick(() => failed || cb())
+    try {
+      return write.call(stream, args[0])
+    } catch (err) {
+      // The caller has this failure: don't report the write as a success too
+      failed = true
+      throw err
+    }
+  }
+  const end = stream.end as (data?: unknown) => unknown
+  ;(stream.end as unknown) = (...args: unknown[]) => {
+    const cb = takeCallback(args)
+    if (cb) {
+      // through may emit 'end' at once; a tick later, the callbacks of
+      // earlier writes have run first, as Node's streams order them
+      if (stream.readable) stream.once('end', () => process.nextTick(cb))
+      else process.nextTick(cb)
+    }
+    // through writes any argument, even undefined, as a last frame
+    if (args.length > 0) end.call(stream, args[0])
+    else end.call(stream)
+    return stream
+  }
+  for (const method of ['pause', 'destroy'] as const) {
+    const original = stream[method] as () => unknown
+    ;(stream[method] as unknown) = () => {
+      original.call(stream)
+      return stream
+    }
+  }
+  return stream
+}
+
+function takeCallback(args: unknown[]): (() => void) | undefined {
+  const last = args[args.length - 1]
+  if (typeof last === 'function') {
+    args.pop()
+    return last as () => void
+  }
+  return undefined
 }

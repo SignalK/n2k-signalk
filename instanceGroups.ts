@@ -729,7 +729,7 @@ export interface DeviceIdentity {
  * The manufacturer code and unique number of a canName as the mapper renders
  * it in deltas, or undefined for a value that is not one.
  */
-export function deviceIdentity(canName: string): DeviceIdentity | undefined {
+export function deviceIdentity(canName: unknown): DeviceIdentity | undefined {
   if (typeof canName !== 'string' || !CAN_NAME_HEX.test(canName)) {
     return undefined
   }

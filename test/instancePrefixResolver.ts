@@ -491,9 +491,7 @@ describe('instancePrefixResolver', function () {
       const mapper = new N2kMapper({
         instancePrefixResolver: rule('engine', 0, 'propulsion.main')
       })
-      const { logged } = quietly(() =>
-        mapper.setInstancePrefixResolver(null as any)
-      )
+      const { logged } = quietly(() => mapper.setInstancePrefixResolver(null))
       logged.should.be.empty
       paths(mapper, engineSpeed(PORT_ENGINE)).should.deep.equal([
         'propulsion.port.revolutions'
