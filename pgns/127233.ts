@@ -42,6 +42,12 @@ function emitterSegment(id: unknown) {
   return isNumber(id) ? String(id) : 'unset'
 }
 
+const DAY_SECONDS = 24 * 3600
+
+function isTimeOfDay(s: number | null): s is number {
+  return s !== null && s >= 0 && s < DAY_SECONDS
+}
+
 // The frame gives the activation as a time of day only, and no date of its
 // own. It is dated with the position report only when it is not later in
 // that day: a later time could be the day before, or a position report older
@@ -50,8 +56,8 @@ function activatedAt(n2k: PGN_127233) {
   const activationSeconds = seconds(n2k.fields.activationTime)
   const positionSeconds = seconds(n2k.fields.positionTime)
   if (
-    activationSeconds === null ||
-    positionSeconds === null ||
+    !isTimeOfDay(activationSeconds) ||
+    !isTimeOfDay(positionSeconds) ||
     activationSeconds > positionSeconds
   ) {
     return undefined
