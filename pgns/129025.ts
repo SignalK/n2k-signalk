@@ -1,4 +1,5 @@
 import { PGN_129025 } from '@canboat/ts-pgns'
+import { isPosition } from '../utils.js'
 
 module.exports = [
   {
@@ -9,10 +10,7 @@ module.exports = [
       }
     },
     filter: function (n2k: PGN_129025) {
-      return (
-        typeof n2k.fields.longitude !== 'undefined' &&
-        typeof n2k.fields.latitude !== 'undefined'
-      )
+      return isPosition(n2k.fields.latitude, n2k.fields.longitude)
     },
     node: 'navigation.position'
   }
