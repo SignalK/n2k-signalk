@@ -3,7 +3,14 @@ chai.should()
 
 import { N2kMapper, instanceGroups } from '../dist/n2kMapper'
 import { groupLeaves } from '../dist/instanceGroups'
-import { decode, FRAMES, Fields, Frame } from './instanceFrames'
+import {
+  decode,
+  knownMapper,
+  DEVICE,
+  FRAMES,
+  Fields,
+  Frame
+} from './instanceFrames'
 const pgnMappings = require('../dist/pgns')
 
 const PREFIX = 'x.y'
@@ -147,6 +154,15 @@ const FULL_FRAMES: Frame[] = [
     pgn,
     { connectionNumber: 0, acRmsCurrent: 3, power: 100 }
   ]),
+  ...[127747, 127748, 127749].map((pgn): Frame => [
+    pgn,
+    {
+      connectionNumber: 0,
+      acVoltageLineToNeutral: 230,
+      acVoltageLineToLine: 400,
+      frequency: 50
+    }
+  ]),
   [
     127750,
     {
@@ -167,11 +183,13 @@ const FULL_FRAMES: Frame[] = [
 function unreached(pgn: number, fields: Fields): string[] {
   const n2k = decode(pgn, 34, fields)
   const paths = new Set(
-    new N2kMapper().toDelta(n2k)!.updates[0].values.map((v: any) => v.path)
+    knownMapper(34)
+      .toDelta(n2k)!
+      .updates[0].values.map((v: any) => v.path)
   )
   return pgnMappings[pgn]
     .filter((entry: any) => typeof entry.node === 'function')
-    .map((entry: any) => entry.node(n2k))
+    .map((entry: any) => entry.node(n2k, DEVICE))
     .filter((path: string) => !paths.has(path))
 }
 

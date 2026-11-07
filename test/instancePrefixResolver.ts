@@ -6,6 +6,7 @@ const signalkSchema = require('@signalk/signalk-schema')
 
 import { FromPgn, pgnToActisenseSerialFormat } from '@canboat/canboatjs'
 import { N2kMapper, toDelta } from '../dist/n2kMapper'
+import { knownMapper } from './instanceFrames'
 import { RESOLVER } from '../dist/instanceGroups'
 
 const parser = new FromPgn({ useCamel: true })
@@ -560,9 +561,8 @@ describe('instancePrefixResolver', function () {
     const mapper = new N2kMapper({
       instancePrefixResolver: rule('acConnection', 1, 'electrical.ac.shore')
     })
-    // The 1.3.1 schema has no electrical.ac phase paths, default or not.
     values(mapper, acPhaseB(1)).should.have.deep.members([
-      { path: 'electrical.ac.shore.phase.B.power', value: 120 },
+      { path: 'electrical.ac.shore.phase.B.realPower', value: 120 },
       { path: 'electrical.ac.shore.phase.B.current', value: 11 }
     ])
   })
@@ -576,13 +576,13 @@ describe('instancePrefixResolver', function () {
   ].forEach(([what, prefix]) => {
     it(`writes the default path when the resolver returns ${what}`, function () {
       // The prefix may be invalid, on purpose.
-      const mapper = new N2kMapper({
+      const mapper = knownMapper(33, {
         instancePrefixResolver: (() => prefix) as any
       })
       const { logged } = quietly(() => {
         paths(mapper, acPhaseB(1)).should.have.members([
-          'electrical.ac.33.1.phase.B.power',
-          'electrical.ac.33.1.phase.B.current'
+          'electrical.ac.2c1.phase.B.realPower',
+          'electrical.ac.2c1.phase.B.current'
         ])
       })
       logged.should.have.lengthOf(1)
