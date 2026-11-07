@@ -68,6 +68,8 @@ describe('127233 Man Overboard Notification', function () {
     raised.value.position.latitude.should.be.closeTo(19.1758326, 0.0000001)
     raised.value.position.longitude.should.be.closeTo(173.3199364, 0.0000001)
     raised.value.data.mmsiOfVesselOfOrigin.should.equal('244060807')
+    raised.value.data.activationTime.should.be.closeTo(1.3769, 0.0001)
+    raised.value.should.not.have.property('createdAt')
 
     const cleared = mobValue(mapper.toDelta(decode(SIMRAD_MOB_CANCELLED)))
     cleared.path.should.equal('notifications.mob.unset')
@@ -144,7 +146,37 @@ describe('127233 Man Overboard Notification', function () {
     )
     path.should.equal('notifications.mob.unset')
     value.state.should.equal('emergency')
+    value.method.should.deep.equal(['visual', 'sound'])
     value.should.not.have.property('position')
     value.should.not.have.property('createdAt')
+  })
+
+  it('an activation at midnight is passed on as 0, with no date', function () {
+    const { value } = mobValue(
+      mapper.testToDelta(mobFrame({ activationTime: 0 }))
+    )
+    value.data.activationTime.should.equal(0)
+    value.should.not.have.property('createdAt')
+  })
+
+  it('a status given as a number maps as its name does', function () {
+    const state = (status: number) =>
+      mobValue(mapper.toDelta(mobFrame({ manOverboardStatus: status }))).value
+        .state
+    state(0).should.equal('emergency')
+    state(1).should.equal('emergency')
+    state(2).should.equal('alert')
+    state(3).should.equal('normal')
+  })
+
+  it('an emitter ID given as a string has the path of its number', function () {
+    mobValue(
+      mapper.toDelta(mobFrame({ mobEmitterId: '00123' }))
+    ).path.should.equal('notifications.mob.123')
+  })
+
+  it('a reading that is no number is left out of data', function () {
+    const { value } = mobValue(mapper.toDelta(mobFrame({ sog: NaN })))
+    value.data.should.not.have.property('sog')
   })
 })
