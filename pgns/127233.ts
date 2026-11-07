@@ -16,12 +16,14 @@ import { isNumber, isPosition } from '../utils.js'
 
 // A status this mapping does not know (a reserved value, or none) is taken as
 // a MOB: the frame exists to report one, and a missed MOB costs more than a
-// false one.
+// false one. A decoder that does not resolve lookups gives the number.
 function notificationState(status: unknown) {
   switch (status) {
     case 'MOB Not Active':
+    case 3:
       return 'normal'
     case 'Test mode':
+    case 2:
       return 'alert'
     default:
       return 'emergency'
@@ -40,14 +42,22 @@ const MESSAGES: Record<string, string> = {
   normal: 'Person Overboard no longer active'
 }
 
+// The ID as a number, so that one emitter has one path however it is given.
+// Every MOB without an ID shares one path, so that a cancel from any display
+// clears it.
 function emitterSegment(id: unknown) {
-  return isNumber(id) ? String(id) : 'unset'
+  return isNumber(id) ? String(Number(id)) : 'unset'
 }
 
 // Fields the frame leaves not available are left out.
 function available(fields: Record<string, unknown>) {
   return Object.fromEntries(
-    Object.entries(fields).filter(([, v]) => v !== undefined && v !== null)
+    Object.entries(fields).filter(
+      ([, v]) =>
+        v !== undefined &&
+        v !== null &&
+        (typeof v !== 'number' || Number.isFinite(v))
+    )
   )
 }
 
