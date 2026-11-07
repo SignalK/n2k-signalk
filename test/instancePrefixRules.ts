@@ -505,12 +505,16 @@ describe('validateInstancePrefixRules', function () {
       at('tank', 'electrical.batteries.house', { discriminator: 0 }),
       at('battery', 'electrical.batteries.house'),
       // A temperature value at the prefix the engine writes under.
-      at('temperature', 'propulsion.main', { discriminator: EXHAUST_GAS })
+      at('temperature', 'propulsion.main', { discriminator: EXHAUST_GAS }),
+      // 127503 and 127744 both write <prefix>.phase.A.current.
+      at('acInput', 'electrical.ac.shore'),
+      at('acConnection', 'electrical.ac.shore')
     ]).should.deep.equal([
       { index: 1, message: 'same prefix as rule 0' },
       { index: 3, message: 'same prefix as rule 2' },
       { index: 5, message: 'same prefix as rule 4' },
-      { index: 6, message: 'same prefix as rule 0' }
+      { index: 6, message: 'same prefix as rule 0' },
+      { index: 8, message: 'same prefix as rule 7' }
     ])
   })
 
@@ -529,17 +533,19 @@ describe('validateInstancePrefixRules', function () {
         instance: 0,
         prefix: 'electrical.dc.house'
       },
+      // An inverter/charger's AC input (127503, phase.*) and output
+      // (127504, ac.*)
       {
         ...DEVICE,
         group: 'acInput',
         instance: 0,
-        prefix: 'electrical.ac.shore'
+        prefix: 'electrical.inverters.multi'
       },
       {
         ...DEVICE,
-        group: 'acConnection',
+        group: 'inverter',
         instance: 0,
-        prefix: 'electrical.ac.shore'
+        prefix: 'electrical.inverters.multi'
       }
     ]).should.deep.equal([])
   })
@@ -797,25 +803,26 @@ describe('instance prefix rules', function () {
   })
 
   it('applies rules of groups with disjoint paths and the same prefix', function () {
-    const shore = { ...DEVICE, instance: 0, prefix: 'electrical.ac.shore' }
+    const multi = {
+      ...DEVICE,
+      instance: 0,
+      prefix: 'electrical.inverters.multi'
+    }
     const mapper = claimedMapper({
       instancePrefixRules: [
-        { ...shore, group: 'acInput' },
-        { ...shore, group: 'acConnection' }
+        { ...multi, group: 'acInput' },
+        { ...multi, group: 'inverter' }
       ]
     })
     const acLine = { line: 'Line 1', voltage: 230, current: 2, frequency: 50 }
     paths(
       mapper,
       decode(127503, SRC, { instance: 0, numberOfLines: 1, list: [acLine] })
-    ).should.include('electrical.ac.shore.A.voltage')
+    ).should.include('electrical.inverters.multi.phase.A.lineNeutralVoltage')
     paths(
       mapper,
-      decode(127744, SRC, { connectionNumber: 0, acRmsCurrent: 3, power: 100 })
-    ).should.include.members([
-      'electrical.ac.shore.phase.A.current',
-      'electrical.ac.shore.phase.A.power'
-    ])
+      decode(127504, SRC, { instance: 0, numberOfLines: 1, list: [acLine] })
+    ).should.include('electrical.inverters.multi.ac.lineNeutralVoltage')
   })
 
   it('matches the highest instance; a reserved one keeps its default', function () {
@@ -916,15 +923,17 @@ describe('instance prefix rules', function () {
 
     it("moves with the same device's engine rule", function () {
       const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
-      paths(mapper, exhaustGas(0)).should.deep.equal([
-        'propulsion.main.exhaustTemperature'
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.main.exhaustTemperature', value: 700 }
       ])
+      vesselTree(mapper.toDelta(exhaustGas(0))).should.be
+        .validSignalKVesselIgnoringIdentity
       paths(mapper, engineSpeed()).should.deep.equal([
         'propulsion.main.revolutions'
       ])
       // Instance 1 has no engine rule
-      paths(mapper, exhaustGas(1)).should.deep.equal([
-        'propulsion.starboard.exhaustTemperature'
+      values(mapper, exhaustGas(1)).should.deep.equal([
+        { path: 'propulsion.starboard.exhaustTemperature', value: 700 }
       ])
     })
 
@@ -941,8 +950,8 @@ describe('instance prefix rules', function () {
           }
         ]
       })
-      paths(mapper, exhaustGas(0)).should.deep.equal([
-        'propulsion.main.turbo.exhaustTemperature'
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.main.turbo.exhaustTemperature', value: 700 }
       ])
     })
 
@@ -954,8 +963,8 @@ describe('instance prefix rules', function () {
           { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 }
         ]
       })
-      paths(mapper, exhaustGas(0)).should.deep.equal([
-        'propulsion.port.exhaustTemperature'
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.port.exhaustTemperature', value: 700 }
       ])
     })
 

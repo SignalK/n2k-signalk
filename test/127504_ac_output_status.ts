@@ -31,28 +31,28 @@ const frame = {
 }
 
 describe('127504 ac output status', function () {
-  it('writes line 1 under electrical.inverters.<instance>.A', function () {
+  it('writes line 1 under electrical.inverters.<instance>.ac', function () {
     mapper.testToDelta(frame).updates[0].values.should.deep.equal([
-      { path: 'electrical.inverters.2.A.voltage', value: 230 },
-      { path: 'electrical.inverters.2.A.current', value: 3 },
-      { path: 'electrical.inverters.2.A.frequency', value: 50 },
-      { path: 'electrical.inverters.2.A.breakerSize', value: 10 },
-      { path: 'electrical.inverters.2.A.realPower', value: 690 },
-      { path: 'electrical.inverters.2.A.reactivePower', value: 5 },
-      { path: 'electrical.inverters.2.A.powerFactor', value: 0.99 }
+      { path: 'electrical.inverters.2.ac.lineNeutralVoltage', value: 230 },
+      { path: 'electrical.inverters.2.ac.current', value: 3 },
+      { path: 'electrical.inverters.2.ac.frequency', value: 50 },
+      { path: 'electrical.inverters.2.ac.breakerSize', value: 10 },
+      { path: 'electrical.inverters.2.ac.realPower', value: 690 },
+      { path: 'electrical.inverters.2.ac.reactivePower', value: 5 },
+      { path: 'electrical.inverters.2.ac.powerFactor', value: 0.99 }
     ])
   })
 
-  it('writes a line with an unknown name under phase A', function () {
+  it('writes a line with an unknown name as line 1', function () {
     const unknown = JSON.parse(JSON.stringify(frame))
     unknown.fields.list[0].line = 'Line 9'
     mapper.testToDelta(unknown).updates[0].values[0].should.deep.equal({
-      path: 'electrical.inverters.2.A.voltage',
+      path: 'electrical.inverters.2.ac.lineNeutralVoltage',
       value: 230
     })
   })
 
-  it('writes the lines of a frame decoded by canboatjs to phases A, B and C', function () {
+  it('writes lines 2 and 3 of a frame decoded by canboatjs under ac.phase.B and .C', function () {
     // #367: canboatjs decodes line as 'Line 1' to 'Line 3'. There is no
     // capture of a multi-line frame from real equipment, so it is
     // encoded and decoded through canboatjs.
@@ -76,12 +76,24 @@ describe('127504 ac output status', function () {
     mapper
       .testToDelta(decoded)
       .updates[0].values.filter(({ path }: { path: string }) =>
-        path.endsWith('.voltage')
+        path.endsWith('.lineNeutralVoltage')
       )
       .should.deep.equal([
-        { path: 'electrical.inverters.0.A.voltage', value: 230 },
-        { path: 'electrical.inverters.0.B.voltage', value: 231 },
-        { path: 'electrical.inverters.0.C.voltage', value: 232 }
+        { path: 'electrical.inverters.0.ac.lineNeutralVoltage', value: 230 },
+        {
+          path: 'electrical.inverters.0.ac.phase.B.lineNeutralVoltage',
+          value: 231
+        },
+        {
+          path: 'electrical.inverters.0.ac.phase.C.lineNeutralVoltage',
+          value: 232
+        }
       ])
+  })
+  it('writes paths the specification has', function () {
+    const tree = mapper.toNested(frame)
+    // breakerSize has no path in the specification
+    delete tree.electrical.inverters[2].ac.breakerSize
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })

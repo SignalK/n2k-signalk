@@ -154,18 +154,18 @@ describe('Temperature: ', function () {
       })
 
       it(`${pgn} writes an exhaust gas temperature under default`, function () {
-        testMapper
-          .testToDelta({
-            timestamp: '2026-10-19T12:00:00.000Z',
-            prio: 5,
-            src: 36,
-            dst: 255,
-            ...frame('Exhaust Gas Temperature')
-          })
-          .updates[0].values.should.deep.include({
-            path: 'propulsion.default.exhaustTemperature',
-            value: 300
-          })
+        const n2k = {
+          timestamp: '2026-10-19T12:00:00.000Z',
+          prio: 5,
+          src: 36,
+          dst: 255,
+          ...frame('Exhaust Gas Temperature')
+        }
+        testMapper.testToDelta(n2k).updates[0].values.should.deep.include({
+          path: 'propulsion.default.exhaustTemperature',
+          value: 300
+        })
+        testMapper.toNested(n2k).should.be.validSignalKVesselIgnoringIdentity
       })
     })
   })

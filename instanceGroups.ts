@@ -407,12 +407,10 @@ const GROUP_SPECS: GroupSpec[] = [
 ]
 
 const AC_PHASES = ['A', 'B', 'C']
-const acLines = (fields: readonly string[], under = '') =>
-  AC_PHASES.flatMap((phase) =>
-    fields.map((field) => `${under}${phase}.${field}`)
-  )
+const acLines = (fields: readonly string[], under = '', phases = AC_PHASES) =>
+  phases.flatMap((phase) => fields.map((field) => `${under}${phase}.${field}`))
 const AC_LINE_FIELDS = [
-  'voltage',
+  'lineNeutralVoltage',
   'current',
   'frequency',
   'breakerSize',
@@ -476,7 +474,9 @@ const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
     'equalizeTime'
   ],
   inverter: [
-    ...acLines(['waveform', ...AC_LINE_FIELDS]),
+    // Line 1 under ac, lines 2 and 3 under ac.phase.B and .C
+    ...['waveform', ...AC_LINE_FIELDS].map((field) => `ac.${field}`),
+    ...acLines(['waveform', ...AC_LINE_FIELDS], 'ac.phase.', ['B', 'C']),
     'operatingState',
     'enabled',
     'inverterMode',
@@ -484,7 +484,7 @@ const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
     'loadSensePowerThreshold',
     'loadSenseInterval'
   ],
-  acInput: acLines(['acceptability', ...AC_LINE_FIELDS]),
+  acInput: acLines(['acceptability', ...AC_LINE_FIELDS], 'phase.'),
   tank: ['currentLevel', 'capacity'],
   temperature: [''],
   humidity: [''],

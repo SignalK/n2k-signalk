@@ -16,6 +16,10 @@ const fields = [
 
 const phaseMap: Record<string, string> = { 0: 'A', 1: 'B', 2: 'C' }
 
+// The specification's name for a line's voltage to neutral
+const skField = (field: (typeof fields)[number]) =>
+  field === 'voltage' ? 'lineNeutralVoltage' : field
+
 // canboatjs decodes line through AC_LINE, so it arrives as 'Line 1' to
 // 'Line 3', codes 0 to 2 (#367).
 function acPhase(lineData: Line) {
@@ -30,7 +34,7 @@ function prefix(
   state: SourceState | undefined,
   lineData: Line
 ) {
-  return `${instancePrefix(n2k, state)}.${acPhase(lineData)}`
+  return `${instancePrefix(n2k, state)}.phase.${acPhase(lineData)}`
 }
 
 module.exports = [
@@ -41,7 +45,7 @@ module.exports = [
           return fields
             .filter((field) => typeof lineData[field] !== 'undefined')
             .map((field) => ({
-              path: `${pathPrefix}.${field}`,
+              path: `${pathPrefix}.${skField(field)}`,
               value: lineData[field]
             }))
         })

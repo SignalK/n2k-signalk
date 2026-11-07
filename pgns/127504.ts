@@ -16,6 +16,10 @@ const fields = [
 
 const phaseMap: Record<string, string> = { 0: 'A', 1: 'B', 2: 'C' }
 
+// The specification's name for a line's voltage to neutral
+const skField = (field: (typeof fields)[number]) =>
+  field === 'voltage' ? 'lineNeutralVoltage' : field
+
 // canboatjs decodes line through AC_LINE, so it arrives as 'Line 1' to
 // 'Line 3', codes 0 to 2 (#367).
 function acPhase(lineData: Line) {
@@ -25,12 +29,18 @@ function acPhase(lineData: Line) {
   return phaseMap[String(code)] ?? 'A'
 }
 
+// The specification gives an inverter's AC output one phase, under ac. A
+// three-phase inverter's lines 2 and 3 go under ac.phase.B and ac.phase.C,
+// as electrical.ac.<id>.phase does for AC buses.
 function prefix(
   n2k: PGN_127504,
   state: SourceState | undefined,
   lineData: Line
 ) {
-  return `${instancePrefix(n2k, state)}.${acPhase(lineData)}`
+  const phase = acPhase(lineData)
+  return phase === 'A'
+    ? `${instancePrefix(n2k, state)}.ac`
+    : `${instancePrefix(n2k, state)}.ac.phase.${phase}`
 }
 
 module.exports = [
@@ -41,7 +51,7 @@ module.exports = [
           return fields
             .filter((field) => typeof lineData[field] !== 'undefined')
             .map((field) => ({
-              path: `${pathPrefix}.${field}`,
+              path: `${pathPrefix}.${skField(field)}`,
               value: lineData[field]
             }))
         })
