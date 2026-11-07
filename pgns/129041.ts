@@ -1,6 +1,7 @@
 import { PGN_129041, AtonType } from '@canboat/ts-pgns'
 
 import getFromStarboardEdge from '../atonFromStarboardEdge'
+import { isPosition } from '../utils.js'
 const schema = require('@signalk/signalk-schema')
 
 module.exports = [
@@ -14,7 +15,8 @@ module.exports = [
     }
   },
   {
-    filter: (n2k: PGN_129041) => n2k.fields.longitude && n2k.fields.latitude,
+    filter: (n2k: PGN_129041) =>
+      isPosition(n2k.fields.latitude, n2k.fields.longitude),
     value: function (n2k: PGN_129041) {
       return {
         longitude: Number(n2k.fields.longitude),

@@ -6,6 +6,18 @@
 
 type N2k = { fields: any }
 
+/**
+ * Whether a field holds a reading: a finite number, or a string that is one.
+ * A reading of 0 is one; a missing field, null or NaN is not.
+ */
+export function isNumber(value: unknown): boolean {
+  return (
+    (typeof value === 'number' ||
+      (typeof value === 'string' && value.trim() !== '')) &&
+    Number.isFinite(Number(value))
+  )
+}
+
 export function skEngineId(n2k: N2k): number | string {
   const id = n2k.fields.instance
   if (typeof id === 'number') {
@@ -32,6 +44,22 @@ export function skEngineTitle(n2k: N2k): number | string {
     return engine
   }
   return engine.charAt(0).toUpperCase() + engine.slice(1)
+}
+
+/**
+ * Whether a latitude and longitude are a position: both readings in range,
+ * and not exactly 0,0. Some AIS transponders and GPS receivers send 0,0 when
+ * they have no fix, rather than the "not available" value, so 0,0 is taken as
+ * unavailable. A latitude or a longitude of 0 alone is a position.
+ */
+export function isPosition(latitude: unknown, longitude: unknown): boolean {
+  return (
+    isNumber(latitude) &&
+    isNumber(longitude) &&
+    Math.abs(Number(latitude)) <= 90 &&
+    Math.abs(Number(longitude)) <= 180 &&
+    !(Number(latitude) === 0 && Number(longitude) === 0)
+  )
 }
 
 /**

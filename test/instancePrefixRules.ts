@@ -913,6 +913,95 @@ describe('instance prefix rules', function () {
     vesselTree(delta).should.be.validSignalKVesselIgnoringIdentity
   })
 
+  describe('oil and fuel pressure (#359)', function () {
+    const pressure = (source: string, instance: number) =>
+      decode(130314, SRC, { instance, source, pressure: 300000 })
+
+    it("moves with the same device's engine rule", function () {
+      const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
+      paths(mapper, pressure('Oil', 0)).should.deep.equal([
+        'propulsion.main.oilPressure'
+      ])
+      paths(mapper, pressure('Fuel', 0)).should.deep.equal([
+        'propulsion.main.fuel.pressure'
+      ])
+      // Instance 1 has no engine rule
+      paths(mapper, pressure('Oil', 1)).should.deep.equal([
+        'propulsion.starboard.oilPressure'
+      ])
+    })
+
+    it('leaves other pressure sources where they are', function () {
+      const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
+      paths(mapper, pressure('Water', 0)).should.deep.equal([
+        'water.0.pressure'
+      ])
+    })
+  })
+
+  describe('exhaust gas temperature (#378)', function () {
+    const exhaustGas = (instance: number) =>
+      decode(130316, SRC, {
+        instance,
+        source: 'Exhaust Gas Temperature',
+        temperature: 700
+      })
+
+    it("moves with the same device's engine rule", function () {
+      const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.main.exhaustTemperature', value: 700 }
+      ])
+      vesselTree(mapper.toDelta(exhaustGas(0))).should.be
+        .validSignalKVesselIgnoringIdentity
+      paths(mapper, engineSpeed()).should.deep.equal([
+        'propulsion.main.revolutions'
+      ])
+      // Instance 1 has no engine rule
+      values(mapper, exhaustGas(1)).should.deep.equal([
+        { path: 'propulsion.starboard.exhaustTemperature', value: 700 }
+      ])
+    })
+
+    it('takes a temperature rule of its own over the engine rule', function () {
+      const mapper = claimedMapper({
+        instancePrefixRules: [
+          mainEngine,
+          {
+            ...DEVICE,
+            group: 'temperature',
+            discriminator: EXHAUST_GAS,
+            instance: 0,
+            prefix: 'propulsion.main.turbo.exhaustTemperature'
+          }
+        ]
+      })
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.main.turbo.exhaustTemperature', value: 700 }
+      ])
+    })
+
+    it("does not move with another device's engine rule", function () {
+      // Rules are per device: an EGT sensor apart from the engine's gateway
+      // needs a temperature rule of its own.
+      const mapper = claimedMapper({
+        instancePrefixRules: [
+          { ...mainEngine, uniqueNumber: UNIQUE_NUMBER + 1 }
+        ]
+      })
+      values(mapper, exhaustGas(0)).should.deep.equal([
+        { path: 'propulsion.port.exhaustTemperature', value: 700 }
+      ])
+    })
+
+    it('leaves other temperatures where they are', function () {
+      const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
+      paths(mapper, engineRoom(0)).should.deep.equal([
+        'environment.inside.engineRoom.temperature'
+      ])
+    })
+  })
+
   it('takes a rule over the resolver and asks the resolver otherwise', function () {
     const calls: any[] = []
     const mapper = claimedMapper({
@@ -1115,7 +1204,7 @@ describe('deviceIdentity', function () {
 
   it('returns undefined for a value that is not a canName', function () {
     ;['', 'not a name', '1'.repeat(17), 17, undefined, null].forEach((value) =>
-      expect(deviceIdentity(value as any)).to.equal(undefined)
+      expect(deviceIdentity(value)).to.equal(undefined)
     )
   })
 

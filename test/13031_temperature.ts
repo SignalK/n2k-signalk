@@ -4,6 +4,7 @@ chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 const _ = require('lodash')
 import assert from 'assert'
+import testMapper = require('./testMapper')
 
 interface PathValue {
   path: string
@@ -78,7 +79,9 @@ describe('Temperature: ', function () {
     )
     _.forOwn(temperatureMappings, function (mapping: any, _key: string) {
       const path = mapping.pathWithIndex
-        ? mapping.pathWithIndex.replace('<index>', '0')
+        ? mapping.pathWithIndex
+            .replace('<index>', '0')
+            .replace('<engine>', 'port')
         : mapping.path
 
       const delta = {
@@ -108,5 +111,62 @@ describe('Temperature: ', function () {
     // console.log(JSON.stringify(fullDoc, null, 2));
     fullDoc.vessels['urn:mrn:imo:mmsi:230099999'].mmsi = '230099999'
     fullDoc.should.be.validSignalK
+  })
+
+  describe('in a PGN without an instance', function () {
+    const temperatureMappings = require('../dist/temperatureMappings')
+    const frames: Record<string, (source: string) => any> = {
+      130311: (source) => ({
+        pgn: 130311,
+        fields: { temperatureSource: source, temperature: 300 }
+      }),
+      65285: (source) => ({
+        pgn: 65285,
+        fields: {
+          manufacturerCode: 'Lowrance',
+          industryCode: 'Marine Industry',
+          temperatureSource: source,
+          actualTemperature: 300
+        }
+      })
+    }
+
+    Object.entries(frames).forEach(([pgn, frame]) => {
+      it(`${pgn} writes every source to its path, with no placeholder`, function () {
+        Object.entries(temperatureMappings).forEach(
+          ([source, mapping]: [string, any]) => {
+            // The old misspelling: canboatjs can no longer encode it
+            if (source === 'Refridgeration Temperature') return
+            const path =
+              mapping.path ??
+              mapping.pathWithIndex.replace(/<index>|<engine>/, 'default')
+            testMapper
+              .testToDelta({
+                timestamp: '2026-10-19T12:00:00.000Z',
+                prio: 5,
+                src: 36,
+                dst: 255,
+                ...frame(source)
+              })
+              .updates[0].values.should.deep.include({ path, value: 300 })
+          }
+        )
+      })
+
+      it(`${pgn} writes an exhaust gas temperature under default`, function () {
+        const n2k = {
+          timestamp: '2026-10-19T12:00:00.000Z',
+          prio: 5,
+          src: 36,
+          dst: 255,
+          ...frame('Exhaust Gas Temperature')
+        }
+        testMapper.testToDelta(n2k).updates[0].values.should.deep.include({
+          path: 'propulsion.default.exhaustTemperature',
+          value: 300
+        })
+        testMapper.toNested(n2k).should.be.validSignalKVesselIgnoringIdentity
+      })
+    })
   })
 })

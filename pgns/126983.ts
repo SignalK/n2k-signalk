@@ -37,26 +37,25 @@ function resolveAlertType(rawAlertType: unknown) {
   return defaultAlertType
 }
 
+// Every alert has the same depth, so that one alert's path can't be another's
+// branch. An unset field gets a word that no number can be.
+function pathSegment(value: unknown): string {
+  if (value === undefined || value === null) return 'unset'
+  return String(value).toLowerCase()
+}
+
 module.exports = [
   {
+    // An alert keeps its path for life: the type is not part of it, so that the
+    // Normal of an alert that escalated clears the one notification it raised.
     node: function (n2k: PGN_126983, _state?: AlertState) {
-      const resolved = resolveAlertType(n2k.fields.alertType)
-      const alertType = resolved.nmea.replace(/ /g, '').toLowerCase()
-
-      const alertCategory =
-        typeof n2k.fields.alertCategory === 'string'
-          ? n2k.fields.alertCategory.toLowerCase()
-          : ''
-
-      const path =
-        'notifications.nmea.' +
-        alertType +
-        '.' +
-        alertCategory +
-        '.' +
-        n2k.fields.alertSystem +
-        '.' +
-        n2k.fields.alertId
+      const path = [
+        'notifications.nmea',
+        pathSegment(n2k.fields.alertCategory),
+        pathSegment(n2k.fields.alertSystem),
+        pathSegment(n2k.fields.alertSubSystem),
+        pathSegment(n2k.fields.alertId)
+      ].join('.')
       debug('126983 path: ' + path)
 
       return path
@@ -83,6 +82,7 @@ module.exports = [
         alertType: n2k.fields.alertType,
         alertCategory: n2k.fields.alertCategory,
         alertSystem: n2k.fields.alertSystem,
+        alertSubSystem: n2k.fields.alertSubSystem,
         alertId: n2k.fields.alertId,
         dataSourceNetworkIDNAME: n2k.fields.dataSourceNetworkIdName,
         dataSourceInstance: n2k.fields.dataSourceInstance,

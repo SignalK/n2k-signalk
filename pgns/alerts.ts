@@ -14,16 +14,22 @@ export interface AlertState {
 }
 
 /**
- * The key an alert's text is stored under. One source can run several alert
- * systems and sub-systems, and each numbers its alerts on its own, so the ID
- * alone does not identify an alert.
+ * The key an alert's text is stored under: the parts of its path. One source
+ * can run several alert systems and sub-systems, and each numbers its alerts on
+ * its own, so the ID alone does not identify an alert.
  */
 export function alertKey(fields: {
+  alertCategory?: unknown
   alertSystem?: unknown
   alertSubSystem?: unknown
   alertId?: unknown
 }): string {
-  return [fields.alertSystem, fields.alertSubSystem, fields.alertId]
+  return [
+    fields.alertCategory,
+    fields.alertSystem,
+    fields.alertSubSystem,
+    fields.alertId
+  ]
     .map((v) => (v === undefined || v === null ? '' : String(v)))
     .join('.')
 }

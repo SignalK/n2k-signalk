@@ -1,13 +1,18 @@
 import chai from 'chai'
+import { FromPgn } from '@canboat/canboatjs'
 chai.should()
 
-import { Transform } from 'stream'
 import { toDeltaTransformer, toDelta } from '../dist/n2kMapper'
+
+// ac42-commissioning.raw in canboat's samples
+const capturedHeading = () =>
+  new FromPgn({ useCamel: true }).parseString(
+    '2026-06-08T01:51:24.127,2,127250,52,255,8,ff,51,9c,ff,7f,55,06,fc'
+  )!
 
 describe('toDeltaTransformer', function () {
   it('emits nothing for a report toDelta drops', function (done) {
-    // Declared as a Stream; it is a Transform.
-    const stream = toDeltaTransformer({}, {}) as unknown as Transform
+    const stream = toDeltaTransformer({}, {})
     const emitted: unknown[] = []
     stream.on('data', (d: unknown) => emitted.push(d))
     stream.on('end', () => {
@@ -29,6 +34,77 @@ describe('toDeltaTransformer', function () {
       }
     })
     stream.end()
+  })
+
+  it('drops a string or buffer without logging', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const emitted: unknown[] = []
+    const logged: unknown[] = []
+    const error = console.error
+    console.error = (...args: unknown[]) => logged.push(args)
+    stream.on('data', (d: unknown) => emitted.push(d))
+    stream.on('end', () => {
+      console.error = error
+      emitted.should.have.lengthOf(0)
+      logged.should.have.lengthOf(0)
+      done()
+    })
+    stream.write('not a frame')
+    stream.write(Buffer.from('not a frame'))
+    stream.end()
+  })
+
+  it('calls the write and end callbacks', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const called: string[] = []
+    stream.on('data', () => {})
+    stream.write(capturedHeading(), () => called.push('write'))
+    stream.end(() => {
+      called.push('end')
+      // Node calls a write's callback before the end's
+      called.should.deep.equal(['write', 'end'])
+      done()
+    })
+  })
+
+  it('calls the write callback first when a listener ends the stream', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const called: string[] = []
+    stream.once('data', () => {
+      stream.end(() => {
+        called.push('end')
+        called.should.deep.equal(['write', 'end'])
+        done()
+      })
+    })
+    stream.write(capturedHeading(), () => called.push('write'))
+  })
+
+  it('does not call the write callback when a listener throws', function (done) {
+    const stream = toDeltaTransformer({}, {})
+    const failure = new Error('listener failed')
+    stream.once('data', () => {
+      throw failure
+    })
+    let called = false
+    ;(() =>
+      stream.write(capturedHeading(), () => {
+        called = true
+      })).should.throw(failure)
+    setImmediate(() => {
+      called.should.equal(false)
+      done()
+    })
+  })
+
+  it('returns the stream from a repeated end, pause or destroy', function () {
+    const stream = toDeltaTransformer({}, {})
+    stream.pause().should.equal(stream)
+    stream.pause().should.equal(stream)
+    stream.end().should.equal(stream)
+    stream.end().should.equal(stream)
+    stream.destroy().should.equal(stream)
+    stream.destroy().should.equal(stream)
   })
 })
 

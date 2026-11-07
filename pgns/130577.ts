@@ -1,4 +1,5 @@
 import { PGN_130577 } from '@canboat/ts-pgns'
+import { isNumber } from '../utils.js'
 
 module.exports = [
   {
@@ -19,13 +20,13 @@ module.exports = [
     source: 'sog',
     node: 'navigation.speedOverGround',
     filter: function (n2k: PGN_130577) {
-      return n2k.fields.sog
+      return isNumber(n2k.fields.sog)
     }
   },
   {
     node: 'environment.current',
     filter: function (n2k: PGN_130577) {
-      return n2k.fields.drift && n2k.fields.set
+      return isNumber(n2k.fields.drift) && isNumber(n2k.fields.set)
     },
     value: function (n2k: PGN_130577) {
       if ((n2k.fields.cogReference as unknown) === 'True') {

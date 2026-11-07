@@ -1,4 +1,5 @@
 import { PGN_129793 } from '@canboat/ts-pgns'
+import { isPosition } from '../utils.js'
 
 const padUserID = require('../mmsi-context').padUserID
 
@@ -11,10 +12,7 @@ module.exports = [
       }
     },
     filter: function (n2k: PGN_129793) {
-      return (
-        typeof n2k.fields.longitude !== 'undefined' &&
-        typeof n2k.fields.latitude !== 'undefined'
-      )
+      return isPosition(n2k.fields.latitude, n2k.fields.longitude)
     },
     node: 'navigation.position'
   },

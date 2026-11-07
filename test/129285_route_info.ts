@@ -107,4 +107,53 @@ describe('129285 Route Information', function () {
     tree.should.not.have.nested.property('navigation.courseGreatCircle')
     tree.should.not.have.nested.property('navigation.courseRhumbline')
   })
+
+  describe('a waypoint without a position', function () {
+    const routeState = {
+      '3': { lastCourseCalculationType: 'GreatCircle' }
+    }
+    const paths = (list: object[]): Record<string, unknown> => {
+      const res: Record<string, unknown> = {}
+      mapper
+        .toDelta(
+          {
+            timestamp: '2017-04-15T21:50:57.780Z',
+            prio: 6,
+            pgn: 129285,
+            src: 3,
+            dst: 255,
+            fields: { routeName: 'Route', list }
+          },
+          routeState
+        )
+        .updates[0].values.forEach((pv: any) => {
+          res[pv.path] = pv.value
+        })
+      return res
+    }
+    const at = 'navigation.courseGreatCircle'
+    const point = (wpName: string) => ({
+      wpName,
+      wpLatitude: 39.15,
+      wpLongitude: -76.18
+    })
+
+    for (const none of [
+      { wpName: 'N/A' },
+      { wpName: 'N/A', wpLatitude: null, wpLongitude: null }
+    ]) {
+      it(`writes no followingPoint for ${JSON.stringify(none)}`, function () {
+        const v = paths([point('A'), point('B'), none])
+        v.should.not.have.property(`${at}.followingPoint.name`)
+        v.should.not.have.property(`${at}.followingPoint.position`)
+        v[`${at}.nextPoint.name`]!.should.equal('B')
+      })
+
+      it(`writes no previousPoint position for ${JSON.stringify(none)}`, function () {
+        const v = paths([none, point('B')])
+        v.should.not.have.property(`${at}.previousPoint.position`)
+        v[`${at}.nextPoint.name`]!.should.equal('B')
+      })
+    }
+  })
 })

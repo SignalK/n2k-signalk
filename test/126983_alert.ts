@@ -10,7 +10,7 @@ const mapper = require('./testMapper')
 const state = {
   '40': {
     alerts: {
-      '20..23480': {
+      'Navigational.20..23480': {
         languageId: 'English (US)',
         locationTextDescription: 'Engine Room',
         textDescription: 'TEST: Temperature over 0'
@@ -52,11 +52,11 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, state)
     tree.should.have.nested.property(
-      'notifications.nmea.warning.navigational.20.23480.value'
+      'notifications.nmea.navigational.20.unset.23480.value'
     )
 
     expect(
-      tree.notifications.nmea.warning.navigational[20][23480].value
+      tree.notifications.nmea.navigational[20].unset[23480].value
     ).to.deep.include(value)
 
     const delta = mapper.testToDelta(msg)
@@ -73,11 +73,11 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, state)
     tree.should.have.nested.property(
-      'notifications.nmea.warning.navigational.20.23480.value'
+      'notifications.nmea.navigational.20.unset.23480.value'
     )
 
     expect(
-      tree.notifications.nmea.warning.navigational[20][23480].value
+      tree.notifications.nmea.navigational[20].unset[23480].value
     ).to.deep.include(value)
 
     const delta = mapper.testToDelta(msg)
@@ -93,11 +93,11 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, state)
     tree.should.have.nested.property(
-      'notifications.nmea.warning.navigational.20.23480.value'
+      'notifications.nmea.navigational.20.unset.23480.value'
     )
 
     expect(
-      tree.notifications.nmea.warning.navigational[20][23480].value
+      tree.notifications.nmea.navigational[20].unset[23480].value
     ).to.deep.include(value)
 
     const delta = mapper.testToDelta(msg)
@@ -109,7 +109,7 @@ describe('126983 Alert', function () {
     const nonStandardState = {
       '128': {
         alerts: {
-          [`4..${alertId}`]: {
+          [`6.4..${alertId}`]: {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: non-standard alertType'
@@ -145,21 +145,69 @@ describe('126983 Alert', function () {
       // Raw alertType from the device is preserved verbatim in the value
       // object, consistent with how every other field is exposed.
       v.value.alertType.should.equal(4)
-      // Non-string alertCategory degrades to an empty path segment rather
-      // than crashing on .toLowerCase().
-      v.path.should.contain('.caution..')
-      v.path.should.equal('notifications.nmea.caution..4.' + alertId)
+      // A category canboatjs can't name stays apart from the others, and the
+      // unset sub-system keeps the path's depth.
+      v.path.should.equal('notifications.nmea.6.4.unset.' + alertId)
     } finally {
       if (saved === undefined) delete process.env.NO_CANBOATJS
       else process.env.NO_CANBOATJS = saved
     }
   })
 
+  it('writes an alert without a category or system, as a Maretron CLMD16 sends (#283)', function () {
+    const trippedState = {
+      '4': {
+        alerts: {
+          '...4': {
+            languageId: 'English (US)',
+            locationTextDescription: '',
+            textDescription: 'Breaker tripped'
+          }
+        }
+      }
+    }
+    // From a breaker tripped alarm. Its NAMEs lost their low digits as JSON
+    // numbers, so they are left out here.
+    const delta = mapper.toDelta(
+      {
+        prio: 2,
+        src: 4,
+        dst: 255,
+        pgn: 126983,
+        timestamp: '2025-03-22T17:40:52.871Z',
+        fields: {
+          alertType: 'Alarm',
+          alertId: 4,
+          dataSourceInstance: 41,
+          dataSourceIndexSource: 4,
+          alertOccurrenceNumber: 1,
+          temporarySilenceStatus: 'No',
+          acknowledgeStatus: 'No',
+          escalationStatus: 'No',
+          temporarySilenceSupport: 'Yes',
+          acknowledgeSupport: 'Yes',
+          escalationSupport: 'No',
+          triggerCondition: 'Auto',
+          thresholdStatus: 'Normal',
+          alertPriority: 0,
+          alertState: 'Awaiting Acknowledge'
+        },
+        description: 'Alert'
+      },
+      trippedState
+    )
+    delta.updates[0].values.length.should.equal(1)
+    const v = delta.updates[0].values[0]
+    v.path.should.equal('notifications.nmea.unset.unset.unset.4')
+    v.value.state.should.equal('alarm')
+    v.value.message.should.equal('Breaker tripped')
+  })
+
   it('defaults location to empty string when no location text is present', function () {
     const noLocationState = {
       '40': {
         alerts: {
-          '20..23480': {
+          'Navigational.20..23480': {
             languageId: 'English (US)',
             locationTextDescription: '',
             textDescription: 'TEST: Temperature over 0'
@@ -173,7 +221,7 @@ describe('126983 Alert', function () {
     )
     const tree = mapper.toNested(msg, noLocationState)
 
-    tree.notifications.nmea.warning.navigational[20][23480].value.location.should.equal(
+    tree.notifications.nmea.navigational[20].unset[23480].value.location.should.equal(
       ''
     )
   })

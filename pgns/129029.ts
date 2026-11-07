@@ -1,5 +1,5 @@
 import { PGN_129029 } from '@canboat/ts-pgns'
-import { isoDateTime } from '../utils.js'
+import { isPosition, isoDateTime } from '../utils.js'
 
 const typeMap: Record<string, string> = {
   'GPS+GLONASS': 'Combined GPS/GLONASS',
@@ -25,10 +25,6 @@ const mapped =
     return map[value] || value
   }
 
-// A coordinate that is there and a number: null would become 0.
-const isCoordinate = (value: unknown) =>
-  value != null && Number.isFinite(Number(value))
-
 module.exports = [
   {
     node: 'navigation.position',
@@ -37,7 +33,7 @@ module.exports = [
       latitude: Number(n2k.fields.latitude)
     }),
     filter: (n2k: PGN_129029) =>
-      isCoordinate(n2k.fields.longitude) && isCoordinate(n2k.fields.latitude)
+      isPosition(n2k.fields.latitude, n2k.fields.longitude)
   },
   {
     node: 'navigation.datetime',
