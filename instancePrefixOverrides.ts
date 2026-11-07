@@ -9,6 +9,7 @@ import {
   isValidPrefix,
   leavesCollide,
   DEVICE_SCOPE,
+  engineLeaf,
   InstancePrefixContext,
   InstancePrefixResolver,
   MANUFACTURER_CODE_MASK,
@@ -259,7 +260,16 @@ function rulePrefix(table: RuleTable, context: InstancePrefixContext) {
   const rule = device.get(
     ruleKey(info, context.discriminator, context.instance)
   )
-  return rule !== undefined ? rule.prefix : undefined
+  if (rule !== undefined) {
+    return rule.prefix
+  }
+  // A sensor whose path follows its engine, such as exhaust gas temperature,
+  // moves with the same device's rule for that engine instance.
+  const leaf = engineLeaf(context.group, context.discriminator)
+  const engine = leaf !== undefined ? GROUPS.get('engine') : undefined
+  const engineRule =
+    engine && device.get(ruleKey(engine, undefined, context.instance))
+  return engineRule ? `${engineRule.prefix}.${leaf}` : undefined
 }
 
 /**

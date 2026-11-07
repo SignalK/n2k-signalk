@@ -77,7 +77,9 @@ export = {
   'Freezer Temperature': {
     path: 'environment.inside.freezer.temperature'
   },
+  // The instance is taken to number the engine, as the engine PGNs do: the
+  // standard does not say (#378).
   'Exhaust Gas Temperature': {
-    pathWithIndex: 'propulsion.<index>.exhaustTemperature'
+    pathWithIndex: 'propulsion.<engine>.exhaustTemperature'
   }
 }

@@ -144,6 +144,7 @@ type Prefix = (n2k: PrefixFrame) => string | null | undefined
 
 interface PathMapping {
   path?: string
+  /** A path with <index> for the instance, or <engine> for its engine. */
   pathWithIndex?: string
 }
 
@@ -174,6 +175,7 @@ const MAX_8BIT = 252
 const MAX_4BIT = 13
 const MAX_ENGINE_INSTANCE = 254
 const INDEX = '<index>'
+const ENGINE = '<engine>'
 const SPACES = / /g
 
 const temperatures: Record<string, PathMapping> = temperatureMappings
@@ -222,9 +224,21 @@ const tankPrefix: Prefix = (n2k) => {
     : 'tanks.' + type + '.' + n2k.fields.instance
 }
 
+// The engine an instance numbers, named as the engine PGNs name it: 0 is
+// port, 1 starboard (#378).
+function engineOf(index: unknown) {
+  const name =
+    typeof index === 'number'
+      ? lookupEnumerationName('ENGINE_INSTANCE', index)
+      : undefined
+  return skEngineId({ fields: { instance: name ?? index } })
+}
+
 function mappedPath(mapping: PathMapping, index: unknown) {
   return mapping.pathWithIndex
-    ? mapping.pathWithIndex.replace(INDEX, String(index))
+    ? mapping.pathWithIndex
+        .replace(INDEX, String(index))
+        .replace(ENGINE, String(engineOf(index)))
     : mapping.path
 }
 
@@ -247,6 +261,38 @@ const sourcePath =
       '_'
     )}.${index}.${leaf}`
   }
+
+const ENGINE_PATH = `propulsion.${ENGINE}.`
+const SOURCE_MAPPINGS: Partial<
+  Record<
+    InstanceGroupId,
+    { mappings: Record<string, PathMapping>; enumName: string }
+  >
+> = {
+  temperature: { mappings: temperatures, enumName: 'TEMPERATURE_SOURCE' }
+}
+
+/**
+ * The path under its engine's prefix that a sensor source writes when its
+ * path follows the engine (propulsion.<engine>.exhaustTemperature gives
+ * exhaustTemperature), or undefined for any other group or source. An engine
+ * rule of the same device then moves it with the engine (#378).
+ */
+export function engineLeaf(
+  group: InstanceGroupId,
+  discriminator: number | undefined
+): string | undefined {
+  const source = SOURCE_MAPPINGS[group]
+  if (!source || discriminator === undefined) {
+    return undefined
+  }
+  const name = lookupEnumerationName(source.enumName, discriminator)
+  const template =
+    name !== undefined ? source.mappings[name]?.pathWithIndex : undefined
+  return template?.startsWith(ENGINE_PATH)
+    ? template.slice(ENGINE_PATH.length)
+    : undefined
+}
 
 const temperaturePath = sourcePath(
   temperatures,
