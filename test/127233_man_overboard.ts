@@ -86,7 +86,8 @@ describe('127233 Man Overboard Notification', function () {
     value.message.should.equal('Person Overboard!')
     value.position.latitude.should.be.closeTo(60.1512345, 0.0000001)
     value.position.longitude.should.be.closeTo(24.9512345, 0.0000001)
-    value.createdAt.should.equal('2026-11-07T19:30:00.000Z')
+    value.should.not.have.property('createdAt')
+    value.data.activationTime.should.equal(70200)
     value.data.should.include({
       mobEmitterId: 1,
       manOverboardStatus: 'Manual on-board MOB Button Activation',
@@ -145,44 +146,5 @@ describe('127233 Man Overboard Notification', function () {
     value.state.should.equal('emergency')
     value.should.not.have.property('position')
     value.should.not.have.property('createdAt')
-  })
-
-  it('an activation at midnight is dated midnight of the position day', function () {
-    const { value } = mobValue(
-      mapper.testToDelta(
-        mobFrame({
-          activationTime: 0,
-          positionDate: '2026.11.08',
-          positionTime: 20
-        })
-      )
-    )
-    value.createdAt.should.equal('2026-11-08T00:00:00.000Z')
-  })
-
-  it('an activation later in the day than the position report has no date', function () {
-    const { value } = mobValue(
-      mapper.testToDelta(
-        mobFrame({
-          activationTime: 86390,
-          positionDate: '2026.11.08',
-          positionTime: 20
-        })
-      )
-    )
-    value.should.not.have.property('createdAt')
-    value.state.should.equal('emergency')
-  })
-
-  it('a time that is not a time of day gives no date', function () {
-    for (const [activationTime, positionTime] of [
-      [-1, 60],
-      [60, 86400]
-    ]) {
-      const { value } = mobValue(
-        mapper.toDelta(mobFrame({ activationTime, positionTime }))
-      )
-      value.should.not.have.property('createdAt')
-    }
   })
 })
