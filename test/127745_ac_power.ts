@@ -19,14 +19,14 @@ describe('127745 ac power/currrent', function () {
           Power: 120
         }
       },
-      { 33: { modelId: 'Multi', deviceInstance: 1 } }
+      { 33: { deviceInstance: 1 } }
     )
     tree.should.have.nested.property(
-      'electrical.ac.Multi1.phase.B.realPower.value',
+      'electrical.ac.1.phase.B.realPower.value',
       120
     )
     tree.should.have.nested.property(
-      'electrical.ac.Multi1.phase.B.current.value',
+      'electrical.ac.1.phase.B.current.value',
       11
     )
   })

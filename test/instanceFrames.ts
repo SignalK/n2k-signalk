@@ -83,7 +83,7 @@ function prefixOf(n2k: any) {
 
 // A mapper that knows the device at src, as after its address claim and
 // product information. AC connection paths are named after it.
-const DEVICE = { modelId: 'Multi Plus', deviceInstance: 2 }
+const DEVICE = { deviceInstance: 2 }
 
 function knownMapper(src: number, options?: N2kMapperOptions) {
   const mapper = new N2kMapper(options)

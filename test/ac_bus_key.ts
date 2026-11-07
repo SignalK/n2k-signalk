@@ -33,15 +33,6 @@ const claim = (
   }
 })
 
-const productInfo = (modelId?: string): any => ({
-  timestamp: TIMESTAMP,
-  prio: 6,
-  src: SRC,
-  dst: 255,
-  pgn: 126996,
-  fields: { nmea2000Version: 2100, productCode: 1, modelId }
-})
-
 const power = (connectionNumber?: number) =>
   decode(127744, SRC, { connectionNumber, acRmsCurrent: 3, power: 100 })
 
@@ -49,73 +40,73 @@ function paths(mapper: N2kMapper, n2k: any): string[] {
   return mapper.toDelta(n2k)!.updates[0].values.map((v: any) => v.path)
 }
 
-function knownMapper(modelId?: string) {
+function knownMapper(lower = 1, upper = 0) {
   const mapper = new N2kMapper()
-  mapper.toDelta(claim(1, 0))
-  mapper.toDelta(productInfo(modelId))
+  mapper.toDelta(claim(lower, upper))
   return mapper
 }
 
 describe('AC bus key', function () {
-  it('is the model and device instance, for connection 0', function () {
-    paths(knownMapper('Skylla-i 24/80'), power(0)).should.have.members([
-      'electrical.ac.Skyllai24801.phase.A.realPower',
-      'electrical.ac.Skyllai24801.phase.A.current'
+  it('is the device instance, for connection 0', function () {
+    paths(knownMapper(), power(0)).should.have.members([
+      'electrical.ac.1.phase.A.realPower',
+      'electrical.ac.1.phase.A.current'
     ])
   })
 
   it('adds any other connection', function () {
-    paths(knownMapper('Multi'), power(2)).should.have.members([
-      'electrical.ac.Multi1c2.phase.A.realPower',
-      'electrical.ac.Multi1c2.phase.A.current'
+    paths(knownMapper(), power(2)).should.have.members([
+      'electrical.ac.1c2.phase.A.realPower',
+      'electrical.ac.1c2.phase.A.current'
     ])
   })
 
   it('uses the upper and lower device instance', function () {
-    const mapper = new N2kMapper()
-    mapper.toDelta(claim(1, 1))
-    mapper.toDelta(productInfo('Multi'))
-    paths(mapper, power(0)).should.include(
-      'electrical.ac.Multi9.phase.A.current'
+    paths(knownMapper(1, 1), power(0)).should.include(
+      'electrical.ac.9.phase.A.current'
+    )
+  })
+
+  it('matches the bus of the same device instance in 65014', function () {
+    const mapper = knownMapper()
+    const bus = (n2k: any) => paths(mapper, n2k)[0].split('.phase.')[0]
+    bus(power(0)).should.equal(
+      bus(
+        decode(65014, SRC, {
+          lineLineAcRmsVoltage: 400,
+          lineNeutralAcRmsVoltage: 230,
+          acFrequency: 50,
+          acRmsCurrent: 3
+        })
+      )
     )
   })
 
   it('writes a valid tree', function () {
-    const delta: any = knownMapper('Skylla-i 24/80').toDelta(power(0))
-    delta.context = 'vessels.' + signalkSchema.fakeMmsiId
-    signalkSchema.deltaToFull(delta).vessels[signalkSchema.fakeMmsiId].should.be
-      .validSignalKVesselIgnoringIdentity
-  })
-
-  it('writes nothing before the product information', function () {
-    const mapper = new N2kMapper()
-    mapper.toDelta(claim(1, 0))
-    paths(mapper, power(0)).should.deep.equal([])
+    for (const connection of [0, 2]) {
+      const delta: any = knownMapper().toDelta(power(connection))
+      delta.context = 'vessels.' + signalkSchema.fakeMmsiId
+      signalkSchema.deltaToFull(delta).vessels[signalkSchema.fakeMmsiId].should
+        .be.validSignalKVesselIgnoringIdentity
+    }
   })
 
   it('writes nothing before the address claim', function () {
-    const mapper = new N2kMapper()
-    mapper.toDelta(productInfo('Multi'))
-    paths(mapper, power(0)).should.deep.equal([])
-  })
-
-  it('writes nothing for a model without a letter or digit', function () {
-    paths(knownMapper(' - '), power(0)).should.deep.equal([])
-    paths(knownMapper(undefined), power(0)).should.deep.equal([])
+    paths(new N2kMapper(), power(0)).should.deep.equal([])
   })
 
   it('writes nothing for a frame without a connection number', function () {
-    paths(knownMapper('Multi'), power()).should.deep.equal([])
+    paths(knownMapper(), power()).should.deep.equal([])
   })
 
-  it('forgets the model when another device takes the address', function () {
-    const mapper = knownMapper('Multi')
+  it('follows a new device at the address', function () {
+    const mapper = knownMapper()
     mapper.requestMetaData = () => Promise.resolve()
     mapper.toDelta({
-      ...claim(1, 0),
-      fields: { ...claim(1, 0).fields, uniqueNumber: 76224 }
+      ...claim(3, 0),
+      fields: { ...claim(3, 0).fields, uniqueNumber: 76224 }
     })
-    paths(mapper, power(0)).should.deep.equal([])
+    paths(mapper, power(0)).should.include('electrical.ac.3.phase.A.current')
   })
 
   it('still lets a resolver name the bus without the device', function () {
@@ -131,9 +122,8 @@ describe('AC bus key', function () {
   it('has a default prefix only for a known device', function () {
     expect(defaultPrefix('acConnection', undefined, 1, SRC)).to.equal(undefined)
     defaultPrefix('acConnection', undefined, 1, SRC, undefined, {
-      modelId: 'Multi',
       deviceInstance: 3
-    })!.should.equal('electrical.ac.Multi3c1')
+    })!.should.equal('electrical.ac.3c1')
   })
 
   describe('asking the device', function () {
@@ -163,25 +153,21 @@ describe('AC bus key', function () {
 
     it('asks once every 10 s while the device sends such frames', function () {
       const mapper = listening()
-      mapper.toDelta(claim(1, 0))
       mapper.toDelta(power(0))
-      requests.should.deep.equal([[SRC, 126996]])
+      requests.should.deep.equal([[SRC, 60928]])
       time += 9999
       mapper.toDelta(power(0))
       requests.should.have.lengthOf(1)
       time += 1
       mapper.toDelta(power(0))
       requests.should.deep.equal([
-        [SRC, 126996],
-        [SRC, 126996]
+        [SRC, 60928],
+        [SRC, 60928]
       ])
     })
 
     it('does not ask without such frames', function () {
       const mapper = listening()
-      mapper.toDelta(claim(1, 0))
-      time += 60000
-      mapper.toDelta(claim(1, 0))
       mapper.toDelta(
         decode(127751, SRC, { connectionNumber: 0, dcVoltage: 12 })
       )
@@ -190,30 +176,12 @@ describe('AC bus key', function () {
 
     it('stops asking when the device has answered', function () {
       const mapper = listening()
-      mapper.toDelta(claim(1, 0))
       mapper.toDelta(power(0))
-      mapper.toDelta(productInfo('Multi'))
+      mapper.toDelta(claim(1, 0))
+      requests.length = 0
       time += 10000
       paths(mapper, power(0)).should.not.be.empty
-      requests.should.have.lengthOf(1)
-    })
-
-    it('does not ask again after an answer that names nothing', function () {
-      const mapper = listening()
-      mapper.toDelta(claim(1, 0))
-      mapper.toDelta(productInfo(' - '))
-      time += 10000
-      mapper.toDelta(power(0))
       requests.should.deep.equal([])
-    })
-
-    it('also asks for a missing address claim', function () {
-      const mapper = listening()
-      mapper.toDelta(power(0))
-      requests.should.deep.equal([
-        [SRC, 60928],
-        [SRC, 126996]
-      ])
     })
 
     it('does not ask for a bus a resolver names', function () {
@@ -226,7 +194,6 @@ describe('AC bus key', function () {
 
     it('does not ask about a frame without a connection number', function () {
       const mapper = listening()
-      mapper.toDelta(claim(1, 0))
       mapper.toDelta(power())
       requests.should.deep.equal([])
     })
@@ -246,9 +213,8 @@ describe('AC bus key', function () {
       mapper.n2kListener = out as any
       mapper.n2kOutEvent = 'out'
       mapper.requestMetaData = N2kMapper.prototype.requestMetaData
-      mapper.toDelta(claim(1, 0))
       mapper.toDelta(power(0))
-      sent.should.deep.equal([{ pgn: 59904, dst: SRC, PGN: 126996 }])
+      sent.should.deep.equal([{ pgn: 59904, dst: SRC, PGN: 60928 }])
     })
   })
 })

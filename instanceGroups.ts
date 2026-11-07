@@ -140,10 +140,8 @@ interface PrefixFrame {
   fields: Fields
 }
 
-// The device a prefix may be named after, from its address claim and product
-// information.
+// The device a prefix may be named after, from its address claim.
 export interface PrefixDevice {
-  modelId?: string
   deviceInstance?: number
 }
 
@@ -187,7 +185,6 @@ const MAX_ENGINE_INSTANCE = 254
 const INDEX = '<index>'
 const ENGINE = '<engine>'
 const SPACES = / /g
-const NOT_ALPHANUMERIC = /[^A-Za-z0-9]/g
 
 const temperatures: Record<string, PathMapping> = temperatureMappings
 const humidities: Record<string, PathMapping> = humidityMappings
@@ -355,17 +352,17 @@ const byConnection = (
 const batteries = instanceUnder('electrical.batteries')
 const chargers = instanceUnder('electrical.chargers')
 const inverters = instanceUnder('electrical.inverters')
-// The schema has one alphanumeric key for an AC bus: the device's model and
-// instance, and the connection when it is not 0. Nothing is written until the
-// device has told the mapper both; a rule or resolver does not need them.
+// The schema has one alphanumeric key for an AC bus: the device instance, as
+// the 65xxx AC PGNs use, and the connection when it isn't 0.
+// Nothing is written until the device has claimed its address; a rule or
+// resolver does not need that.
 const acConnections: Prefix = (n2k, device) => {
   const { connectionNumber } = n2k.fields
-  const model = String(device?.modelId ?? '').replace(NOT_ALPHANUMERIC, '')
-  if (!model || device?.deviceInstance == null || connectionNumber == null) {
+  if (device?.deviceInstance == null || connectionNumber == null) {
     return null
   }
   const connection = connectionNumber === 0 ? '' : `c${connectionNumber}`
-  return `electrical.ac.${model}${device.deviceInstance}${connection}`
+  return `electrical.ac.${device.deviceInstance}${connection}`
 }
 
 // Switch banks (127501) are left out: PUT handlers and NMEA 2000 output key
@@ -649,7 +646,7 @@ export function defaultPrefix(
 }
 
 // Whether a frame writes a path does not depend on the device that sent it.
-const ANY_DEVICE: PrefixDevice = { modelId: 'any', deviceInstance: 0 }
+const ANY_DEVICE: PrefixDevice = { deviceInstance: 0 }
 
 /**
  * The group, discriminator code and instance code of a decoded frame, or

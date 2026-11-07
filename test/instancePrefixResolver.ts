@@ -581,8 +581,8 @@ describe('instancePrefixResolver', function () {
       })
       const { logged } = quietly(() => {
         paths(mapper, acPhaseB(1)).should.have.members([
-          'electrical.ac.MultiPlus2c1.phase.B.realPower',
-          'electrical.ac.MultiPlus2c1.phase.B.current'
+          'electrical.ac.2c1.phase.B.realPower',
+          'electrical.ac.2c1.phase.B.current'
         ])
       })
       logged.should.have.lengthOf(1)

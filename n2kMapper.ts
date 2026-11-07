@@ -102,8 +102,8 @@ function timestampOf(n2k: N2kReport): string {
 
 /** The per-source state toDelta keeps and passes to a mapping. */
 interface MapperSourceState extends SourceState, HoldsVesselState {
-  /** When the device was last asked for what names it. */
-  deviceMetaRequested?: number
+  /** When the device was last asked for its address claim. */
+  claimRequested?: number
   /** When each metadata PGN was last received, by PGN. */
   metaPGNsReceived?: Record<string, number>
 }
@@ -492,10 +492,6 @@ export class N2kMapper extends EventEmitter {
         this.state[srcKey].canName = canName
       }
 
-      if (n2k.pgn === 126996) {
-        this.state[srcKey].modelId = meta.modelId as string | undefined
-      }
-
       const srcState = this.state[srcKey]
       if (!srcState.metaPGNsReceived) {
         srcState.metaPGNsReceived = {}
@@ -524,7 +520,7 @@ export class N2kMapper extends EventEmitter {
         this.instancePrefixOverrides.resolver,
         this.instancePrefixOverrides.reportedFailures
       )
-      this.requestDeviceMeta(n2k)
+      this.requestAddressClaim(n2k)
       return delta
     }
   }
@@ -532,25 +528,20 @@ export class N2kMapper extends EventEmitter {
   // Asks a device that sends a frame whose path is named after it for what the
   // mapper is missing, as long as it keeps sending such frames. A device that
   // answered is not asked again, even when its answer names nothing.
-  private requestDeviceMeta(n2k: N2kReport) {
+  private requestAddressClaim(n2k: N2kReport) {
     const state = this.state[String(n2k.src)]
     if (!this.n2kListener || !state || !awaitsDevice(n2k, state)) {
       return
     }
     const now = Date.now()
     if (
-      state.deviceMetaRequested !== undefined &&
-      now - state.deviceMetaRequested < DEVICE_META_INTERVAL
+      state.claimRequested !== undefined &&
+      now - state.claimRequested < CLAIM_REQUEST_INTERVAL
     ) {
       return
     }
-    const needed = [60928, 126996].filter(
-      (pgn) => !state.metaPGNsReceived?.[pgn]
-    )
-    if (needed.length > 0) {
-      state.deviceMetaRequested = now
-      needed.forEach((pgn) => this.requestMetaData(n2k.src, pgn))
-    }
+    state.claimRequested = now
+    this.requestMetaData(n2k.src, 60928)
   }
 }
 
@@ -802,7 +793,7 @@ function toValuesArray(
   return []
 }
 
-const DEVICE_META_INTERVAL = 10000
+const CLAIM_REQUEST_INTERVAL = 10000
 
 const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
   // deviceInstance combines the two fields, which stay as decoded (#342)
