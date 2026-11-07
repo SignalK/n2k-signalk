@@ -38,11 +38,9 @@ export = {
     pathWithIndex: 'altimetersetting.<index>.pressure'
   },
   Oil: {
-    path: 'oil.default.pressure',
-    pathWithIndex: 'oil.<index>.pressure'
+    pathWithIndex: 'propulsion.<engine>.oilPressure'
   },
   Fuel: {
-    path: 'fuel.default.pressure',
-    pathWithIndex: 'fuel.<index>.pressure'
+    pathWithIndex: 'propulsion.<engine>.fuel.pressure'
   }
 }

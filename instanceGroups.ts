@@ -269,14 +269,15 @@ const SOURCE_MAPPINGS: Partial<
     { mappings: Record<string, PathMapping>; enumName: string }
   >
 > = {
-  temperature: { mappings: temperatures, enumName: 'TEMPERATURE_SOURCE' }
+  temperature: { mappings: temperatures, enumName: 'TEMPERATURE_SOURCE' },
+  pressure: { mappings: pressures, enumName: 'PRESSURE_SOURCE' }
 }
 
 /**
  * The path under its engine's prefix that a sensor source writes when its
  * path follows the engine (propulsion.<engine>.exhaustTemperature gives
  * exhaustTemperature), or undefined for any other group or source. An engine
- * rule of the same device then moves it with the engine (#378).
+ * rule of the same device then moves it with the engine (#378, #359).
  */
 export function engineLeaf(
   group: InstanceGroupId,

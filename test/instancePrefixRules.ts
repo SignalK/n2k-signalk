@@ -887,6 +887,32 @@ describe('instance prefix rules', function () {
     vesselTree(delta).should.be.validSignalKVesselIgnoringIdentity
   })
 
+  describe('oil and fuel pressure (#359)', function () {
+    const pressure = (source: string, instance: number) =>
+      decode(130314, SRC, { instance, source, pressure: 300000 })
+
+    it("moves with the same device's engine rule", function () {
+      const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
+      paths(mapper, pressure('Oil', 0)).should.deep.equal([
+        'propulsion.main.oilPressure'
+      ])
+      paths(mapper, pressure('Fuel', 0)).should.deep.equal([
+        'propulsion.main.fuel.pressure'
+      ])
+      // Instance 1 has no engine rule
+      paths(mapper, pressure('Oil', 1)).should.deep.equal([
+        'propulsion.starboard.oilPressure'
+      ])
+    })
+
+    it('leaves other pressure sources where they are', function () {
+      const mapper = claimedMapper({ instancePrefixRules: [mainEngine] })
+      paths(mapper, pressure('Water', 0)).should.deep.equal([
+        'water.0.pressure'
+      ])
+    })
+  })
+
   describe('exhaust gas temperature (#378)', function () {
     const exhaustGas = (instance: number) =>
       decode(130316, SRC, {

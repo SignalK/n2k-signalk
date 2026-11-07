@@ -96,6 +96,57 @@
       "hydraulic.2.pressure": 180911.6
     }
   },
+  "130314-oil_pressure_port": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID": 0,
+      "Instance": 0,
+      "Source": "Oil",
+      "Pressure": 180911.6
+    },
+    "testExpectConvertedValues": {
+      "propulsion.port.oilPressure": 180911.6
+    }
+  },
+  "130314-oil_pressure_engine2": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID": 0,
+      "Instance": 2,
+      "Source": "Oil",
+      "Pressure": 180911.6
+    },
+    "testExpectConvertedValues": {
+      "propulsion.2.oilPressure": 180911.6
+    }
+  },
+  "130314-fuel_pressure_starboard": {
+    "timestamp": "2015-01-15-16:15:21.862Z",
+    "prio": "5",
+    "src": "88",
+    "dst": "255",
+    "pgn": "130314",
+    "description": "Actual Pressure",
+    "fields": {
+      "SID": 0,
+      "Instance": 1,
+      "Source": "Fuel",
+      "Pressure": 180911.6
+    },
+    "testExpectConvertedValues": {
+      "propulsion.starboard.fuel.pressure": 180911.6
+    }
+  },
   "130314-userDefined129": {
     "notInSpec": true,
     "timestamp": "2015-01-15-16:15:21.862Z",
