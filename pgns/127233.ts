@@ -12,8 +12,6 @@
 import { PGN_127233 } from '@canboat/ts-pgns'
 import { isNumber, isPosition, isoDateTime, seconds } from '../utils.js'
 
-const DAY_MS = 24 * 3600 * 1000
-
 // A status this mapping does not know (a reserved value, or none) is taken as
 // a MOB: the frame exists to report one, and a missed MOB costs more than a
 // false one.
@@ -44,22 +42,23 @@ function emitterSegment(id: unknown) {
   return isNumber(id) ? String(id) : 'unset'
 }
 
-// The frame gives the activation as a time of day only. It is on the day of
-// the position report, or the day before when that time of day is later.
+// The frame gives the activation as a time of day only, and no date of its
+// own. It is dated with the position report only when it is not later in
+// that day: a later time could be the day before, or a position report older
+// than the activation, so it is left out.
 function activatedAt(n2k: PGN_127233) {
-  const position = isoDateTime(n2k.fields.positionDate, n2k.fields.positionTime)
-  const activated = isoDateTime(
-    n2k.fields.positionDate,
-    n2k.fields.activationTime
-  )
-  if (position === null || activated === null) {
+  const activationSeconds = seconds(n2k.fields.activationTime)
+  const positionSeconds = seconds(n2k.fields.positionTime)
+  if (
+    activationSeconds === null ||
+    positionSeconds === null ||
+    activationSeconds > positionSeconds
+  ) {
     return undefined
   }
-  const activationSeconds = seconds(n2k.fields.activationTime) as number
-  const positionSeconds = seconds(n2k.fields.positionTime) as number
-  return activationSeconds > positionSeconds
-    ? new Date(Date.parse(activated) - DAY_MS).toISOString()
-    : activated
+  return (
+    isoDateTime(n2k.fields.positionDate, n2k.fields.activationTime) ?? undefined
+  )
 }
 
 // Fields the frame leaves not available are left out.

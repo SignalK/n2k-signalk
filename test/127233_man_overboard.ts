@@ -14,6 +14,13 @@ const SIMRAD_MOB_ACTIVATED =
 const SIMRAD_MOB_CANCELLED =
   '2026-06-25T13:49:35.480Z,3,127233,30,255,35,ff,ff,ff,ff,ff,fb,c9,35,00,00,f9,ff,ff,ff,ff,00,00,f6,ff,6d,0b,04,86,4e,67,ff,98,ec,e8,00,87,12,8c,0e,ff'
 
+// The captured activation with another 3 bit MOB status (byte 6, f8 = 0).
+function withStatus(status: number) {
+  const parts = SIMRAD_MOB_ACTIVATED.split(',')
+  parts[11] = (0xf8 | status).toString(16)
+  return parts.join(',')
+}
+
 function decode(line: string): any {
   return new FromPgn({ useCamel: true }).parseString(line)
 }
@@ -114,11 +121,17 @@ describe('127233 Man Overboard Notification', function () {
   })
 
   it('test mode raises only a visual alert', function () {
-    const { value } = mobValue(
-      mapper.testToDelta(mobFrame({ manOverboardStatus: 'Test mode' }))
-    )
+    const { value } = mobValue(mapper.toDelta(decode(withStatus(2))))
+    value.data.manOverboardStatus.should.equal('Test mode')
     value.state.should.equal('alert')
     value.method.should.deep.equal(['visual'])
+  })
+
+  it('a reserved status is still an emergency', function () {
+    const { value } = mobValue(mapper.toDelta(decode(withStatus(4))))
+    value.data.manOverboardStatus.should.equal(4)
+    value.state.should.equal('emergency')
+    value.method.should.deep.equal(['visual', 'sound'])
   })
 
   it('a MOB without status, position or times is still an emergency', function () {
@@ -134,7 +147,20 @@ describe('127233 Man Overboard Notification', function () {
     value.should.not.have.property('createdAt')
   })
 
-  it('an activation shortly before midnight is dated the day before', function () {
+  it('an activation at midnight is dated midnight of the position day', function () {
+    const { value } = mobValue(
+      mapper.testToDelta(
+        mobFrame({
+          activationTime: 0,
+          positionDate: '2026.11.08',
+          positionTime: 20
+        })
+      )
+    )
+    value.createdAt.should.equal('2026-11-08T00:00:00.000Z')
+  })
+
+  it('an activation later in the day than the position report has no date', function () {
     const { value } = mobValue(
       mapper.testToDelta(
         mobFrame({
@@ -144,6 +170,7 @@ describe('127233 Man Overboard Notification', function () {
         })
       )
     )
-    value.createdAt.should.equal('2026-11-07T23:59:50.000Z')
+    value.should.not.have.property('createdAt')
+    value.state.should.equal('emergency')
   })
 })
