@@ -4,13 +4,15 @@
  *
  * Raised as notifications.mob.<emitter id> on the vessel itself, in the shape
  * the server's Notifications API gives a MOB: state emergency, the position
- * at the top of the value, createdAt the time of activation. The MMSI of the
- * vessel of origin is kept in data, not used as the context: the frame is on
- * this boat's bus, and a MOB of another vessel reaches it over AIS.
+ * at the top of the value. There is no createdAt: the frame gives the
+ * activation as a time of day with no date of its own, so it is passed on in
+ * data as the frame has it. The MMSI of the vessel of origin is kept in data,
+ * not used as the context: the frame is on this boat's bus, and a MOB of
+ * another vessel reaches it over AIS.
  */
 
 import { PGN_127233 } from '@canboat/ts-pgns'
-import { isNumber, isPosition, isoDateTime, seconds } from '../utils.js'
+import { isNumber, isPosition } from '../utils.js'
 
 // A status this mapping does not know (a reserved value, or none) is taken as
 // a MOB: the frame exists to report one, and a missed MOB costs more than a
@@ -42,31 +44,6 @@ function emitterSegment(id: unknown) {
   return isNumber(id) ? String(id) : 'unset'
 }
 
-const DAY_SECONDS = 24 * 3600
-
-function isTimeOfDay(s: number | null): s is number {
-  return s !== null && s >= 0 && s < DAY_SECONDS
-}
-
-// The frame gives the activation as a time of day only, and no date of its
-// own. It is dated with the position report only when it is not later in
-// that day: a later time could be the day before, or a position report older
-// than the activation, so it is left out.
-function activatedAt(n2k: PGN_127233) {
-  const activationSeconds = seconds(n2k.fields.activationTime)
-  const positionSeconds = seconds(n2k.fields.positionTime)
-  if (
-    !isTimeOfDay(activationSeconds) ||
-    !isTimeOfDay(positionSeconds) ||
-    activationSeconds > positionSeconds
-  ) {
-    return undefined
-  }
-  return (
-    isoDateTime(n2k.fields.positionDate, n2k.fields.activationTime) ?? undefined
-  )
-}
-
 // Fields the frame leaves not available are left out.
 function available(fields: Record<string, unknown>) {
   return Object.fromEntries(
@@ -88,9 +65,9 @@ module.exports = [
         position: isPosition(latitude, longitude)
           ? { latitude: Number(latitude), longitude: Number(longitude) }
           : undefined,
-        createdAt: activatedAt(n2k),
         data: available({
           mobEmitterId: n2k.fields.mobEmitterId,
+          activationTime: n2k.fields.activationTime,
           manOverboardStatus: n2k.fields.manOverboardStatus,
           positionSource: n2k.fields.positionSource,
           cogReference: n2k.fields.cogReference,
