@@ -173,4 +173,16 @@ describe('127233 Man Overboard Notification', function () {
     value.should.not.have.property('createdAt')
     value.state.should.equal('emergency')
   })
+
+  it('a time that is not a time of day gives no date', function () {
+    for (const [activationTime, positionTime] of [
+      [-1, 60],
+      [60, 86400]
+    ]) {
+      const { value } = mobValue(
+        mapper.toDelta(mobFrame({ activationTime, positionTime }))
+      )
+      value.should.not.have.property('createdAt')
+    }
+  })
 })
