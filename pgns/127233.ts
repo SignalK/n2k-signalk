@@ -42,11 +42,13 @@ const MESSAGES: Record<string, string> = {
   normal: 'Person Overboard no longer active'
 }
 
-// The ID as a number, so that one emitter has one path however it is given.
+// The ID as a whole number, so that one emitter has one path however it is
+// given and the path keeps its depth.
 // Every MOB without an ID shares one path, so that a cancel from any display
 // clears it.
 function emitterSegment(id: unknown) {
-  return isNumber(id) ? String(Number(id)) : 'unset'
+  const n = isNumber(id) ? Number(id) : NaN
+  return Number.isInteger(n) && n >= 0 ? String(n) : 'unset'
 }
 
 // Fields the frame leaves not available are left out.

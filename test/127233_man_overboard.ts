@@ -170,13 +170,25 @@ describe('127233 Man Overboard Notification', function () {
   })
 
   it('an emitter ID given as a string has the path of its number', function () {
-    mobValue(
+    const { path, value } = mobValue(
       mapper.toDelta(mobFrame({ mobEmitterId: '00123' }))
-    ).path.should.equal('notifications.mob.123')
+    )
+    path.should.equal('notifications.mob.123')
+    value.state.should.equal('emergency')
+  })
+
+  it('an emitter ID that is no whole number gives the shared path', function () {
+    for (const mobEmitterId of [1.2, -1]) {
+      mobValue(mapper.toDelta(mobFrame({ mobEmitterId }))).path.should.equal(
+        'notifications.mob.unset'
+      )
+    }
   })
 
   it('a reading that is no number is left out of data', function () {
-    const { value } = mobValue(mapper.toDelta(mobFrame({ sog: NaN })))
-    value.data.should.not.have.property('sog')
+    for (const sog of [NaN, Infinity, -Infinity]) {
+      const { value } = mobValue(mapper.toDelta(mobFrame({ sog })))
+      value.data.should.not.have.property('sog')
+    }
   })
 })
