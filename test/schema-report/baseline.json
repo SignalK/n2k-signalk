@@ -1,0 +1,391 @@
+[
+  {
+    "pgn": 65005,
+    "path": "/vessels/*/electrical/ac/N/total",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65012,
+    "path": "/vessels/*/electrical/ac/N/phase/A/powerFactorLagging",
+    "message": "Invalid type: object (expected string)"
+  },
+  {
+    "pgn": 65018,
+    "path": "/vessels/*/electrical/generators",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65025,
+    "path": "/vessels/*/electrical/generators",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65026,
+    "path": "/vessels/*/electrical/generators",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65027,
+    "path": "/vessels/*/electrical/generators",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65288,
+    "path": "/vessels/*/notifications/autopilot/PilotCUDisconnected/value/timestamp",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65309,
+    "path": "/vessels/*/sensors/wind/batteryChargeStatus",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65309,
+    "path": "/vessels/*/sensors/wind/batteryStatus",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65309,
+    "path": "/vessels/*/sensors/wind/status",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 65312,
+    "path": "/vessels/*/sensors/wind/signalStrength",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127497,
+    "path": "/vessels/*/propulsion/port/trip",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127501,
+    "path": "/vessels/*/electrical/switches",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127503,
+    "path": "/vessels/*/electrical/ac/N/phase/A/acceptability",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127503,
+    "path": "/vessels/*/electrical/ac/N/phase/A/breakerSize",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127503,
+    "path": "/vessels/*/electrical/ac/N/phase/B/acceptability",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127503,
+    "path": "/vessels/*/electrical/ac/N/phase/C/acceptability",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127503,
+    "path": "/vessels/*/electrical/ac/N/phase/C/breakerSize",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127504,
+    "path": "/vessels/*/electrical/inverters/N/ac/breakerSize",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127504,
+    "path": "/vessels/*/electrical/inverters/N/ac/phase",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127504,
+    "path": "/vessels/*/electrical/inverters/N/ac/waveform",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127506,
+    "path": "/vessels/*/electrical/batteries/N/capacity/timeRemaining/value",
+    "message": "Invalid type: null (expected number)"
+  },
+  {
+    "pgn": 127507,
+    "path": "/vessels/*/electrical/chargers/N/chargeMode",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127507,
+    "path": "/vessels/*/electrical/chargers/N/enabled",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127507,
+    "path": "/vessels/*/electrical/chargers/N/equalizationPending",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127507,
+    "path": "/vessels/*/electrical/chargers/N/equalizationTimeRemaining",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127507,
+    "path": "/vessels/*/electrical/chargers/N/operatingState",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127509,
+    "path": "/vessels/*/electrical/inverters/N/enabled",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 127509,
+    "path": "/vessels/*/electrical/inverters/N/operatingState",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 128259,
+    "path": "/vessels/*/navigation/speedThroughWaterReferenceType",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129029,
+    "path": "/vessels/*/navigation/gnss/type/value",
+    "message": "No enum match for: \"GPS+SBAS/WAAS+GLONASS\""
+  },
+  {
+    "pgn": 129038,
+    "path": "/vessels/*/mmsi",
+    "message": "String does not match pattern: ^[2-7][0-9]{8}$"
+  },
+  {
+    "pgn": 129038,
+    "path": "/vessels/*/navigation/specialManeuver",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129041,
+    "path": "/atons",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129284,
+    "path": "/vessels/*/navigation/courseGreatCircle/nextPoint",
+    "message": "Data does not match any schemas from \"anyOf\""
+  },
+  {
+    "pgn": 129284,
+    "path": "/vessels/*/navigation/courseGreatCircle/nextPoint/position",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129284,
+    "path": "/vessels/*/navigation/courseRhumbline/nextPoint",
+    "message": "Data does not match any schemas from \"anyOf\""
+  },
+  {
+    "pgn": 129284,
+    "path": "/vessels/*/navigation/courseRhumbline/nextPoint/position",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseGreatCircle/activeRoute/name",
+    "message": "Unknown property (not in schema)",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseGreatCircle/nextPoint/name",
+    "message": "Unknown property (not in schema)",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseGreatCircle/previousPoint",
+    "message": "Missing required property: $source",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseGreatCircle/previousPoint",
+    "message": "Missing required property: timestamp",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseGreatCircle/previousPoint/name",
+    "message": "Unknown property (not in schema)",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseRhumbline/activeRoute/name",
+    "message": "Unknown property (not in schema)",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseRhumbline/nextPoint/name",
+    "message": "Unknown property (not in schema)",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseRhumbline/previousPoint",
+    "message": "Missing required property: $source",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseRhumbline/previousPoint",
+    "message": "Missing required property: timestamp",
+    "issue": 312
+  },
+  {
+    "pgn": 129285,
+    "path": "/vessels/*/navigation/courseRhumbline/previousPoint/name",
+    "message": "Unknown property (not in schema)",
+    "issue": 312
+  },
+  {
+    "pgn": 129540,
+    "path": "/vessels/*/navigation/gnss/satellitesInView",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129793,
+    "path": "/shore",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129794,
+    "path": "/vessels/*/mmsi",
+    "message": "String does not match pattern: ^[2-7][0-9]{8}$"
+  },
+  {
+    "pgn": 129794,
+    "path": "/vessels/*/registrations/imo",
+    "message": "String is too long (13 chars), maximum 11"
+  },
+  {
+    "pgn": 129794,
+    "path": "/vessels/*/registrations/imo",
+    "message": "String is too short (10 chars), minimum 11"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/mmsi",
+    "message": "String does not match pattern: ^[2-7][0-9]{8}$"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/mob/meta/properties/method/items",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/mob/meta/properties/state/default",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/mob/meta/properties/state/enum",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/mob/value",
+    "message": "Missing required property: method"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/mob/value",
+    "message": "Missing required property: state"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/piracy/meta/properties/method/items",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/piracy/meta/properties/state/default",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/piracy/meta/properties/state/enum",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/piracy/value",
+    "message": "Missing required property: method"
+  },
+  {
+    "pgn": 129808,
+    "path": "/vessels/*/notifications/piracy/value",
+    "message": "Missing required property: state"
+  },
+  {
+    "pgn": 130312,
+    "path": "/vessels/*/generic",
+    "message": "Unknown property (not in schema)",
+    "issue": 359
+  },
+  {
+    "pgn": 130314,
+    "path": "/vessels/*/generic",
+    "message": "Unknown property (not in schema)",
+    "issue": 359
+  },
+  {
+    "pgn": 130314,
+    "path": "/vessels/*/hydraulic",
+    "message": "Unknown property (not in schema)",
+    "issue": 359
+  },
+  {
+    "pgn": 130820,
+    "path": "/vessels/*/entertainment",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 130845,
+    "path": "/vessels/*/electrical/displays",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 130850,
+    "path": "/vessels/*/notifications/engineLowOilPressure/value/timestamp",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 130850,
+    "path": "/vessels/*/notifications/engineWaterFlow/value/timestamp",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 130850,
+    "path": "/vessels/*/notifications/headingMissing/value/timestamp",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 130850,
+    "path": "/vessels/*/notifications/noGpsFix/value/timestamp",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 130850,
+    "path": "/vessels/*/notifications/xte/value/timestamp",
+    "message": "Unknown property (not in schema)"
+  },
+  {
+    "pgn": 262400,
+    "path": "/vessels/*/network",
+    "message": "Unknown property (not in schema)",
+    "issue": 386
+  }
+]
