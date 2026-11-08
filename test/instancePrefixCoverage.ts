@@ -2,7 +2,7 @@ import chai from 'chai'
 chai.should()
 
 import { N2kMapper, instanceGroups } from '../dist/n2kMapper'
-import { decode, prefixOf, FRAMES } from './instanceFrames'
+import { decode, prefixOf, knownMapper, FRAMES } from './instanceFrames'
 
 const SENTINEL = 'x.y'
 
@@ -42,7 +42,7 @@ describe('instancePrefixResolver override coverage', function () {
       const to = group.singleLeaf
         ? SENTINEL + from.slice(from.lastIndexOf('.'))
         : SENTINEL
-      const expected = values(new N2kMapper(), n2k).map((v) => {
+      const expected = values(knownMapper(34), n2k).map((v) => {
         const path = rebased(v.path, from, to)
         chai.expect(path, `${v.path} under ${from}`).to.not.equal(undefined)
         return { path, value: withoutMessage(v.value) }

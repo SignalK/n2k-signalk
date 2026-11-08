@@ -9,7 +9,13 @@ import {
   defaultPrefix
 } from '../dist/n2kMapper'
 import { instancePrefix } from '../dist/instanceGroups'
-import { decode, decodeWithInstance, prefixOf, FRAMES } from './instanceFrames'
+import {
+  decode,
+  decodeWithInstance,
+  knownMapper,
+  prefixOf,
+  FRAMES
+} from './instanceFrames'
 
 function mappedPaths(n2k: any) {
   return new N2kMapper().toDelta(n2k)!.updates[0].values.map((v: any) => v.path)
@@ -33,7 +39,9 @@ describe('instance groups', function () {
       const n2k = decode(pgn, 34, fields)
       const group = instanceGroups.find((g) => g.pgns.includes(pgn))!
       const prefix = prefixOf(n2k)!
-      const paths = mappedPaths(n2k)
+      const paths = knownMapper(34)
+        .toDelta(n2k)!
+        .updates[0].values.map((v: any) => v.path)
       paths.should.not.be.empty
       paths.forEach((path) => {
         if (group.singleLeaf) {

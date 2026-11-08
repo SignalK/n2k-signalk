@@ -140,7 +140,15 @@ interface PrefixFrame {
   fields: Fields
 }
 
-type Prefix = (n2k: PrefixFrame) => string | null | undefined
+// The device a prefix may be named after, from its address claim.
+export interface PrefixDevice {
+  deviceInstance?: number
+}
+
+type Prefix = (
+  n2k: PrefixFrame,
+  device?: PrefixDevice
+) => string | null | undefined
 
 interface PathMapping {
   path?: string
@@ -344,7 +352,18 @@ const byConnection = (
 const batteries = instanceUnder('electrical.batteries')
 const chargers = instanceUnder('electrical.chargers')
 const inverters = instanceUnder('electrical.inverters')
-const acConnections = connectionUnder('electrical.ac')
+// The schema has one alphanumeric key for an AC bus: the device instance, as
+// the 65xxx AC PGNs use, and the connection when it isn't 0.
+// Nothing is written until the device has claimed its address; a rule or
+// resolver does not need that.
+const acConnections: Prefix = (n2k, device) => {
+  const { connectionNumber } = n2k.fields
+  if (device?.deviceInstance == null || connectionNumber == null) {
+    return null
+  }
+  const connection = connectionNumber === 0 ? '' : `c${connectionNumber}`
+  return `electrical.ac.${device.deviceInstance}${connection}`
+}
 
 // Switch banks (127501) are left out: PUT handlers and NMEA 2000 output key
 // on their paths. The rudder (127245) is left out: the specification has one
@@ -493,7 +512,13 @@ const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
   humidity: [''],
   pressure: [''],
   acConnection: acLines(
-    ['power', 'current', 'lineNeutralVoltage', 'lineLineVoltage', 'frequency'],
+    [
+      'realPower',
+      'current',
+      'lineNeutralVoltage',
+      'lineLineVoltage',
+      'frequency'
+    ],
     'phase.'
   ),
   converter: [
@@ -577,14 +602,16 @@ function fieldCode(
  * Temperature is the one group whose PGNs spell a prefix differently: 130312
  * replaces spaces in an unmapped source name and writes an absent instance as
  * 0, 130316 does neither. pgn picks the spelling and defaults to the group's
- * first PGN; iterate the group's pgns to get every spelling.
+ * first PGN; iterate the group's pgns to get every spelling. The AC connection
+ * group's prefix is named after the device, and is undefined without one.
  */
 export function defaultPrefix(
   groupId: InstanceGroupId,
   discriminator: number | undefined,
   instance: number,
   src: number | string,
-  pgn?: number | string
+  pgn?: number | string,
+  device?: PrefixDevice
 ): string | undefined {
   const spec = SPECS_BY_ID.get(groupId)
   if (
@@ -614,9 +641,12 @@ export function defaultPrefix(
       spec.discriminator.absent
     )
   }
-  const path = prefix({ src, fields })
+  const path = prefix({ src, fields }, device)
   return path == null ? undefined : path
 }
+
+// Whether a frame writes a path does not depend on the device that sent it.
+const ANY_DEVICE: PrefixDevice = { deviceInstance: 0 }
 
 /**
  * The group, discriminator code and instance code of a decoded frame, or
@@ -651,7 +681,7 @@ export function classifyInstance(
       return undefined
     }
   }
-  if (prefix(frame) == null) {
+  if (prefix(frame, ANY_DEVICE) == null) {
     return undefined
   }
   return { group: spec.id, discriminator, instance }
@@ -691,7 +721,7 @@ interface Device {
 }
 
 /** The per-source state toDelta passes to a mapping. */
-export interface SourceState {
+export interface SourceState extends PrefixDevice {
   canName?: string
   [RESOLVER]?: ResolverBinding
   [DEVICE]?: Device
@@ -708,6 +738,22 @@ export function resolverBinding(
 /** True when the PGN writes paths under an instance prefix. */
 export function hasInstanceGroup(pgn: number | string): boolean {
   return PGN_INDEX.has(Number(pgn))
+}
+
+/**
+ * True when the frame's default prefix is named after its device and the
+ * mapper does not know enough of the device to write it, and no rule or
+ * resolver names it instead. Call it after toDelta, which binds the resolver.
+ */
+export function awaitsDevice(
+  n2k: N2kFrame,
+  state: SourceState | undefined
+): boolean {
+  return (
+    PGN_INDEX.get(Number(n2k.pgn))?.prefix === acConnections &&
+    classifyInstance(n2k) !== undefined &&
+    instancePrefix(n2k, state) == null
+  )
 }
 
 // The low 32 bits of the NAME: the unique number in bits 0-20, then the
@@ -852,7 +898,9 @@ export function instancePrefix(
     throw new Error(`PGN ${n2k.pgn} has no instance group`)
   }
   const resolved = resolvedPrefix(n2k, state)
-  return resolved !== undefined ? resolved : entry.prefix(prefixFrame(n2k))
+  return resolved !== undefined
+    ? resolved
+    : entry.prefix(prefixFrame(n2k), state)
 }
 
 /**

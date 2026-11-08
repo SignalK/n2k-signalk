@@ -1,6 +1,11 @@
 import { expect } from 'chai'
 import { FromPgn, pgnToActisenseSerialFormat } from '@canboat/canboatjs'
-import { classifyInstance, defaultPrefix } from '../dist/n2kMapper'
+import {
+  classifyInstance,
+  defaultPrefix,
+  N2kMapper,
+  N2kMapperOptions
+} from '../dist/n2kMapper'
 
 export type Fields = Record<string, unknown>
 // A PGN number and its fields. (An interface: the formatter's parser
@@ -71,8 +76,19 @@ function prefixOf(n2k: any) {
     c!.discriminator,
     c!.instance,
     n2k.src,
-    n2k.pgn
+    n2k.pgn,
+    DEVICE
   )
+}
+
+// A mapper that knows the device at src, as after its address claim and
+// product information. AC connection paths are named after it.
+const DEVICE = { deviceInstance: 2 }
+
+function knownMapper(src: number, options?: N2kMapperOptions) {
+  const mapper = new N2kMapper(options)
+  mapper.state[src] = { ...DEVICE }
+  return mapper
 }
 
 // A representative frame of every PGN in the instance group table.
@@ -152,4 +168,4 @@ const FRAMES: Frame[] = [
   [130316, { instance: 4, source: 'Shaft Seal Temperature', temperature: 330 }]
 ]
 
-export { decode, decodeWithInstance, prefixOf, FRAMES }
+export { decode, decodeWithInstance, prefixOf, knownMapper, DEVICE, FRAMES }

@@ -8,6 +8,7 @@ import {
   getIndirectEnumerationValue
 } from '@canboat/ts-pgns'
 import {
+  awaitsDevice,
   instanceGroups,
   classifyInstance,
   defaultPrefix,
@@ -101,7 +102,8 @@ function timestampOf(n2k: N2kReport): string {
 
 /** The per-source state toDelta keeps and passes to a mapping. */
 interface MapperSourceState extends SourceState, HoldsVesselState {
-  deviceInstance?: number
+  /** When the device was last asked for its address claim. */
+  claimRequested?: number
   /** When each metadata PGN was last received, by PGN. */
   metaPGNsReceived?: Record<string, number>
 }
@@ -511,14 +513,35 @@ export class N2kMapper extends EventEmitter {
           })
         }
       }
-      return toDelta(
+      const delta = toDelta(
         n2k,
         this.state,
         this.customPgns,
         this.instancePrefixOverrides.resolver,
         this.instancePrefixOverrides.reportedFailures
       )
+      this.requestAddressClaim(n2k)
+      return delta
     }
+  }
+
+  // Asks a device that sends a frame whose path is named after it for what the
+  // mapper is missing, as long as it keeps sending such frames. A device that
+  // answered is not asked again, even when its answer names nothing.
+  private requestAddressClaim(n2k: N2kReport) {
+    const state = this.state[String(n2k.src)]
+    if (!this.n2kListener || !state || !awaitsDevice(n2k, state)) {
+      return
+    }
+    const now = Date.now()
+    if (
+      state.claimRequested !== undefined &&
+      now - state.claimRequested < CLAIM_REQUEST_INTERVAL
+    ) {
+      return
+    }
+    state.claimRequested = now
+    this.requestMetaData(n2k.src, 60928)
   }
 }
 
@@ -769,6 +792,8 @@ function toValuesArray(
   }
   return []
 }
+
+const CLAIM_REQUEST_INTERVAL = 10000
 
 const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
   // deviceInstance combines the two fields, which stay as decoded (#342)
