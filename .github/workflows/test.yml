@@ -5,6 +5,11 @@ on:
     branches: ['master']
   pull_request:
     branches: ['master']
+  # The schema is a ^ range and there is no lockfile, so this run tests
+  # against each new schema release even when nothing else changes.
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
 
 jobs:
   build:
