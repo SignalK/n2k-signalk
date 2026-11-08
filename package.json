@@ -13,6 +13,7 @@
     "format": "npm run prettier && npm run lint",
     "ci-format": "prettier --check . && eslint",
     "build": "tsc -b --pretty false",
+    "schema-report": "ts-node test/schema-report/schemaReport.ts",
     "watch": "tsc --watch --pretty false",
     "prepare": "npm run build",
     "prepublishOnly": "npm run build"

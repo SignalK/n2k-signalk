@@ -31,3 +31,23 @@ jobs:
       - run: npm test
         env:
           CI: true
+
+  # Runs canboat's sample logs through the mapper and validates the output
+  # against the schema; see test/schema-report/schemaReport.ts.
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: canboat/canboat
+          # A fixed commit, so new samples don't change the report unasked.
+          ref: fd96b4893a6391e2e0fd361e428116440522f836
+          path: canboat
+          sparse-checkout: samples
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+      - run: npm install
+      - run: npm run build
+      - run: npm run schema-report -- canboat/samples
