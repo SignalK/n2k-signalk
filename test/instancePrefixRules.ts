@@ -825,6 +825,32 @@ describe('instance prefix rules', function () {
     ).should.include('electrical.inverters.multi.ac.lineNeutralVoltage')
   })
 
+  it('writes a valid tree for an AC voltage reading under one bus key', function () {
+    const mapper = claimedMapper({
+      instancePrefixRules: [
+        {
+          ...DEVICE,
+          group: 'acConnection',
+          instance: 0,
+          prefix: 'electrical.ac.shore'
+        }
+      ]
+    })
+    const frame = decode(127747, SRC, {
+      connectionNumber: 0,
+      acVoltageLineToNeutral: 230,
+      acVoltageLineToLine: 400,
+      frequency: 50
+    })
+    values(mapper, frame).should.deep.equal([
+      { path: 'electrical.ac.shore.phase.A.lineNeutralVoltage', value: 230 },
+      { path: 'electrical.ac.shore.phase.A.lineLineVoltage', value: 400 },
+      { path: 'electrical.ac.shore.phase.A.frequency', value: 50 }
+    ])
+    vesselTree(mapper.toDelta(frame)).should.be
+      .validSignalKVesselIgnoringIdentity
+  })
+
   it('matches the highest instance; a reserved one keeps its default', function () {
     const house: InstancePrefixRule = {
       ...DEVICE,

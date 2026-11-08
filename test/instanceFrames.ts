@@ -127,6 +127,9 @@ const FRAMES: Frame[] = [
   [127744, { connectionNumber: 0, acRmsCurrent: 3, power: 100 }],
   [127745, { connectionNumber: 1, acRmsCurrent: 3, power: 100 }],
   [127746, { connectionNumber: 2, acRmsCurrent: 3, power: 100 }],
+  [127747, { connectionNumber: 0, acVoltageLineToNeutral: 230, frequency: 50 }],
+  [127748, { connectionNumber: 1, acVoltageLineToNeutral: 230, frequency: 50 }],
+  [127749, { connectionNumber: 2, acVoltageLineToNeutral: 230, frequency: 50 }],
   [127750, { connectionNumber: 1, operatingState: 'Invert' }],
   [127751, { connectionNumber: 0, dcVoltage: 13.2, dcCurrent: 4 }],
   [

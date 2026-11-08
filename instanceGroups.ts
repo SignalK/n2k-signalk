@@ -398,7 +398,10 @@ const GROUP_SPECS: GroupSpec[] = [
   byConnection('acConnection', {
     127744: acConnections,
     127745: acConnections,
-    127746: acConnections
+    127746: acConnections,
+    127747: acConnections,
+    127748: acConnections,
+    127749: acConnections
   }),
   byConnection('converter', {
     127750: connectionUnder('electrical.converter')
@@ -489,7 +492,10 @@ const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
   temperature: [''],
   humidity: [''],
   pressure: [''],
-  acConnection: acLines(['power', 'current'], 'phase.'),
+  acConnection: acLines(
+    ['power', 'current', 'lineNeutralVoltage', 'lineLineVoltage', 'frequency'],
+    'phase.'
+  ),
   converter: [
     'operatingState',
     'temperatureState',
