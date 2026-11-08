@@ -179,11 +179,21 @@ describe('127233 Man Overboard Notification', function () {
   })
 
   it('an emitter ID that is no whole number gives the shared path', function () {
-    for (const mobEmitterId of [1.2, -1]) {
-      mobValue(mapper.toDelta(mobFrame({ mobEmitterId }))).path.should.equal(
-        'notifications.mob.unset'
+    for (const mobEmitterId of [1.2, -1, '12.0000000000000001', '-1', '1e3']) {
+      const { path, value } = mobValue(
+        mapper.toDelta(mobFrame({ mobEmitterId }))
       )
+      path.should.equal('notifications.mob.unset')
+      value.state.should.equal('emergency')
     }
+  })
+
+  it('an activation time that is not available is left out of data', function () {
+    const { value } = mobValue(
+      mapper.toDelta(mobFrame({ activationTime: null }))
+    )
+    value.data.should.not.have.property('activationTime')
+    value.should.not.have.property('createdAt')
   })
 
   it('a reading that is no number is left out of data', function () {

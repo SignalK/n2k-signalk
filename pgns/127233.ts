@@ -12,7 +12,7 @@
  */
 
 import { PGN_127233 } from '@canboat/ts-pgns'
-import { isNumber, isPosition } from '../utils.js'
+import { isPosition } from '../utils.js'
 
 // A status this mapping does not know (a reserved value, or none) is taken as
 // a MOB: the frame exists to report one, and a missed MOB costs more than a
@@ -47,8 +47,11 @@ const MESSAGES: Record<string, string> = {
 // Every MOB without an ID shares one path, so that a cancel from any display
 // clears it.
 function emitterSegment(id: unknown) {
-  const n = isNumber(id) ? Number(id) : NaN
-  return Number.isInteger(n) && n >= 0 ? String(n) : 'unset'
+  const n =
+    typeof id === 'number' || (typeof id === 'string' && /^\d+$/.test(id))
+      ? Number(id)
+      : NaN
+  return Number.isSafeInteger(n) && n >= 0 ? String(n) : 'unset'
 }
 
 // Fields the frame leaves not available are left out.
