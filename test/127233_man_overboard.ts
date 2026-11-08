@@ -149,6 +149,7 @@ describe('127233 Man Overboard Notification', function () {
     value.method.should.deep.equal(['visual', 'sound'])
     value.should.not.have.property('position')
     value.should.not.have.property('createdAt')
+    value.data.should.not.have.property('activationTime')
   })
 
   it('an activation at midnight is passed on as 0, with no date', function () {
