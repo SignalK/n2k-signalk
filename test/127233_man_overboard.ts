@@ -188,11 +188,28 @@ describe('127233 Man Overboard Notification', function () {
     }
   })
 
+  it('a cancel with an ID that is no whole number does not clear that number', function () {
+    const { path, value } = mobValue(
+      mapper.toDelta(
+        mobFrame({
+          mobEmitterId: '12.0000000000000001',
+          manOverboardStatus: 'MOB Not Active'
+        })
+      )
+    )
+    path.should.equal('notifications.mob.unset')
+    path.should.not.equal('notifications.mob.12')
+    value.state.should.equal('normal')
+  })
+
   it('an activation time that is not available is left out of data', function () {
     const { value } = mobValue(
       mapper.toDelta(mobFrame({ activationTime: null }))
     )
     value.data.should.not.have.property('activationTime')
+    value.state.should.equal('emergency')
+    value.position.latitude.should.be.closeTo(60.1512345, 0.0000001)
+    value.position.longitude.should.be.closeTo(24.9512345, 0.0000001)
     value.should.not.have.property('createdAt')
   })
 
