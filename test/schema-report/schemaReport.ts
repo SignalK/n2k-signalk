@@ -1,5 +1,6 @@
-// Runs canboat's sample logs through the mapper and validates what it writes
-// against the Signal K schema. Failures in baseline.json are known; anything
+// Runs canboat's sample logs through the mapper, looks up each path it writes
+// in @signalk/path-metadata, and validates what it writes against the Signal K
+// schema. Failures in baseline.json are known; anything
 // else fails, and so does a baseline entry that no longer fails, so the
 // baseline can only shrink.
 //
@@ -11,6 +12,7 @@
 import fs from 'fs'
 import path from 'path'
 import { FromPgn } from '@canboat/canboatjs'
+import { getMetadata } from '@signalk/path-metadata'
 import { N2kMapper } from '../../dist/n2kMapper'
 
 const schema = require('@signalk/signalk-schema')
@@ -35,6 +37,8 @@ const TIMESTAMP = '2026-01-01T00:00:00.000Z'
 // Readings repeat; validate each PGN's distinct outputs up to this many.
 const MAX_PER_PGN = 300
 const NOT_TEXT = /\.(ebl|pcap|csv|awk|dle|trc|DS_Store)$/
+
+const NOT_DEFINED = 'Not in @signalk/path-metadata'
 
 const keyOf = (f: Failure) => `${f.pgn}\t${f.path}\t${f.message}`
 
@@ -107,9 +111,32 @@ function validate(delta: any): { path: string; message: string }[] {
     )
 }
 
+// The paths a delta writes, including the keys of a value with an empty path.
+// Notifications are left out: their paths are open-ended.
+function paths(delta: any): string[] {
+  return delta.updates
+    .flatMap((update: any) => update.values ?? [])
+    .flatMap((pv: any) =>
+      pv.path === ''
+        ? Object.keys(pv.value ?? {})
+        : pv.path.startsWith('notifications.')
+          ? []
+          : [pv.path]
+    )
+}
+
+// An instance (1, 1c2, zone3, userDefined129) ends in N, so the baseline
+// doesn't depend on which instances the samples happen to hold.
+const pattern = (p: string) =>
+  p
+    .split('.')
+    .map((s) => (/^[0-9]/.test(s) ? 'N' : s.replace(/[0-9]+$/, 'N')))
+    .join('.')
+
 function run(dir: string): { found: Map<string, Found>; stats: string } {
   const found = new Map<string, Found>()
   const seen = new Set<string>()
+  const looked = new Set<string>()
   const perPgn = new Map<number, number>()
   let frames = 0
   let validated = 0
@@ -147,6 +174,18 @@ function run(dir: string): { found: Map<string, Found>; stats: string } {
         continue
       }
       if (!delta?.updates?.length) continue
+      // Every path, before the readings are thinned out below.
+      for (const p of paths(delta)) {
+        const key = `${n2k.pgn} ${p}`
+        if (looked.has(key)) continue
+        looked.add(key)
+        if (!getMetadata('vessels.self.' + p)) {
+          add({ pgn: n2k.pgn, path: pattern(p), message: NOT_DEFINED }, file, {
+            n2k,
+            path: p
+          })
+        }
+      }
       const key = `${n2k.pgn} ${shape(delta)}`
       if (seen.has(key)) continue
       seen.add(key)

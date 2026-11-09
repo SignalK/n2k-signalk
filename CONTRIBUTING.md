@@ -4,7 +4,7 @@ The easiest way to make sure your code is formatted properly is to run `npm run 
 
 Whenever possible additions should have tests. Tests should use sample data captured from real world, actual equipment.
 
-CI also runs [canboat's sample logs](https://github.com/canboat/canboat/tree/master/samples) through the mapper and validates the output against the Signal K schema. Failures that are already known are listed in `test/schema-report/baseline.json`. CI fails on a failure that isn't listed, and on a listed one that no longer happens, so the list can only shrink. To run it, with a canboat checkout next to this one:
+CI also runs [canboat's sample logs](https://github.com/canboat/canboat/tree/master/samples) through the mapper. It checks that every path the mapper writes is defined in [`@signalk/path-metadata`](https://github.com/SignalK/signalk-server/tree/master/packages/path-metadata), and validates the values against the Signal K schema. A new path goes into `path-metadata`, through a pull request to signalk-server, not into the specification. Failures that are already known are listed in `test/schema-report/baseline.json`. CI fails on a failure that isn't listed, and on a listed one that no longer happens, so the list can only shrink. To run it, with a canboat checkout next to this one:
 
     npm run build
     npm run schema-report -- ../canboat/samples
