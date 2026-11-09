@@ -17,10 +17,13 @@ module.exports = [
     filter: (n2k: PGN_127513) =>
       typeof n2k.fields.supportsEqualization === 'string'
   },
+  // canboatjs gives the BATTERY_VOLTAGE name, such as "12V".
   {
     node: battery('nominalVoltage'),
-    value: (n2k: PGN_127513) => n2k.fields.nominalVoltage,
-    filter: (n2k: PGN_127513) => typeof n2k.fields.nominalVoltage === 'string'
+    value: (n2k: PGN_127513) => parseFloat(String(n2k.fields.nominalVoltage)),
+    filter: (n2k: PGN_127513) =>
+      typeof n2k.fields.nominalVoltage === 'string' &&
+      !isNaN(parseFloat(n2k.fields.nominalVoltage))
   },
   { node: battery('chemistry'), ...lower('chemistry') },
   // canboatjs gives the capacity as a charge, in coulomb (C). The schema says
