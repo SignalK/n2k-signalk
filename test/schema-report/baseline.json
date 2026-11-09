@@ -253,8 +253,20 @@
   },
   {
     "pgn": 127507,
-    "path": "/vessels/*/electrical/chargers/N/chargeMode",
-    "message": "Unknown property (not in schema)",
+    "path": "/vessels/*/electrical/chargers/N/chargingMode/value",
+    "message": "No enum match for: \"constant vi\"",
+    "issue": 438
+  },
+  {
+    "pgn": 127507,
+    "path": "/vessels/*/electrical/chargers/N/chargingMode/value",
+    "message": "No enum match for: \"disabled\"",
+    "issue": 438
+  },
+  {
+    "pgn": 127507,
+    "path": "/vessels/*/electrical/chargers/N/chargingMode/value",
+    "message": "No enum match for: \"not charging\"",
     "issue": 438
   },
   {
@@ -277,18 +289,6 @@
   },
   {
     "pgn": 127507,
-    "path": "/vessels/*/electrical/chargers/N/operatingState",
-    "message": "Unknown property (not in schema)",
-    "issue": 438
-  },
-  {
-    "pgn": 127507,
-    "path": "electrical.chargers.N.chargeMode",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 438
-  },
-  {
-    "pgn": 127507,
     "path": "electrical.chargers.N.enabled",
     "message": "Not in @signalk/path-metadata",
     "issue": 438
@@ -302,12 +302,6 @@
   {
     "pgn": 127507,
     "path": "electrical.chargers.N.equalizationTimeRemaining",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 438
-  },
-  {
-    "pgn": 127507,
-    "path": "electrical.chargers.N.operatingState",
     "message": "Not in @signalk/path-metadata",
     "issue": 438
   },

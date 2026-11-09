@@ -38,7 +38,7 @@ describe('127510 charger configuration status', function () {
       '3 stage'
     )
     tree.should.have.nested.property(
-      'electrical.chargers.0.chargeMode.value',
+      'electrical.chargers.0.chargerRole.value',
       'standalone'
     )
     tree.should.have.nested.property(
