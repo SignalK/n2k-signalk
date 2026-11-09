@@ -1,6 +1,6 @@
 // Runs canboat's sample logs through the mapper, looks up each path it writes
-// in @signalk/path-metadata, and validates what it writes against the Signal K
-// schema. Failures in baseline.json are known; anything
+// in @signalk/path-metadata, other than notifications, and validates what it
+// writes against the Signal K schema. Failures in baseline.json are known; anything
 // else fails, and so does a baseline entry that no longer fails, so the
 // baseline can only shrink.
 //
@@ -118,11 +118,22 @@ function paths(delta: any): string[] {
     .flatMap((update: any) => update.values ?? [])
     .flatMap((pv: any) =>
       pv.path === ''
-        ? Object.keys(pv.value ?? {})
+        ? keys(pv.value, '')
         : pv.path.startsWith('notifications.')
           ? []
           : [pv.path]
     )
+}
+
+// A value with an empty path goes into the context itself: each of its keys
+// is a path, and so is each key of an object below it, such as
+// communication.callsignVhf.
+function keys(value: any, under: string): string[] {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return []
+  return Object.entries(value).flatMap(([key, v]) => [
+    under + key,
+    ...keys(v, under + key + '.')
+  ])
 }
 
 // An instance (1, 1c2, zone3, userDefined129) ends in N, so the baseline
