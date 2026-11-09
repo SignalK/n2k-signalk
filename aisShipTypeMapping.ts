@@ -1,12 +1,11 @@
 import { getEnumerationValue } from '@canboat/ts-pgns'
-// signalk-schema ships no type declarations.
-const schema = require('@signalk/signalk-schema')
+import { getAISShipTypeName } from '@signalk/path-metadata'
 
 export = function (type: unknown) {
   // The callers pass the decoded typeOfShip, normally its SHIP_TYPE name.
   const num = getEnumerationValue('SHIP_TYPE', type as string)
   let name
-  if (typeof num !== 'undefined' && (name = schema.getAISShipTypeName(num))) {
+  if (typeof num !== 'undefined' && (name = getAISShipTypeName(num))) {
     return {
       id: num,
       name: name

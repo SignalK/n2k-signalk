@@ -2,7 +2,7 @@ import { PGN_129041, AtonType } from '@canboat/ts-pgns'
 
 import getFromStarboardEdge from '../atonFromStarboardEdge'
 import { isPosition } from '../utils.js'
-const schema = require('@signalk/signalk-schema')
+import { getAtonTypeName } from '@signalk/path-metadata'
 
 module.exports = [
   {
@@ -41,8 +41,8 @@ module.exports = [
       if (n2k.fields.atonType) {
         num = nameMapping[n2k.fields.atonType]
       }
-      const name = schema.getAtonTypeName(num)
-      if (typeof num !== 'undefined' && name !== undefined) {
+      const name = num === undefined ? undefined : getAtonTypeName(num)
+      if (num !== undefined && name !== undefined) {
         return {
           id: num,
           name: name
