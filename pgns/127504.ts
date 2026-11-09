@@ -43,6 +43,11 @@ function prefix(
     : `${instancePrefix(n2k, state)}.ac.phase.${phase}`
 }
 
+// Signal K's enum values are lowercase: 'Sine wave' becomes 'sine wave'. The
+// waveform is the only text field of a line.
+const lower = (value: unknown) =>
+  typeof value === 'string' ? value.toLowerCase() : value
+
 module.exports = [
   (n2k: PGN_127504, state?: SourceState) =>
     n2k.fields.list
@@ -52,7 +57,7 @@ module.exports = [
             .filter((field) => typeof lineData[field] !== 'undefined')
             .map((field) => ({
               path: `${pathPrefix}.${skField(field)}`,
-              value: lineData[field]
+              value: lower(lineData[field])
             }))
         })
       : []
