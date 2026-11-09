@@ -91,10 +91,24 @@ module.exports = [
     value: (n2k: PGN_129794) => ({
       registrations: { imo: `IMO ${n2k.fields.imoNumber}` }
     }),
-    filter: (n2k: PGN_129794) =>
-      n2k.fields.imoNumber && n2k.fields.imoNumber != 0
+    filter: (n2k: PGN_129794) => isImoNumber(n2k.fields.imoNumber)
   },
   {
     context: getMmsiContext
   }
 ]
+
+// An IMO number has 7 digits, the last a check digit: the sum of the first
+// six, each times 7 down to 2, ends in it. Transponders also send numbers of
+// other lengths, and 0 for none.
+function isImoNumber(value: unknown): boolean {
+  const digits = String(value)
+  if (!/^[1-9][0-9]{6}$/.test(digits)) {
+    return false
+  }
+  let sum = 0
+  for (let i = 0; i < 6; i++) {
+    sum += Number(digits[i]) * (7 - i)
+  }
+  return sum % 10 === Number(digits[6])
+}

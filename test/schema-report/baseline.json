@@ -306,18 +306,6 @@
     "issue": 445
   },
   {
-    "pgn": 129794,
-    "path": "/vessels/*/registrations/imo",
-    "message": "String is too long (13 chars), maximum 11",
-    "issue": 445
-  },
-  {
-    "pgn": 129794,
-    "path": "/vessels/*/registrations/imo",
-    "message": "String is too short (10 chars), minimum 11",
-    "issue": 445
-  },
-  {
     "pgn": 129808,
     "path": "/vessels/*/mmsi",
     "message": "String does not match pattern: ^[2-7][0-9]{8}$",
