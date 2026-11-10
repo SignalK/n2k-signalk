@@ -36,7 +36,7 @@ describe('127504 ac output status', function () {
       { path: 'electrical.inverters.2.ac.lineNeutralVoltage', value: 230 },
       { path: 'electrical.inverters.2.ac.current', value: 3 },
       { path: 'electrical.inverters.2.ac.frequency', value: 50 },
-      { path: 'electrical.inverters.2.ac.breakerSize', value: 10 },
+      { path: 'electrical.inverters.2.ac.breaker.ratedCurrent', value: 10 },
       { path: 'electrical.inverters.2.ac.realPower', value: 690 },
       { path: 'electrical.inverters.2.ac.reactivePower', value: 5 },
       { path: 'electrical.inverters.2.ac.powerFactor', value: 0.99 }
@@ -92,8 +92,8 @@ describe('127504 ac output status', function () {
   })
   it('writes paths the specification has', function () {
     const tree = mapper.toNested(frame)
-    // breakerSize has no path in the specification
-    delete tree.electrical.inverters[2].ac.breakerSize
+    // breaker has no path in the specification
+    delete tree.electrical.inverters[2].ac.breaker
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })

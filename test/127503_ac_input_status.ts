@@ -45,7 +45,7 @@ describe('127503 ac input status', function () {
       { path: 'electrical.ac.1.phase.A.lineNeutralVoltage', value: 230 },
       { path: 'electrical.ac.1.phase.A.current', value: 2.5 },
       { path: 'electrical.ac.1.phase.A.frequency', value: 50 },
-      { path: 'electrical.ac.1.phase.A.breakerSize', value: 16 },
+      { path: 'electrical.ac.1.phase.A.breaker.ratedCurrent', value: 16 },
       { path: 'electrical.ac.1.phase.A.realPower', value: 575 },
       { path: 'electrical.ac.1.phase.A.reactivePower', value: 10 },
       { path: 'electrical.ac.1.phase.A.powerFactor', value: 0.98 },
@@ -113,10 +113,10 @@ describe('127503 ac input status', function () {
   })
   it('writes paths the specification has', function () {
     const tree = mapper.toNested(frame)
-    // acceptability and breakerSize have no path in the specification
+    // acceptability and breaker have no path in the specification
     Object.values(tree.electrical.ac[1].phase).forEach((line: any) => {
       delete line.acceptability
-      delete line.breakerSize
+      delete line.breaker
     })
     tree.should.be.validSignalKVesselIgnoringIdentity
   })

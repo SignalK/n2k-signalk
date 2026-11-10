@@ -85,7 +85,7 @@
   },
   {
     "pgn": 127503,
-    "path": "/vessels/*/electrical/ac/N/phase/A/breakerSize",
+    "path": "/vessels/*/electrical/ac/N/phase/A/breaker",
     "message": "Unknown property (not in schema)",
     "issue": 437
   },
@@ -103,13 +103,13 @@
   },
   {
     "pgn": 127503,
-    "path": "/vessels/*/electrical/ac/N/phase/C/breakerSize",
+    "path": "/vessels/*/electrical/ac/N/phase/C/breaker",
     "message": "Unknown property (not in schema)",
     "issue": 437
   },
   {
     "pgn": 127504,
-    "path": "/vessels/*/electrical/inverters/N/ac/breakerSize",
+    "path": "/vessels/*/electrical/inverters/N/ac/breaker",
     "message": "Unknown property (not in schema)",
     "issue": 437
   },
