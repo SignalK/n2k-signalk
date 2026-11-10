@@ -120,4 +120,18 @@ describe('127503 ac input status', function () {
     })
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+  it('maps the breaker size of a captured frame', function () {
+    // From canboat's samples/pgn127504.raw: a 100 A breaker
+    const n2k = new FromPgn({ useCamel: true }).parseString(
+      '2021-07-29-09:00:42.386,6,127503,1,255,20,00,01,f0,00,05,2c,01,88,13,e8,03,80,15,00,00,80,15,00,00,64'
+    )
+    mapper
+      .toDelta(n2k)
+      .updates[0].values.filter((v: { path: string }) =>
+        v.path.includes('breaker')
+      )
+      .should.deep.equal([
+        { path: 'electrical.ac.0.phase.A.breaker.ratedCurrent', value: 100 }
+      ])
+  })
 })

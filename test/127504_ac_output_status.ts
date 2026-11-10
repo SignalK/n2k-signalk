@@ -96,4 +96,21 @@ describe('127504 ac output status', function () {
     delete tree.electrical.inverters[2].ac.breaker
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
+  it('maps the breaker size of a captured frame', function () {
+    // From canboat's samples/pgn127504.raw: line 2, a 100 A breaker
+    const n2k = new FromPgn({ useCamel: true }).parseString(
+      '2021-07-29-09:00:45.386,6,127504,1,255,20,00,01,e1,00,05,2c,01,88,13,e8,03,80,15,00,00,80,15,00,00,64'
+    )
+    mapper
+      .toDelta(n2k)
+      .updates[0].values.filter((v: { path: string }) =>
+        v.path.includes('breaker')
+      )
+      .should.deep.equal([
+        {
+          path: 'electrical.inverters.0.ac.phase.B.breaker.ratedCurrent',
+          value: 100
+        }
+      ])
+  })
 })
