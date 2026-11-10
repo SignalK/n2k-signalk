@@ -336,7 +336,8 @@ export class N2kMapper extends EventEmitter {
   // When each device seen on the bus was last asked for each metadata PGN,
   // by src; see askNext.
   private asked = new Map<string, Record<string, number>>()
-  // The one request waiting for its answer.
+  // Only one request is out at a time, so answers never collide: a 126996
+  // answer alone is a fast packet of about 20 frames.
   private waitingFor?: {
     src: string
     pgn: string
@@ -443,13 +444,6 @@ export class N2kMapper extends EventEmitter {
     return true
   }
 
-  // Asks the devices seen on the bus for their metadata, as canboat's n2kd
-  // does: by address, never by broadcast, and one request at a time. A
-  // broadcast request makes every device answer at once, and a 126996 answer
-  // is a fast packet of about 20 frames. The next request goes out when the
-  // answer or a NAK arrives, or after ANSWER_TIMEOUT. A device is asked for a
-  // PGN at most once every REQUEST_INTERVAL, and not within REQUEST_INTERVAL
-  // of sending it, so a device that announces itself isn't asked.
   /**
    * Asks the device at src for its metadata PGNs, or for the given ones,
    * ahead of anything due by itself: after a command that changes its
@@ -461,6 +455,14 @@ export class N2kMapper extends EventEmitter {
     pgns: readonly (number | string)[] = Object.keys(metaPGNs)
   ) {
     const key = String(src)
+    const address = Number(key)
+    if (
+      !Number.isInteger(address) ||
+      address < 0 ||
+      address > MAX_DEVICE_ADDRESS
+    ) {
+      return
+    }
     if (!this.asked.has(key)) {
       this.asked.set(key, {})
     }
@@ -478,6 +480,30 @@ export class N2kMapper extends EventEmitter {
     const devices = [...this.asked.keys()]
     devices.forEach((src) => this.requestSourceMeta(src))
     return devices.length
+  }
+
+  // Asks the devices seen on the bus for their metadata, as canboat's n2kd
+  // does: by address, never by broadcast, and one request at a time. A
+  // broadcast request makes every device answer at once, and a 126996 answer
+  // is a fast packet of about 20 frames. The next request goes out when the
+  // answer or a NAK arrives, or after ANSWER_TIMEOUT. A device is asked for a
+  // PGN at most once every REQUEST_INTERVAL, and not within REQUEST_INTERVAL
+  // of sending it, so a device that announces itself isn't asked.
+  /**
+   * Stops asking for metadata: clears the pending timers and forgets the
+   * listener, so a mapper that is replaced, on a reconnect say, no longer
+   * runs. n2kOutIsAvailable starts it again.
+   */
+  stop() {
+    if (this.waitingFor) {
+      clearTimeout(this.waitingFor.timer)
+      this.waitingFor = undefined
+    }
+    if (this.idleTimer !== undefined) {
+      clearTimeout(this.idleTimer)
+      this.idleTimer = undefined
+    }
+    this.n2kListener = undefined
   }
 
   private askNext() {
@@ -520,7 +546,10 @@ export class N2kMapper extends EventEmitter {
   }
 
   private ask(src: string, pgn: string) {
-    this.asked.get(src)![pgn] = Date.now()
+    // A new NAME at src clears its entry while PGNs may still be queued.
+    const asked = this.asked.get(src) ?? {}
+    asked[pgn] = Date.now()
+    this.asked.set(src, asked)
     const timer = setTimeout(
       () => this.answered(src, pgn, false),
       ANSWER_TIMEOUT

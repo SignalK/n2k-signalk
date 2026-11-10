@@ -1,6 +1,7 @@
 import chai from 'chai'
 chai.should()
 
+import { FromPgn } from '@canboat/canboatjs'
 import { N2kMapper } from '../dist/n2kMapper'
 
 const EVENT = 'nmea2000JsonOut'
@@ -31,41 +32,42 @@ const addressClaim = (src: number, uniqueNumber = 76223): any => ({
   }
 })
 
-const productInfo = (src: number): any => ({
-  prio: 6,
-  pgn: 126996,
-  dst: 255,
-  src,
-  timestamp: '2019-05-31T11:46:59.594Z',
-  fields: { nmea2000Version: 2.1, productCode: 1 }
-})
+// Frames captured from real equipment, from canboat's samples
+// (ac42-commissioning.raw and furuno-tzmap9-brightness.raw), decoded with
+// the src of the device under test.
+const captured = (line: string, src: number): any => {
+  const parts = line.split(',')
+  parts[3] = String(src)
+  return new FromPgn({ useCamel: true }).parseString(parts.join(','))
+}
 
-const configInfo = (src: number): any => ({
-  prio: 6,
-  pgn: 126998,
-  dst: 255,
-  src,
-  timestamp: '2019-05-31T11:46:59.594Z',
-  fields: { installationDescription1: 'mast' }
-})
+const productInfo = (src: number) =>
+  captured(
+    '2026-06-08T01:52:13.444,6,126996,13,255,134,b0,04,e6,35,41,43,34,32,20,20,20,20,5f,41,75,74,6f,70,69,6c,6f,74,20,20,20,20,20,20,20,20,20,20,20,20,20,20,31,31,30,30,20,20,20,20,31,33,30,33,30,30,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,30,30,33,30,32,34,23,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,20,01,01',
+    src
+  )
 
-const heading = (src: number): any => ({
-  prio: 2,
-  pgn: 127250,
-  dst: 255,
-  src,
-  timestamp: '2019-05-31T11:46:59.594Z',
-  fields: { heading: 1, reference: 'Magnetic' }
-})
+const configInfo = (src: number) =>
+  captured(
+    '2026-06-08T01:52:35.124,6,126998,178,255,24,02,01,02,01,14,01,50,72,65,64,69,74,57,69,6e,64,20,44,61,74,61,48,75,62',
+    src
+  )
 
-const nak = (src: number, pgn: number): any => ({
-  prio: 6,
-  pgn: 59392,
-  dst: 0,
-  src,
-  timestamp: '2019-05-31T11:46:59.594Z',
-  fields: { control: 'NAK', groupFunction: 255, pgn }
-})
+const heading = (src: number) =>
+  captured(
+    '2026-06-08T01:51:24.127,2,127250,52,255,8,ff,51,9c,ff,7f,55,06,fc',
+    src
+  )
+
+// A Furuno TZMAP9's NAK of a request for 130313, with the PGN replaced.
+const nak = (src: number, pgn: number) =>
+  captured(
+    '2026-10-21T13:33:51.102Z,6,59392,179,1,8,01,ff,ff,ff,ff,' +
+      [pgn & 0xff, (pgn >> 8) & 0xff, pgn >> 16]
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join(','),
+    src
+  )
 
 describe('metadata requests', function () {
   interface Timer {
@@ -103,7 +105,6 @@ describe('metadata requests', function () {
     Date.now = real.now
   })
 
-  // Fires the first pending timer of ms.
   function fire(ms: number) {
     const timer = timers.find((timer) => timer.ms === ms)
     chai.expect(timer, `a timer of ${ms} ms`).to.not.equal(undefined)
@@ -272,6 +273,43 @@ describe('metadata requests', function () {
     mapper.toDelta(heading(254))
     mapper.toDelta(heading(255))
     requests.should.be.empty
+  })
+
+  it('asks for given PGNs only at a device address', function () {
+    const mapper = new N2kMapper()
+    const requests = listening(mapper)
+    ;[255, 254, -1, 1.5, 'x'].forEach((src) => mapper.requestSourceMeta(src))
+    requests.should.be.empty
+    mapper.requestAllMeta().should.equal(0)
+  })
+
+  it('keeps asking when a device changes NAME with PGNs queued', function () {
+    const mapper = new N2kMapper()
+    const requests = listening(mapper)
+    mapper.toDelta(addressClaim(SRC))
+    mapper.toDelta(productInfo(SRC))
+    mapper.toDelta(configInfo(SRC))
+    requests.length = 0
+    mapper.requestSourceMeta(SRC)
+    requests.should.deep.equal([[SRC, '60928']])
+    mapper.toDelta(addressClaim(SRC, 76224))
+    requests.should.deep.equal([
+      [SRC, '60928'],
+      [SRC, '126996']
+    ])
+  })
+
+  it('stops asking and clears its timers when stopped', function () {
+    const mapper = new N2kMapper()
+    const requests = listening(mapper)
+    mapper.toDelta(heading(SRC))
+    requests.should.deep.equal([[SRC, '60928']])
+    mapper.stop()
+    timers.should.be.empty
+    mapper.toDelta(addressClaim(SRC))
+    mapper.toDelta(heading(SRC + 1))
+    requests.should.have.lengthOf(1)
+    timers.should.be.empty
   })
 
   it('asks a device for given PGNs at once, whatever it sent', function () {
