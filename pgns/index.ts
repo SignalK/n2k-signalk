@@ -7,6 +7,7 @@ module.exports = {
   126983: require('./126983.js'),
   126985: require('./126985.js'),
   126992: require('./126992.js'),
+  127233: require('./127233.js'),
   127237: require('./127237.js'),
   127245: require('./127245'),
   127250: require('./127250.js'),
