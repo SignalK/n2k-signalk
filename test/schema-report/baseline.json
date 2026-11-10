@@ -181,7 +181,7 @@
   },
   {
     "pgn": 127503,
-    "path": "electrical.ac.N.phase.A.breakerSize",
+    "path": "electrical.ac.N.phase.A.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
@@ -199,7 +199,7 @@
   },
   {
     "pgn": 127503,
-    "path": "electrical.ac.N.phase.C.breakerSize",
+    "path": "electrical.ac.N.phase.C.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
@@ -223,13 +223,13 @@
   },
   {
     "pgn": 127504,
-    "path": "electrical.inverters.N.ac.breakerSize",
+    "path": "electrical.inverters.N.ac.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
   {
     "pgn": 127504,
-    "path": "electrical.inverters.N.ac.phase.B.breakerSize",
+    "path": "electrical.inverters.N.ac.phase.B.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
