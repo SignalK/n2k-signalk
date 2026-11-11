@@ -16,8 +16,9 @@ const onOff = (field: keyof PGN_127507['fields']) => ({
 })
 
 module.exports = [
-  { node: charger('operatingState'), ...text('operatingState') },
-  { node: charger('chargeMode'), ...text('chargeMode') },
+  // The charger's state, which Signal K calls its charging mode
+  { node: charger('chargingMode'), ...text('operatingState') },
+  { node: charger('chargerRole'), ...text('chargeMode') },
   { node: charger('enabled'), ...onOff('enabled') },
   { node: charger('equalizationPending'), ...onOff('equalizationPending') },
   {

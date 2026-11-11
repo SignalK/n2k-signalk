@@ -33,7 +33,7 @@ describe('127513 battery configuration status', function () {
     )
     tree.should.have.nested.property(
       'electrical.batteries.0.nominalVoltage.value',
-      '12V'
+      12
     )
     tree.should.have.nested.property(
       'electrical.batteries.0.chemistry.value',

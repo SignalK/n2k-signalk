@@ -41,6 +41,11 @@ function prefix(
   return `${instancePrefix(n2k, state)}.phase.${acPhase(lineData)}`
 }
 
+// Signal K's enum values are lowercase: 'Good' becomes 'good'. The
+// acceptability is the only text field of a line.
+const lower = (value: unknown) =>
+  typeof value === 'string' ? value.toLowerCase() : value
+
 module.exports = [
   (n2k: PGN_127503, state?: SourceState) =>
     n2k.fields.list
@@ -50,7 +55,7 @@ module.exports = [
             .filter((field) => typeof lineData[field] !== 'undefined')
             .map((field) => ({
               path: `${pathPrefix}.${skField(field)}`,
-              value: lineData[field]
+              value: lower(lineData[field])
             }))
         })
       : []
