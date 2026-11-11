@@ -139,3 +139,36 @@ describe('129794 ETA', function () {
     )
   })
 })
+
+describe('129794 IMO number', function () {
+  const imo = (imoNumber: number) =>
+    mapper
+      .toDelta({
+        timestamp: '2017-03-13T18:30:56.945Z',
+        prio: 6,
+        src: 43,
+        dst: 255,
+        pgn: 129794,
+        fields: { userId: '356307000', imoNumber }
+      })
+      .updates[0].values.find(
+        (pv: PathValue) => pv.path === '' && pv.value.registrations
+      )?.value.registrations.imo
+
+  it('writes a 7-digit number with a matching check digit', function () {
+    imo(9683362).should.equal('IMO 9683362')
+  })
+
+  it('writes nothing for a number of another length', function () {
+    expect(imo(140815)).to.equal(undefined)
+    expect(imo(874546200)).to.equal(undefined)
+  })
+
+  it('writes nothing for 0', function () {
+    expect(imo(0)).to.equal(undefined)
+  })
+
+  it('writes nothing when the check digit does not match', function () {
+    expect(imo(9683363)).to.equal(undefined)
+  })
+})
