@@ -16,9 +16,13 @@ const fields = [
 
 const phaseMap: Record<string, string> = { 0: 'A', 1: 'B', 2: 'C' }
 
-// The specification's name for a line's voltage to neutral
-const skField = (field: (typeof fields)[number]) =>
-  field === 'voltage' ? 'lineNeutralVoltage' : field
+// The specification's names for a line's voltage to neutral and its
+// breaker's rated current
+const SK_FIELDS: Partial<Record<(typeof fields)[number], string>> = {
+  voltage: 'lineNeutralVoltage',
+  breakerSize: 'breaker.ratedCurrent'
+}
+const skField = (field: (typeof fields)[number]) => SK_FIELDS[field] ?? field
 
 // canboatjs decodes line through AC_LINE, so it arrives as 'Line 1' to
 // 'Line 3', codes 0 to 2 (#367).

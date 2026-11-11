@@ -36,7 +36,7 @@ describe('127504 ac output status', function () {
       { path: 'electrical.inverters.2.ac.lineNeutralVoltage', value: 230 },
       { path: 'electrical.inverters.2.ac.current', value: 3 },
       { path: 'electrical.inverters.2.ac.frequency', value: 50 },
-      { path: 'electrical.inverters.2.ac.breakerSize', value: 10 },
+      { path: 'electrical.inverters.2.ac.breaker.ratedCurrent', value: 10 },
       { path: 'electrical.inverters.2.ac.realPower', value: 690 },
       { path: 'electrical.inverters.2.ac.reactivePower', value: 5 },
       { path: 'electrical.inverters.2.ac.powerFactor', value: 0.99 }
@@ -92,8 +92,25 @@ describe('127504 ac output status', function () {
   })
   it('writes paths the specification has', function () {
     const tree = mapper.toNested(frame)
-    // breakerSize has no path in the specification
-    delete tree.electrical.inverters[2].ac.breakerSize
+    // breaker has no path in the specification
+    delete tree.electrical.inverters[2].ac.breaker
     tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+  it('maps the breaker size of a captured frame', function () {
+    // From canboat's samples/pgn127504.raw: line 2, a 100 A breaker
+    const n2k = new FromPgn({ useCamel: true }).parseString(
+      '2021-07-29-09:00:45.386,6,127504,1,255,20,00,01,e1,00,05,2c,01,88,13,e8,03,80,15,00,00,80,15,00,00,64'
+    )
+    mapper
+      .toDelta(n2k)
+      .updates[0].values.filter((v: { path: string }) =>
+        v.path.includes('breaker')
+      )
+      .should.deep.equal([
+        {
+          path: 'electrical.inverters.0.ac.phase.B.breaker.ratedCurrent',
+          value: 100
+        }
+      ])
   })
 })
