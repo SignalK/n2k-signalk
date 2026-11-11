@@ -68,5 +68,6 @@ module.exports = {
   127747: require('./acVoltage.js')('phase.A'),
   127748: require('./acVoltage.js')('phase.B'),
   127749: require('./acVoltage.js')('phase.C'),
-  127497: require('./127497.js')
+  127497: require('./127497.js'),
+  262400: require('./262400.js')
 }

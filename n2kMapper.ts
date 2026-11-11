@@ -1,4 +1,8 @@
-import { HoldsVesselState, linkVesselState } from './vesselState.js'
+import {
+  HoldsVesselState,
+  linkVesselState,
+  vesselStateOf
+} from './vesselState.js'
 import { EventEmitter } from 'events'
 import { Stream } from 'stream'
 import {
@@ -215,6 +219,12 @@ export interface N2kMapperOptions {
   allowCustomPGNOverride?: boolean
   instancePrefixRules?: readonly InstancePrefixRule[] | null
   instancePrefixResolver?: InstancePrefixResolver | null
+  /**
+   * The id of the signalk-server connection (provider) the frames come from.
+   * The gateway's network status (262400) is written under
+   * providers.<providerId>, and not at all without one.
+   */
+  providerId?: string
   /** @deprecated Ignored; signalk-server still passes it. */
   sendMetaData?: boolean
 }
@@ -319,8 +329,6 @@ Object.assign(n2kMappings, require('./fusion'))
 Object.assign(n2kMappings, require('./lowrance'))
 Object.assign(n2kMappings, require('./raymarine'))
 Object.assign(n2kMappings, require('./maretron'))
-Object.assign(n2kMappings, require('./actisense'))
-Object.assign(n2kMappings, require('./digitalyacht'))
 Object.assign(n2kMappings, require('./simrad'))
 Object.assign(n2kMappings, require('./navico'))
 
@@ -340,6 +348,9 @@ export class N2kMapper extends EventEmitter {
     this.unknownPGNs = {}
     this.customPgns = {}
     this.options = options || {}
+    if (this.options.providerId) {
+      vesselStateOf(this.state).providerId = this.options.providerId
+    }
     this.instancePrefixOverrides = new InstancePrefixOverrides()
     this.setInstancePrefixRules(this.options.instancePrefixRules)
     this.setInstancePrefixResolver(this.options.instancePrefixResolver)

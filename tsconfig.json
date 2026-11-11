@@ -16,8 +16,6 @@
   "include": [
     "*.ts",
     "./pgns/**/*",
-    "./actisense/**/*",
-    "./digitalyacht/**/*",
     "./fusion/**/*",
     "./lowrance/**/*",
     "./maretron/**/*",

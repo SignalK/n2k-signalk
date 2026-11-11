@@ -870,134 +870,44 @@
     "issue": 442
   },
   {
-    "pgn": 262386,
-    "path": "/vessels/*/network",
-    "message": "Unknown property (not in schema)",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.bandwidth",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.bufferLoading",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.deleted",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.pointerLoading",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.rxBandwidth",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.rxDropped",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.rxFiltered",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.rxLoad",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.txBandwidth",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.chN.txLoad",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.errorId",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.indiChannelCount",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.modelId",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262386,
-    "path": "network.n2k.ngt-N.N.uniChannelCount",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
     "pgn": 262400,
-    "path": "/vessels/*/network",
+    "path": "/vessels/*/providers",
     "message": "Unknown property (not in schema)",
     "issue": 386
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.N.canNetworkLoad",
+    "path": "providers.samples.canNetworkLoad",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.N.deviceCount",
+    "path": "providers.samples.deviceCount",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.N.errors",
+    "path": "providers.samples.errors",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.N.gatewayAddress",
+    "path": "providers.samples.gatewayAddress",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.N.rejectedTxRequests",
+    "path": "providers.samples.rejectedTxRequests",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.N.uptime",
+    "path": "providers.samples.uptime",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   }
