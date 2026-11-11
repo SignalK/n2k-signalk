@@ -20,7 +20,6 @@
     "./digitalyacht/**/*",
     "./fusion/**/*",
     "./lowrance/**/*",
-    "./maretron/**/*",
     "./navico/**/*",
     "./raymarine/**/*",
     "./simrad/**/*",
