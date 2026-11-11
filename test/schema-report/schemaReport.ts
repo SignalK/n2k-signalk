@@ -76,7 +76,12 @@ function validate(delta: any): { path: string; message: string }[] {
   for (const update of d.updates) {
     update.timestamp = TIMESTAMP
     top.push(...update.values.filter((pv: any) => pv.path === ''))
-    update.values = update.values.filter((pv: any) => pv.path !== '')
+    // null is how the specification says a reading isn't available ("Missing
+    // or Invalid Data" in data_model.md), on any path; the full-model
+    // schemas, which the specification no longer maintains, don't allow it.
+    update.values = update.values.filter(
+      (pv: any) => pv.path !== '' && pv.value !== null
+    )
   }
   const [kind, ...rest] = d.context.split('.')
   const id = rest.join('.')
