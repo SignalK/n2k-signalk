@@ -39,6 +39,7 @@ const MAX_PER_PGN = 300
 const NOT_TEXT = /\.(ebl|pcap|csv|awk|dle|trc|DS_Store)$/
 
 const NOT_DEFINED = 'Not in @signalk/path-metadata'
+const NON_FINITE = 'Not a finite number (sent as null)'
 
 const keyOf = (f: Failure) => `${f.pgn}\t${f.path}\t${f.message}`
 
@@ -116,6 +117,22 @@ function validate(delta: any): { path: string; message: string }[] {
     )
 }
 
+// The paths in a delta whose value is, or holds, NaN or an infinity. JSON
+// sends those as null, which validate leaves out as a reading that isn't
+// available, so a broken calculation would pass unseen.
+function nonFinite(delta: any): string[] {
+  const found: string[] = []
+  const walk = (value: any, path: string) => {
+    if (typeof value === 'number' && !Number.isFinite(value)) found.push(path)
+    else if (value && typeof value === 'object')
+      for (const [k, v] of Object.entries(value))
+        walk(v, path === '' ? k : `${path}.${k}`)
+  }
+  for (const update of delta.updates)
+    for (const pv of update.values ?? []) walk(pv.value, pv.path)
+  return found
+}
+
 // The paths a delta writes, including the keys of a value with an empty path.
 // Notifications are left out: their paths are open-ended.
 function paths(delta: any): string[] {
@@ -190,6 +207,15 @@ function run(dir: string): { found: Map<string, Found>; stats: string } {
         continue
       }
       if (!delta?.updates?.length) continue
+      for (const p of nonFinite(delta)) {
+        const key = `${n2k.pgn} ${p} non-finite`
+        if (looked.has(key)) continue
+        looked.add(key)
+        add({ pgn: n2k.pgn, path: pattern(p), message: NON_FINITE }, file, {
+          n2k,
+          path: p
+        })
+      }
       // Every path, before the readings are thinned out below.
       for (const p of paths(delta)) {
         const key = `${n2k.pgn} ${p}`

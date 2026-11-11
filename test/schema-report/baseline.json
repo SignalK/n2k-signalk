@@ -872,6 +872,12 @@
   {
     "pgn": 262400,
     "path": "network.n2k.ikonvert.undefined.canNetworkLoad",
+    "message": "Not a finite number (sent as null)",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "network.n2k.ikonvert.undefined.canNetworkLoad",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   }
