@@ -1,33 +1,30 @@
-// ts-pgns has no type for 262400; these mappings read canboat field names.
-type Frame = { fields: Record<string, unknown> }
+// ts-pgns has no type for 262400 (Digital Yacht iKonvert status); these
+// mappings read the field names canboatjs decodes it with.
+type Frame = { src: number; fields: Record<string, unknown> }
 
+// The gateway sends this itself, so its address is the frame's source when
+// it leaves the gateway address out.
 function makePath(n2k: Frame) {
-  return `network.n2k.ikonvert.${n2k.fields['Gateway address']}`
+  return `network.n2k.ikonvert.${n2k.fields.gatewayAddress ?? n2k.src}`
 }
 
 module.exports = [
   {
-    value: (n2k: Frame) => Number(n2k.fields['CAN network load']) / 100,
+    // A percentage; nothing when the gateway doesn't send it
+    value: (n2k: Frame) =>
+      n2k.fields.canNetworkLoad == null
+        ? undefined
+        : Number(n2k.fields.canNetworkLoad) / 100,
     node: (n2k: Frame) => `${makePath(n2k)}.canNetworkLoad`
   },
-  {
-    source: 'Errors',
-    node: (n2k: Frame) => `${makePath(n2k)}.errors`
-  },
-  {
-    source: 'Device count',
-    node: (n2k: Frame) => `${makePath(n2k)}.deviceCount`
-  },
-  {
-    source: 'Uptime',
-    node: (n2k: Frame) => `${makePath(n2k)}.uptime`
-  },
-  {
-    source: 'Gateway address',
-    node: (n2k: Frame) => `${makePath(n2k)}.gatewayAddress`
-  },
-  {
-    source: 'Rejected TX requests',
-    node: (n2k: Frame) => `${makePath(n2k)}.rejectedTxRequests`
-  }
+  ...[
+    'errors',
+    'deviceCount',
+    'uptime',
+    'gatewayAddress',
+    'rejectedTxRequests'
+  ].map((source) => ({
+    source,
+    node: (n2k: Frame) => `${makePath(n2k)}.${source}`
+  }))
 ]
