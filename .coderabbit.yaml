@@ -56,7 +56,7 @@ reviews:
         Think carefully about how changes interact with existing code — not
         just the diff in isolation.
 
-    - path: '{pgns,fusion,lowrance,maretron,raymarine,simrad}/**'
+    - path: '{pgns,fusion,lowrance,raymarine,simrad}/**'
       instructions: |
         These modules map decoded NMEA 2000 PGNs (as produced by canboatjs) to
         Signal K deltas.

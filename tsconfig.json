@@ -18,7 +18,6 @@
     "./pgns/**/*",
     "./fusion/**/*",
     "./lowrance/**/*",
-    "./maretron/**/*",
     "./navico/**/*",
     "./raymarine/**/*",
     "./simrad/**/*",
