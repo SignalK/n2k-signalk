@@ -332,6 +332,25 @@ export class N2kMapper extends EventEmitter {
   // Set by n2kOutIsAvailable; absent until then.
   declare n2kOutEvent?: string
   declare n2kListener?: N2kOutListener
+  // When each device seen on the bus was last asked for each metadata PGN,
+  // by src; see askNext.
+  private asked = new Map<string, Record<string, number>>()
+  // Only one request is out at a time, so answers never collide: a 126996
+  // answer alone is a fast packet of about 20 frames.
+  private waitingFor?: {
+    src: string
+    pgn: string
+    timer: ReturnType<typeof setTimeout>
+  }
+  // Where askNext starts looking, so the devices take turns.
+  private nextDevice = 0
+  private idleTimer?: ReturnType<typeof setTimeout>
+  // The src/pgn pairs reported in n2kSourceMetadataTimeout and not answered
+  // since, so a silent device is reported once, not every REQUEST_INTERVAL.
+  private reportedTimeouts = new Set<string>()
+  // PGNs to ask a device for now, whatever it sent or was asked recently,
+  // by src; see requestSourceMeta and requestAllMeta.
+  private askNow = new Map<string, Set<string>>()
 
   constructor(options?: N2kMapperOptions) {
     super()
@@ -396,69 +415,212 @@ export class N2kMapper extends EventEmitter {
   n2kOutIsAvailable(listener: N2kOutListener, event: string) {
     this.n2kOutEvent = event
     this.n2kListener = listener
-    this.requestAllMeta()
+    // A device that sends nothing unasked would otherwise be found only by
+    // its heartbeat, up to a minute later. Each device answers this with a
+    // single frame, and the answers start askNext on each new device.
+    this.sendRequest(255, 60928)
+    this.askNext()
   }
 
   requestMetaData(dst: N2kReport['src'], pgn: number | string): Promise<void> {
+    if (!this.sendRequest(dst, pgn)) {
+      return Promise.resolve()
+    }
+    return new Promise((resolve) => setTimeout(resolve, ANSWER_TIMEOUT))
+  }
+
+  // Sends an ISO Request for pgn to dst; false when there is no n2k output yet.
+  private sendRequest(dst: N2kReport['src'], pgn: number | string): boolean {
     const listener = this.n2kListener
     if (!listener) {
       debug(
         `skipping request for pgn ${pgn} from src ${dst}: n2k output not available yet`
       )
-      return Promise.resolve()
-    }
-    const reqPgn = {
-      pgn: 59904,
-      dst: dst,
-      PGN: pgn
+      return false
     }
     debug(`requesting pgn ${pgn} from src ${dst}`)
-    return new Promise((resolve) => {
-      listener.emit(this.n2kOutEvent!, reqPgn)
-      setTimeout(() => {
-        resolve()
-      }, 5000)
-    })
+    listener.emit(this.n2kOutEvent!, { pgn: 59904, dst: dst, PGN: pgn })
+    return true
   }
 
-  async requestMetaPGNs(dst: number | string, pgns: (number | string)[]) {
-    for (let i = 0; i < pgns.length; i++) {
-      await this.requestMetaData(dst, pgns[i])
+  /**
+   * Asks the device at src for its metadata PGNs, or for the given ones,
+   * ahead of anything due by itself: after a command that changes its
+   * instance or installation description, say. The answers arrive as
+   * n2kSourceMetadata like any other.
+   */
+  requestSourceMeta(
+    src: number | string,
+    pgns: readonly (number | string)[] = Object.keys(metaPGNs)
+  ) {
+    const key = String(src)
+    const address = Number(key)
+    if (
+      !Number.isInteger(address) ||
+      address < 0 ||
+      address > MAX_DEVICE_ADDRESS
+    ) {
+      return
     }
+    if (!this.asked.has(key)) {
+      this.asked.set(key, {})
+    }
+    const wanted = this.askNow.get(key) ?? new Set<string>()
+    pgns.map(String).forEach((pgn) => wanted.add(pgn))
+    this.askNow.set(key, wanted)
+    this.askNext()
   }
 
-  checkSrcMetasAndRetry(src: string) {
-    if (src !== '255') {
-      const neededPGNs = Object.keys(metaPGNs).filter((pgn) => {
-        return (
-          !this.state[src].metaPGNsReceived ||
-          !this.state[src].metaPGNsReceived[pgn]
-        )
-      })
-      if (neededPGNs.length > 0) {
-        debug('did not get meta pgns %j for src %d', neededPGNs, src)
-        this.requestMetaPGNs(src, neededPGNs).then(() => {
-          neededPGNs.forEach((pgn) => {
-            if (
-              !this.state[src].metaPGNsReceived ||
-              !this.state[src].metaPGNsReceived[pgn]
-            ) {
-              debug(`did not get meta pgn ${pgn} for src ${src}`)
-              this.emit('n2kSourceMetadataTimeout', pgn, src)
-            }
-          })
-        })
+  /**
+   * Asks every device seen on the bus for all its metadata PGNs again, one
+   * request at a time as answers arrive. Returns the number of devices.
+   */
+  requestAllMeta(): number {
+    const devices = [...this.asked.keys()]
+    devices.forEach((src) => this.requestSourceMeta(src))
+    return devices.length
+  }
+
+  // Asks the devices seen on the bus for their metadata, as canboat's n2kd
+  // does: by address, never by broadcast, and one request at a time. A
+  // broadcast request makes every device answer at once, and a 126996 answer
+  // is a fast packet of about 20 frames. The next request goes out when the
+  // answer or a NAK arrives, or after ANSWER_TIMEOUT. A device is asked for a
+  // PGN at most once every REQUEST_INTERVAL, and not within REQUEST_INTERVAL
+  // of sending it, so a device that announces itself isn't asked.
+  /**
+   * Stops asking for metadata: clears the pending timers and forgets the
+   * listener, so a mapper that is replaced, on a reconnect say, no longer
+   * runs. n2kOutIsAvailable starts it again.
+   */
+  stop() {
+    if (this.waitingFor) {
+      clearTimeout(this.waitingFor.timer)
+      this.waitingFor = undefined
+    }
+    if (this.idleTimer !== undefined) {
+      clearTimeout(this.idleTimer)
+      this.idleTimer = undefined
+    }
+    this.n2kListener = undefined
+  }
+
+  private askNext() {
+    if (this.waitingFor || !this.n2kListener) {
+      return
+    }
+    for (const [src, pgns] of this.askNow) {
+      const pgn = pgns.values().next().value
+      if (pgn === undefined) {
+        this.askNow.delete(src)
+        continue
+      }
+      pgns.delete(pgn)
+      if (pgns.size === 0) {
+        this.askNow.delete(src)
+      }
+      this.ask(src, pgn)
+      return
+    }
+    const now = Date.now()
+    const devices = [...this.asked.keys()]
+    for (let i = 0; i < devices.length; i++) {
+      const at = (this.nextDevice + i) % devices.length
+      const src = devices[at]
+      const pgn = Object.keys(metaPGNs).find((pgn) => this.isDue(src, pgn, now))
+      if (pgn !== undefined) {
+        // The device's other PGNs come next, then the device after it.
+        this.nextDevice = at
+        this.ask(src, pgn)
+        return
       }
     }
+    if (this.idleTimer === undefined) {
+      this.idleTimer = setTimeout(() => {
+        this.idleTimer = undefined
+        this.askNext()
+      }, IDLE_CHECK)
+      unref(this.idleTimer)
+    }
   }
 
-  requestAllMeta() {
-    this.requestMetaPGNs(255, Object.keys(metaPGNs)).then(() => {
-      Object.keys(this.state).forEach((src) => this.checkSrcMetasAndRetry(src))
-    })
+  private ask(src: string, pgn: string) {
+    // A new NAME at src clears its entry while PGNs may still be queued.
+    const asked = this.asked.get(src) ?? {}
+    asked[pgn] = Date.now()
+    this.asked.set(src, asked)
+    const timer = setTimeout(
+      () => this.answered(src, pgn, false),
+      ANSWER_TIMEOUT
+    )
+    unref(timer)
+    this.waitingFor = { src, pgn, timer }
+    this.sendRequest(Number(src), pgn)
+  }
+
+  private isDue(src: string, pgn: string, now: number): boolean {
+    const recent = (time: number | undefined) =>
+      time !== undefined && now - time < REQUEST_INTERVAL
+    // requestAddressClaim asks a device for its claim too.
+    const claimRequested =
+      pgn === '60928' ? this.state[src]?.claimRequested : undefined
+    return (
+      !recent(this.state[src]?.metaPGNsReceived?.[pgn]) &&
+      !recent(this.asked.get(src)?.[pgn]) &&
+      !recent(claimRequested)
+    )
+  }
+
+  private answered(src: string, pgn: string, received: boolean) {
+    const waitingFor = this.waitingFor
+    if (!waitingFor || waitingFor.src !== src || waitingFor.pgn !== pgn) {
+      return
+    }
+    clearTimeout(waitingFor.timer)
+    this.waitingFor = undefined
+    const key = `${src}/${pgn}`
+    if (received) {
+      this.reportedTimeouts.delete(key)
+    } else if (!this.reportedTimeouts.has(key)) {
+      this.reportedTimeouts.add(key)
+      debug(`did not get meta pgn ${pgn} for src ${src}`)
+      this.emit('n2kSourceMetadataTimeout', pgn, src)
+    }
+    this.askNext()
+  }
+
+  // Notes the device that sent n2k, and moves on when n2k answers the request
+  // waiting for its answer, or NAKs it (59392).
+  private followRequests(n2k: N2kReport) {
+    const src = Number(n2k.src)
+    if (!Number.isInteger(src) || src < 0 || src > MAX_DEVICE_ADDRESS) {
+      return
+    }
+    const key = String(src)
+    const waitingFor = this.waitingFor
+    if (waitingFor?.src === key) {
+      if (String(n2k.pgn) === waitingFor.pgn) {
+        this.answered(key, waitingFor.pgn, true)
+      } else if (Number(n2k.pgn) === 59392) {
+        const fields = (n2k.fields ?? {}) as Record<string, unknown>
+        if (String(fields.pgn ?? fields.PGN) === waitingFor.pgn) {
+          this.answered(key, waitingFor.pgn, false)
+        }
+      }
+    }
+    if (!this.asked.has(key)) {
+      this.asked.set(key, {})
+      this.askNext()
+    }
   }
 
   toDelta(n2k: N2kReport): Delta | undefined {
+    const delta = this.mapFrame(n2k)
+    this.followRequests(n2k)
+    return delta
+  }
+
+  private mapFrame(n2k: N2kReport): Delta | undefined {
     if (metaPGNs[n2k.pgn] && n2k.fields) {
       const meta = metaPGNs[n2k.pgn](n2k)
       // State is keyed by the string form of src, so a frame without src keys
@@ -482,9 +644,9 @@ export class N2kMapper extends EventEmitter {
             canName
           )
           this.state[srcKey] = {}
-          this.requestMetaData(n2k.src, 126996).then(() => {
-            return this.requestMetaData(n2k.src, 126998)
-          })
+          // Forget the old device's requests: the new one counts as a new
+          // device, and is asked for its product and configuration information.
+          this.asked.delete(srcKey)
         }
         this.state[srcKey].deviceInstance = meta.deviceInstance
         meta.canName = canName
@@ -533,9 +695,11 @@ export class N2kMapper extends EventEmitter {
       return
     }
     const now = Date.now()
+    const asked = this.asked.get(String(n2k.src))?.['60928']
     if (
-      state.claimRequested !== undefined &&
-      now - state.claimRequested < CLAIM_REQUEST_INTERVAL
+      (state.claimRequested !== undefined &&
+        now - state.claimRequested < CLAIM_REQUEST_INTERVAL) ||
+      (asked !== undefined && now - asked < CLAIM_REQUEST_INTERVAL)
     ) {
       return
     }
@@ -793,6 +957,20 @@ function toValuesArray(
 }
 
 const CLAIM_REQUEST_INTERVAL = 10000
+// How long a device has to answer an ISO Request before the next one goes
+// out. J1939 gives a device 1.25 s; this leaves room for a gateway.
+const ANSWER_TIMEOUT = 2000
+// How often a device is asked for each metadata PGN, as canboat's n2kd.
+const REQUEST_INTERVAL = 5 * 60 * 1000
+// How often to look for a device that is due again when none is.
+const IDLE_CHECK = 10000
+// 254 is the null address, of a device that couldn't claim one; 255 is global.
+const MAX_DEVICE_ADDRESS = 253
+
+// Keeps a timer from holding the process open.
+function unref(timer: ReturnType<typeof setTimeout>) {
+  ;(timer as { unref?: () => void }).unref?.()
+}
 
 const metaPGNs: Record<string, (n2k: N2kReport) => MetaData> = {
   // deviceInstance combines the two fields, which stay as decoded (#342)
