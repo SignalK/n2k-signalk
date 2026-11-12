@@ -859,7 +859,43 @@
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.undefined.canNetworkLoad",
+    "path": "/vessels/*/providers",
+    "message": "Unknown property (not in schema)",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.canNetworkLoad",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.deviceCount",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.errors",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.gatewayAddress",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.rejectedTxRequests",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.uptime",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   }
