@@ -44,6 +44,14 @@ describe('gateway network status (262400)', function () {
     })
   })
 
+  it('leaves out a network load above 100 %', function () {
+    // IKONVERT with a load of 101
+    values(
+      new N2kMapper({ providerId: 'ikonvert' }),
+      IKONVERT.replace(',15,02,', ',15,65,')
+    ).should.not.have.property('providers.ikonvert.canNetworkLoad')
+  })
+
   it('writes nothing without a provider id', function () {
     values(new N2kMapper(), IKONVERT).should.deep.equal({})
   })

@@ -1,12 +1,12 @@
+import { PGN_262400, PGN_262400Fields } from '@canboat/ts-pgns'
 import { vesselState } from '../vesselState.js'
 
-// ts-pgns has no type for 262400, "NMEA 2000 gateway: network status": the
-// status of the gateway a connection reads the bus through, which the gateway
-// sends itself (an iKonvert, or canboat for an NGT-1 or a CAN interface).
-type Frame = { fields: Record<string, unknown> }
+// 262400, "NMEA 2000 gateway: network status": the status of the gateway a
+// connection reads the bus through, which the gateway sends itself (an
+// iKonvert, or canboat for an NGT-1 or a CAN interface).
 
 // The fields every such gateway sends, under the connection's provider id
-const FIELDS = [
+const FIELDS: (keyof PGN_262400Fields)[] = [
   'errors',
   'deviceCount',
   'uptime',
@@ -15,7 +15,7 @@ const FIELDS = [
 ]
 
 module.exports = [
-  (n2k: Frame, state?: Parameters<typeof vesselState>[0]) => {
+  (n2k: PGN_262400, state?: Parameters<typeof vesselState>[0]) => {
     const providerId = vesselState(state)?.providerId
     // Without a provider id the status belongs to no known connection.
     if (typeof providerId !== 'string' || providerId === '') {
@@ -26,12 +26,10 @@ module.exports = [
     const values = FIELDS.filter((field) => fields[field] != null).map(
       (field) => ({ path: `${prefix}.${field}`, value: fields[field] })
     )
-    if (fields.canNetworkLoad != null) {
-      // A percentage
-      values.unshift({
-        path: `${prefix}.canNetworkLoad`,
-        value: Number(fields.canNetworkLoad) / 100
-      })
+    // A percentage; one that isn't a number from 0 to 100 is left out.
+    const load = Number(fields.canNetworkLoad)
+    if (fields.canNetworkLoad != null && load >= 0 && load <= 100) {
+      values.unshift({ path: `${prefix}.canNetworkLoad`, value: load / 100 })
     }
     return values
   }
