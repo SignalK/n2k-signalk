@@ -435,7 +435,7 @@ const AC_LINE_FIELDS = [
   'lineNeutralVoltage',
   'current',
   'frequency',
-  'breakerSize',
+  'breaker.ratedCurrent',
   'realPower',
   'reactivePower',
   'powerFactor'

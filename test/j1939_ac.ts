@@ -8,7 +8,7 @@ import testMapper = require('./testMapper')
 import { FromPgn } from '@canboat/canboatjs'
 const toNested = testMapper.toNested
 
-describe('Maretron AC PGNs work', function () {
+describe('J1939 generator and utility AC PGNs work', function () {
   const n2kMapper = new N2kMapper()
 
   n2kMapper.toDelta(<any>{

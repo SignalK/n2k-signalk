@@ -151,7 +151,7 @@
   },
   {
     "pgn": 127503,
-    "path": "/vessels/*/electrical/ac/N/phase/A/breakerSize",
+    "path": "/vessels/*/electrical/ac/N/phase/A/breaker",
     "message": "Unknown property (not in schema)",
     "issue": 437
   },
@@ -169,7 +169,7 @@
   },
   {
     "pgn": 127503,
-    "path": "/vessels/*/electrical/ac/N/phase/C/breakerSize",
+    "path": "/vessels/*/electrical/ac/N/phase/C/breaker",
     "message": "Unknown property (not in schema)",
     "issue": 437
   },
@@ -181,7 +181,7 @@
   },
   {
     "pgn": 127503,
-    "path": "electrical.ac.N.phase.A.breakerSize",
+    "path": "electrical.ac.N.phase.A.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
@@ -199,13 +199,13 @@
   },
   {
     "pgn": 127503,
-    "path": "electrical.ac.N.phase.C.breakerSize",
+    "path": "electrical.ac.N.phase.C.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
   {
     "pgn": 127504,
-    "path": "/vessels/*/electrical/inverters/N/ac/breakerSize",
+    "path": "/vessels/*/electrical/inverters/N/ac/breaker",
     "message": "Unknown property (not in schema)",
     "issue": 437
   },
@@ -223,13 +223,13 @@
   },
   {
     "pgn": 127504,
-    "path": "electrical.inverters.N.ac.breakerSize",
+    "path": "electrical.inverters.N.ac.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
   {
     "pgn": 127504,
-    "path": "electrical.inverters.N.ac.phase.B.breakerSize",
+    "path": "electrical.inverters.N.ac.phase.B.breaker.ratedCurrent",
     "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
@@ -570,18 +570,6 @@
     "issue": 445
   },
   {
-    "pgn": 129794,
-    "path": "/vessels/*/registrations/imo",
-    "message": "String is too long (13 chars), maximum 11",
-    "issue": 445
-  },
-  {
-    "pgn": 129794,
-    "path": "/vessels/*/registrations/imo",
-    "message": "String is too short (10 chars), minimum 11",
-    "issue": 445
-  },
-  {
     "pgn": 129808,
     "path": "/vessels/*/mmsi",
     "message": "String does not match pattern: ^[2-7][0-9]{8}$",
@@ -871,13 +859,43 @@
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.undefined.canNetworkLoad",
-    "message": "Not a finite number (sent as null)",
+    "path": "/vessels/*/providers",
+    "message": "Unknown property (not in schema)",
     "issue": 386
   },
   {
     "pgn": 262400,
-    "path": "network.n2k.ikonvert.undefined.canNetworkLoad",
+    "path": "providers.samples.canNetworkLoad",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.deviceCount",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.errors",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.gatewayAddress",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.rejectedTxRequests",
+    "message": "Not in @signalk/path-metadata",
+    "issue": 386
+  },
+  {
+    "pgn": 262400,
+    "path": "providers.samples.uptime",
     "message": "Not in @signalk/path-metadata",
     "issue": 386
   }

@@ -42,6 +42,14 @@ function hide(holder: HoldsVesselState, vessel: VesselState) {
   })
 }
 
+/** The vessel-wide state of a mapper state, created on first use. */
+export function vesselStateOf(mapperState: HoldsVesselState): VesselState {
+  if (!mapperState[VESSEL]) {
+    hide(mapperState, {})
+  }
+  return mapperState[VESSEL]!
+}
+
 /**
  * The vessel-wide state a mapping's state links to, or undefined when toDelta
  * was called without state.
