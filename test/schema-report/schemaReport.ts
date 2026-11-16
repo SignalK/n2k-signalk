@@ -170,7 +170,8 @@ function run(dir: string): { found: Map<string, Found>; stats: string } {
     const parser = new FromPgn({ useCamel: true })
     parser.on('warning', () => {})
     parser.on('error', () => {})
-    const mapper = new N2kMapper()
+    // A provider id, so that the gateway status (262400) is written too
+    const mapper = new N2kMapper({ providerId: 'samples' })
     for (const line of fs.readFileSync(p, 'latin1').split(/\r?\n/)) {
       let n2k: any
       try {
