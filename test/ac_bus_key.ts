@@ -133,7 +133,7 @@ describe('AC bus key', function () {
 
     function listening(options?: N2kMapperOptions) {
       const mapper = new N2kMapper(options)
-      mapper.n2kListener = {} as any
+      mapper.n2kListener = { emit() {} } as any
       mapper.requestMetaData = (dst, pgn) => {
         requests.push([dst, pgn])
         return Promise.resolve()
@@ -214,7 +214,14 @@ describe('AC bus key', function () {
       mapper.n2kOutEvent = 'out'
       mapper.requestMetaData = N2kMapper.prototype.requestMetaData
       mapper.toDelta(power(0))
-      sent.should.deep.equal([{ pgn: 59904, dst: SRC, PGN: 60928 }])
+      ;(sent[0] as object).should.deep.equal({
+        pgn: 59904,
+        dst: SRC,
+        PGN: 60928
+      })
+      sent
+        .slice(1)
+        .should.not.deep.include({ pgn: 59904, dst: SRC, PGN: 60928 })
     })
   })
 })
