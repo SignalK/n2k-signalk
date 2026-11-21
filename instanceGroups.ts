@@ -483,8 +483,8 @@ const GROUP_LEAVES: Record<InstanceGroupId, readonly string[]> = {
     'chargeEfficiencyFactor'
   ],
   charger: [
-    'operatingState',
-    'chargeMode',
+    'chargingMode',
+    'chargerRole',
     'enabled',
     'equalizationPending',
     'equalizationTimeRemaining',

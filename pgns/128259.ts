@@ -17,10 +17,12 @@ module.exports = [
     }
   },
   {
-    source: 'speedWaterReferencedType',
+    // Signal K's enum values are lowercase, such as 'paddle wheel'
     node: 'navigation.speedThroughWaterReferenceType',
+    value: (n2k: PGN_128259) =>
+      String(n2k.fields.speedWaterReferencedType).toLowerCase(),
     filter: function (n2k: PGN_128259) {
-      return n2k.fields.speedWaterReferencedType
+      return typeof n2k.fields.speedWaterReferencedType === 'string'
     }
   }
 ]

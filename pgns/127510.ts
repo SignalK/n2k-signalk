@@ -27,7 +27,7 @@ module.exports = [
   // maximum output current (NMEA 2000 DD263, a percentage on the bus).
   { node: charger('chargeCurrentLimit'), ...number('chargeCurrentLimit') },
   { node: charger('chargingAlgorithm'), ...text('chargingAlgorithm') },
-  { node: charger('chargeMode'), ...text('chargerMode') },
+  { node: charger('chargerRole'), ...text('chargerMode') },
   { node: charger('estimatedTemperature'), ...text('estimatedTemperature') },
   {
     node: charger('equalizeOneTimeEnabled'),

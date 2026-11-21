@@ -22,11 +22,11 @@ describe('127507 charger status', function () {
       }
     })
     tree.should.have.nested.property(
-      'electrical.chargers.0.operatingState.value',
+      'electrical.chargers.0.chargingMode.value',
       'absorption'
     )
     tree.should.have.nested.property(
-      'electrical.chargers.0.chargeMode.value',
+      'electrical.chargers.0.chargerRole.value',
       'standalone'
     )
     tree.should.have.nested.property(
@@ -61,7 +61,7 @@ describe('127507 charger status', function () {
       }
     })
     tree.should.have.nested.property(
-      'electrical.chargers.2.operatingState.value',
+      'electrical.chargers.2.chargingMode.value',
       'float'
     )
     tree.should.have.nested.property(

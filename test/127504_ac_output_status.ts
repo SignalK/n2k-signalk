@@ -43,6 +43,15 @@ describe('127504 ac output status', function () {
     ])
   })
 
+  it('writes the waveform in lowercase', function () {
+    const sine = JSON.parse(JSON.stringify(frame))
+    sine.fields.list[0].waveform = 'Modified sine wave'
+    mapper.testToDelta(sine).updates[0].values.should.deep.include({
+      path: 'electrical.inverters.2.ac.waveform',
+      value: 'modified sine wave'
+    })
+  })
+
   it('writes a line with an unknown name as line 1', function () {
     const unknown = JSON.parse(JSON.stringify(frame))
     unknown.fields.list[0].line = 'Line 9'

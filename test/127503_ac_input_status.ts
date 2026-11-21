@@ -41,7 +41,7 @@ const frame = {
 describe('127503 ac input status', function () {
   it('writes each line under its own phase, as the specification names it', function () {
     mapper.testToDelta(frame).updates[0].values.should.deep.equal([
-      { path: 'electrical.ac.1.phase.A.acceptability', value: 'Good' },
+      { path: 'electrical.ac.1.phase.A.acceptability', value: 'good' },
       { path: 'electrical.ac.1.phase.A.lineNeutralVoltage', value: 230 },
       { path: 'electrical.ac.1.phase.A.current', value: 2.5 },
       { path: 'electrical.ac.1.phase.A.frequency', value: 50 },
@@ -49,7 +49,7 @@ describe('127503 ac input status', function () {
       { path: 'electrical.ac.1.phase.A.realPower', value: 575 },
       { path: 'electrical.ac.1.phase.A.reactivePower', value: 10 },
       { path: 'electrical.ac.1.phase.A.powerFactor', value: 0.98 },
-      { path: 'electrical.ac.1.phase.B.acceptability', value: 'Bad level' },
+      { path: 'electrical.ac.1.phase.B.acceptability', value: 'bad level' },
       { path: 'electrical.ac.1.phase.B.lineNeutralVoltage', value: 231 },
       { path: 'electrical.ac.1.phase.B.current', value: 1.5 },
       { path: 'electrical.ac.1.phase.B.frequency', value: 50 }
