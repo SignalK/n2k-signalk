@@ -1,4 +1,5 @@
 import chai from 'chai'
+import { FromPgn } from '@canboat/canboatjs'
 chai.should()
 chai.use(require('chai-things'))
 
@@ -66,5 +67,82 @@ describe('127501 switch bank status', function () {
       7
     )
     // tree.should.be.validSignalKVesselIgnoringIdentity
+  })
+
+  // A Maretron SIM100 whose inputs all have an open or shorted wiring,
+  // recorded from a live NMEA 2000 bus.
+  it('keeps an indicator in error apart from off', function () {
+    const n2k = new FromPgn({ useCamel: true }).parseString(
+      '2026-11-24T21:38:01.292Z,3,127501,110,255,8,d2,aa,fa,ff,ff,ff,ff,ff'
+    )
+    const tree = require('./testMapper').n2kToNested(n2k)
+    for (let i = 1; i <= 6; i++) {
+      tree.should.have.nested.property(
+        `electrical.switches.bank.210.${i}.state.value`,
+        2
+      )
+    }
+    // Indicators 7 to 28 are not available.
+    tree.should.not.have.nested.property('electrical.switches.bank.210.7')
+  })
+
+  // The two frames as canboat decodes them when its OFF_ON lookup names
+  // the error: a SIM100 with every input in error and one without.
+  it('reads an error canboat names', function () {
+    const mapper = require('./testMapper')
+    const inError = mapper.n2kToNested(
+      JSON.parse(
+        '{"timestamp":"2026-11-24T21:38:01.292Z","prio":3,"src":110,"dst":255,"pgn":127501,"description":"Binary Switch Bank Status","fields":{"instance":210,"indicator1":"Error","indicator2":"Error","indicator3":"Error","indicator4":"Error","indicator5":"Error","indicator6":"Error"}}'
+      )
+    )
+    inError.should.have.nested.property(
+      'electrical.switches.bank.210.1.state.value',
+      2
+    )
+    const working = mapper.n2kToNested(
+      JSON.parse(
+        '{"timestamp":"2026-11-24T21:38:05.548Z","prio":3,"src":237,"dst":255,"pgn":127501,"description":"Binary Switch Bank Status","fields":{"instance":215,"indicator1":"Off","indicator2":"Off","indicator3":"Off","indicator4":"Off","indicator5":"On","indicator6":"Off"}}'
+      )
+    )
+    working.should.have.nested.property(
+      'electrical.switches.bank.215.1.state.value',
+      0
+    )
+    working.should.have.nested.property(
+      'electrical.switches.bank.215.5.state.value',
+      1
+    )
+  })
+
+  it('reads an indicator given as a number and leaves out the rest', function () {
+    const tree = require('./testMapper').n2kToNested({
+      pgn: 127501,
+      src: 110,
+      timestamp: '2026-11-24T21:38:01.292Z',
+      fields: {
+        instance: 210,
+        indicator1: 2,
+        indicator2: 3,
+        indicator3: null,
+        indicator4: 1,
+        indicator5: 0,
+        indicator6: 'constructor'
+      }
+    })
+    tree.should.have.nested.property(
+      'electrical.switches.bank.210.1.state.value',
+      2
+    )
+    tree.should.not.have.nested.property('electrical.switches.bank.210.2')
+    tree.should.not.have.nested.property('electrical.switches.bank.210.3')
+    tree.should.have.nested.property(
+      'electrical.switches.bank.210.4.state.value',
+      1
+    )
+    tree.should.have.nested.property(
+      'electrical.switches.bank.210.5.state.value',
+      0
+    )
+    tree.should.not.have.nested.property('electrical.switches.bank.210.6')
   })
 })
