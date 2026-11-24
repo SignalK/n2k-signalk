@@ -69,4 +69,25 @@ describe('127507 charger status', function () {
       true
     )
   })
+
+  it('writes no enabled state for an indicator in error', function () {
+    const tree = require('./testMapper').n2kToNested({
+      pgn: 127507,
+      src: 35,
+      timestamp: '2026-05-06T12:00:00.000Z',
+      fields: {
+        instance: 0,
+        batteryInstance: 0,
+        operatingState: 'Float',
+        chargeMode: 'Standalone',
+        enabled: 'Error',
+        equalizationPending: 'Off'
+      }
+    })
+    tree.should.not.have.nested.property('electrical.chargers.0.enabled')
+    tree.should.have.nested.property(
+      'electrical.chargers.0.equalizationPending.value',
+      false
+    )
+  })
 })

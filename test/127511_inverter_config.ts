@@ -76,4 +76,24 @@ describe('127511 inverter configuration status', function () {
       false
     )
   })
+
+  it('writes no enabled state for a no-change value', function () {
+    const tree = require('./testMapper').n2kToNested({
+      pgn: 127511,
+      src: 35,
+      timestamp: '2026-05-06T12:00:00.000Z',
+      fields: {
+        instance: 0,
+        acInstance: 0,
+        dcInstance: 0,
+        inverterEnableDisable: 'Take no action (no change)',
+        loadSenseEnableDisable: 'On'
+      }
+    })
+    tree.should.not.have.nested.property('electrical.inverters.0.enabled')
+    tree.should.have.nested.property(
+      'electrical.inverters.0.loadSenseEnabled.value',
+      true
+    )
+  })
 })

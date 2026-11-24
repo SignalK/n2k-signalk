@@ -57,4 +57,20 @@ describe('127509 inverter status', function () {
       false
     )
   })
+
+  it('writes no enabled state for an indicator in error', function () {
+    const tree = require('./testMapper').n2kToNested({
+      pgn: 127509,
+      src: 35,
+      timestamp: '2026-05-06T12:00:00.000Z',
+      fields: {
+        instance: 0,
+        acInstance: 0,
+        dcInstance: 0,
+        operatingState: 'Invert',
+        inverterEnable: 'Error'
+      }
+    })
+    tree.should.not.have.nested.property('electrical.inverters.0.enabled')
+  })
 })

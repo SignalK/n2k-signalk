@@ -13,6 +13,8 @@ module.exports = [
   {
     node: inverter('enabled'),
     value: (n2k: PGN_127509) => n2k.fields.inverterEnable === 'On',
-    filter: (n2k: PGN_127509) => typeof n2k.fields.inverterEnable === 'string'
+    // Only on and off are a state; an error says nothing about it.
+    filter: (n2k: PGN_127509) =>
+      n2k.fields.inverterEnable === 'On' || n2k.fields.inverterEnable === 'Off'
   }
 ]
