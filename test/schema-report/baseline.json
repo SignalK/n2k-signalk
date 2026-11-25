@@ -114,6 +114,30 @@
     "issue": 443
   },
   {
+    "pgn": 127233,
+    "path": "/vessels/*/notifications/mob",
+    "message": "Missing required property: $source",
+    "issue": 442
+  },
+  {
+    "pgn": 127233,
+    "path": "/vessels/*/notifications/mob",
+    "message": "Missing required property: timestamp",
+    "issue": 442
+  },
+  {
+    "pgn": 127233,
+    "path": "/vessels/*/notifications/mob/N",
+    "message": "Unknown property (not in schema)",
+    "issue": 442
+  },
+  {
+    "pgn": 127233,
+    "path": "/vessels/*/notifications/mob/unset",
+    "message": "Unknown property (not in schema)",
+    "issue": 442
+  },
+  {
     "pgn": 127497,
     "path": "/vessels/*/propulsion/port/trip",
     "message": "Unknown property (not in schema)",
