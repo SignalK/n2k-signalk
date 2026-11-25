@@ -4,6 +4,18 @@ chai.should()
 chai.use(require('chai-things'))
 
 describe('127501 switch bank status', function () {
+  // A Maretron SIM100 whose inputs all have an open or shorted wiring,
+  // recorded from a live NMEA 2000 bus.
+  function sim100InError() {
+    const n2k = new FromPgn({ useCamel: true }).parseString(
+      '2026-11-24T21:38:01.292Z,3,127501,110,255,8,d2,aa,fa,ff,ff,ff,ff,ff'
+    )
+    if (!n2k) {
+      throw new Error('canboatjs does not decode the SIM100 frame')
+    }
+    return n2k
+  }
+
   it('complete sentence converts', function () {
     const tree = require('./testMapper').toNested(
       JSON.parse(
@@ -69,13 +81,8 @@ describe('127501 switch bank status', function () {
     // tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
-  // A Maretron SIM100 whose inputs all have an open or shorted wiring,
-  // recorded from a live NMEA 2000 bus.
   it('keeps an indicator in error apart from off', function () {
-    const n2k = new FromPgn({ useCamel: true }).parseString(
-      '2026-11-24T21:38:01.292Z,3,127501,110,255,8,d2,aa,fa,ff,ff,ff,ff,ff'
-    )
-    const tree = require('./testMapper').n2kToNested(n2k)
+    const tree = require('./testMapper').n2kToNested(sim100InError())
     for (let i = 1; i <= 6; i++) {
       tree.should.have.nested.property(
         `electrical.switches.bank.210.${i}.state.value`,
@@ -115,20 +122,18 @@ describe('127501 switch bank status', function () {
   })
 
   it('reads an indicator given as a number and leaves out the rest', function () {
-    const tree = require('./testMapper').n2kToNested({
-      pgn: 127501,
-      src: 110,
-      timestamp: '2026-11-24T21:38:01.292Z',
-      fields: {
-        instance: 210,
-        indicator1: 2,
-        indicator2: 3,
-        indicator3: null,
-        indicator4: 1,
-        indicator5: 0,
-        indicator6: 'constructor'
-      }
+    // Values other than a name the lookup knows: numbers, as a decoder
+    // without the name gives them, null, and a key every object inherits.
+    const n2k = sim100InError()
+    Object.assign(n2k.fields, {
+      indicator1: 2,
+      indicator2: 3,
+      indicator3: null,
+      indicator4: 1,
+      indicator5: 0,
+      indicator6: 'constructor'
     })
+    const tree = require('./testMapper').n2kToNested(n2k)
     tree.should.have.nested.property(
       'electrical.switches.bank.210.1.state.value',
       2
