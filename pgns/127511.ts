@@ -11,9 +11,13 @@ const text = (field: Field) => ({
   filter: (n2k: PGN_127511) => typeof n2k.fields[field] === 'string'
 })
 
+// Only on and off are a state; an error, or a reserved or no-change value
+// of a command pair, says nothing about it.
+const isOnOff = (value: unknown) => value === 'On' || value === 'Off'
+
 const onOff = (field: Field) => ({
   value: (n2k: PGN_127511) => n2k.fields[field] === 'On',
-  filter: (n2k: PGN_127511) => typeof n2k.fields[field] === 'string'
+  filter: (n2k: PGN_127511) => isOnOff(n2k.fields[field])
 })
 
 const number = (field: Field) => ({

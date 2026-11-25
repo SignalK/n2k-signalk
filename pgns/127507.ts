@@ -10,9 +10,12 @@ const text = (field: keyof PGN_127507['fields']) => ({
   filter: (n2k: PGN_127507) => typeof n2k.fields[field] === 'string'
 })
 
+// Only on and off are a state; an error says nothing about it.
+const isOnOff = (value: unknown) => value === 'On' || value === 'Off'
+
 const onOff = (field: keyof PGN_127507['fields']) => ({
   value: (n2k: PGN_127507) => n2k.fields[field] === 'On',
-  filter: (n2k: PGN_127507) => typeof n2k.fields[field] === 'string'
+  filter: (n2k: PGN_127507) => isOnOff(n2k.fields[field])
 })
 
 module.exports = [
