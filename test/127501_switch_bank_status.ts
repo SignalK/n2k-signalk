@@ -3,6 +3,8 @@ import { FromPgn } from '@canboat/canboatjs'
 chai.should()
 chai.use(require('chai-things'))
 
+// The Signal K schema has no electrical.switches, so these trees are not
+// validated against it.
 describe('127501 switch bank status', function () {
   // A Maretron SIM100 whose inputs all have an open or shorted wiring,
   // recorded from a live NMEA 2000 bus.
@@ -122,8 +124,9 @@ describe('127501 switch bank status', function () {
   })
 
   it('reads an indicator given as a number and leaves out the rest', function () {
-    // Values other than a name the lookup knows: numbers, as a decoder
-    // without the name gives them, null, and a key every object inherits.
+    // Set by hand, as no recording decodes to all of them: numbers, as a
+    // decoder without the lookup's name gives them, null, and a key every
+    // object inherits.
     const n2k = sim100InError()
     Object.assign(n2k.fields, {
       indicator1: 2,

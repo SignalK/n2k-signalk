@@ -3,6 +3,8 @@ chai.should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
 
+// The Signal K schema lacks paths this PGN maps, such as operatingState, so these
+// trees are not validated against it.
 describe('127509 inverter status', function () {
   it('converts fields to signalk paths', function () {
     const pgn = {
@@ -58,6 +60,8 @@ describe('127509 inverter status', function () {
     )
   })
 
+  // Set by hand: no recording has the field in error. canboat with
+  // canboat/canboat#1250 names its value 2 Error.
   it('writes no enabled state for an indicator in error', function () {
     const tree = require('./testMapper').n2kToNested({
       pgn: 127509,

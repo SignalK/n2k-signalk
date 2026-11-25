@@ -2,6 +2,8 @@ import chai from 'chai'
 chai.should()
 chai.use(require('chai-things'))
 
+// The Signal K schema lacks paths this PGN maps, such as loadSenseEnabled, so these
+// trees are not validated against it.
 describe('127511 inverter configuration status', function () {
   it('converts fields to signalk paths', function () {
     const tree = require('./testMapper').toNested({
@@ -77,6 +79,8 @@ describe('127511 inverter configuration status', function () {
     )
   })
 
+  // Set by hand: no recording has this value. canboat with
+  // canboat/canboat#1250 decodes the field with its OFF_ON_CONTROL lookup.
   it('writes no enabled state for a no-change value', function () {
     const tree = require('./testMapper').n2kToNested({
       pgn: 127511,

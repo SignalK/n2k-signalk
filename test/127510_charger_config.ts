@@ -2,6 +2,8 @@ import chai from 'chai'
 chai.should()
 chai.use(require('chai-things'))
 
+// The Signal K schema lacks paths this PGN maps, such as overChargeEnabled, so these
+// trees are not validated against it.
 describe('127510 charger configuration status', function () {
   it('converts fields to signalk paths', function () {
     const pgn = {
@@ -59,6 +61,8 @@ describe('127510 charger configuration status', function () {
     )
   })
 
+  // Set by hand: no recording has these values. canboat with
+  // canboat/canboat#1250 decodes the fields with its OFF_ON_CONTROL lookup.
   it('writes no enabled state for a reserved or no-change value', function () {
     const tree = require('./testMapper').n2kToNested({
       pgn: 127510,
