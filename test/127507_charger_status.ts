@@ -1,4 +1,5 @@
 import chai from 'chai'
+import { FromPgn } from '@canboat/canboatjs'
 chai.should()
 chai.use(require('chai-things'))
 
@@ -70,6 +71,24 @@ describe('127507 charger status', function () {
       'electrical.chargers.2.enabled.value',
       true
     )
+  })
+
+  // Two chargers recorded for canboat/canboat#243, from canboat's
+  // samples/PGN127507.raw: one enabled, one not.
+  it('reads whether a recorded charger is enabled', function () {
+    const toNested = (line: string) => {
+      const n2k = new FromPgn({ useCamel: true }).parseString(line)
+      if (!n2k) {
+        throw new Error('canboatjs does not decode the recorded frame')
+      }
+      return require('./testMapper').n2kToNested(n2k)
+    }
+    toNested(
+      '2021-07-29-09:00:42.386,6,127507,225,255,8,40,06,00,ff,f8,fd,ff,ff'
+    ).should.have.nested.property('electrical.chargers.0.enabled.value', true)
+    toNested(
+      '2021-07-29-09:00:42.386,6,127507,129,255,8,a0,06,31,00,08,fc,ff,ff'
+    ).should.have.nested.property('electrical.chargers.49.enabled.value', false)
   })
 
   // Set by hand: no recording has the field in error. canboat with
