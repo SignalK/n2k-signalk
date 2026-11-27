@@ -2,6 +2,7 @@ import chai from 'chai'
 chai.should()
 chai.use(require('chai-things'))
 chai.use(require('@signalk/signalk-schema').chaiModule)
+import { FromPgn } from '@canboat/canboatjs'
 
 describe('127489 engine parameters Port', function () {
   it('every field in the PGN from the NMEA2000 spec converts', function () {
@@ -387,35 +388,33 @@ describe('127489 engine parameters without an engine instance', function () {
 })
 
 describe('127489 engine hours', function () {
-  const frame = (totalEngineHours: unknown) => ({
-    timestamp: '2026-11-26T22:33:31.437Z',
-    prio: 2,
-    src: 17,
-    dst: 255,
-    pgn: 127489,
-    description: 'Engine Parameters, Dynamic',
-    fields: { instance: 'Single Engine or Dual Engine Port', totalEngineHours }
+  // Recorded in canboat's samples/sample-single.raw.txt; its Total Engine
+  // hours are 4210 s.
+  const recorded =
+    '2016-04-09T16:41:39.628Z,2,127489,16,255,26,00,2f,06,ff,ff,e3,73,65,05,ff,7f,72,10,00,00,ff,ff,ff,ff,ff,06,00,00,00,7f,7f'
+  const mapper = require('./testMapper')
+  const decoded: any = new FromPgn({ useCamel: true }).parseString(recorded)
+  const withHours = (totalEngineHours: unknown) => ({
+    ...decoded,
+    fields: { ...decoded.fields, totalEngineHours }
   })
-  const { n2kToNested } = require('./testMapper')
 
   it('passes seconds on as they are', function () {
-    n2kToNested(frame(6296400)).should.have.nested.property(
-      'propulsion.port.runTime.value',
-      6296400
-    )
+    const tree = mapper.n2kToNested(decoded)
+    tree.should.have.nested.property('propulsion.port.runTime.value', 4210)
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('reads a clock string as seconds', function () {
-    // canboatjs 3 gives a DURATION as "HHHH:MM:SS"
-    n2kToNested(frame('1749:00:00')).should.have.nested.property(
-      'propulsion.port.runTime.value',
-      6296400
-    )
+    // canboatjs 3.20 decodes the same frame's hours as "01:10:10"
+    const tree = mapper.n2kToNested(withHours('01:10:10'))
+    tree.should.have.nested.property('propulsion.port.runTime.value', 4210)
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 
   it('writes no run time for anything else', function () {
-    n2kToNested(frame('n/a')).should.not.have.nested.property(
-      'propulsion.port.runTime'
-    )
+    const tree = mapper.n2kToNested(withHours('n/a'))
+    tree.should.not.have.nested.property('propulsion.port.runTime')
+    tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
