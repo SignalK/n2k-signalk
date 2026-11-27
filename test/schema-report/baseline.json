@@ -6,18 +6,6 @@
     "issue": 439
   },
   {
-    "pgn": 65005,
-    "path": "electrical.ac.N.total.energyExport",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 439
-  },
-  {
-    "pgn": 65005,
-    "path": "electrical.ac.N.total.energyImport",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 439
-  },
-  {
     "pgn": 65012,
     "path": "/vessels/*/electrical/ac/N/phase/A/powerFactorLagging",
     "message": "Invalid type: object (expected string)",
@@ -27,18 +15,6 @@
     "pgn": 65018,
     "path": "/vessels/*/electrical/generators",
     "message": "Unknown property (not in schema)",
-    "issue": 439
-  },
-  {
-    "pgn": 65018,
-    "path": "electrical.generators.N.total.energyExport",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 439
-  },
-  {
-    "pgn": 65018,
-    "path": "electrical.generators.N.total.energyImport",
-    "message": "Not in @signalk/path-metadata",
     "issue": 439
   },
   {
@@ -120,12 +96,6 @@
     "issue": 443
   },
   {
-    "pgn": 127497,
-    "path": "propulsion.port.trip.fuelUsed",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 443
-  },
-  {
     "pgn": 127501,
     "path": "/vessels/*/electrical/switches",
     "message": "Unknown property (not in schema)",
@@ -174,36 +144,6 @@
     "issue": 437
   },
   {
-    "pgn": 127503,
-    "path": "electrical.ac.N.phase.A.acceptability",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
-    "pgn": 127503,
-    "path": "electrical.ac.N.phase.A.breaker.ratedCurrent",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
-    "pgn": 127503,
-    "path": "electrical.ac.N.phase.B.acceptability",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
-    "pgn": 127503,
-    "path": "electrical.ac.N.phase.C.acceptability",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
-    "pgn": 127503,
-    "path": "electrical.ac.N.phase.C.breaker.ratedCurrent",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
     "pgn": 127504,
     "path": "/vessels/*/electrical/inverters/N/ac/breaker",
     "message": "Unknown property (not in schema)",
@@ -219,30 +159,6 @@
     "pgn": 127504,
     "path": "/vessels/*/electrical/inverters/N/ac/waveform",
     "message": "Unknown property (not in schema)",
-    "issue": 437
-  },
-  {
-    "pgn": 127504,
-    "path": "electrical.inverters.N.ac.breaker.ratedCurrent",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
-    "pgn": 127504,
-    "path": "electrical.inverters.N.ac.phase.B.breaker.ratedCurrent",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
-    "pgn": 127504,
-    "path": "electrical.inverters.N.ac.phase.B.waveform",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 437
-  },
-  {
-    "pgn": 127504,
-    "path": "electrical.inverters.N.ac.waveform",
-    "message": "Not in @signalk/path-metadata",
     "issue": 437
   },
   {
@@ -283,24 +199,6 @@
   },
   {
     "pgn": 127507,
-    "path": "electrical.chargers.N.enabled",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 438
-  },
-  {
-    "pgn": 127507,
-    "path": "electrical.chargers.N.equalizationPending",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 438
-  },
-  {
-    "pgn": 127507,
-    "path": "electrical.chargers.N.equalizationTimeRemaining",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 438
-  },
-  {
-    "pgn": 127507,
     "path": "electrical.chargers.N.operatingState",
     "message": "Not in @signalk/path-metadata",
     "issue": 438
@@ -318,27 +216,9 @@
     "issue": 438
   },
   {
-    "pgn": 127509,
-    "path": "electrical.inverters.N.enabled",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 438
-  },
-  {
-    "pgn": 127509,
-    "path": "electrical.inverters.N.operatingState",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 438
-  },
-  {
     "pgn": 128259,
     "path": "/vessels/*/navigation/speedThroughWaterReferenceType",
     "message": "Unknown property (not in schema)",
-    "issue": 443
-  },
-  {
-    "pgn": 128259,
-    "path": "navigation.speedThroughWaterReferenceType",
-    "message": "Not in @signalk/path-metadata",
     "issue": 443
   },
   {
@@ -360,33 +240,9 @@
     "issue": 443
   },
   {
-    "pgn": 129038,
-    "path": "navigation.specialManeuver",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 443
-  },
-  {
     "pgn": 129041,
     "path": "/atons",
     "message": "Unknown property (not in schema)",
-    "issue": 444
-  },
-  {
-    "pgn": 129041,
-    "path": "atonType",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 444
-  },
-  {
-    "pgn": 129041,
-    "path": "offPosition",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 444
-  },
-  {
-    "pgn": 129041,
-    "path": "virtual",
-    "message": "Not in @signalk/path-metadata",
     "issue": 444
   },
   {
@@ -549,12 +405,6 @@
     "pgn": 129540,
     "path": "/vessels/*/navigation/gnss/satellitesInView",
     "message": "Unknown property (not in schema)",
-    "issue": 443
-  },
-  {
-    "pgn": 129540,
-    "path": "navigation.gnss.satellitesInView",
-    "message": "Not in @signalk/path-metadata",
     "issue": 443
   },
   {
@@ -798,36 +648,6 @@
     "issue": 443
   },
   {
-    "pgn": 130845,
-    "path": "electrical.displays.navico.default.brightness",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 443
-  },
-  {
-    "pgn": 130845,
-    "path": "electrical.displays.navico.default.nightMode.state",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 443
-  },
-  {
-    "pgn": 130845,
-    "path": "electrical.displays.navico.groupN.brightness",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 443
-  },
-  {
-    "pgn": 130845,
-    "path": "electrical.displays.navico.groupN.nightMode.state",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 443
-  },
-  {
-    "pgn": 130845,
-    "path": "electrical.displays.navico.groupN.nightModeColor",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 443
-  },
-  {
     "pgn": 130850,
     "path": "/vessels/*/notifications/engineLowOilPressure/value/timestamp",
     "message": "Unknown property (not in schema)",
@@ -861,42 +681,6 @@
     "pgn": 262400,
     "path": "/vessels/*/providers",
     "message": "Unknown property (not in schema)",
-    "issue": 386
-  },
-  {
-    "pgn": 262400,
-    "path": "providers.samples.canNetworkLoad",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262400,
-    "path": "providers.samples.deviceCount",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262400,
-    "path": "providers.samples.errors",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262400,
-    "path": "providers.samples.gatewayAddress",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262400,
-    "path": "providers.samples.rejectedTxRequests",
-    "message": "Not in @signalk/path-metadata",
-    "issue": 386
-  },
-  {
-    "pgn": 262400,
-    "path": "providers.samples.uptime",
-    "message": "Not in @signalk/path-metadata",
     "issue": 386
   }
 ]
