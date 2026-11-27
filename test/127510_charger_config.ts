@@ -59,3 +59,22 @@ describe('127510 charger configuration status', function () {
     )
   })
 })
+
+describe('127510 equalize time', function () {
+  it('reads a clock string as seconds', function () {
+    // canboatjs 3 gives a DURATION as "HH:MM:SS"
+    const tree = require('./testMapper').n2kToNested({
+      timestamp: '2026-05-06T12:00:00.000Z',
+      prio: 6,
+      src: 35,
+      dst: 255,
+      pgn: 127510,
+      description: 'Charger Configuration Status',
+      fields: { instance: 0, equalizeTime: '01:00:00' }
+    })
+    tree.should.have.nested.property(
+      'electrical.chargers.0.equalizeTime.value',
+      3600
+    )
+  })
+})

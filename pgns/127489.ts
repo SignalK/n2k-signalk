@@ -1,9 +1,12 @@
 import { PGN_127489 } from '@canboat/ts-pgns'
 import { format } from 'util'
+import { seconds } from '../utils.js'
 import { instancePrefix, engineTitle, SourceState } from '../instanceGroups.js'
 
 // canboatjs gives every value in SI (Pa, m3/s, K, V, ratios, seconds), as
-// Signal K wants them, so each is passed on as it is.
+// Signal K wants them, so each is passed on as it is. Engine hours go
+// through seconds(), as every other TIME and DURATION does: canboatjs 3
+// gives them as a clock string, "1749:00:00".
 const engine = (path: string) => (n2k: PGN_127489, state?: SourceState) =>
   `${instancePrefix(n2k, state)}.${path}`
 
@@ -12,7 +15,10 @@ const mappings: any[] = [
   { source: 'alternatorPotential', node: engine('alternatorVoltage') },
   { source: 'fuelRate', node: engine('fuel.rate') },
   { source: 'oilPressure', node: engine('oilPressure') },
-  { source: 'totalEngineHours', node: engine('runTime') },
+  {
+    node: engine('runTime'),
+    value: (n2k: PGN_127489) => seconds(n2k.fields.totalEngineHours)
+  },
   { source: 'oilTemperature', node: engine('oilTemperature') },
   { source: 'coolantPressure', node: engine('coolantPressure') },
   { source: 'engineLoad', node: engine('engineLoad') },

@@ -385,3 +385,37 @@ describe('127489 engine parameters without an engine instance', function () {
     tree.should.be.validSignalKVesselIgnoringIdentity
   })
 })
+
+describe('127489 engine hours', function () {
+  const frame = (totalEngineHours: unknown) => ({
+    timestamp: '2026-11-26T22:33:31.437Z',
+    prio: 2,
+    src: 17,
+    dst: 255,
+    pgn: 127489,
+    description: 'Engine Parameters, Dynamic',
+    fields: { instance: 'Single Engine or Dual Engine Port', totalEngineHours }
+  })
+  const { n2kToNested } = require('./testMapper')
+
+  it('passes seconds on as they are', function () {
+    n2kToNested(frame(6296400)).should.have.nested.property(
+      'propulsion.port.runTime.value',
+      6296400
+    )
+  })
+
+  it('reads a clock string as seconds', function () {
+    // canboatjs 3 gives a DURATION as "HHHH:MM:SS"
+    n2kToNested(frame('1749:00:00')).should.have.nested.property(
+      'propulsion.port.runTime.value',
+      6296400
+    )
+  })
+
+  it('writes no run time for anything else', function () {
+    n2kToNested(frame('n/a')).should.not.have.nested.property(
+      'propulsion.port.runTime'
+    )
+  })
+})
