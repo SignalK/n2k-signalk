@@ -1,5 +1,4 @@
 import { PGN_127510 } from '@canboat/ts-pgns'
-import { seconds } from '../utils.js'
 import { instancePrefix, SourceState } from '../instanceGroups.js'
 
 type Field = keyof PGN_127510['fields']
@@ -35,8 +34,5 @@ module.exports = [
     ...onOff('equalizeOneTimeEnableDisable')
   },
   { node: charger('overChargeEnabled'), ...onOff('overChargeEnableDisable') },
-  {
-    node: charger('equalizeTime'),
-    value: (n2k: PGN_127510) => seconds(n2k.fields.equalizeTime)
-  }
+  { node: charger('equalizeTime'), ...number('equalizeTime') }
 ]

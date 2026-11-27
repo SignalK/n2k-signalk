@@ -5,8 +5,8 @@ import { instancePrefix, engineTitle, SourceState } from '../instanceGroups.js'
 
 // canboatjs gives every value in SI (Pa, m3/s, K, V, ratios, seconds), as
 // Signal K wants them, so each is passed on as it is. Engine hours go
-// through seconds(), as every other TIME and DURATION does: canboatjs 3
-// gives them as a clock string, "1749:00:00".
+// through seconds(), as 127506 and 130567 times do: canboatjs 3 gives them
+// as a clock string, "1749:00:00".
 const engine = (path: string) => (n2k: PGN_127489, state?: SourceState) =>
   `${instancePrefix(n2k, state)}.${path}`
 
