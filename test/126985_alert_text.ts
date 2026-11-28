@@ -223,4 +223,25 @@ describe('126985 alert text', function () {
       'warn'
     ])
   })
+
+  // A source that sends texts for ever new alerts, and not their return to
+  // normal, must not grow the state without limit
+  it('keeps the texts of the alerts heard most recently only', function () {
+    const alertState: any = {}
+    for (let system = 1; system <= 30; system++) {
+      for (let subSystem = 0; subSystem < 10; subSystem++) {
+        mapper.testToDelta(
+          alertText(system, subSystem, `Alert ${system}.${subSystem}`),
+          alertState
+        )
+      }
+    }
+    Object.keys(alertState['41'].alerts).length.should.equal(256)
+    messages(mapper.testToDelta(alert(30, 9, 'Active'), alertState)).should.eql(
+      ['Alert 30.9']
+    )
+    messages(mapper.testToDelta(alert(1, 0, 'Active'), alertState)).should.eql(
+      []
+    )
+  })
 })
